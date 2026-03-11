@@ -47,8 +47,8 @@
     const API_HOST = "sportapi7.p.rapidapi.com";
     const TEAM_ID = "1963";
 
-    // Fonte de imagens mais estável (SofaScore)
-  const imgBase = `https://api.sofascore.com/api/v1/team/`;
+    // Fonte de imagens atualizada para o domínio público .com
+    const imgBase = `https://api.sofascore.com/api/v1/team/`;
 
     async function buscarDados() {
         const resDiv = document.getElementById("resultados");
@@ -94,7 +94,6 @@
         
         const infoPlacar = isFinished ? `${e.homeScore.current} - ${e.awayScore.current}` : horaF;
 
-        // IDs dos times para as imagens
         const homeId = e.homeTeam.id;
         const awayId = e.awayTeam.id;
 
@@ -102,14 +101,14 @@
             <div class="match-card">
                 <div class="team-col home">
                     ${e.homeTeam.shortName || e.homeTeam.name}
-                    <img src="${imgBase}${homeId}/image" alt="🛡️">
+                    <img src="${imgBase}${homeId}/image" alt=" ">
                 </div>
                 <div class="score-box">
                     <span class="score">${infoPlacar}</span>
                     <span class="date">${dataF}</span>
                 </div>
                 <div class="team-col away">
-                    <img src="${imgBase}${awayId}/image" alt="🛡️">
+                    <img src="${imgBase}${awayId}/image" alt=" ">
                     ${e.awayTeam.shortName || e.awayTeam.name}
                 </div>
             </div>`;
