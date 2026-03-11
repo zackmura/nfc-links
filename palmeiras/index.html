@@ -1,3 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palmeiras - Mini Mundo</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .widget { width: 100%; max-width: 400px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); overflow: hidden; }
+        .header { background: #006400; color: white; padding: 20px; text-align: center; font-weight: bold; border-bottom: 4px solid #ffcc00; }
+        .section-title { font-size: 0.75rem; color: #666; padding: 10px 15px 5px; background: #f8f9fa; text-transform: uppercase; }
+        .match-card { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
+        .team { flex: 1; font-size: 0.9rem; font-weight: 500; color: #333; }
+        .score-box { width: 70px; text-align: center; background: #f0f0f0; border-radius: 8px; padding: 5px; }
+        .score { font-weight: bold; font-size: 1.1rem; color: #000; display: block; }
+        .date { font-size: 0.65rem; color: #888; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="widget">
+    <div class="header">⚽ PALMEIRAS</div>
+    
+    <div class="section-title">Últimos Resultados</div>
+    <div id="resultados"></div>
+
+    <div class="section-title">Próximas Partidas</div>
+    <div id="agenda"></div>
+</div>
+
 <script>
     const API_KEY = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
     const API_HOST = "sportapi7.p.rapidapi.com";
@@ -66,3 +96,6 @@
 
     buscarDados();
 </script>
+
+</body>
+</html>
