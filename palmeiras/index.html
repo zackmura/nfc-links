@@ -43,17 +43,20 @@
 </div>
 
 <script>
-    // Variáveis corrigidas
     const API_KEY = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
     const API_HOST = "sportapi7.p.rapidapi.com";
     const TEAM_ID = "1963";
-    const imgBase = `https://${API_HOST}/api/v1/team/`;
+
+    // Fonte de imagens mais estável (SofaScore)
+    const imgBase = `https://api.sofascore.app/api/v1/team/`;
 
     async function buscarDados() {
-        document.getElementById('escudo-topo').src = `${imgBase}${TEAM_ID}/image`;
-
         const resDiv = document.getElementById("resultados");
         const ageDiv = document.getElementById("agenda");
+        
+        // Define o escudo do topo
+        document.getElementById('escudo-topo').src = `${imgBase}${TEAM_ID}/image`;
+
         const headers = { "x-rapidapi-key": API_KEY, "x-rapidapi-host": API_HOST };
 
         try {
@@ -69,7 +72,6 @@
             ageDiv.innerHTML = "";
 
             if (dataPast.events) {
-                // Ordenar por data (mais recentes primeiro)
                 const ordenados = dataPast.events.sort((a, b) => b.startTimestamp - a.startTimestamp);
                 ordenados.slice(0, 5).forEach(e => resDiv.innerHTML += criarCard(e, true));
             }
@@ -92,18 +94,22 @@
         
         const infoPlacar = isFinished ? `${e.homeScore.current} - ${e.awayScore.current}` : horaF;
 
+        // IDs dos times para as imagens
+        const homeId = e.homeTeam.id;
+        const awayId = e.awayTeam.id;
+
         return `
             <div class="match-card">
                 <div class="team-col home">
                     ${e.homeTeam.shortName || e.homeTeam.name}
-                    <img src="${imgBase}${e.homeTeam.id}/image" onerror="this.src='https://via.placeholder.com/30?text=⚽'">
+                    <img src="${imgBase}${homeId}/image" alt="🛡️">
                 </div>
                 <div class="score-box">
                     <span class="score">${infoPlacar}</span>
                     <span class="date">${dataF}</span>
                 </div>
                 <div class="team-col away">
-                    <img src="${imgBase}${e.awayTeam.id}/image" onerror="this.src='https://via.placeholder.com/30?text=⚽'">
+                    <img src="${imgBase}${awayId}/image" alt="🛡️">
                     ${e.awayTeam.shortName || e.awayTeam.name}
                 </div>
             </div>`;
