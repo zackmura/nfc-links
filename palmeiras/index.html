@@ -3,77 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palmeiras Interativo - Mini Mundo</title>
+    <title>Palmeiras - Interativo</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #ececec; margin: 0; padding: 15px; display: flex; justify-content: center; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; display: flex; justify-content: center; }
         .widget { width: 100%; max-width: 400px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: #006400; color: white; padding: 15px; text-align: center; font-weight: bold; }
-        .section-title { font-size: 0.8rem; color: #666; padding: 10px 15px 5px; background: #f9f9f9; text-transform: uppercase; }
-        .match-card { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
-        .team { flex: 1; font-size: 0.9rem; font-weight: 500; }
-        .score { width: 60px; text-align: center; font-weight: bold; font-size: 1.1rem; color: #333; }
-        .vs { color: #999; font-weight: normal; font-size: 0.8rem; }
-        .date { font-size: 0.7rem; color: #888; text-align: center; padding-top: 5px; }
-        .badge { font-size: 0.6rem; padding: 2px 5px; border-radius: 4px; background: #eee; margin-bottom: 4px; display: inline-block; }
+        .header { background: #006400; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; }
+        .section-title { font-size: 0.75rem; color: #666; padding: 12px 15px 5px; background: #f8f9fa; text-transform: uppercase; letter-spacing: 1px; }
+        .match-card { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0; }
+        .team { flex: 1; font-size: 0.85rem; font-weight: 500; color: #333; }
+        .score-box { width: 80px; text-align: center; }
+        .score-text { font-weight: bold; font-size: 1.2rem; color: #000; display: block; }
+        .match-date { font-size: 0.65rem; color: #888; margin-top: 4px; display: block; }
+        .status-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 10px; background: #e8f5e9; color: #2e7d32; margin-bottom: 5px; display: inline-block; }
     </style>
 </head>
 <body>
 
 <div class="widget">
-    <div class="header">⚽ SOCIEDADE ESPORTIVA PALMEIRAS</div>
+    <div class="header">⚽ PALMEIRAS</div>
     
     <div class="section-title">Últimos Resultados</div>
-    <div id="resultados"></div>
+    <div id="resultados">Carregando...</div>
 
     <div class="section-title">Próximas Partidas</div>
-    <div id="agenda"></div>
+    <div id="agenda">Carregando...</div>
 </div>
 
 <script>
     const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
-    const teamId = 121; // ID do Palmeiras
+    const apiHost = "free-api-live-football-data.p.rapidapi.com";
+    const teamId = "121";
 
-    // Buscar últimos 2 resultados
-    fetch(`https://v3.football.api-sports.io/fixtures?team=${teamId}&last=2`, {
-        headers: { "x-rapidapi-key": apiKey, "x-rapidapi-host": "v3.football.api-sports.io" }
-    })
-    .then(r => r.json())
-    .then(data => renderMatches(data.response, 'resultados'));
+    // Função para buscar e renderizar
+    async function carregarDados() {
+        try {
+            // Buscando todos os jogos do time usando o endpoint correto da sua API
+            const response = await fetch(`https://${apiHost}/football-get-list-all-fixtures-by-team?team_id=${teamId}`, {
+                headers: { "x-rapidapi-key": apiKey, "x-rapidapi-host": apiHost }
+            });
+            const data = await response.json();
+            const jogos = data.response?.list || [];
 
-    // Buscar próximas 2 partidas
-    fetch(`https://v3.football.api-sports.io/fixtures?team=${teamId}&next=2`, {
-        headers: { "x-rapidapi-key": apiKey, "x-rapidapi-host": "v3.football.api-sports.io" }
-    })
-    .then(r => r.json())
-    .then(data => renderMatches(data.response, 'agenda'));
+            if (jogos.length === 0) {
+                document.getElementById("resultados").innerHTML = "<p style='padding:15px;'>Sem dados.</p>";
+                document.getElementById("agenda").innerHTML = "<p style='padding:15px;'>Sem dados.</p>";
+                return;
+            }
 
-    function renderMatches(matches, elementId) {
-        const container = document.getElementById(elementId);
-        if (!matches || matches.length === 0) {
-            container.innerHTML = "<p style='padding:15px; font-size:0.8rem;'>Sem dados disponíveis.</p>";
+            // Separar Finalizados de Futuros
+            const passados = jogos.filter(j => j.status?.type === "finished").slice(0, 2);
+            const futuros = jogos.filter(j => j.status?.type !== "finished").slice(0, 2);
+
+            renderizar(passados, "resultados");
+            renderizar(futuros, "agenda");
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById("resultados").innerHTML = "<p style='padding:15px;'>Erro na conexão.</p>";
+        }
+    }
+
+    function renderizar(lista, divId) {
+        const container = document.getElementById(divId);
+        container.innerHTML = "";
+        
+        if (lista.length === 0) {
+            container.innerHTML = "<p style='padding:15px; font-size:0.8rem;'>Nenhuma partida encontrada.</p>";
             return;
         }
 
-        matches.forEach(m => {
-            const date = new Date(m.fixture.date).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
-            const home = m.teams.home.name;
-            const away = m.teams.away.name;
-            const scoreHome = m.goals.home ?? "";
-            const scoreAway = m.goals.away ?? "";
-            const isFinished = m.fixture.status.short === "FT";
+        lista.forEach(j => {
+            const dataJogo = j.status?.utcTime ? new Date(j.status.utcTime).toLocaleDateString('pt-BR') : "A definir";
+            const home = j.home_team?.name || "Time Casa";
+            const away = j.away_team?.name || "Time Fora";
+            const placar = j.status?.type === "finished" 
+                ? `${j.home_score?.current} - ${j.away_score?.current}`
+                : "vs";
 
             container.innerHTML += `
                 <div class="match-card">
                     <div class="team" style="text-align:right">${home}</div>
-                    <div class="score">
-                        ${isFinished ? `${scoreHome} - ${scoreAway}` : `<span class="vs">VS</span>`}
-                        <div class="date">${date}</div>
+                    <div class="score-box">
+                        <span class="score-text">${placar}</span>
+                        <span class="match-date">${dataJogo}</span>
                     </div>
                     <div class="team" style="text-align:left">${away}</div>
                 </div>
             `;
         });
     }
+
+    carregarDados();
 </script>
 
 </body>
