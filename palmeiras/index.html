@@ -25,6 +25,8 @@
         .score-box { width: 85px; text-align: center; background: #f0f0f0; border-radius: 8px; padding: 6px 0; margin: 0 5px; }
         .score { font-weight: bold; font-size: 1.1rem; color: #000; display: block; line-height: 1; }
         .date { font-size: 0.65rem; color: #888; margin-top: 4px; display: block; }
+        
+        .error-msg { color: #cc0000; padding: 15px; font-size: 0.85rem; text-align: center; }
     </style>
 </head>
 <body>
@@ -36,10 +38,10 @@
     </div>
     
     <div class="section-title">Últimos Resultados</div>
-    <div id="resultados"></div>
+    <div id="resultados"><p style='padding:15px; text-align:center;'>Carregando...</p></div>
 
     <div class="section-title">Próximas Partidas</div>
-    <div id="agenda"></div>
+    <div id="agenda"><p style='padding:15px; text-align:center;'>Carregando...</p></div>
 </div>
 
 <script>
@@ -60,22 +62,38 @@
         const headers = { "x-rapidapi-key": API_KEY, "x-rapidapi-host": API_HOST };
 
         try {
-            const [lastRes, nextRes] = await Promise.all([
-                fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/last/0`, { headers }),
-                fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/next/0`, { headers })
-            ]);
+            // Requisição 1: Resultados passados
+            const resPast = await fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/last/0`, { headers });
+            
+            if (resPast.status === 429) {
+                throw new Error("Muitos acessos simultâneos (Erro 429). Por favor, aguarde alguns segundos e atualize a página.");
+            }
+            if (!resPast.ok) {
+                 throw new Error(`Erro na API: ${resPast.status}`);
+            }
+            const dataPast = await resPast.json();
 
-            const dataPast = await lastRes.json();
-            const dataNext = await nextRes.json();
+            // Opcional: Um pequeno delay entre as requisições para evitar o bloqueio por velocidade
+            await new Promise(resolve => setTimeout(resolve, 500)); 
+
+            // Requisição 2: Próximos jogos
+            const resNext = await fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/next/0`, { headers });
+            
+            if (resNext.status === 429) {
+                throw new Error("Muitos acessos simultâneos (Erro 429). Por favor, aguarde alguns segundos e atualize a página.");
+            }
+            const dataNext = await resNext.json();
 
             resDiv.innerHTML = "";
             ageDiv.innerHTML = "";
 
+            // Renderizar passados
             if (dataPast.events) {
                 const ordenados = dataPast.events.sort((a, b) => b.startTimestamp - a.startTimestamp);
                 ordenados.slice(0, 5).forEach(e => resDiv.innerHTML += criarCard(e, true));
             }
 
+            // Renderizar futuros
             if (dataNext.events && dataNext.events.length > 0) {
                 dataNext.events.slice(0, 5).forEach(e => ageDiv.innerHTML += criarCard(e, false));
             } else {
@@ -83,7 +101,8 @@
             }
         } catch (err) {
             console.error(err);
-            resDiv.innerHTML = "Erro ao carregar dados.";
+            resDiv.innerHTML = `<div class='error-msg'>${err.message}</div>`;
+            ageDiv.innerHTML = "";
         }
     }
 
