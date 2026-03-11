@@ -5,85 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Palmeiras - Resultados</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
         .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         h1 { color: #006400; margin-bottom: 5px; }
         .jogo { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .jogo:last-child { border-bottom: none; }
-        .placar { font-weight: bold; font-size: 1.2em; display: flex; justify-content: space-around; align-items: center; }
-        .status { font-size: 0.8em; color: #666; text-transform: uppercase; margin-bottom: 5px; }
-        .erro { color: #cc0000; font-weight: bold; }
+        .placar { font-weight: bold; font-size: 1.1em; display: flex; justify-content: space-between; align-items: center; }
+        .status { font-size: 0.75em; color: #666; margin-bottom: 5px; }
+        .destaque { color: #006400; font-weight: bold; border: 1px solid #006400; border-radius: 5px; padding: 2px 5px; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>⚽ Palmeiras</h1>
-        <p>Últimos Jogos</p>
+        <p>Jogos Encontrados Hoje</p>
         <hr>
-        <div id="jogos">Carregando informações...</div>
+        <div id="jogos">Buscando partidas...</div>
     </div>
-<script>
-    const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
-    
-    // O endpoint correto dessa API para buscar jogos é 'football-get-all-fixtures-by-date' ou por time
-    // Vamos usar o de busca de fixtures por time que é o padrão dessa API:
-    const url = "https://free-api-live-football-data.p.rapidapi.com/football-get-list-all-fixtures-by-team?team_id=121";
 
-    fetch(url, {
-        method: "GET",
-        headers: {
-            "x-rapidapi-key": apiKey,
-            "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
-        }
-    })
-    .then(response => {
-        // Se der 404 aqui, significa que a API mudou o nome do endpoint
-        if (!response.ok) throw new Error("Erro " + response.status + ": Endpoint não encontrado.");
-        return response.json();
-    })
-    .then(data => {
-        const container = document.getElementById("jogos");
+    <script>
+        const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
         
-        // Nessa API específica, os dados geralmente vêm em data.response.list
-        const lista = data.response?.list || [];
+        // Pegando a data de hoje no formato AAAAMMDD que a API costuma pedir
+        const hoje = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+        
+        // Usando o endpoint que aparece na sua imagem: Get Matches/Events by Date
+        const url = `https://free-api-live-football-data.p.rapidapi.com/football-get-matches-by-date?date=${hoje}`;
 
-        if (lista.length === 0) {
-            container.innerHTML = "Nenhum jogo encontrado para este ID.";
-            return;
-        }
-
-        let html = "";
-        // Pegamos os 5 jogos mais recentes
-        lista.slice(0, 5).forEach(j => {
-            const home = j.home_team?.name || "Casa";
-            const away = j.away_team?.name || "Fora";
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "x-rapidapi-key": apiKey,
+                "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Erro na API: " + response.status);
+            return response.json();
+        })
+        .then(data => {
+            const container = document.getElementById("jogos");
+            const partidas = data.response?.matches || [];
             
-            // Ajuste dos nomes dos campos conforme a documentação da Live Football Data
-            const scoreHome = j.home_score?.display !== undefined ? j.home_score.display : "-";
-            const scoreAway = j.away_score?.display !== undefined ? j.away_score.display : "-";
-            
-            const statusStr = j.status?.type === "finished" ? "Finalizado" : "Agendado";
+            // Filtramos apenas as partidas do Palmeiras
+            const jogosPalmeiras = partidas.filter(j => 
+                j.home_team.name.includes("Palmeiras") || j.away_team.name.includes("Palmeiras")
+            );
 
-            html += `
-                <div class="jogo">
-                    <div class="status">${statusStr}</div>
-                    <div class="placar">
-                        <span>${home}</span>
-                        <span>${scoreHome} x ${scoreAway}</span>
-                        <span>${away}</span>
+            if (jogosPalmeiras.length === 0) {
+                container.innerHTML = "Não há jogos do Palmeiras para a data de hoje.";
+                return;
+            }
+
+            let html = "";
+            jogosPalmeiras.forEach(j => {
+                const home = j.home_team.name;
+                const away = j.away_team.name;
+                const scoreHome = j.home_score?.current ?? "-";
+                const scoreAway = j.away_score?.current ?? "-";
+
+                html += `
+                    <div class="jogo">
+                        <div class="status">${j.status?.type || 'Partida'}</div>
+                        <div class="placar">
+                            <span class="${home.includes('Palmeiras') ? 'destaque' : ''}">${home}</span>
+                            <span>${scoreHome} x ${scoreAway}</span>
+                            <span class="${away.includes('Palmeiras') ? 'destaque' : ''}">${away}</span>
+                        </div>
                     </div>
-                </div>
-            `;
-        });
+                `;
+            });
 
-        container.innerHTML = html;
-    })
-    .catch(err => {
-        console.error("Erro detalhado:", err);
-        document.getElementById("jogos").innerHTML = `<p class="erro">Erro ao carregar: <br> Verifique o Endpoint no RapidAPI</p>`;
-    });
-</script>
-  
+            container.innerHTML = html;
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("jogos").innerHTML = "Erro ao carregar. Verifique a aba 'Livescores' no RapidAPI.";
+        });
+    </script>
 </body>
 </html>
