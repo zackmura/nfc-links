@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Palmeiras</title>
 </head>
-
 <body>
 
 <h1>⚽ Palmeiras</h1>
@@ -16,47 +15,36 @@
 
 const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
 
-// Removido o corsproxy e ajustado para a URL direta
-fetch("https://api-football-v1.p.rapidapi.com/v3/fixtures?team=121&last=5", {
-    method: "GET",
-    headers: {
-        "X-RapidAPI-Key": apiKey,
-        "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
-    }
+// URL atualizada para a nova API que você assinou
+fetch("https://free-api-live-football-data.p.rapidapi.com/football-get-all-list-league", {
+	method: "GET",
+	headers: {
+		"x-rapidapi-key": apiKey,
+		"x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
+	}
 })
 .then(response => {
-    if (!response.ok) {
-        throw new Error("Erro na requisição: " + response.status);
-    }
+    if (!response.ok) throw new Error("Erro: " + response.status);
     return response.json();
 })
 .then(data => {
-    // Verificação de segurança para evitar o erro 'forEach' of undefined
-    if (!data.response || data.response.length === 0) {
-        document.getElementById("jogos").innerHTML = "Nenhum jogo encontrado ou erro na API.";
-        return;
+    console.log(data); // Para você ver a estrutura no console
+    
+    let html = "";
+    // Note que a estrutura de dados (data.response) pode mudar entre APIs
+    // Esta API específica retorna as ligas em 'data.response.leagues' ou similar
+    if(data.response && data.response.list) {
+        data.response.list.slice(0, 5).forEach(item => {
+            html += `<p>🏆 ${item.name}</p>`;
+        });
     }
 
-    let html = "";
-
-    data.response.forEach(jogo => {
-        let casa = jogo.teams.home.name;
-        let fora = jogo.teams.away.name;
-        let golsCasa = jogo.goals.home;
-        let golsFora = jogo.goals.away;
-
-        // IMPORTANTE: Usar crases (`) em vez de aspas (')
-        html += `<p>${casa} ${golsCasa} x ${golsFora} ${fora}</p>`;
-    });
-
-    document.getElementById("jogos").innerHTML = html;
+    document.getElementById("jogos").innerHTML = html || "Dados carregados com sucesso!";
 })
 .catch(err => {
     console.error(err);
-    document.getElementById("jogos").innerHTML = "Erro ao carregar jogos.";
+    document.getElementById("jogos").innerHTML = "Erro ao acessar a nova API.";
 });
-
 </script>
-
 </body>
 </html>
