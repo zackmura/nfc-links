@@ -24,64 +24,63 @@
     </div>
 
     <script>
-        const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
+    const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
+    
+    // Endpoint de Classificação (Standings) da Série A - ID 325 é o Brasileirão
+    const url = "https://free-api-live-football-data.p.rapidapi.com/football-get-standing-all?league_id=325";
+
+    fetch(url, {
+        method: "GET",
+        headers: {
+            "x-rapidapi-key": apiKey,
+            "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Erro na API: " + response.status);
+        return response.json();
+    })
+    .then(data => {
+        const container = document.getElementById("jogos");
         
-        // Pegando a data de hoje no formato AAAAMMDD que a API costuma pedir
-        const hoje = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+        // Nessa API, a classificação fica em data.response.standing
+        const tabela = data.response?.standing || [];
         
-        // Usando o endpoint que aparece na sua imagem: Get Matches/Events by Date
-        const url = `https://free-api-live-football-data.p.rapidapi.com/football-get-matches-by-date?date=${hoje}`;
+        // Buscamos a linha do Palmeiras na tabela
+        const palmeiras = tabela.find(time => 
+            time.team?.name?.includes("Palmeiras")
+        );
 
-        fetch(url, {
-            method: "GET",
-            headers: {
-                "x-rapidapi-key": apiKey,
-                "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
-            }
-        })
-        .then(response => {
-            if (!response.ok) throw new Error("Erro na API: " + response.status);
-            return response.json();
-        })
-        .then(data => {
-            const container = document.getElementById("jogos");
-            const partidas = data.response?.matches || [];
-            
-            // Filtramos apenas as partidas do Palmeiras
-            const jogosPalmeiras = partidas.filter(j => 
-                j.home_team.name.includes("Palmeiras") || j.away_team.name.includes("Palmeiras")
-            );
+        if (!palmeiras) {
+            container.innerHTML = "Palmeiras não encontrado na tabela ou campeonato encerrado.";
+            return;
+        }
 
-            if (jogosPalmeiras.length === 0) {
-                container.innerHTML = "Não há jogos do Palmeiras para a data de hoje.";
-                return;
-            }
+        // Montando um visual de "Card de Classificação"
+        const pos = palmeiras.position;
+        const pts = palmeiras.points;
+        const v = palmeiras.won;
+        const e = palmeiras.draw;
+        const d = palmeiras.lost;
 
-            let html = "";
-            jogosPalmeiras.forEach(j => {
-                const home = j.home_team.name;
-                const away = j.away_team.name;
-                const scoreHome = j.home_score?.current ?? "-";
-                const scoreAway = j.away_score?.current ?? "-";
-
-                html += `
-                    <div class="jogo">
-                        <div class="status">${j.status?.type || 'Partida'}</div>
-                        <div class="placar">
-                            <span class="${home.includes('Palmeiras') ? 'destaque' : ''}">${home}</span>
-                            <span>${scoreHome} x ${scoreAway}</span>
-                            <span class="${away.includes('Palmeiras') ? 'destaque' : ''}">${away}</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        })
-        .catch(err => {
-            console.error(err);
-            document.getElementById("jogos").innerHTML = "Erro ao carregar. Verifique a aba 'Livescores' no RapidAPI.";
-        });
-    </script>
+        container.innerHTML = `
+            <div style="padding: 20px;">
+                <h3 style="margin: 0; color: #006400;">Brasileirão Série A</h3>
+                <div style="font-size: 3em; font-weight: bold; margin: 10px 0;">${pos}º</div>
+                <p style="font-size: 1.2em;">${pts} Pontos</p>
+                <hr>
+                <div style="display: flex; justify-content: space-around; font-size: 0.9em;">
+                    <span>Vitórias: <b>${v}</b></span>
+                    <span>Empates: <b>${e}</b></span>
+                    <span>Derrotas: <b>${d}</b></span>
+                </div>
+            </div>
+        `;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("jogos").innerHTML = "Erro ao carregar classificação.";
+    });
+</script>
 </body>
 </html>
