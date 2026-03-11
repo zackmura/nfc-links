@@ -31,10 +31,15 @@
 <script>
     const API_KEY = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
     const API_HOST = "sportapi7.p.rapidapi.com";
-    const TEAM_ID = "4249"; // ID comum para o Palmeiras nessa API
+    
+    // O ID correto do Palmeiras (Futebol) nesta API geralmente é 1963
+    const TEAM_ID = "1963"; 
 
     async function buscarDados() {
-        // Usando o endpoint de eventos do time para economizar requisições
+        const resDiv = document.getElementById("resultados");
+        const ageDiv = document.getElementById("agenda");
+        
+        // Endpoint para os últimos eventos (jogos) do time
         const url = `https://${API_HOST}/api/v1/team/${TEAM_ID}/events/last/0`; 
 
         try {
@@ -45,23 +50,33 @@
                 }
             });
             const data = await response.json();
-            const eventos = data.events || [];
+            
+            // Verificação de segurança: se não houver eventos, avisar
+            if (!data.events || data.events.length === 0) {
+                resDiv.innerHTML = "<p style='padding:15px'>Nenhum jogo de futebol encontrado para este ID.</p>";
+                return;
+            }
 
-            const resDiv = document.getElementById("resultados");
-            const ageDiv = document.getElementById("agenda");
+            resDiv.innerHTML = "";
+            ageDiv.innerHTML = "";
 
-            eventos.slice(0, 5).forEach(e => {
+            data.events.slice(0, 5).forEach(e => {
                 const isFinished = e.status.type === "finished";
-                const dataFormatada = new Date(e.startTimestamp * 1000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+                const dataObj = new Date(e.startTimestamp * 1000);
+                const dataFormatada = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
                 
+                // Pegando os nomes dos times de futebol
+                const homeName = e.homeTeam.name;
+                const awayName = e.awayTeam.name;
+
                 const html = `
                     <div class="match-card">
-                        <div class="team" style="text-align:right">${e.homeTeam.shortName}</div>
+                        <div class="team" style="text-align:right">${homeName}</div>
                         <div class="score-box">
                             <span class="score">${isFinished ? e.homeScore.current + ' - ' + e.awayScore.current : 'vs'}</span>
                             <span class="date">${dataFormatada}</span>
                         </div>
-                        <div class="team" style="text-align:left">${e.awayTeam.shortName}</div>
+                        <div class="team" style="text-align:left">${awayName}</div>
                     </div>`;
 
                 if (isFinished) resDiv.innerHTML += html;
@@ -69,11 +84,11 @@
             });
         } catch (err) {
             console.error(err);
+            resDiv.innerHTML = "<p style='padding:15px'>Erro ao carregar dados da SportAPI.</p>";
         }
     }
 
     buscarDados();
 </script>
-
 </body>
 </html>
