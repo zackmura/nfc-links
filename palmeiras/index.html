@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Palmeiras</title>
+</head>
+
+<body>
+
+<h1>⚽ Palmeiras</h1>
+
+<h2>Últimos Jogos</h2>
+<div id="jogos"></div>
+
+<script>
+
+const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
+
+fetch("https://api-football-v1.p.rapidapi.com/v3/fixtures?team=131&last=5", {
+	method: "GET",
+	headers: {
+		"X-RapidAPI-Key": apiKey,
+		"X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+	}
+})
+.then(response => response.json())
+.then(data => {
+
+	let html = "";
+
+	data.response.forEach(jogo => {
+
+		let casa = jogo.teams.home.name;
+		let fora = jogo.teams.away.name;
+
+		let golsCasa = jogo.goals.home;
+		let golsFora = jogo.goals.away;
+
+		html += `<p>${casa} ${golsCasa} x ${golsFora} ${fora}</p>`;
+
+	});
+
+	document.getElementById("jogos").innerHTML = html;
+
+});
+
+</script>
+
+</body>
+</html>
