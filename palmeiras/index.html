@@ -23,62 +23,67 @@
         <hr>
         <div id="jogos">Carregando informações...</div>
     </div>
+<script>
+    const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
+    
+    // O endpoint correto dessa API para buscar jogos é 'football-get-all-fixtures-by-date' ou por time
+    // Vamos usar o de busca de fixtures por time que é o padrão dessa API:
+    const url = "https://free-api-live-football-data.p.rapidapi.com/football-get-list-all-fixtures-by-team?team_id=121";
 
-    <script>
-        const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
-        // Endpoint correto para buscar jogos por time
-        const url = "https://free-api-live-football-data.p.rapidapi.com/football-get-list-all-fixtures-by-team?team_id=121";
+    fetch(url, {
+        method: "GET",
+        headers: {
+            "x-rapidapi-key": apiKey,
+            "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
+        }
+    })
+    .then(response => {
+        // Se der 404 aqui, significa que a API mudou o nome do endpoint
+        if (!response.ok) throw new Error("Erro " + response.status + ": Endpoint não encontrado.");
+        return response.json();
+    })
+    .then(data => {
+        const container = document.getElementById("jogos");
+        
+        // Nessa API específica, os dados geralmente vêm em data.response.list
+        const lista = data.response?.list || [];
 
-        fetch(url, {
-            method: "GET",
-            headers: {
-                "x-rapidapi-key": apiKey,
-                "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
-            }
-        })
-        .then(response => {
-            if (response.status === 404) throw new Error("Link da API não encontrado (404).");
-            if (response.status === 403) throw new Error("Acesso negado (403). Verifique sua assinatura.");
-            return response.json();
-        })
-        .then(data => {
-            const container = document.getElementById("jogos");
+        if (lista.length === 0) {
+            container.innerHTML = "Nenhum jogo encontrado para este ID.";
+            return;
+        }
+
+        let html = "";
+        // Pegamos os 5 jogos mais recentes
+        lista.slice(0, 5).forEach(j => {
+            const home = j.home_team?.name || "Casa";
+            const away = j.away_team?.name || "Fora";
             
-            // Verificando onde os dados estão escondidos na resposta da API
-            const lista = data.response?.list || data.data?.list || [];
+            // Ajuste dos nomes dos campos conforme a documentação da Live Football Data
+            const scoreHome = j.home_score?.display !== undefined ? j.home_score.display : "-";
+            const scoreAway = j.away_score?.display !== undefined ? j.away_score.display : "-";
+            
+            const statusStr = j.status?.type === "finished" ? "Finalizado" : "Agendado";
 
-            if (lista.length === 0) {
-                container.innerHTML = "Nenhum jogo encontrado no momento.";
-                return;
-            }
-
-            let html = "";
-            // Pegamos os 5 jogos mais recentes
-            lista.slice(0, 5).forEach(j => {
-                const home = j.home_team?.name || "Casa";
-                const away = j.away_team?.name || "Fora";
-                const scoreHome = j.home_score?.current ?? "-";
-                const scoreAway = j.away_score?.current ?? "-";
-                const statusStr = j.status?.type === "finished" ? "Finalizado" : "Agendado";
-
-                html += `
-                    <div class="jogo">
-                        <div class="status">${statusStr}</div>
-                        <div class="placar">
-                            <span>${home}</span>
-                            <span>${scoreHome} x ${scoreAway}</span>
-                            <span>${away}</span>
-                        </div>
+            html += `
+                <div class="jogo">
+                    <div class="status">${statusStr}</div>
+                    <div class="placar">
+                        <span>${home}</span>
+                        <span>${scoreHome} x ${scoreAway}</span>
+                        <span>${away}</span>
                     </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        })
-        .catch(err => {
-            console.error("Erro detalhado:", err);
-            document.getElementById("jogos").innerHTML = `<p class="erro">Erro ao carregar: <br> ${err.message}</p>`;
+                </div>
+            `;
         });
-    </script>
+
+        container.innerHTML = html;
+    })
+    .catch(err => {
+        console.error("Erro detalhado:", err);
+        document.getElementById("jogos").innerHTML = `<p class="erro">Erro ao carregar: <br> Verifique o Endpoint no RapidAPI</p>`;
+    });
+</script>
+  
 </body>
 </html>
