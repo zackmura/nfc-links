@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palmeiras - Interativo</title>
+    <title>Palmeiras - Resultados</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; }
-        .jogo { border-bottom: 1px solid #ccc; padding: 10px; margin: 5px; }
-        .placar { font-weight: bold; font-size: 1.2em; color: #006400; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #006400; margin-bottom: 5px; }
+        .jogo { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .jogo:last-child { border-bottom: none; }
+        .placar { font-weight: bold; font-size: 1.2em; display: flex; justify-content: space-around; align-items: center; }
+        .status { font-size: 0.8em; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        .erro { color: #cc0000; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>⚽ Palmeiras</h1>
-    <h2>Últimos Resultados</h2>
-    <div id="jogos">Carregando informações...</div>
+    <div class="container">
+        <h1>⚽ Palmeiras</h1>
+        <p>Últimos Jogos</p>
+        <hr>
+        <div id="jogos">Carregando informações...</div>
+    </div>
 
     <script>
         const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
-        // O ID 121 é o padrão do Palmeiras na maioria das APIs de futebol
+        // Endpoint correto para buscar jogos por time
         const url = "https://free-api-live-football-data.p.rapidapi.com/football-get-list-all-fixtures-by-team?team_id=121";
 
         fetch(url, {
@@ -29,33 +37,38 @@
             }
         })
         .then(response => {
-            if (!response.ok) throw new Error("Erro na requisição: " + response.status);
+            if (response.status === 404) throw new Error("Link da API não encontrado (404).");
+            if (response.status === 403) throw new Error("Acesso negado (403). Verifique sua assinatura.");
             return response.json();
         })
         .then(data => {
             const container = document.getElementById("jogos");
-            let html = "";
+            
+            // Verificando onde os dados estão escondidos na resposta da API
+            const lista = data.response?.list || data.data?.list || [];
 
-            // A estrutura dessa API geralmente entrega os dados em data.response.list
-            const listaJogos = data.response?.list || [];
-
-            if (listaJogos.length === 0) {
-                container.innerHTML = "Nenhum jogo recente encontrado.";
+            if (lista.length === 0) {
+                container.innerHTML = "Nenhum jogo encontrado no momento.";
                 return;
             }
 
-            // Pegamos apenas os últimos 5 jogos
-            listaJogos.slice(0, 5).forEach(jogo => {
-                const casa = jogo.home_team.name;
-                const fora = jogo.away_team.name;
-                const golsCasa = jogo.home_score.current !== undefined ? jogo.home_score.current : "?";
-                const golsFora = jogo.away_score.current !== undefined ? jogo.away_score.current : "?";
-                const status = jogo.status.type === "finished" ? "Encerrado" : "Em breve";
+            let html = "";
+            // Pegamos os 5 jogos mais recentes
+            lista.slice(0, 5).forEach(j => {
+                const home = j.home_team?.name || "Casa";
+                const away = j.away_team?.name || "Fora";
+                const scoreHome = j.home_score?.current ?? "-";
+                const scoreAway = j.away_score?.current ?? "-";
+                const statusStr = j.status?.type === "finished" ? "Finalizado" : "Agendado";
 
                 html += `
                     <div class="jogo">
-                        <p><small>${status}</small></p>
-                        <p class="placar">${casa} ${golsCasa} x ${golsFora} ${fora}</p>
+                        <div class="status">${statusStr}</div>
+                        <div class="placar">
+                            <span>${home}</span>
+                            <span>${scoreHome} x ${scoreAway}</span>
+                            <span>${away}</span>
+                        </div>
                     </div>
                 `;
             });
@@ -63,8 +76,8 @@
             container.innerHTML = html;
         })
         .catch(err => {
-            console.error(err);
-            document.getElementById("jogos").innerHTML = "Erro ao carregar dados. Verifique a assinatura da API.";
+            console.error("Erro detalhado:", err);
+            document.getElementById("jogos").innerHTML = `<p class="erro">Erro ao carregar: <br> ${err.message}</p>`;
         });
     </script>
 </body>
