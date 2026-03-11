@@ -3,84 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palmeiras - Resultados</title>
+    <title>Palmeiras - Interativo</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
-        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1 { color: #006400; margin-bottom: 5px; }
-        .jogo { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .placar { font-weight: bold; font-size: 1.1em; display: flex; justify-content: space-between; align-items: center; }
-        .status { font-size: 0.75em; color: #666; margin-bottom: 5px; }
-        .destaque { color: #006400; font-weight: bold; border: 1px solid #006400; border-radius: 5px; padding: 2px 5px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; padding: 20px; background-color: #f0f2f5; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .escudo { width: 80px; margin-bottom: 10px; }
+        h1 { color: #006400; font-size: 1.5rem; margin: 5px 0; }
+        .lista-jogos { margin-top: 20px; text-align: left; }
+        .card-jogo { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+        .data { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+        .placar-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .time-nome { flex: 1; font-size: 0.9rem; font-weight: 500; }
+        .gols { background: #006400; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold; min-width: 20px; text-align: center; }
+        .vs { margin: 0 10px; color: #bbb; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>⚽ Palmeiras</h1>
-        <p>Jogos Encontrados Hoje</p>
-        <hr>
-        <div id="jogos">Buscando partidas...</div>
+        <p style="font-size: 0.8rem; color: #666;">Resultados Recentes</p>
+        <hr style="border: 0; border-top: 1px solid #eee;">
+        
+        <div id="conteudo" class="lista-jogos">Carregando partidas...</div>
     </div>
 
     <script>
-    const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
-    
-    // Endpoint de Classificação (Standings) da Série A - ID 325 é o Brasileirão
-    const url = "https://free-api-live-football-data.p.rapidapi.com/football-get-standing-all?league_id=325";
+        const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
+        // Vamos usar o endpoint de listagem de jogos por time. O ID 121 é o Palmeiras.
+        const url = "https://free-api-live-football-data.p.rapidapi.com/football-get-list-all-fixtures-by-team?team_id=121";
 
-    fetch(url, {
-        method: "GET",
-        headers: {
-            "x-rapidapi-key": apiKey,
-            "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
-        }
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Erro na API: " + response.status);
-        return response.json();
-    })
-    .then(data => {
-        const container = document.getElementById("jogos");
-        
-        // Nessa API, a classificação fica em data.response.standing
-        const tabela = data.response?.standing || [];
-        
-        // Buscamos a linha do Palmeiras na tabela
-        const palmeiras = tabela.find(time => 
-            time.team?.name?.includes("Palmeiras")
-        );
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "x-rapidapi-key": apiKey,
+                "x-rapidapi-host": "free-api-live-football-data.p.rapidapi.com"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const divConteudo = document.getElementById("conteudo");
+            
+            // Tentando encontrar a lista de jogos na resposta
+            const jogos = data.response?.list || data.data?.list || [];
 
-        if (!palmeiras) {
-            container.innerHTML = "Palmeiras não encontrado na tabela ou campeonato encerrado.";
-            return;
-        }
+            if (jogos.length === 0) {
+                divConteudo.innerHTML = "<p style='text-align:center'>Nenhum jogo encontrado recentemente para o Palmeiras.</p>";
+                return;
+            }
 
-        // Montando um visual de "Card de Classificação"
-        const pos = palmeiras.position;
-        const pts = palmeiras.points;
-        const v = palmeiras.won;
-        const e = palmeiras.draw;
-        const d = palmeiras.lost;
+            let html = "";
+            // Pegar os últimos 4 jogos
+            jogos.slice(0, 4).forEach(jogo => {
+                const home = jogo.home_team?.name || "Time A";
+                const away = jogo.away_team?.name || "Time B";
+                const scoreHome = jogo.home_score?.current ?? "-";
+                const scoreAway = jogo.away_score?.current ?? "-";
+                const status = jogo.status?.type === "finished" ? "Finalizado" : "Próximo Jogo";
 
-        container.innerHTML = `
-            <div style="padding: 20px;">
-                <h3 style="margin: 0; color: #006400;">Brasileirão Série A</h3>
-                <div style="font-size: 3em; font-weight: bold; margin: 10px 0;">${pos}º</div>
-                <p style="font-size: 1.2em;">${pts} Pontos</p>
-                <hr>
-                <div style="display: flex; justify-content: space-around; font-size: 0.9em;">
-                    <span>Vitórias: <b>${v}</b></span>
-                    <span>Empates: <b>${e}</b></span>
-                    <span>Derrotas: <b>${d}</b></span>
-                </div>
-            </div>
-        `;
-    })
-    .catch(err => {
-        console.error(err);
-        document.getElementById("jogos").innerHTML = "Erro ao carregar classificação.";
-    });
-</script>
+                html += `
+                    <div class="card-jogo">
+                        <div class="data">${status}</div>
+                        <div class="placar-row">
+                            <span class="time-nome">${home}</span>
+                            <span class="gols">${scoreHome}</span>
+                            <span class="vs">x</span>
+                            <span class="gols">${scoreAway}</span>
+                            <span class="time-nome" style="text-align: right;">${away}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            divConteudo.innerHTML = html;
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("conteudo").innerHTML = "Erro ao conectar com a API.";
+        });
+    </script>
 </body>
 </html>
