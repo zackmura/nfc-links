@@ -36,38 +36,37 @@
     async function buscarDados() {
         const resDiv = document.getElementById("resultados");
         const ageDiv = document.getElementById("agenda");
-        
-        const headers = {
-            "x-rapidapi-key": API_KEY,
-            "x-rapidapi-host": API_HOST
-        };
+        const headers = { "x-rapidapi-key": API_KEY, "x-rapidapi-host": API_HOST };
 
         try {
-            // 1. Buscar os últimos 5 resultados (Past)
+            // 1. Buscamos os últimos eventos
             const resPast = await fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/last/0`, { headers });
             const dataPast = await resPast.json();
             
-            // 2. Buscar as próximas 5 partidas (Next)
+            // 2. Buscamos os próximos eventos
             const resNext = await fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/next/0`, { headers });
             const dataNext = await resNext.json();
 
             resDiv.innerHTML = "";
             ageDiv.innerHTML = "";
 
-            // Renderizar Resultados (Filtramos apenas o que já terminou)
+            // LÓGICA DE RESULTADOS: Pegamos os eventos e garantimos que os mais recentes apareçam
             if (dataPast.events) {
-                dataPast.events.slice(0, 5).forEach(e => {
+                // Ordena por timestamp (do maior/recente para o menor/antigo)
+                const jogosOrdenados = dataPast.events.sort((a, b) => b.startTimestamp - a.startTimestamp);
+                
+                jogosOrdenados.slice(0, 5).forEach(e => {
                     resDiv.innerHTML += criarCard(e, true);
                 });
             }
 
-            // Renderizar Agenda (O que ainda vai acontecer)
+            // LÓGICA DE AGENDA: Próximos jogos
             if (dataNext.events) {
                 dataNext.events.slice(0, 5).forEach(e => {
                     ageDiv.innerHTML += criarCard(e, false);
                 });
             } else {
-                ageDiv.innerHTML = "<p style='padding:15px; font-size:0.8rem;'>Nenhum jogo agendado no momento.</p>";
+                ageDiv.innerHTML = "<p style='padding:15px; font-size:0.8rem;'>Sem jogos agendados.</p>";
             }
 
         } catch (err) {
@@ -81,6 +80,7 @@
         const dataFormatada = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaFormatada = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         
+        // Se finalizado, mostra placar. Se não, mostra o horário.
         const placar = isFinished ? `${e.homeScore.current} - ${e.awayScore.current}` : horaFormatada;
 
         return `
