@@ -16,32 +16,44 @@
 
 const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
 
-fetch("https://corsproxy.io/?https://api-football-v1.p.rapidapi.com/v3/fixtures?team=121&last=5", {
-	method: "GET",
-	headers: {
-		"X-RapidAPI-Key": apiKey,
-		"X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
-	}
+// Removido o corsproxy e ajustado para a URL direta
+fetch("https://api-football-v1.p.rapidapi.com/v3/fixtures?team=121&last=5", {
+    method: "GET",
+    headers: {
+        "X-RapidAPI-Key": apiKey,
+        "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
+    }
 })
-.then(response => response.json())
+.then(response => {
+    if (!response.ok) {
+        throw new Error("Erro na requisição: " + response.status);
+    }
+    return response.json();
+})
 .then(data => {
+    // Verificação de segurança para evitar o erro 'forEach' of undefined
+    if (!data.response || data.response.length === 0) {
+        document.getElementById("jogos").innerHTML = "Nenhum jogo encontrado ou erro na API.";
+        return;
+    }
 
-	let html = "";
+    let html = "";
 
-	data.response.forEach(jogo => {
+    data.response.forEach(jogo => {
+        let casa = jogo.teams.home.name;
+        let fora = jogo.teams.away.name;
+        let golsCasa = jogo.goals.home;
+        let golsFora = jogo.goals.away;
 
-		let casa = jogo.teams.home.name;
-		let fora = jogo.teams.away.name;
+        // IMPORTANTE: Usar crases (`) em vez de aspas (')
+        html += `<p>${casa} ${golsCasa} x ${golsFora} ${fora}</p>`;
+    });
 
-		let golsCasa = jogo.goals.home;
-		let golsFora = jogo.goals.away;
-
-		html += `<p>${casa} ${golsCasa} x ${golsFora} ${fora}</p>`;
-
-	});
-
-	document.getElementById("jogos").innerHTML = html;
-
+    document.getElementById("jogos").innerHTML = html;
+})
+.catch(err => {
+    console.error(err);
+    document.getElementById("jogos").innerHTML = "Erro ao carregar jogos.";
 });
 
 </script>
