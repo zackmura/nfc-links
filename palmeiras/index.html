@@ -8,23 +8,20 @@
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .widget { width: 100%; max-width: 420px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); overflow: hidden; }
         
-        /* Cabeçalho com Escudo */
         .header { background: #006400; color: white; padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 4px solid #ffcc00; }
-        .header img { width: 50px; height: 50px; margin-bottom: 8px; }
+        .header img { width: 60px; height: 60px; margin-bottom: 8px; object-fit: contain; }
         .header span { font-weight: bold; font-size: 1.1rem; letter-spacing: 1px; }
 
         .section-title { font-size: 0.75rem; color: #666; padding: 10px 15px 5px; background: #f8f9fa; text-transform: uppercase; border-top: 1px solid #eee; }
         
-        /* Linha do Jogo */
         .match-card { display: flex; align-items: center; padding: 12px 10px; border-bottom: 1px solid #eee; }
         .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #333; font-weight: 500; }
-        .team-col img { width: 24px; height: 24px; object-fit: contain; }
+        .team-col img { width: 28px; height: 28px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
         .away { justify-content: flex-start; text-align: left; }
         .home img { margin-left: 8px; }
         .away img { margin-right: 8px; }
 
-        /* Placar e Data */
         .score-box { width: 85px; text-align: center; background: #f0f0f0; border-radius: 8px; padding: 6px 0; margin: 0 5px; }
         .score { font-weight: bold; font-size: 1.1rem; color: #000; display: block; line-height: 1; }
         .date { font-size: 0.65rem; color: #888; margin-top: 4px; display: block; }
@@ -34,7 +31,7 @@
 
 <div class="widget">
     <div class="header">
-        <img id="escudo-topo" src="" alt="">
+        <img id="escudo-topo" src="" alt="Escudo">
         <span>PALMEIRAS</span>
     </div>
     
@@ -46,20 +43,18 @@
 </div>
 
 <script>
+    // Variáveis corrigidas
     const API_KEY = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
     const API_HOST = "sportapi7.p.rapidapi.com";
     const TEAM_ID = "1963";
-
-    // Link base para as imagens dos escudos
     const imgBase = `https://${API_HOST}/api/v1/team/`;
 
     async function buscarDados() {
-        // Define o escudo do topo
         document.getElementById('escudo-topo').src = `${imgBase}${TEAM_ID}/image`;
 
         const resDiv = document.getElementById("resultados");
         const ageDiv = document.getElementById("agenda");
-        const headers = { "x-rapidapi-key": apiKey, "x-rapidapi-host": API_HOST };
+        const headers = { "x-rapidapi-key": API_KEY, "x-rapidapi-host": API_HOST };
 
         try {
             const [lastRes, nextRes] = await Promise.all([
@@ -74,15 +69,19 @@
             ageDiv.innerHTML = "";
 
             if (dataPast.events) {
+                // Ordenar por data (mais recentes primeiro)
                 const ordenados = dataPast.events.sort((a, b) => b.startTimestamp - a.startTimestamp);
                 ordenados.slice(0, 5).forEach(e => resDiv.innerHTML += criarCard(e, true));
             }
 
-            if (dataNext.events) {
+            if (dataNext.events && dataNext.events.length > 0) {
                 dataNext.events.slice(0, 5).forEach(e => ageDiv.innerHTML += criarCard(e, false));
+            } else {
+                ageDiv.innerHTML = "<p style='padding:15px; font-size:0.8rem; text-align:center;'>Nenhum jogo agendado.</p>";
             }
         } catch (err) {
             console.error(err);
+            resDiv.innerHTML = "Erro ao carregar dados.";
         }
     }
 
@@ -97,14 +96,14 @@
             <div class="match-card">
                 <div class="team-col home">
                     ${e.homeTeam.shortName || e.homeTeam.name}
-                    <img src="${imgBase}${e.homeTeam.id}/image" loading="lazy">
+                    <img src="${imgBase}${e.homeTeam.id}/image" onerror="this.src='https://via.placeholder.com/30?text=⚽'">
                 </div>
                 <div class="score-box">
                     <span class="score">${infoPlacar}</span>
                     <span class="date">${dataF}</span>
                 </div>
                 <div class="team-col away">
-                    <img src="${imgBase}${e.awayTeam.id}/image" loading="lazy">
+                    <img src="${imgBase}${e.awayTeam.id}/image" onerror="this.src='https://via.placeholder.com/30?text=⚽'">
                     ${e.awayTeam.shortName || e.awayTeam.name}
                 </div>
             </div>`;
