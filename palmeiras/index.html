@@ -10,37 +10,37 @@
 <h1>⚽ Palmeiras</h1>
 
 <h2>Últimos Jogos</h2>
-<div id="jogos"></div>
+<div id="jogos">Carregando...</div>
 
 <script>
 
-const apiKey = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
-
-fetch("https://corsproxy.io/?https://api-football-v1.p.rapidapi.com/v3/fixtures?team=121&last=5", {
-	method: "GET",
-	headers: {
-		"X-RapidAPI-Key": apiKey,
-		"X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
-	}
-})
+fetch("https://api.allorigins.win/raw?url=https://www.sofascore.com/api/v1/team/1963/events/last/5")
 .then(response => response.json())
 .then(data => {
 
 	let html = "";
 
-	data.response.forEach(jogo => {
+	data.events.forEach(jogo => {
 
-		let casa = jogo.teams.home.name;
-		let fora = jogo.teams.away.name;
+		let casa = jogo.homeTeam.name;
+		let fora = jogo.awayTeam.name;
 
-		let golsCasa = jogo.goals.home;
-		let golsFora = jogo.goals.away;
+		let golsCasa = jogo.homeScore.current;
+		let golsFora = jogo.awayScore.current;
 
 		html += `<p>${casa} ${golsCasa} x ${golsFora} ${fora}</p>`;
 
 	});
 
 	document.getElementById("jogos").innerHTML = html;
+
+})
+.catch(error => {
+
+	document.getElementById("jogos").innerHTML =
+	"Erro ao carregar jogos.";
+
+	console.error(error);
 
 });
 
