@@ -1,94 +1,68 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palmeiras - Mini Mundo</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .widget { width: 100%; max-width: 400px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); overflow: hidden; }
-        .header { background: #006400; color: white; padding: 20px; text-align: center; font-weight: bold; border-bottom: 4px solid #ffcc00; }
-        .section-title { font-size: 0.75rem; color: #666; padding: 10px 15px 5px; background: #f8f9fa; text-transform: uppercase; }
-        .match-card { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
-        .team { flex: 1; font-size: 0.9rem; font-weight: 500; color: #333; }
-        .score-box { width: 70px; text-align: center; background: #f0f0f0; border-radius: 8px; padding: 5px; }
-        .score { font-weight: bold; font-size: 1.1rem; color: #000; display: block; }
-        .date { font-size: 0.65rem; color: #888; margin-top: 4px; }
-    </style>
-</head>
-<body>
-
-<div class="widget">
-    <div class="header">⚽ PALMEIRAS</div>
-    
-    <div class="section-title">Últimos Resultados</div>
-    <div id="resultados"></div>
-
-    <div class="section-title">Próximas Partidas</div>
-    <div id="agenda"></div>
-</div>
-
 <script>
     const API_KEY = "d232ddb528msh218d515e9566e6cp1794e6jsn8fbcfd203787";
     const API_HOST = "sportapi7.p.rapidapi.com";
-    
-    // O ID correto do Palmeiras (Futebol) nesta API geralmente é 1963
-    const TEAM_ID = "1963"; 
+    const TEAM_ID = "1963"; // ID Palmeiras Futebol
 
     async function buscarDados() {
         const resDiv = document.getElementById("resultados");
         const ageDiv = document.getElementById("agenda");
         
-        // Endpoint para os últimos eventos (jogos) do time
-        const url = `https://${API_HOST}/api/v1/team/${TEAM_ID}/events/last/0`; 
+        const headers = {
+            "x-rapidapi-key": API_KEY,
+            "x-rapidapi-host": API_HOST
+        };
 
         try {
-            const response = await fetch(url, {
-                headers: {
-                    "x-rapidapi-key": API_KEY,
-                    "x-rapidapi-host": API_HOST
-                }
-            });
-            const data = await response.json();
+            // 1. Buscar os últimos 5 resultados (Past)
+            const resPast = await fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/last/0`, { headers });
+            const dataPast = await resPast.json();
             
-            // Verificação de segurança: se não houver eventos, avisar
-            if (!data.events || data.events.length === 0) {
-                resDiv.innerHTML = "<p style='padding:15px'>Nenhum jogo de futebol encontrado para este ID.</p>";
-                return;
-            }
+            // 2. Buscar as próximas 5 partidas (Next)
+            const resNext = await fetch(`https://${API_HOST}/api/v1/team/${TEAM_ID}/events/next/0`, { headers });
+            const dataNext = await resNext.json();
 
             resDiv.innerHTML = "";
             ageDiv.innerHTML = "";
 
-            data.events.slice(0, 5).forEach(e => {
-                const isFinished = e.status.type === "finished";
-                const dataObj = new Date(e.startTimestamp * 1000);
-                const dataFormatada = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-                
-                // Pegando os nomes dos times de futebol
-                const homeName = e.homeTeam.name;
-                const awayName = e.awayTeam.name;
+            // Renderizar Resultados (Filtramos apenas o que já terminou)
+            if (dataPast.events) {
+                dataPast.events.slice(0, 5).forEach(e => {
+                    resDiv.innerHTML += criarCard(e, true);
+                });
+            }
 
-                const html = `
-                    <div class="match-card">
-                        <div class="team" style="text-align:right">${homeName}</div>
-                        <div class="score-box">
-                            <span class="score">${isFinished ? e.homeScore.current + ' - ' + e.awayScore.current : 'vs'}</span>
-                            <span class="date">${dataFormatada}</span>
-                        </div>
-                        <div class="team" style="text-align:left">${awayName}</div>
-                    </div>`;
+            // Renderizar Agenda (O que ainda vai acontecer)
+            if (dataNext.events) {
+                dataNext.events.slice(0, 5).forEach(e => {
+                    ageDiv.innerHTML += criarCard(e, false);
+                });
+            } else {
+                ageDiv.innerHTML = "<p style='padding:15px; font-size:0.8rem;'>Nenhum jogo agendado no momento.</p>";
+            }
 
-                if (isFinished) resDiv.innerHTML += html;
-                else ageDiv.innerHTML += html;
-            });
         } catch (err) {
             console.error(err);
-            resDiv.innerHTML = "<p style='padding:15px'>Erro ao carregar dados da SportAPI.</p>";
+            resDiv.innerHTML = "Erro ao carregar dados.";
         }
+    }
+
+    function criarCard(e, isFinished) {
+        const dataObj = new Date(e.startTimestamp * 1000);
+        const dataFormatada = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+        const horaFormatada = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        
+        const placar = isFinished ? `${e.homeScore.current} - ${e.awayScore.current}` : horaFormatada;
+
+        return `
+            <div class="match-card">
+                <div class="team" style="text-align:right">${e.homeTeam.shortName || e.homeTeam.name}</div>
+                <div class="score-box">
+                    <span class="score">${placar}</span>
+                    <span class="date">${dataFormatada}</span>
+                </div>
+                <div class="team" style="text-align:left">${e.awayTeam.shortName || e.awayTeam.name}</div>
+            </div>`;
     }
 
     buscarDados();
 </script>
-</body>
-</html>
