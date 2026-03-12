@@ -58,6 +58,13 @@
         .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
         .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
         .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
+
+        /* Botões de Contato Mini Mundo */
+        .social-links { display: flex; gap: 10px; margin-top: 15px; width: 100%; justify-content: center;}
+        .social-btn { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: white; display: flex; align-items: center; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .social-btn:active { transform: scale(0.95); }
+        .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .zap { background: #25D366; }
     </style>
 </head>
 <body>
@@ -95,10 +102,16 @@
     <div class="section-title">Últimas Notícias</div>
     <div id="noticias"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Buscando novidades...</p></div>
 
-    <div class="brand-footer">
+   <div class="brand-footer">
         Desenvolvido com tecnologia de
         <img src="logo.jpg" alt="Logo Mini Mundo" onerror="this.style.display='none'">
         <span>MINI MUNDO IMPRESSÃO 3D & DESIGN</span>
+        
+        <div class="social-links">
+            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="social-btn insta">📸 Instagram</a>
+            
+            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20do%20meu%20time%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20produtos%20da%20Mini%20Mundo." target="_blank" class="social-btn zap">💬 WhatsApp</a>
+        </div>
     </div>
 </div>
 
