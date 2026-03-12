@@ -78,26 +78,28 @@
         }
     }
 
-    function criarCard(e, isFinished) {
-        // Ajuste de fuso horário garantindo precisão
+   function criarCard(e, isFinished) {
         const dataObj = new Date(e.date);
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
 
+        // Escudo genérico desenhado direto no código (à prova de falhas na internet)
+        const escudoFallback = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='20'>🛡️</text></svg>";
+
         return `
             <div class="match-card">
                 <div class="team-col home">
                     ${e.homeTeam}
-                    <img src="${e.homeLogo}" onerror="this.src='https://via.placeholder.com/28?text=⚽'">
+                    <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${escudoFallback}'">
                 </div>
                 <div class="score-box">
                     <span class="score">${infoPlacar}</span>
                     <span class="date">${dataF}</span>
                 </div>
                 <div class="team-col away">
-                    <img src="${e.awayLogo}" onerror="this.src='https://via.placeholder.com/28?text=⚽'">
+                    <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${escudoFallback}'">
                     ${e.awayTeam}
                 </div>
             </div>`;
