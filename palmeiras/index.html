@@ -3,25 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Palmeiras - Mini Mundo</title>
+    <title>Palmeiras | Chaveiro Inteligente Mini Mundo</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .widget { width: 100%; max-width: 420px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); overflow: hidden; }
-        .header { background: #006400; color: white; padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 4px solid #ffcc00; }
-        .header img { width: 60px; height: 60px; margin-bottom: 8px; object-fit: contain; }
-        .header span { font-weight: bold; font-size: 1.1rem; letter-spacing: 1px; }
-        .section-title { font-size: 0.75rem; color: #666; padding: 10px 15px 5px; background: #f8f9fa; text-transform: uppercase; border-top: 1px solid #eee; display: flex; justify-content: space-between;}
-        .cache-info { font-size: 0.6rem; color: #aaa; text-transform: none; }
-        .match-card { display: flex; align-items: center; padding: 12px 10px; border-bottom: 1px solid #eee; }
-        .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #333; font-weight: 500; }
-        .team-col img { width: 28px; height: 28px; object-fit: contain; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #eef2f5; 
+            margin: 0; 
+            padding: 15px 10px; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .widget { 
+            width: 100%; 
+            max-width: 420px; 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+        }
+        
+        /* Cabeçalho Premium com Gradiente */
+        .header { 
+            background: linear-gradient(135deg, #006400 0%, #004d00 100%); 
+            color: white; 
+            padding: 25px 15px 20px; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            border-bottom: 5px solid #ffcc00; 
+        }
+        .header img { 
+            width: 70px; 
+            height: 70px; 
+            margin-bottom: 12px; 
+            object-fit: contain; 
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        .header h1 { 
+            margin: 0; 
+            font-size: 1.4rem; 
+            letter-spacing: 1px; 
+            font-weight: 800;
+        }
+        .header p {
+            margin: 4px 0 0;
+            font-size: 0.75rem;
+            color: #d1e7d1;
+            font-weight: 400;
+        }
+
+        /* Divisórias Modernas */
+        .section-title { 
+            font-size: 0.75rem; 
+            color: #555; 
+            padding: 15px 15px 8px; 
+            background: #fafafa; 
+            text-transform: uppercase; 
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #f0f0f0; 
+            border-bottom: 1px solid #f0f0f0;
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cache-info { 
+            font-size: 0.6rem; 
+            color: #999; 
+            text-transform: none; 
+            font-weight: 400;
+        }
+        
+        /* Linhas de Jogo */
+        .match-card { 
+            display: flex; 
+            align-items: center; 
+            padding: 15px 10px; 
+            border-bottom: 1px solid #f5f5f5; 
+            transition: background 0.2s;
+        }
+        .match-card:hover { background: #fdfdfd; }
+        .match-card:last-child { border-bottom: none; }
+        
+        .team-col { 
+            flex: 1; 
+            display: flex; 
+            align-items: center; 
+            font-size: 0.85rem; 
+            color: #222; 
+            font-weight: 600; 
+        }
+        .team-col img { width: 30px; height: 30px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
         .away { justify-content: flex-start; text-align: left; }
-        .home img { margin-left: 8px; }
-        .away img { margin-right: 8px; }
-        .score-box { width: 85px; text-align: center; background: #f0f0f0; border-radius: 8px; padding: 6px 0; margin: 0 5px; }
-        .score { font-weight: bold; font-size: 1.1rem; color: #000; display: block; line-height: 1; }
-        .date { font-size: 0.65rem; color: #888; margin-top: 4px; display: block; }
+        .home img { margin-left: 10px; }
+        .away img { margin-right: 10px; }
+
+        /* Placar e Data */
+        .score-box { 
+            width: 90px; 
+            text-align: center; 
+            background: #f4f6f8; 
+            border-radius: 10px; 
+            padding: 8px 0; 
+            margin: 0 10px; 
+            border: 1px solid #eef0f2;
+        }
+        .score { font-weight: 800; font-size: 1.2rem; color: #111; display: block; line-height: 1; }
+        .date { font-size: 0.65rem; color: #777; margin-top: 5px; display: block; font-weight: 600;}
+        
+        /* Rodapé da Empresa */
+        .brand-footer {
+            background: #ffffff;
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 0.7rem;
+        }
+        .brand-footer img {
+            width: 60px;
+            height: auto;
+            margin: 8px 0;
+            border-radius: 8px;
+        }
+        .brand-footer span { font-weight: 600; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
@@ -29,16 +142,23 @@
 <div class="widget">
     <div class="header">
         <img src="https://a.espncdn.com/i/teamlogos/soccer/500/2029.png" alt="Escudo">
-        <span>PALMEIRAS</span>
+        <h1>PALMEIRAS</h1>
+        <p>Acesso Exclusivo via Chaveiro Inteligente</p>
     </div>
     
     <div class="section-title">
         Últimos Resultados <span class="cache-info" id="status-update">Buscando...</span>
     </div>
-    <div id="resultados"><p style='padding:15px; text-align:center;'>Conectando ao banco de dados...</p></div>
+    <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor seguro...</p></div>
 
     <div class="section-title">Próximas Partidas</div>
-    <div id="agenda"><p style='padding:15px; text-align:center;'>Aguarde...</p></div>
+    <div id="agenda"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Aguarde...</p></div>
+
+    <div class="brand-footer">
+        Desenvolvido com tecnologia de
+        <img src="logo.jpg" alt="Logo Mini Mundo" onerror="this.style.display='none'">
+        <span>MINI MUNDO IMPRESSÃO 3D & DESIGN</span>
+    </div>
 </div>
 
 <script>
@@ -56,36 +176,39 @@
 
             resDiv.innerHTML = "";
             ageDiv.innerHTML = "";
-            statusUpdate.innerText = `Atualizado: ${dados.lastUpdate}`;
+            
+            // Formatando a data do cabeçalho para ficar mais limpa (ex: 12/03 às 10:00)
+            const d = new Date(dados.lastUpdate);
+            const dataLimpa = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) + ' às ' + d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+            statusUpdate.innerText = `Atualizado: ${dataLimpa}`;
 
             if (dados.past && dados.past.length > 0) {
                 dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
             } else {
-                resDiv.innerHTML = "<p style='padding:15px; text-align:center;'>Sem dados recentes.</p>";
+                resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
             }
 
             if (dados.next && dados.next.length > 0) {
                 dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
             } else {
-                ageDiv.innerHTML = "<p style='padding:15px; text-align:center; color:#666;'>Nenhum jogo na agenda.</p>";
+                ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado no momento.</p>";
             }
 
         } catch (err) {
             console.error(err);
-            resDiv.innerHTML = "<div style='padding:15px; color:red; text-align:center;'>Erro de conexão com o painel.</div>";
+            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center; font-size: 0.85rem;'>Erro de conexão. Tente recarregar a página.</div>";
             ageDiv.innerHTML = "";
             statusUpdate.innerText = "Offline";
         }
     }
 
-  function criarCard(e, isFinished) {
+    function criarCard(e, isFinished) {
         const dataObj = new Date(e.date);
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
 
-        // Criamos o SVG limpo e depois codificamos para não dar conflito de aspas no HTML
         const svgText = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>';
         const escudoFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgText)}`;
 
