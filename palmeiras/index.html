@@ -107,9 +107,8 @@
         const token = urlParams.get('t');
         const agora = new Date().getTime();
         
-        // Verifica se NÃO tem token OU se o token tem mais de 2 minutos (120000 milissegundos)
+        // Verifica se NÃO tem token OU se o token for mais velho que 2 minutos (120000 ms)
         if (!token || (agora - parseInt(token)) > 120000) {
-            // Mostra a tela de bloqueio
             document.body.innerHTML = `
                 <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#eef2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;">
                     <img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
@@ -117,12 +116,11 @@
                     <p style="color:#555; font-size:0.95rem; line-height:1.5;">Para sua segurança e exclusividade, as estatísticas ao vivo só podem ser acessadas encostando o celular no seu <b>Chaveiro Inteligente</b>.</p>
                 </div>
             `;
-            return false; // Trava o site
+            return false; 
         }
         
-        // Se o token for válido, apaga ele da barra de endereços (Truque Anti-Favoritos)
-        window.history.replaceState({}, document.title, window.location.pathname);
-        return true; // Libera o site
+        // Deixamos o token na URL para que o cliente possa dar F5 (Atualizar) livremente dentro dos 2 minutos!
+        return true; 
     }
     // === FIM DO SISTEMA DE SEGURANÇA ===
 
