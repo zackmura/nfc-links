@@ -18,8 +18,13 @@
         .section-title { font-size: 0.75rem; color: #555; padding: 15px 15px 8px; background: #fafafa; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;}
         .cache-info { font-size: 0.6rem; color: #999; text-transform: none; font-weight: 400;}
         
-        .match-card { display: flex; align-items: center; padding: 15px 10px; border-bottom: 1px solid #f5f5f5; }
-        .match-card:last-child { border-bottom: none; }
+        /* NOVO LAYOUT DO JOGO (COM CAMPEONATO) */
+        .match-container { border-bottom: 1px solid #f5f5f5; padding: 12px 0; transition: background 0.2s; }
+        .match-container:hover { background: #fdfdfd; }
+        .match-container:last-child { border-bottom: none; }
+        .match-league { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; margin-bottom: 8px; font-weight: 700; }
+        .match-card { display: flex; align-items: center; padding: 0 10px; }
+        
         .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
         .team-col img { width: 30px; height: 30px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
@@ -30,7 +35,6 @@
         .score { font-weight: 800; font-size: 1.2rem; color: #111; display: block; line-height: 1; }
         .date { font-size: 0.65rem; color: #777; margin-top: 5px; display: block; font-weight: 600;}
         
-        /* Tabela de Classificação */
         .table-container { padding: 0 5px 15px; }
         .standings-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; }
         .standings-table th { background: #f4f6f8; color: #666; font-weight: 700; padding: 10px 4px; border-bottom: 2px solid #eee; }
@@ -90,7 +94,7 @@
 </div>
 
 <script>
-    // --- SUA URL CONTINUA EXATAMENTE A MESMA ---  
+    // --- SUA URL DE SEMPRE ---
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec"; 
     
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
@@ -116,11 +120,9 @@
                 resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
             }
 
-            // --- Lógica Dinâmica da Tabela no Site ---
             classDiv.innerHTML = "";
             const tabelaArray = dados.table || [];
             
-            // Troca o título para o nome oficial do campeonato!
             if (dados.leagueName && dados.leagueName !== "Classificação") {
                 tituloClassificacao.innerText = `Classificação: ${dados.leagueName}`;
             }
@@ -186,20 +188,26 @@
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
+        
+        // Se a API não mandar nome, não mostra nada pra não ficar feio
+        const nomeLiga = e.league || ""; 
 
         return `
-            <div class="match-card">
-                <div class="team-col home">
-                    ${e.homeTeam}
-                    <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                </div>
-                <div class="score-box">
-                    <span class="score">${infoPlacar}</span>
-                    <span class="date">${dataF}</span>
-                </div>
-                <div class="team-col away">
-                    <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                    ${e.awayTeam}
+            <div class="match-container">
+                ${nomeLiga ? `<div class="match-league">${nomeLiga}</div>` : ''}
+                <div class="match-card">
+                    <div class="team-col home">
+                        ${e.homeTeam}
+                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                    </div>
+                    <div class="score-box">
+                        <span class="score">${infoPlacar}</span>
+                        <span class="date">${dataF}</span>
+                    </div>
+                    <div class="team-col away">
+                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                        ${e.awayTeam}
+                    </div>
                 </div>
             </div>`;
     }
