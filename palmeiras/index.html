@@ -245,4 +245,59 @@
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
-            else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#
+            else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado.</p>";
+
+            newsDiv.innerHTML = "";
+            if (dados.news && dados.news.length > 0) {
+                dados.news.forEach(n => {
+                    newsDiv.innerHTML += `
+                        <a href="${n.link}" target="_blank" class="news-card">
+                            <div class="news-source"><span>📰 ${n.source}</span></div>
+                            <h3 class="news-title">${n.title}</h3>
+                        </a>`;
+                });
+            } else newsDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhuma notícia no momento.</p>";
+
+        } catch (err) {
+            console.error(err);
+            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
+            classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#cc0000;'>Erro de conexão.</td></tr>";
+            ageDiv.innerHTML = "";
+            newsDiv.innerHTML = "";
+            statusUpdate.innerText = "Offline";
+        }
+    }
+
+    function criarCard(e, isFinished) {
+        const dataObj = new Date(e.date);
+        const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+        const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
+        
+        const leagueStr = traduzirCampeonato(e.slug);
+
+        return `
+            <div class="match-card">
+                <div class="league-label">${leagueStr}</div>
+                <div class="match-row">
+                    <div class="team-col home">
+                        ${e.homeTeam}
+                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                    </div>
+                    <div class="score-box">
+                        <span class="score">${infoPlacar}</span>
+                        <span class="date">${dataF}</span>
+                    </div>
+                    <div class="team-col away">
+                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                        ${e.awayTeam}
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    window.onload = carregarDoMeuServidor;
+</script>
+
+</body>
+</html>
