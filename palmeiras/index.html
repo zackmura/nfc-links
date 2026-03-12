@@ -101,18 +101,21 @@
     
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
-    // Tradutor inteligente de campeonatos
-    function getLeagueName(slug) {
-        if (!slug) return "Campeonato";
-        const s = slug.toLowerCase();
+    // Super Tradutor: Agora ele pega tanto o código "bra.1" quanto o texto gringo "Brazilian Serie A"
+    function traduzirCampeonato(nomeOuSlug) {
+        if (!nomeOuSlug) return "Campeonato";
+        const s = nomeOuSlug.toLowerCase();
+        
         if (s.includes("paulista")) return "Paulistão";
-        if (s.includes("bra.1")) return "Brasileirão Série A";
+        if (s.includes("bra.1") || s.includes("brazilian serie a") || s.includes("brasileirão")) return "Brasileirão Série A";
         if (s.includes("libertadores")) return "Libertadores";
-        if (s.includes("copa_do_brasil")) return "Copa do Brasil";
+        if (s.includes("copa_do_brasil") || s.includes("copa do brasil")) return "Copa do Brasil";
         if (s.includes("supercopa")) return "Supercopa do Brasil";
         if (s.includes("recopa")) return "Recopa Sul-Americana";
-        if (s.includes("mundial")) return "Mundial de Clubes";
-        return "Campeonato";
+        if (s.includes("mundial") || s.includes("world cup")) return "Mundial de Clubes";
+        
+        // Se for um nome que não está na lista, ele apenas deixa a primeira letra maiúscula
+        return nomeOuSlug;
     }
 
     async function carregarDoMeuServidor() {
@@ -134,8 +137,11 @@
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
+            // AQUI ESTÁ A MÁGICA PARA O TÍTULO DA TABELA:
             classDiv.innerHTML = "";
-            if (dados.leagueName && dados.leagueName !== "Classificação") tituloClassificacao.innerText = `Classificação: ${dados.leagueName}`;
+            if (dados.leagueName && dados.leagueName !== "Classificação") {
+                tituloClassificacao.innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
+            }
             
             if (dados.table && dados.table.length > 0) {
                 let tableToRender = dados.table.slice(0, 10);
@@ -192,8 +198,7 @@
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
         
-        // Puxa o nome do campeonato usando o slug do banco de dados!
-        const leagueStr = getLeagueName(e.slug);
+        const leagueStr = traduzirCampeonato(e.slug);
 
         return `
             <div class="match-card">
