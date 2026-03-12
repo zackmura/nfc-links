@@ -53,6 +53,14 @@
         .news-source span { background: #e8f5e9; padding: 2px 6px; border-radius: 4px; }
         .news-title { font-size: 0.9rem; font-weight: 600; color: #222; line-height: 1.3; margin: 0;}
 
+        /* Galeria de Troféus */
+        .trophy-cabinet { padding: 10px; background: #fff; }
+        .trophy-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 5px; border-bottom: 1px dashed #eee; font-size: 0.8rem; }
+        .trophy-item:last-child { border-bottom: none; }
+        .trophy-name { font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; }
+        .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
+        .trophy-icon { font-size: 1.1rem; }
+
         .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 0.7rem;}
         .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
         .brand-footer span { font-weight: 600; letter-spacing: 0.5px; }
@@ -63,14 +71,6 @@
         .social-btn:active { transform: scale(0.95); }
         .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
         .zap { background: #25D366; }
-
-        /* Galeria de Troféus */
-        .trophy-cabinet { padding: 10px; background: #fff; }
-        .trophy-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 5px; border-bottom: 1px dashed #eee; font-size: 0.8rem; }
-        .trophy-item:last-child { border-bottom: none; }
-        .trophy-name { font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; }
-        .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
-        .trophy-icon { font-size: 1.1rem; }
         
     </style>
 </head>
@@ -107,9 +107,10 @@
     <div id="agenda"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Aguarde...</p></div>
 
     <div class="section-title">Últimas Notícias</div>
-    <div id="noticias"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85<div class="section-title">Galeria de Troféus</div>
-   
-        <div class="trophy-cabinet">
+    <div id="noticias"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Buscando novidades...</p></div>
+
+    <div class="section-title">Galeria de Troféus</div>
+    <div class="trophy-cabinet">
         <div class="trophy-item">
             <span class="trophy-name"><span class="trophy-icon">🏆</span> Libertadores</span>
             <span class="trophy-years">1999, 2020, 2021</span>
@@ -126,8 +127,7 @@
             <span class="trophy-name"><span class="trophy-icon">🥇</span> Paulistão</span>
             <span class="trophy-years">26 Títulos</span>
         </div>
-    </div>rem;'>Buscando novidades...</p></div>
-
+    </div>
     
     <div class="brand-footer">
         Desenvolvido com tecnologia de
@@ -245,59 +245,4 @@
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
-            else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado.</p>";
-
-            newsDiv.innerHTML = "";
-            if (dados.news && dados.news.length > 0) {
-                dados.news.forEach(n => {
-                    newsDiv.innerHTML += `
-                        <a href="${n.link}" target="_blank" class="news-card">
-                            <div class="news-source"><span>📰 ${n.source}</span></div>
-                            <h3 class="news-title">${n.title}</h3>
-                        </a>`;
-                });
-            } else newsDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhuma notícia no momento.</p>";
-
-        } catch (err) {
-            console.error(err);
-            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
-            classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#cc0000;'>Erro de conexão.</td></tr>";
-            ageDiv.innerHTML = "";
-            newsDiv.innerHTML = "";
-            statusUpdate.innerText = "Offline";
-        }
-    }
-
-    function criarCard(e, isFinished) {
-        const dataObj = new Date(e.date);
-        const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-        const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-        const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
-        
-        const leagueStr = traduzirCampeonato(e.slug);
-
-        return `
-            <div class="match-card">
-                <div class="league-label">${leagueStr}</div>
-                <div class="match-row">
-                    <div class="team-col home">
-                        ${e.homeTeam}
-                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                    </div>
-                    <div class="score-box">
-                        <span class="score">${infoPlacar}</span>
-                        <span class="date">${dataF}</span>
-                    </div>
-                    <div class="team-col away">
-                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                        ${e.awayTeam}
-                    </div>
-                </div>
-            </div>`;
-    }
-
-    window.onload = carregarDoMeuServidor;
-</script>
-
-</body>
-</html>
+            else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#
