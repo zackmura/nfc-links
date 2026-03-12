@@ -18,9 +18,12 @@
         .section-title { font-size: 0.75rem; color: #555; padding: 15px 15px 8px; background: #fafafa; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;}
         .cache-info { font-size: 0.6rem; color: #999; text-transform: none; font-weight: 400;}
         
-        /* Jogos */
-        .match-card { display: flex; align-items: center; padding: 15px 10px; border-bottom: 1px solid #f5f5f5; }
+        /* Jogos e Nome do Campeonato */
+        .match-card { display: flex; flex-direction: column; align-items: center; padding: 12px 10px; border-bottom: 1px solid #f5f5f5; }
         .match-card:last-child { border-bottom: none; }
+        .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
+        .match-row { display: flex; width: 100%; align-items: center; }
+        
         .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
         .team-col img { width: 30px; height: 30px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
@@ -94,10 +97,23 @@
 </div>
 
 <script>
-    // --- SUA URL CONTINUA EXATAMENTE A MESMA ---
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec"; 
     
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
+
+    // Tradutor inteligente de campeonatos
+    function getLeagueName(slug) {
+        if (!slug) return "Campeonato";
+        const s = slug.toLowerCase();
+        if (s.includes("paulista")) return "Paulistão";
+        if (s.includes("bra.1")) return "Brasileirão Série A";
+        if (s.includes("libertadores")) return "Libertadores";
+        if (s.includes("copa_do_brasil")) return "Copa do Brasil";
+        if (s.includes("supercopa")) return "Supercopa do Brasil";
+        if (s.includes("recopa")) return "Recopa Sul-Americana";
+        if (s.includes("mundial")) return "Mundial de Clubes";
+        return "Campeonato";
+    }
 
     async function carregarDoMeuServidor() {
         const resDiv = document.getElementById("resultados");
@@ -114,12 +130,10 @@
             const d = new Date(dados.lastUpdate);
             statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
-            // Passados
             resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
-            // Classificação
             classDiv.innerHTML = "";
             if (dados.leagueName && dados.leagueName !== "Classificação") tituloClassificacao.innerText = `Classificação: ${dados.leagueName}`;
             
@@ -147,12 +161,10 @@
                 });
             } else classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível.</td></tr>";
 
-            // Futuros
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
             else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado.</p>";
 
-            // Notícias
             newsDiv.innerHTML = "";
             if (dados.news && dados.news.length > 0) {
                 dados.news.forEach(n => {
@@ -179,20 +191,26 @@
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
+        
+        // Puxa o nome do campeonato usando o slug do banco de dados!
+        const leagueStr = getLeagueName(e.slug);
 
         return `
             <div class="match-card">
-                <div class="team-col home">
-                    ${e.homeTeam}
-                    <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                </div>
-                <div class="score-box">
-                    <span class="score">${infoPlacar}</span>
-                    <span class="date">${dataF}</span>
-                </div>
-                <div class="team-col away">
-                    <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                    ${e.awayTeam}
+                <div class="league-label">${leagueStr}</div>
+                <div class="match-row">
+                    <div class="team-col home">
+                        ${e.homeTeam}
+                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                    </div>
+                    <div class="score-box">
+                        <span class="score">${infoPlacar}</span>
+                        <span class="date">${dataF}</span>
+                    </div>
+                    <div class="team-col away">
+                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                        ${e.awayTeam}
+                    </div>
                 </div>
             </div>`;
     }
