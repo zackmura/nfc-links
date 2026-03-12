@@ -5,135 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Palmeiras | Chaveiro Inteligente Mini Mundo</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #eef2f5; 
-            margin: 0; 
-            padding: 15px 10px; 
-            display: flex; 
-            justify-content: center; 
-        }
-        .widget { 
-            width: 100%; 
-            max-width: 420px; 
-            background: white; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            overflow: hidden; 
-        }
+        body { font-family: 'Inter', sans-serif; background: #eef2f5; margin: 0; padding: 15px 10px; display: flex; justify-content: center; }
+        .widget { width: 100%; max-width: 420px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
         
-        /* Cabeçalho Premium com Gradiente */
-        .header { 
-            background: linear-gradient(135deg, #006400 0%, #004d00 100%); 
-            color: white; 
-            padding: 25px 15px 20px; 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            border-bottom: 5px solid #ffcc00; 
-        }
-        .header img { 
-            width: 70px; 
-            height: 70px; 
-            margin-bottom: 12px; 
-            object-fit: contain; 
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-        }
-        .header h1 { 
-            margin: 0; 
-            font-size: 1.4rem; 
-            letter-spacing: 1px; 
-            font-weight: 800;
-        }
-        .header p {
-            margin: 4px 0 0;
-            font-size: 0.75rem;
-            color: #d1e7d1;
-            font-weight: 400;
-        }
+        .header { background: linear-gradient(135deg, #006400 0%, #004d00 100%); color: white; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #ffcc00; }
+        .header img { width: 70px; height: 70px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));}
+        .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;}
+        .header p { margin: 4px 0 0; font-size: 0.75rem; color: #d1e7d1; font-weight: 400;}
 
-        /* Divisórias Modernas */
-        .section-title { 
-            font-size: 0.75rem; 
-            color: #555; 
-            padding: 15px 15px 8px; 
-            background: #fafafa; 
-            text-transform: uppercase; 
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            border-top: 1px solid #f0f0f0; 
-            border-bottom: 1px solid #f0f0f0;
-            display: flex; 
-            justify-content: space-between;
-            align-items: center;
-        }
-        .cache-info { 
-            font-size: 0.6rem; 
-            color: #999; 
-            text-transform: none; 
-            font-weight: 400;
-        }
+        .section-title { font-size: 0.75rem; color: #555; padding: 15px 15px 8px; background: #fafafa; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;}
+        .cache-info { font-size: 0.6rem; color: #999; text-transform: none; font-weight: 400;}
         
-        /* Linhas de Jogo */
-        .match-card { 
-            display: flex; 
-            align-items: center; 
-            padding: 15px 10px; 
-            border-bottom: 1px solid #f5f5f5; 
-            transition: background 0.2s;
-        }
-        .match-card:hover { background: #fdfdfd; }
+        /* Jogos */
+        .match-card { display: flex; align-items: center; padding: 15px 10px; border-bottom: 1px solid #f5f5f5; }
         .match-card:last-child { border-bottom: none; }
-        
-        .team-col { 
-            flex: 1; 
-            display: flex; 
-            align-items: center; 
-            font-size: 0.85rem; 
-            color: #222; 
-            font-weight: 600; 
-        }
+        .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
         .team-col img { width: 30px; height: 30px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
         .away { justify-content: flex-start; text-align: left; }
         .home img { margin-left: 10px; }
         .away img { margin-right: 10px; }
-
-        /* Placar e Data */
-        .score-box { 
-            width: 90px; 
-            text-align: center; 
-            background: #f4f6f8; 
-            border-radius: 10px; 
-            padding: 8px 0; 
-            margin: 0 10px; 
-            border: 1px solid #eef0f2;
-        }
+        .score-box { width: 90px; text-align: center; background: #f4f6f8; border-radius: 10px; padding: 8px 0; margin: 0 10px; border: 1px solid #eef0f2;}
         .score { font-weight: 800; font-size: 1.2rem; color: #111; display: block; line-height: 1; }
         .date { font-size: 0.65rem; color: #777; margin-top: 5px; display: block; font-weight: 600;}
         
-        /* Rodapé da Empresa */
-        .brand-footer {
-            background: #ffffff;
-            padding: 15px;
-            text-align: center;
-            border-top: 1px solid #eee;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            font-size: 0.7rem;
-        }
-        .brand-footer img {
-            width: 60px;
-            height: auto;
-            margin: 8px 0;
-            border-radius: 8px;
-        }
+        /* Tabela de Classificação */
+        .table-container { padding: 0 5px 15px; }
+        .standings-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; }
+        .standings-table th { background: #f4f6f8; color: #666; font-weight: 700; padding: 10px 4px; border-bottom: 2px solid #eee; }
+        .standings-table td { padding: 10px 4px; border-bottom: 1px solid #f5f5f5; color: #333; font-weight: 600; }
+        .team-cell { display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 700; text-align: left;}
+        .team-cell img { width: 20px; height: 20px; object-fit: contain; }
+        .highlight-team { background: #e8f5e9 !important; }
+        .highlight-team td { color: #006400; }
+
+        .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-size: 0.7rem;}
+        .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
         .brand-footer span { font-weight: 600; letter-spacing: 0.5px; }
     </style>
 </head>
@@ -149,7 +58,27 @@
     <div class="section-title">
         Últimos Resultados <span class="cache-info" id="status-update">Buscando...</span>
     </div>
-    <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor seguro...</p></div>
+    <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor...</p></div>
+
+    <div class="section-title">Classificação</div>
+    <div class="table-container">
+        <table class="standings-table">
+            <thead>
+                <tr>
+                    <th width="10%">#</th>
+                    <th width="40%" style="text-align: left;">Time</th>
+                    <th width="10%">P</th>
+                    <th width="10%">J</th>
+                    <th width="10%">V</th>
+                    <th width="10%">E</th>
+                    <th width="10%">D</th>
+                </tr>
+            </thead>
+            <tbody id="classificacao">
+                <tr><td colspan="7" style="text-align:center; padding:20px; color:#666;">Carregando tabela...</td></tr>
+            </tbody>
+        </table>
+    </div>
 
     <div class="section-title">Próximas Partidas</div>
     <div id="agenda"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Aguarde...</p></div>
@@ -164,9 +93,12 @@
 <script>
     // Conexão direta com a sua API construída no Google Sheets
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec"; 
+    
+    const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
     async function carregarDoMeuServidor() {
         const resDiv = document.getElementById("resultados");
+        const classDiv = document.getElementById("classificacao");
         const ageDiv = document.getElementById("agenda");
         const statusUpdate = document.getElementById("status-update");
 
@@ -174,29 +106,74 @@
             const resposta = await fetch(MINHA_API_GOOGLE);
             const dados = await resposta.json();
 
-            resDiv.innerHTML = "";
-            ageDiv.innerHTML = "";
-            
-            // Formatando a data do cabeçalho para ficar mais limpa (ex: 12/03 às 10:00)
+            // Status e Data
             const d = new Date(dados.lastUpdate);
-            const dataLimpa = d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) + ' às ' + d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-            statusUpdate.innerText = `Atualizado: ${dataLimpa}`;
+            statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
+            // Renderizar Passados
+            resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) {
                 dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
             } else {
                 resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
             }
 
+            // Renderizar Classificação (Top 10 + Palmeiras)
+            classDiv.innerHTML = "";
+            if (dados.table && dados.table.length > 0) {
+                let tableToRender = dados.table.slice(0, 10); // Mostra os 10 primeiros
+                
+                // Se o Palmeiras não estiver no Top 10, adiciona ele no final
+                const taNoTopo = tableToRender.some(t => t.team.toLowerCase().includes('palmeiras'));
+                if (!taNoTopo) {
+                    const palmeirasData = dados.table.find(t => t.team.toLowerCase().includes('palmeiras'));
+                    if (palmeirasData) {
+                        tableToRender.push({ isDivider: true });
+                        tableToRender.push(palmeirasData);
+                    }
+                }
+
+                tableToRender.forEach(t => {
+                    if (t.isDivider) {
+                        classDiv.innerHTML += `<tr><td colspan="7" style="background:#fafafa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`;
+                        return;
+                    }
+                    // Destaca a linha do Palmeiras
+                    const bgClass = t.team.toLowerCase().includes('palmeiras') ? 'highlight-team' : '';
+                    
+                    classDiv.innerHTML += `
+                        <tr class="${bgClass}">
+                            <td style="color:#888;">${t.rank}</td>
+                            <td>
+                                <div class="team-cell">
+                                    <img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                                    ${t.team}
+                                </div>
+                            </td>
+                            <td style="font-weight:800;">${t.points}</td>
+                            <td>${t.matches}</td>
+                            <td>${t.wins}</td>
+                            <td>${t.draws}</td>
+                            <td>${t.losses}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível no momento.</td></tr>";
+            }
+
+            // Renderizar Próximos
+            ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) {
                 dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
             } else {
-                ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado no momento.</p>";
+                ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado.</p>";
             }
 
         } catch (err) {
             console.error(err);
-            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center; font-size: 0.85rem;'>Erro de conexão. Tente recarregar a página.</div>";
+            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center; font-size: 0.85rem;'>Erro de conexão.</div>";
+            classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#cc0000;'>Erro de conexão.</td></tr>";
             ageDiv.innerHTML = "";
             statusUpdate.innerText = "Offline";
         }
@@ -206,24 +183,20 @@
         const dataObj = new Date(e.date);
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-        
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
-
-        const svgText = '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>';
-        const escudoFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgText)}`;
 
         return `
             <div class="match-card">
                 <div class="team-col home">
                     ${e.homeTeam}
-                    <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${escudoFallback}'">
+                    <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
                 </div>
                 <div class="score-box">
                     <span class="score">${infoPlacar}</span>
                     <span class="date">${dataF}</span>
                 </div>
                 <div class="team-col away">
-                    <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${escudoFallback}'">
+                    <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
                     ${e.awayTeam}
                 </div>
             </div>`;
