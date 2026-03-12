@@ -18,7 +18,6 @@
         .section-title { font-size: 0.75rem; color: #555; padding: 15px 15px 8px; background: #fafafa; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center;}
         .cache-info { font-size: 0.6rem; color: #999; text-transform: none; font-weight: 400;}
         
-        /* Jogos */
         .match-card { display: flex; align-items: center; padding: 15px 10px; border-bottom: 1px solid #f5f5f5; }
         .match-card:last-child { border-bottom: none; }
         .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
@@ -60,7 +59,7 @@
     </div>
     <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor...</p></div>
 
-    <div class="section-title">Classificação</div>
+    <div class="section-title" id="titulo-classificacao">Classificação</div>
     <div class="table-container">
         <table class="standings-table">
             <thead>
@@ -91,7 +90,7 @@
 </div>
 
 <script>
-    // Conexão direta com a sua API construída no Google Sheets
+    // --- SUA URL CONTINUA EXATAMENTE A MESMA ---
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec"; 
     
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
@@ -101,16 +100,15 @@
         const classDiv = document.getElementById("classificacao");
         const ageDiv = document.getElementById("agenda");
         const statusUpdate = document.getElementById("status-update");
+        const tituloClassificacao = document.getElementById("titulo-classificacao");
 
         try {
             const resposta = await fetch(MINHA_API_GOOGLE);
             const dados = await resposta.json();
 
-            // Status e Data
             const d = new Date(dados.lastUpdate);
             statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
-            // Renderizar Passados
             resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) {
                 dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
@@ -118,15 +116,21 @@
                 resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
             }
 
-            // Renderizar Classificação (Top 10 + Palmeiras)
+            // --- Lógica Dinâmica da Tabela no Site ---
             classDiv.innerHTML = "";
-            if (dados.table && dados.table.length > 0) {
-                let tableToRender = dados.table.slice(0, 10); // Mostra os 10 primeiros
+            const tabelaArray = dados.table || [];
+            
+            // Troca o título para o nome oficial do campeonato!
+            if (dados.leagueName && dados.leagueName !== "Classificação") {
+                tituloClassificacao.innerText = `Classificação: ${dados.leagueName}`;
+            }
+
+            if (tabelaArray.length > 0) {
+                let tableToRender = tabelaArray.slice(0, 10);
                 
-                // Se o Palmeiras não estiver no Top 10, adiciona ele no final
                 const taNoTopo = tableToRender.some(t => t.team.toLowerCase().includes('palmeiras'));
                 if (!taNoTopo) {
-                    const palmeirasData = dados.table.find(t => t.team.toLowerCase().includes('palmeiras'));
+                    const palmeirasData = tabelaArray.find(t => t.team.toLowerCase().includes('palmeiras'));
                     if (palmeirasData) {
                         tableToRender.push({ isDivider: true });
                         tableToRender.push(palmeirasData);
@@ -138,7 +142,6 @@
                         classDiv.innerHTML += `<tr><td colspan="7" style="background:#fafafa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`;
                         return;
                     }
-                    // Destaca a linha do Palmeiras
                     const bgClass = t.team.toLowerCase().includes('palmeiras') ? 'highlight-team' : '';
                     
                     classDiv.innerHTML += `
@@ -162,7 +165,6 @@
                 classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível no momento.</td></tr>";
             }
 
-            // Renderizar Próximos
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) {
                 dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
