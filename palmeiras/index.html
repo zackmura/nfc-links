@@ -71,6 +71,15 @@
         .social-btn:active { transform: scale(0.95); }
         .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
         .zap { background: #25D366; }
+
+        /* Estrutura Base do Botão YouTube (Em todos os times) */
+        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
+        
+        /* Efeito de clique (dynamic-button já está definido no seu CSS antigo, mas se não tiver, use este) */
+        .dynamic-button:active { transform: scale(0.95); }
+
+        /* Cor Personalizada Palmeiras */
+        .youtube-button { background: #ffcc00 !important; color: #006400 !important; box-shadow: 0 4px 10px rgba(255,204,0,0.2); border: 1px solid #e6b800;}
         
     </style>
 </head>
@@ -276,6 +285,20 @@
         
         const leagueStr = traduzirCampeonato(e.slug);
 
+        // === NOVO: BOTÃO DO YOUTUBE - VERSÃO LIMPA E DINÂMICA ===
+        let botaoYouTube = "";
+        if (isFinished) {
+            // Cria a pesquisa exata do jogo (Ex: "melhores momentos Flamengo x Vasco")
+            const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
+            const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
+            
+            botaoYouTube = `
+                <a href="${linkBusca}" target="_blank" class="youtube-button dynamic-button">
+                    ▶️ Assistir Melhores Momentos
+                </a>
+            `;
+        }
+
         return `
             <div class="match-card">
                 <div class="league-label">${leagueStr}</div>
@@ -293,6 +316,7 @@
                         ${e.awayTeam}
                     </div>
                 </div>
+                ${botaoYouTube}
             </div>`;
     }
 
