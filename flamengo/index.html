@@ -71,6 +71,16 @@
         .social-btn:active { transform: scale(0.95); }
         .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
         .zap { background: #25D366; }
+
+        /* Estrutura Base do Botão YouTube (Em todos os times) */
+        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
+        
+        /* Efeito de clique (dynamic-button já está definido no seu CSS antigo, mas se não tiver, use este) */
+        .dynamic-button:active { transform: scale(0.95); }
+
+        /* Cor Personalizada Flamengo */
+        .youtube-button { background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2); }
+        
     </style>
 </head>
 <body>
@@ -272,7 +282,7 @@
         }
     }
 
-    function criarCard(e, isFinished) {
+   function criarCard(e, isFinished) {
         const dataObj = new Date(e.date);
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
@@ -280,7 +290,7 @@
         
         const leagueStr = traduzirCampeonato(e.slug);
 
-        // === NOVO: BOTÃO INTELIGENTE DO YOUTUBE ===
+        // === NOVO: BOTÃO DO YOUTUBE - VERSÃO LIMPA E DINÂMICA ===
         let botaoYouTube = "";
         if (isFinished) {
             // Cria a pesquisa exata do jogo (Ex: "melhores momentos Flamengo x Vasco")
@@ -288,7 +298,7 @@
             const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
             
             botaoYouTube = `
-                <a href="${linkBusca}" target="_blank" style="display:block; background:#ff0000; color:#ffffff; text-align:center; padding:8px; border-radius:8px; font-size:0.75rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; box-shadow: 0 2px 5px rgba(255,0,0,0.2);">
+                <a href="${linkBusca}" target="_blank" class="youtube-button dynamic-button">
                     ▶️ Assistir Melhores Momentos
                 </a>
             `;
