@@ -71,6 +71,15 @@
         .trophy-name { font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; }
         .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
         .trophy-icon { font-size: 1.1rem; }
+
+        /* Estrutura Base do Botão YouTube (Em todos os times) */
+        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
+        
+        /* Efeito de clique (dynamic-button já está definido no seu CSS antigo, mas se não tiver, use este) */
+        .dynamic-button:active { transform: scale(0.95); }
+
+        /* Cor Personalizada Santos */
+        .youtube-button { background: #ffffff !important; color: #000000 !important; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #000000;}
         
     </style>
 </head>
@@ -276,6 +285,20 @@
         
         const leagueStr = traduzirCampeonato(e.slug);
 
+        // === NOVO: BOTÃO DO YOUTUBE - VERSÃO LIMPA E DINÂMICA ===
+        let botaoYouTube = "";
+        if (isFinished) {
+            // Cria a pesquisa exata do jogo (Ex: "melhores momentos Flamengo x Vasco")
+            const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
+            const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
+            
+            botaoYouTube = `
+                <a href="${linkBusca}" target="_blank" class="youtube-button dynamic-button">
+                    ▶️ Assistir Melhores Momentos
+                </a>
+            `;
+        }
+
         return `
             <div class="match-card">
                 <div class="league-label">${leagueStr}</div>
@@ -293,6 +316,7 @@
                         ${e.awayTeam}
                     </div>
                 </div>
+                ${botaoYouTube}
             </div>`;
     }
 
