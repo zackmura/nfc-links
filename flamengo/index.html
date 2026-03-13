@@ -280,6 +280,20 @@
         
         const leagueStr = traduzirCampeonato(e.slug);
 
+        // === NOVO: BOTÃO INTELIGENTE DO YOUTUBE ===
+        let botaoYouTube = "";
+        if (isFinished) {
+            // Cria a pesquisa exata do jogo (Ex: "melhores momentos Flamengo x Vasco")
+            const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
+            const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
+            
+            botaoYouTube = `
+                <a href="${linkBusca}" target="_blank" style="display:block; background:#ff0000; color:#ffffff; text-align:center; padding:8px; border-radius:8px; font-size:0.75rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; box-shadow: 0 2px 5px rgba(255,0,0,0.2);">
+                    ▶️ Assistir Melhores Momentos
+                </a>
+            `;
+        }
+
         return `
             <div class="match-card">
                 <div class="league-label">${leagueStr}</div>
@@ -297,6 +311,7 @@
                         ${e.awayTeam}
                     </div>
                 </div>
+                ${botaoYouTube}
             </div>`;
     }
 
