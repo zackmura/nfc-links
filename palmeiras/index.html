@@ -285,10 +285,15 @@
         
         const leagueStr = traduzirCampeonato(e.slug);
 
-        // === NOVO: BOTÃO DO YOUTUBE - VERSÃO LIMPA E DINÂMICA ===
+        // === NOVO: LINHA DO ESTÁDIO ===
+        let estadioHtml = "";
+        if (e.stadium) {
+            estadioHtml = `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>`;
+        }
+
+        // === BOTÃO DO YOUTUBE ===
         let botaoYouTube = "";
         if (isFinished) {
-            // Cria a pesquisa exata do jogo (Ex: "melhores momentos Flamengo x Vasco")
             const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
             const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
             
@@ -316,10 +321,9 @@
                         ${e.awayTeam}
                     </div>
                 </div>
-                ${botaoYouTube}
+                ${estadioHtml} ${botaoYouTube}
             </div>`;
     }
-
     window.onload = carregarDoMeuServidor;
 </script>
 
