@@ -37,7 +37,7 @@
             max-width: 420px; 
             width: 100%;
             background: white; 
-            padding: 40px 30px 20px 30px; /* Reduzi o padding de baixo para acomodar o rodapé interno */
+            padding: 40px 30px 20px 30px; 
             border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
             box-sizing: border-box;
@@ -95,7 +95,6 @@
         button:hover { background-color: #311e12; }
         button:active { transform: scale(0.98); }
 
-        /* Botão Secundário para "Regravar" */
         .btn-secondary {
             background-color: transparent;
             color: var(--primary-color);
@@ -118,7 +117,6 @@
         
         #setup-form, #action-screen { display: none; }
         
-        /* Contatos Integrados no Cartão */
         .contact-section {
             margin-top: 30px;
             padding-top: 20px;
@@ -143,7 +141,6 @@
         .social-links a:hover { color: var(--accent-color); }
         .social-icon { font-size: 18px; }
 
-        /* Modal Customizado (Substitui o alert feio) */
         #custom-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;
@@ -173,8 +170,11 @@
     <div id="setup-form">
         <h2>Gravar Chaveiro</h2>
         <p class="description">Cole o link da sua playlist (Spotify, YouTube, etc.) abaixo e grave a sua trilha sonora neste chaveiro.</p>
-        <input type="text" id="playlist-url" placeholder="Ex: http://googleusercontent.com/spotify.com/...">
+        
+        <input type="text" id="playlist-url" placeholder="Ex: https://open.spotify.com/...">
+        
         <button id="btn-gravar" onclick="salvarPlaylist()"><i class="fa-solid fa-music"></i> Salvar Playlist</button>
+        <button class="btn-secondary" id="btn-voltar" onclick="voltarParaAcao()" style="display: none;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     </div>
 
     <div id="action-screen">
@@ -219,7 +219,7 @@
     const loadingDiv = document.getElementById('loading');
     const formDiv = document.getElementById('setup-form');
     const actionDiv = document.getElementById('action-screen');
-    let linkSalvo = ""; // Variável global para guardar o link lido do banco
+    let linkSalvo = ""; 
 
     if (!chaveiroId) {
         loadingDiv.innerHTML = "<i class='fa-solid fa-circle-exclamation' style='font-size: 30px; color: #E27D60;'></i><br><br>Erro: Chaveiro não identificado na leitura.";
@@ -229,11 +229,9 @@
             loadingDiv.style.display = 'none';
 
             if (linkDaPlaylist) {
-                // Cenário: Chaveiro já tem música gravada
                 linkSalvo = linkDaPlaylist;
                 actionDiv.style.display = 'block';
             } else {
-                // Cenário: Chaveiro virgem
                 formDiv.style.display = 'block';
             }
         }).catch((error) => {
@@ -246,11 +244,22 @@
         if(linkSalvo) window.location.href = linkSalvo;
     }
 
+    // Função atualizada para limpar o campo e mostrar o botão voltar
     function mostrarFormulario() {
         actionDiv.style.display = 'none';
         formDiv.style.display = 'block';
-        // Opcional: já preencher o input com o link atual
-        document.getElementById('playlist-url').value = linkSalvo;
+        
+        // Limpa o campo de texto automaticamente
+        document.getElementById('playlist-url').value = '';
+        
+        // Mostra o botão de voltar, pois sabemos que já existia um link
+        document.getElementById('btn-voltar').style.display = 'block';
+    }
+
+    // Nova função para voltar para a tela anterior
+    function voltarParaAcao() {
+        formDiv.style.display = 'none';
+        actionDiv.style.display = 'block';
     }
 
     let linkParaRedirecionarApósModal = "";
@@ -269,7 +278,6 @@
                 linkParaRedirecionarApósModal = linkLimpo;
                 document.getElementById('custom-modal').style.display = 'flex';
                 
-                // Restaura o botão caso o usuário volte a página depois
                 setTimeout(() => {
                     btn.innerHTML = "<i class='fa-solid fa-music'></i> Salvar Playlist";
                     btn.style.opacity = "1";
