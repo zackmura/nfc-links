@@ -44,69 +44,30 @@
             position: relative;
         }
         
-        .logo {
-            max-width: 150px;
-            margin-bottom: 20px;
-        }
+        .logo { max-width: 150px; margin-bottom: 20px; }
         
-        h2 { 
-            color: var(--primary-color); 
-            margin-bottom: 10px;
-            font-size: 22px;
-        }
+        h2 { color: var(--primary-color); margin-bottom: 10px; font-size: 22px; }
         
-        .description {
-            font-size: 15px;
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
+        .description { font-size: 15px; color: #666; line-height: 1.5; margin-bottom: 25px; }
         
         input { 
-            width: 100%; 
-            padding: 14px; 
-            margin: 10px 0 20px; 
-            border: 2px solid #eee; 
-            border-radius: 10px; 
-            font-size: 15px; 
-            box-sizing: border-box; 
-            transition: border-color 0.3s;
+            width: 100%; padding: 14px; margin: 10px 0 20px; 
+            border: 2px solid #eee; border-radius: 10px; font-size: 15px; 
+            box-sizing: border-box; transition: border-color 0.3s;
         }
-        
-        input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
+        input:focus { border-color: var(--primary-color); outline: none; }
         
         button { 
-            background-color: var(--primary-color); 
-            color: white; 
-            border: none; 
-            padding: 15px 20px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            width: 100%; 
-            font-size: 16px; 
-            transition: all 0.3s; 
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            background-color: var(--primary-color); color: white; border: none; 
+            padding: 15px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; 
+            width: 100%; font-size: 16px; transition: all 0.3s; margin-bottom: 10px;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        
         button:hover { background-color: #311e12; }
         button:active { transform: scale(0.98); }
 
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-        .btn-secondary:hover {
-            background-color: #f0e9e4;
-        }
+        .btn-secondary { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); }
+        .btn-secondary:hover { background-color: #f0e9e4; }
         
         #loading { 
             font-size: 16px; color: var(--primary-color); font-weight: 500;
@@ -121,22 +82,10 @@
         
         #setup-form, #action-screen { display: none; }
         
-        .contact-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        
-        .contact-section p {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
+        .contact-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+        .contact-section p { font-size: 13px; color: #888; margin-bottom: 15px; font-weight: 500; }
 
-        .social-links {
-            display: flex; flex-direction: column; gap: 10px; width: 100%;
-        }
+        .social-links { display: flex; flex-direction: column; gap: 10px; width: 100%; }
         
         .btn-instagram {
             background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
@@ -192,7 +141,7 @@
         <h2>Chaveiro Configurado!</h2>
         <p class="description">Sua playlist está salva neste chaveiro inteligente. O que deseja fazer?</p>
         <button onclick="abrirMusica()"><i class="fa-solid fa-play"></i> Ouvir Playlist</button>
-        <button class="btn-secondary" onclick="mostrarFormulario()"><i class="fa-solid fa-pen-to-square"></i> Regravar Chaveiro</button>
+        <button class="btn-secondary" id="btn-regravar" onclick="mostrarFormulario()"><i class="fa-solid fa-pen-to-square"></i> Regravar Chaveiro</button>
     </div>
 
     <div class="contact-section">
@@ -230,7 +179,11 @@
     const loadingDiv = document.getElementById('loading');
     const formDiv = document.getElementById('setup-form');
     const actionDiv = document.getElementById('action-screen');
+    const btnRegravar = document.getElementById('btn-regravar');
     let linkSalvo = ""; 
+
+    // LÓGICA DO DONO: Verifica se existe o "carimbo" deste ID no navegador
+    const isOwner = localStorage.getItem('dono_chaveiro_' + chaveiroId);
 
     if (!chaveiroId) {
         loadingDiv.innerHTML = "<i class='fa-solid fa-circle-exclamation' style='font-size: 30px; color: #E27D60;'></i><br><br>Erro: Chaveiro não identificado na leitura.";
@@ -242,6 +195,11 @@
             if (linkDaPlaylist) {
                 linkSalvo = linkDaPlaylist;
                 actionDiv.style.display = 'block';
+                
+                // Se NÃO for o dono, esconde o botão de regravar
+                if (!isOwner) {
+                    btnRegravar.style.display = 'none';
+                }
             } else {
                 formDiv.style.display = 'block';
             }
@@ -267,7 +225,6 @@
         actionDiv.style.display = 'block';
     }
 
-    // --- FUNÇÕES DO MODAL DINÂMICO ---
     function mostrarModal(tipo, titulo, mensagem, acaoBotao, textoBotao = "OK") {
         const modal = document.getElementById('custom-modal');
         const icon = document.getElementById('modal-icon');
@@ -281,10 +238,10 @@
 
         if (tipo === 'sucesso') {
             icon.className = "fa-solid fa-circle-check";
-            icon.style.color = "#4CAF50"; // Verde
+            icon.style.color = "#4CAF50"; 
         } else if (tipo === 'erro') {
             icon.className = "fa-solid fa-circle-xmark";
-            icon.style.color = "#E27D60"; // Laranja/Vermelho da sua paleta
+            icon.style.color = "#E27D60"; 
         }
 
         btn.onclick = acaoBotao;
@@ -294,7 +251,6 @@
     function fecharModal() {
         document.getElementById('custom-modal').style.display = 'none';
     }
-    // ---------------------------------
 
     function salvarPlaylist() {
         const inputText = document.getElementById('playlist-url').value;
@@ -307,27 +263,28 @@
             btn.style.opacity = "0.8";
             
             db.ref('chaveiros/' + chaveiroId).set(linkLimpo).then(() => {
-                linkSalvo = linkLimpo; // Atualiza o link salvo em memória
+                linkSalvo = linkLimpo; 
+                
+                // MÁGICA DO DONO: Salva o "carimbo VIP" no navegador do celular atual
+                localStorage.setItem('dono_chaveiro_' + chaveiroId, 'sim');
                 
                 setTimeout(() => {
                     btn.innerHTML = "<i class='fa-solid fa-music'></i> Salvar Playlist";
                     btn.style.opacity = "1";
                     
-                    // Chama o modal de sucesso!
                     mostrarModal(
                         'sucesso', 
                         'Música Gravada!', 
                         'A sua playlist foi configurada no chaveiro com sucesso.', 
                         function() {
                             fecharModal();
-                            abrirMusica(); // Já abre a música ao clicar em "Ouvir Agora"
+                            abrirMusica(); 
                         },
                         "<i class='fa-solid fa-play'></i> Ouvir Agora"
                     );
                 }, 800);
             });
         } else {
-            // Chama o modal de erro no lugar do alert()
             mostrarModal(
                 'erro',
                 'Link Inválido',
