@@ -3,66 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Mundo - Chaveiro Inteligente</title>
+    <title>Mini Mundo 3D - Chaveiro Inteligente</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 20px; background-color: #f7f9fc; color: #333; margin: 0; }
-        .container { max-width: 400px; margin: 20px auto; background: white; padding: 30px 20px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        :root {
+            --primary-color: #4A2E1B; 
+            --accent-color: #E27D60;  
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+        }
         
-        .logo { width: 120px; margin-bottom: 10px; }
-        h2 { color: #5c3a21; margin-top: 0; } /* Cor marrom baseada na sua logo */
-        p { color: #666; font-size: 15px; line-height: 1.5; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
         
-        input { width: 100%; padding: 14px; margin: 15px 0; border: 2px solid #eee; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus { border-color: #ff5722; }
+        .container { 
+            max-width: 420px; 
+            width: 100%;
+            background: white; 
+            padding: 40px 30px 20px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            box-sizing: border-box;
+            position: relative;
+        }
         
-        button { background-color: #ff5722; color: white; border: none; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.3s; margin-bottom: 10px; }
-        button:hover { background-color: #e64a19; transform: translateY(-2px); }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
         
-        .btn-secondary { background-color: #f0f0f0; color: #555; }
-        .btn-secondary:hover { background-color: #e4e4e4; }
+        h2 { 
+            color: var(--primary-color); 
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        
+        .description {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            margin: 10px 0 20px; 
+            border: 2px solid #eee; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            box-sizing: border-box; 
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        button { 
+            background-color: var(--primary-color); 
+            color: white; 
+            border: none; 
+            padding: 15px 20px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            width: 100%; 
+            font-size: 16px; 
+            transition: all 0.3s; 
+            margin-bottom: 10px;
+        }
+        
+        button:hover { background-color: #311e12; }
+        button:active { transform: scale(0.98); }
 
-        /* Telas Ocultas por Padrão */
-        #loading, #setup-form, #dashboard { display: none; }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        .btn-secondary:hover {
+            background-color: #f0e9e4;
+        }
         
-        /* Estilo do Alerta Customizado (Modal) */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(3px); }
-        .modal-box { background: white; padding: 30px; border-radius: 16px; width: 80%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
-        .modal-box h3 { color: #4CAF50; margin-top: 0; font-size: 22px; }
-        .modal-box button { margin-top: 20px; margin-bottom: 0; }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        #loading { 
+            font-size: 16px; color: var(--primary-color); font-weight: 500;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color);
+            border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        #setup-form, #action-screen { display: none; }
+        
+        .contact-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .contact-section p {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .social-links {
+            display: flex; justify-content: center; gap: 20px;
+        }
+        
+        .social-links a {
+            color: var(--primary-color); text-decoration: none; font-size: 14px;
+            display: flex; align-items: center; gap: 6px; font-weight: 600; transition: color 0.3s;
+        }
+        .social-links a:hover { color: var(--accent-color); }
+        .social-icon { font-size: 18px; }
+
+        #custom-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 15px; text-align: center;
+            max-width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: popIn 0.3s ease-out;
+        }
+        .modal-content i { font-size: 40px; color: #4CAF50; margin-bottom: 15px; }
+        .modal-content h3 { margin: 0 0 10px; color: #333; }
+        .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <img src="https://via.placeholder.com/150" alt="Logo Mini Mundo" class="logo" id="logo-img">
-
-    <div id="loading" style="display: block;">
-        <p>Conectando ao chaveiro...</p>
+    <img src="logo.jpg" alt="Mini Mundo" class="logo">
+    
+    <div id="loading">
+        <div class="spinner"></div>
+        <span>Lendo o seu chaveiro...</span>
     </div>
 
     <div id="setup-form">
-        <h2>Configurar Chaveiro</h2>
-        <p>Seu chaveiro está vazio. Cole abaixo o link da sua música ou playlist (Spotify, YouTube, etc.):</p>
+        <h2>Gravar Chaveiro</h2>
+        <p class="description">Cole o link da sua playlist (Spotify, YouTube, etc.) abaixo e grave a sua trilha sonora neste chaveiro.</p>
+        
         <input type="text" id="playlist-url" placeholder="Ex: https://open.spotify.com/...">
-        <button onclick="salvarPlaylist()">Salvar Música</button>
+        
+        <button id="btn-gravar" onclick="salvarPlaylist()"><i class="fa-solid fa-music"></i> Salvar Playlist</button>
+        <button class="btn-secondary" id="btn-voltar" onclick="voltarParaAcao()" style="display: none;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     </div>
 
-    <div id="dashboard">
-        <h2>Seu Chaveiro</h2>
-        <p>O que você deseja fazer agora?</p>
-        <button onclick="abrirMusica()">🎧 Ouvir Música</button>
-        <button class="btn-secondary" onclick="mostrarFormulario()">✏️ Alterar o Link</button>
+    <div id="action-screen">
+        <h2>Chaveiro Configurado!</h2>
+        <p class="description">Você já possui uma playlist gravada neste chaveiro inteligente.</p>
+        <button onclick="abrirMusica()"><i class="fa-solid fa-play"></i> Ouvir Playlist</button>
+        <button class="btn-secondary" onclick="mostrarFormulario()"><i class="fa-solid fa-pen-to-square"></i> Regravar Chaveiro</button>
+    </div>
+
+    <div class="contact-section">
+        <p>Curtiu a ideia? Faça sua encomenda ou tire dúvidas:</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank">
+                <i class="fa-brands fa-instagram social-icon"></i> Instagram
+            </a>
+            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20inteligente%20da%20Mini%20Mundo%20e%20gostaria%20de%20saber%20mais." target="_blank">
+                <i class="fa-brands fa-whatsapp social-icon"></i> WhatsApp
+            </a>
+        </div>
     </div>
 </div>
 
-<div class="modal-overlay" id="success-modal">
-    <div class="modal-box">
-        <h3>Sucesso! 🎉</h3>
-        <p>A música do seu chaveiro foi atualizada.</p>
-        <button onclick="fecharModalEOuvir()">Tocar Agora</button>
+<div id="custom-modal">
+    <div class="modal-content">
+        <i class="fa-solid fa-circle-check"></i>
+        <h3>Tudo Certo!</h3>
+        <p>A sua música foi gravada. Da próxima vez que encostar o celular, ela abrirá diretamente.</p>
+        <button onclick="fecharModalEIrParaMusica()">OK</button>
     </div>
 </div>
 
@@ -76,71 +216,83 @@
     const urlParams = new URLSearchParams(window.location.search);
     const chaveiroId = urlParams.get('id');
 
-    let linkAtualSalvo = ""; // Variável para guardar o link que veio do banco
-
     const loadingDiv = document.getElementById('loading');
     const formDiv = document.getElementById('setup-form');
-    const dashboardDiv = document.getElementById('dashboard');
-    const modal = document.getElementById('success-modal');
+    const actionDiv = document.getElementById('action-screen');
+    let linkSalvo = ""; 
 
     if (!chaveiroId) {
-        loadingDiv.innerHTML = "<p>Erro: Chaveiro não identificado.</p>";
+        loadingDiv.innerHTML = "<i class='fa-solid fa-circle-exclamation' style='font-size: 30px; color: #E27D60;'></i><br><br>Erro: Chaveiro não identificado na leitura.";
     } else {
-        // Consulta o banco
         db.ref('chaveiros/' + chaveiroId).once('value').then((snapshot) => {
-            linkAtualSalvo = snapshot.val();
-            
+            const linkDaPlaylist = snapshot.val();
             loadingDiv.style.display = 'none';
-            if (linkAtualSalvo) {
-                dashboardDiv.style.display = 'block'; // Mostra os botões
+
+            if (linkDaPlaylist) {
+                linkSalvo = linkDaPlaylist;
+                actionDiv.style.display = 'block';
             } else {
-                formDiv.style.display = 'block'; // Mostra o form
+                formDiv.style.display = 'block';
             }
         }).catch((error) => {
-            loadingDiv.innerHTML = "<p>Erro de conexão com a Mini Mundo.</p>";
+            console.error("Erro ao acessar o banco:", error);
+            loadingDiv.innerHTML = "<i class='fa-solid fa-triangle-exclamation' style='font-size: 30px; color: #E27D60;'></i><br><br>Ocorreu um erro de conexão.";
         });
     }
 
-    // Ações dos botões do Dashboard
     function abrirMusica() {
-        window.location.href = linkAtualSalvo;
+        if(linkSalvo) window.location.href = linkSalvo;
     }
 
+    // Função atualizada para limpar o campo e mostrar o botão voltar
     function mostrarFormulario() {
-        dashboardDiv.style.display = 'none';
+        actionDiv.style.display = 'none';
         formDiv.style.display = 'block';
-        // Se quiser, pode preencher o input com o link atual:
-        // document.getElementById('playlist-url').value = linkAtualSalvo;
+        
+        // Limpa o campo de texto automaticamente
+        document.getElementById('playlist-url').value = '';
+        
+        // Mostra o botão de voltar, pois sabemos que já existia um link
+        document.getElementById('btn-voltar').style.display = 'block';
     }
 
-    // Lógica de salvar
+    // Nova função para voltar para a tela anterior
+    function voltarParaAcao() {
+        formDiv.style.display = 'none';
+        actionDiv.style.display = 'block';
+    }
+
+    let linkParaRedirecionarApósModal = "";
+
     function salvarPlaylist() {
         const inputText = document.getElementById('playlist-url').value;
         const urlMatch = inputText.match(/(https?:\/\/[^\s]+)/);
         
         if (urlMatch) {
-            const linkLimpo = urlMatch[0]; 
-            const botaoSalvar = document.querySelector('#setup-form button');
-            botaoSalvar.innerText = "Gravando...";
+            const linkLimpo = urlMatch[0];
+            const btn = document.getElementById('btn-gravar');
+            btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Gravando...";
+            btn.style.opacity = "0.8";
             
             db.ref('chaveiros/' + chaveiroId).set(linkLimpo).then(() => {
-                linkAtualSalvo = linkLimpo; // Atualiza a variável na memória
-                botaoSalvar.innerText = "Salvar Música";
-                document.getElementById('playlist-url').value = ""; // limpa o campo
+                linkParaRedirecionarApósModal = linkLimpo;
+                document.getElementById('custom-modal').style.display = 'flex';
                 
-                // Esconde o formulário e mostra o Modal de sucesso
-                formDiv.style.display = 'none';
-                modal.style.display = 'flex';
+                setTimeout(() => {
+                    btn.innerHTML = "<i class='fa-solid fa-music'></i> Salvar Playlist";
+                    btn.style.opacity = "1";
+                }, 1000);
             });
         } else {
-            alert("Por favor, cole um link válido."); // Esse alert nativo pode ficar, pois é só um erro rápido de digitação
+            alert("Por favor, insira um link válido que comece com http:// ou https://");
         }
     }
 
-    // Ação do botão dentro do Modal
-    function fecharModalEOuvir() {
-        modal.style.display = 'none';
-        abrirMusica();
+    function fecharModalEIrParaMusica() {
+        document.getElementById('custom-modal').style.display = 'none';
+        if(linkParaRedirecionarApósModal) {
+            window.location.href = linkParaRedirecionarApósModal;
+        }
     }
 </script>
 
