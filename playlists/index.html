@@ -48,6 +48,17 @@
         
         h2 { color: var(--primary-color); margin-bottom: 10px; font-size: 22px; }
         
+        .welcome-badge {
+            display: inline-block;
+            background-color: #fff3e0;
+            color: var(--accent-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
         .description { font-size: 15px; color: #666; line-height: 1.5; margin-bottom: 25px; }
         
         input { 
@@ -128,8 +139,9 @@
     </div>
 
     <div id="setup-form">
-        <h2>Gravar Chaveiro</h2>
-        <p class="description">Cole o link da sua playlist (Spotify, YouTube, etc.) abaixo e grave a sua trilha sonora neste chaveiro.</p>
+        <div class="welcome-badge">🎉 Parabéns pela aquisição!</div>
+        <h2>Bem-vindo(a)!</h2>
+        <p class="description">Muito obrigado por escolher a Mini Mundo 3D. Para dar vida ao seu chaveiro inteligente, cole o link da sua música ou playlist favorita abaixo:</p>
         
         <input type="text" id="playlist-url" placeholder="Ex: https://open.spotify.com/...">
         
@@ -182,7 +194,6 @@
     const btnRegravar = document.getElementById('btn-regravar');
     let linkSalvo = ""; 
 
-    // LÓGICA DO DONO: Verifica se existe o "carimbo" deste ID no navegador
     const isOwner = localStorage.getItem('dono_chaveiro_' + chaveiroId);
 
     if (!chaveiroId) {
@@ -196,7 +207,6 @@
                 linkSalvo = linkDaPlaylist;
                 actionDiv.style.display = 'block';
                 
-                // Se NÃO for o dono, esconde o botão de regravar
                 if (!isOwner) {
                     btnRegravar.style.display = 'none';
                 }
@@ -217,6 +227,14 @@
         actionDiv.style.display = 'none';
         formDiv.style.display = 'block';
         document.getElementById('playlist-url').value = '';
+        
+        // Esconde a mensagem de boas-vindas se ele estiver apenas regravando
+        const welcomeBadge = document.querySelector('.welcome-badge');
+        if(welcomeBadge) welcomeBadge.style.display = 'none';
+        
+        document.querySelector('#setup-form h2').innerText = 'Regravar Chaveiro';
+        document.querySelector('#setup-form .description').innerText = 'Cole o novo link da sua playlist abaixo para atualizar o chaveiro:';
+        
         document.getElementById('btn-voltar').style.display = 'flex';
     }
 
@@ -264,8 +282,6 @@
             
             db.ref('chaveiros/' + chaveiroId).set(linkLimpo).then(() => {
                 linkSalvo = linkLimpo; 
-                
-                // MÁGICA DO DONO: Salva o "carimbo VIP" no navegador do celular atual
                 localStorage.setItem('dono_chaveiro_' + chaveiroId, 'sim');
                 
                 setTimeout(() => {
