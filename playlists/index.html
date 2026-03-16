@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Mundo 3D - Configurar Chaveiro</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 40px 20px; background-color: #f7f9fc; color: #333; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { color: #ff5722; }
+        input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        button { background-color: #ff5722; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.3s; }
+        button:hover { background-color: #e64a19; }
+        #loading { font-size: 18px; color: #666; margin-top: 20px;}
+        #setup-form { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="loading">Lendo o seu chaveiro...</div>
+    <div id="setup-form">
+        <h2>Mini Mundo 3D</h2>
+        <p>Seu chaveiro inteligente está pronto para ser configurado!</p>
+        <p>Cole abaixo o link da sua playlist (Spotify, YouTube, etc.):</p>
+        <input type="text" id="playlist-url" placeholder="Ex: https://open.spotify.com/playlist/...">
+        <button onclick="salvarPlaylist()">Gravar no Chaveiro</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        databaseURL: "https://minimundo-nfc-music-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const chaveiroId = urlParams.get('id');
+
+    const loadingDiv = document.getElementById('loading');
+    const formDiv = document.getElementById('setup-form');
+
+    if (!chaveiroId) {
+        loadingDiv.innerText = "Erro: Chaveiro não identificado. Falta o ID na leitura.";
+    } else {
+        db.ref('chaveiros/' + chaveiroId).once('value').then((snapshot) => {
+            const linkDaPlaylist = snapshot.val();
+            if (linkDaPlaylist) {
+                window.location.href = linkDaPlaylist;
+            } else {
+                loadingDiv.style.display = 'none';
+                formDiv.style.display = 'block';
+            }
+        }).catch((error) => {
+            console.error("Erro ao acessar o banco de dados:", error);
+            loadingDiv.innerText = "Ocorreu um erro de conexão.";
+        });
+    }
+
+    function salvarPlaylist() {
+        const inputText = document.getElementById('playlist-url').value;
+        
+        // Expressão regular que procura e extrai APENAS o link dentro do texto
+        const urlMatch = inputText.match(/(https?:\/\/[^\s]+)/);
+        
+        if (urlMatch) {
+            const linkLimpo = urlMatch[0]; // Pega o link puro encontrado
+            
+            db.ref('chaveiros/' + chaveiroId).set(linkLimpo).then(() => {
+                alert("Sucesso! Da próxima vez que encostar o celular, sua playlist abrirá diretamente.");
+                window.location.href = linkLimpo; 
+            });
+        } else {
+            alert("Por favor, insira um link válido que comece com http:// ou https://");
+        }
+    }
+</script>
+
+</body>
+</html>
