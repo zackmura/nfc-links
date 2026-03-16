@@ -90,6 +90,10 @@
             font-size: 16px; 
             transition: all 0.3s; 
             margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
         
         button:hover { background-color: #311e12; }
@@ -131,28 +135,35 @@
         }
 
         .social-links {
-            display: flex; justify-content: center; gap: 20px;
+            display: flex; flex-direction: column; gap: 10px; width: 100%;
         }
         
-        .social-links a {
-            color: var(--primary-color); text-decoration: none; font-size: 14px;
-            display: flex; align-items: center; gap: 6px; font-weight: 600; transition: color 0.3s;
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white; border: none; padding: 12px 20px; border-radius: 10px; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 15px; transition: 0.3s;
         }
-        .social-links a:hover { color: var(--accent-color); }
-        .social-icon { font-size: 18px; }
+        .btn-instagram:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .btn-whatsapp {
+            background-color: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 10px; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 15px; transition: 0.3s;
+        }
+        .btn-whatsapp:hover { background-color: #1ebe5d; transform: translateY(-2px); }
 
         #custom-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;
+            backdrop-filter: blur(3px);
         }
         .modal-content {
             background: white; padding: 30px; border-radius: 15px; text-align: center;
-            max-width: 300px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-width: 300px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             animation: popIn 0.3s ease-out;
         }
-        .modal-content i { font-size: 40px; color: #4CAF50; margin-bottom: 15px; }
+        .modal-content i { font-size: 45px; margin-bottom: 15px; }
         .modal-content h3 { margin: 0 0 10px; color: #333; }
-        .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; }
+        .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
     </style>
@@ -179,7 +190,7 @@
 
     <div id="action-screen">
         <h2>Chaveiro Configurado!</h2>
-        <p class="description">Você já possui uma playlist gravada neste chaveiro inteligente.</p>
+        <p class="description">Sua playlist está salva neste chaveiro inteligente. O que deseja fazer?</p>
         <button onclick="abrirMusica()"><i class="fa-solid fa-play"></i> Ouvir Playlist</button>
         <button class="btn-secondary" onclick="mostrarFormulario()"><i class="fa-solid fa-pen-to-square"></i> Regravar Chaveiro</button>
     </div>
@@ -187,11 +198,11 @@
     <div class="contact-section">
         <p>Curtiu a ideia? Faça sua encomenda ou tire dúvidas:</p>
         <div class="social-links">
-            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank">
-                <i class="fa-brands fa-instagram social-icon"></i> Instagram
+            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-instagram">
+                <i class="fa-brands fa-instagram"></i> Siga no Instagram
             </a>
-            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20inteligente%20da%20Mini%20Mundo%20e%20gostaria%20de%20saber%20mais." target="_blank">
-                <i class="fa-brands fa-whatsapp social-icon"></i> WhatsApp
+            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20inteligente%20da%20Mini%20Mundo%20e%20gostaria%20de%20saber%20mais." target="_blank" class="btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Fale no WhatsApp
             </a>
         </div>
     </div>
@@ -199,10 +210,10 @@
 
 <div id="custom-modal">
     <div class="modal-content">
-        <i class="fa-solid fa-circle-check"></i>
-        <h3>Tudo Certo!</h3>
-        <p>A sua música foi gravada. Da próxima vez que encostar o celular, ela abrirá diretamente.</p>
-        <button onclick="fecharModalEIrParaMusica()">OK</button>
+        <i id="modal-icon" class="fa-solid fa-circle-check"></i>
+        <h3 id="modal-title">Tudo Certo!</h3>
+        <p id="modal-text">Mensagem aqui</p>
+        <button id="modal-btn" onclick="fecharModal()">OK</button>
     </div>
 </div>
 
@@ -244,25 +255,46 @@
         if(linkSalvo) window.location.href = linkSalvo;
     }
 
-    // Função atualizada para limpar o campo e mostrar o botão voltar
     function mostrarFormulario() {
         actionDiv.style.display = 'none';
         formDiv.style.display = 'block';
-        
-        // Limpa o campo de texto automaticamente
         document.getElementById('playlist-url').value = '';
-        
-        // Mostra o botão de voltar, pois sabemos que já existia um link
-        document.getElementById('btn-voltar').style.display = 'block';
+        document.getElementById('btn-voltar').style.display = 'flex';
     }
 
-    // Nova função para voltar para a tela anterior
     function voltarParaAcao() {
         formDiv.style.display = 'none';
         actionDiv.style.display = 'block';
     }
 
-    let linkParaRedirecionarApósModal = "";
+    // --- FUNÇÕES DO MODAL DINÂMICO ---
+    function mostrarModal(tipo, titulo, mensagem, acaoBotao, textoBotao = "OK") {
+        const modal = document.getElementById('custom-modal');
+        const icon = document.getElementById('modal-icon');
+        const title = document.getElementById('modal-title');
+        const text = document.getElementById('modal-text');
+        const btn = document.getElementById('modal-btn');
+
+        title.innerText = titulo;
+        text.innerText = mensagem;
+        btn.innerHTML = textoBotao;
+
+        if (tipo === 'sucesso') {
+            icon.className = "fa-solid fa-circle-check";
+            icon.style.color = "#4CAF50"; // Verde
+        } else if (tipo === 'erro') {
+            icon.className = "fa-solid fa-circle-xmark";
+            icon.style.color = "#E27D60"; // Laranja/Vermelho da sua paleta
+        }
+
+        btn.onclick = acaoBotao;
+        modal.style.display = 'flex';
+    }
+
+    function fecharModal() {
+        document.getElementById('custom-modal').style.display = 'none';
+    }
+    // ---------------------------------
 
     function salvarPlaylist() {
         const inputText = document.getElementById('playlist-url').value;
@@ -275,23 +307,34 @@
             btn.style.opacity = "0.8";
             
             db.ref('chaveiros/' + chaveiroId).set(linkLimpo).then(() => {
-                linkParaRedirecionarApósModal = linkLimpo;
-                document.getElementById('custom-modal').style.display = 'flex';
+                linkSalvo = linkLimpo; // Atualiza o link salvo em memória
                 
                 setTimeout(() => {
                     btn.innerHTML = "<i class='fa-solid fa-music'></i> Salvar Playlist";
                     btn.style.opacity = "1";
-                }, 1000);
+                    
+                    // Chama o modal de sucesso!
+                    mostrarModal(
+                        'sucesso', 
+                        'Música Gravada!', 
+                        'A sua playlist foi configurada no chaveiro com sucesso.', 
+                        function() {
+                            fecharModal();
+                            abrirMusica(); // Já abre a música ao clicar em "Ouvir Agora"
+                        },
+                        "<i class='fa-solid fa-play'></i> Ouvir Agora"
+                    );
+                }, 800);
             });
         } else {
-            alert("Por favor, insira um link válido que comece com http:// ou https://");
-        }
-    }
-
-    function fecharModalEIrParaMusica() {
-        document.getElementById('custom-modal').style.display = 'none';
-        if(linkParaRedirecionarApósModal) {
-            window.location.href = linkParaRedirecionarApósModal;
+            // Chama o modal de erro no lugar do alert()
+            mostrarModal(
+                'erro',
+                'Link Inválido',
+                'Por favor, cole um link válido do Spotify, YouTube ou Apple Music.',
+                fecharModal,
+                "Tentar Novamente"
+            );
         }
     }
 </script>
