@@ -34,11 +34,11 @@
             background-color: var(--bg-color); 
             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
             color: var(--text-color); 
-            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box;
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; box-sizing: border-box;
         }
         
         .container { 
-            max-width: 450px; width: 100%; background: white; padding: 30px 30px 20px 30px; 
+            max-width: 450px; width: 100%; background: white; padding: 25px 25px 15px 25px; 
             border-radius: 12px 20px 20px 12px; box-shadow: 15px 15px 30px rgba(0,0,0,0.1), -5px 0px 15px rgba(0,0,0,0.02); 
             box-sizing: border-box; text-align: center; border-left: 20px solid var(--primary-color); position: relative;
         }
@@ -48,7 +48,14 @@
             background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, rgba(255,255,255,0.4) 10px, rgba(255,255,255,0.4) 25px);
         }
         
+        /* Ajuste de logo geral */
         .logo { max-width: 110px; margin-bottom: 10px; }
+        
+        /* NOVO: Cabeçalho do diário na tela logada */
+        .diary-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .diary-header img { max-width: 70px; margin-bottom: 5px; }
+        .diary-header h2 { font-family: 'Patrick Hand', cursive; color: var(--primary-color); margin: 0; font-size: 20px; letter-spacing: 0.5px; }
+
         h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 5px; font-size: 26px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px;}
         p { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
         
@@ -60,56 +67,59 @@
         .btn-google img { width: 20px; }
 
         button.btn-primary { 
-            background-color: var(--primary-color); color: white; border: none; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; 
-            width: 100%; font-size: 16px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;
+            background-color: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; 
+            width: 100%; font-size: 15px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px;
         }
         button.btn-primary:hover { background-color: #311e12; }
         
-        .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; margin-top: 10px; padding: 10px; cursor: pointer; transition: 0.3s;}
+        .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 13px; padding: 5px; cursor: pointer; transition: 0.3s;}
         .btn-secondary:hover { color: #d9534f; text-decoration: underline; }
 
         .user-profile {
-            display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #eee;
+            display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #eee;
         }
-        .user-profile img { width: 45px; border-radius: 50%; border: 2px solid var(--accent-color); padding: 2px;}
+        .user-profile img { width: 40px; border-radius: 50%; border: 2px solid var(--accent-color); padding: 2px;}
         .user-profile div { text-align: left; }
-        .user-profile span { display: block; font-weight: bold; color: var(--primary-color); font-size: 16px; }
-        .user-profile small { color: #888; font-size: 12px; }
+        .user-profile span { display: block; font-weight: bold; color: var(--primary-color); font-size: 15px; }
+        .user-profile small { color: #888; font-size: 11px; }
 
-        /* MUDANÇA: Navegação de Datas com Setinhas */
+        /* Navegação de Datas */
         .date-navigation {
-            display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%;
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%; gap: 5px;
         }
         .nav-arrow {
-            background: none; border: none; font-size: 18px; color: #bbb; cursor: pointer; padding: 10px; transition: 0.3s;
+            background: none; border: none; font-size: 18px; color: #bbb; cursor: pointer; padding: 5px; transition: 0.3s; flex-shrink: 0;
         }
-        .nav-arrow:hover { color: var(--accent-color); transform: scale(1.2); }
+        .nav-arrow:hover { color: var(--accent-color); transform: scale(1.1); }
         
         .date-wrapper {
-            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border-bottom: 2px solid var(--accent-color); padding-bottom: 2px;
+            display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border-bottom: 2px solid var(--accent-color); padding-bottom: 2px; flex-grow: 1; min-width: 0; /* Imprescindível para o flex caber */
         }
-        /* Ícone mais discreto */
-        .date-wrapper i { color: #ccc; font-size: 16px; } 
+        .date-wrapper i { color: #ccc; font-size: 15px; flex-shrink: 0; } 
         
+        /* CORREÇÃO: Tamanho da data dinâmico */
         .date-picker {
-            border: none; font-size: 18px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            border: none; font-size: 17px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             color: var(--primary-color); font-weight: bold; background: transparent;
-            outline: none; text-align: center; cursor: pointer; width: 160px;
+            outline: none; text-align: center; cursor: pointer; 
+            width: 100%; /* Ocupa o espaço do wrapper */
+            max-width: 210px; /* Impede de ficar gigante */
         }
 
-        /* O Papel Pautado */
-        .paper-container { position: relative; border-radius: 8px; border: 1px solid #eee; margin-bottom: 20px; background-color: #fffaf0; }
+        /* O Papel Pautado Mágico */
+        .paper-container { position: relative; border-radius: 8px; border: 1px solid #eee; margin-bottom: 15px; background-color: #fffaf0; }
         textarea {
-            width: 100%; height: 250px; padding: 32px 15px 15px 45px; font-size: 20px; font-family: 'Patrick Hand', cursive; 
+            width: 100%; height: 280px; /* MUDANÇA: Aumentei o tamanho visível */
+            padding: 30px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; 
             color: #1a1a1a; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent;
             line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, var(--paper-line) 29px, var(--paper-line) 30px); background-attachment: local;
         }
         .paper-container::before {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 30px; width: 2px;
-            background-color: rgba(226, 125, 96, 0.4); z-index: 1; pointer-events: none;
+            content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 2px;
+            background-color: rgba(226, 125, 96, 0.3); z-index: 1; pointer-events: none;
         }
 
-        /* MUDANÇA: Animações 3D de Virar a Página */
+        /* Animações 3D */
         @keyframes virarPaginaProxima {
             0% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
             50% { transform: perspective(800px) rotateY(-90deg); opacity: 0; }
@@ -123,21 +133,23 @@
             100% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
         }
 
-        /* Estilos Customizados para o Calendário Flatpickr (Mais suave) */
+        /* Calendário Flatpickr (Suave) */
         .flatpickr-calendar { font-family: 'Segoe UI', sans-serif !important; border-radius: 15px !important; box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important; border: none !important; padding: 5px !important;}
-        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
-            background: var(--primary-color) !important; border-color: var(--primary-color) !important;
-        }
+        .flatpickr-day.selected { background: var(--primary-color) !important; border-color: var(--primary-color) !important; }
         .dia-com-registro { position: relative; font-weight: bold; }
         .dia-com-registro::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-color); }
 
-        /* Contatos */
-        .contact-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
-        .contact-section p { font-size: 13px; color: #888; margin-bottom: 15px; font-weight: 500; font-family: 'Segoe UI', sans-serif;}
-        .social-links { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; border: none; padding: 12px 20px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px; transition: 0.3s; }
-        .btn-whatsapp { background-color: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px; transition: 0.3s; }
-        .btn-instagram:hover, .btn-whatsapp:hover { opacity: 0.9; transform: translateY(-2px); }
+        /* MUDANÇA: Contatos Horizontais Lado a Lado */
+        .contact-section { margin-top: 15px; padding-top: 12px; border-top: 1px solid #eee; }
+        .contact-section p { font-size: 12px; color: #888; margin-bottom: 10px; font-weight: 500;}
+        .social-links { display: flex; flex-direction: row; gap: 8px; width: 100%; justify-content: center;}
+        
+        .btn-contact {
+            color: white; border: none; padding: 10px 15px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 13px; transition: 0.3s; flex: 1; max-width: 180px;
+        }
+        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);}
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-contact:hover { opacity: 0.9; transform: translateY(-1px); }
 
         #loading-screen, #login-screen, #diary-screen { display: none; }
         .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
@@ -145,11 +157,11 @@
 
         /* Modal Dinâmico */
         #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 300px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
-        .modal-content i { font-size: 45px; margin-bottom: 15px; }
-        .modal-content h3 { margin: 0 0 10px; color: #333; font-family: 'Segoe UI', sans-serif;}
-        .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.4; font-family: 'Segoe UI', sans-serif;}
-        .modal-content button { background-color: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
+        .modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; max-width: 290px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
+        .modal-content i { font-size: 40px; margin-bottom: 12px; }
+        .modal-content h3 { margin: 0 0 8px; color: #333; font-size: 18px; }
+        .modal-content p { color: #666; font-size: 13px; margin-bottom: 15px; line-height: 1.4;}
+        .modal-content button { background-color: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
@@ -173,6 +185,11 @@
     </div>
 
     <div id="diary-screen">
+        <div class="diary-header">
+            <img src="logo.jpg" alt="Mini Mundo">
+            <h2>Seu Espaço de Memórias</h2>
+        </div>
+
         <div class="user-profile">
             <img id="user-photo" src="" alt="Foto de Perfil">
             <div>
@@ -185,7 +202,7 @@
             <button class="nav-arrow" onclick="mudarPagina(-1)"><i class="fa-solid fa-chevron-left"></i></button>
             <div class="date-wrapper">
                 <i class="fa-regular fa-calendar-days"></i>
-                <input type="text" id="diary-date" class="date-picker" placeholder="Escolha um dia">
+                <input type="text" id="diary-date" class="date-picker">
             </div>
             <button class="nav-arrow" onclick="mudarPagina(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
@@ -196,19 +213,20 @@
         
         <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-key"></i> Salvar e Trancar Dia</button>
         <button class="btn-secondary" onclick="fazerLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Fechar Caderno</button>
-    </div>
-
-    <div class="contact-section">
-        <p>Mais produtos inteligentes da Mini Mundo:</p>
-        <div class="social-links">
-            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-instagram">
-                <i class="fa-brands fa-instagram"></i> Siga no Instagram
-            </a>
-            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Achei%20incr%C3%ADvel%20o%20di%C3%A1rio%20inteligente%20e%20gostaria%20de%20saber%20mais." target="_blank" class="btn-whatsapp">
-                <i class="fa-brands fa-whatsapp"></i> Fale no WhatsApp
-            </a>
+        
+        <div class="contact-section">
+            <p>Mais segredos e produtos inteligentes da Mini Mundo:</p>
+            <div class="social-links">
+                <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram">
+                    <i class="fa-brands fa-instagram"></i> Instagram
+                </a>
+                <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Achei%20incr%C3%ADvel%20o%20di%C3%A1rio%20inteligente%20e%20gostaria%20de%20saber%20mais." target="_blank" class="btn-contact btn-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+            </div>
         </div>
     </div>
+
 </div>
 
 <div id="custom-modal">
@@ -244,6 +262,7 @@
     let usuarioAtual = null;
     let fpInstance = null; 
     let datasComRegistro = []; 
+    let dataAnteriorGlobal = new Date(); // Para controlar a direção da animação no picker
 
     auth.onAuthStateChanged((user) => {
         loadingScreen.style.display = 'none';
@@ -271,11 +290,38 @@
             locale: "pt",
             dateFormat: "Y-m-d",
             altInput: true,
-            altFormat: "d \\de F \\de Y",
+            altFormat: "d \\de F \\de Y", // Texto bonito
             defaultDate: "today",
             disableMobile: true,
             onChange: function(selectedDates, dateStr, instance) {
-                carregarTextoDoDia(dateStr);
+                // MUDANÇA: Lógica de animação ao escolher no calendário pop-up
+                if (!selectedDates[0] || !usuarioAtual) return;
+                const novaData = selectedDates[0];
+
+                let direcao = 0;
+                // Compara a data nova com a que estava selecionada antes
+                if (novaData.getTime() > dataAnteriorGlobal.getTime()) {
+                    direcao = 1; // Futuro
+                } else if (novaData.getTime() < dataAnteriorGlobal.getTime()) {
+                    direcao = -1; // Passado
+                }
+
+                if (direcao !== 0) {
+                    // Aplica a animação
+                    caderno.style.animation = 'none';
+                    void caderno.offsetWidth; 
+                    caderno.style.animation = direcao > 0 ? "virarPaginaProxima 0.5s forwards" : "virarPaginaAnterior 0.5s forwards";
+                    
+                    // Carrega o texto na metade da animação
+                    setTimeout(() => {
+                        carregarTextoDoDia(dateStr);
+                    }, 250);
+
+                    // Atualiza a referência de data anterior
+                    dataAnteriorGlobal = new Date(novaData);
+                } else {
+                     carregarTextoDoDia(dateStr); // Mesma data, só carrega
+                }
             },
             onDayCreate: function(dObj, dStr, fp, dayElem) {
                 const dataFormatada = dayElem.dateObj.getFullYear() + "-" + 
@@ -288,10 +334,10 @@
             }
         });
         
+        dataAnteriorGlobal = new Date(); // Inicia com hoje UTC
         carregarTextoDoDia(fpInstance.input.value);
     }
 
-    // MUDANÇA: Função de Virar Página pelas setinhas
     function mudarPagina(direcao) {
         if(!fpInstance || !usuarioAtual) return;
 
@@ -299,16 +345,16 @@
         const novaData = new Date(dataAtual);
         novaData.setDate(novaData.getDate() + direcao);
 
-        // Atualiza a data no calendário sem forçar o carregamento de texto imediato
-        fpInstance.setDate(novaData, false);
+        fpInstance.setDate(novaData, false); // Atualiza calendário (sem trigger onChange)
         const dataStr = fpInstance.input.value;
+        dataAnteriorGlobal = new Date(novaData); // Atualiza referência global para o picker
 
-        // Reseta e aplica a animação
+        // Aplica a animação
         caderno.style.animation = 'none';
-        void caderno.offsetWidth; // Força o reflow do CSS
+        void caderno.offsetWidth;
         caderno.style.animation = direcao > 0 ? "virarPaginaProxima 0.5s forwards" : "virarPaginaAnterior 0.5s forwards";
 
-        // Troca o texto do diário exatamente na metade da animação (quando o papel "some" girando)
+        // Carrega o texto na metade da animação
         setTimeout(() => {
             carregarTextoDoDia(dataStr);
         }, 250);
@@ -317,6 +363,7 @@
     function buscarDiasMapeados() {
         if(!usuarioAtual) return;
         
+        // "Escuta" o banco em tempo real
         db.ref('diarios/' + usuarioAtual.uid).on('value', (snapshot) => {
             if(snapshot.exists()) {
                 datasComRegistro = Object.keys(snapshot.val());
@@ -367,7 +414,7 @@
         }).catch((error) => {
             diaryText.disabled = false;
             diaryText.value = "";
-            mostrarModal('erro', 'Ops', 'Erro ao ler a página.');
+            console.error("Erro ao ler:", error);
         });
     }
 
@@ -375,7 +422,7 @@
         if(!usuarioAtual || !fpInstance) return;
 
         const btn = document.getElementById('btn-salvar');
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Trancando a página...";
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Trancando...";
         
         const dataSelecionada = fpInstance.input.value;
         const textoParaSalvar = diaryText.value;
@@ -384,11 +431,11 @@
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             setTimeout(() => {
                 btn.innerHTML = "<i class='fa-solid fa-key'></i> Salvar e Trancar Dia";
-                mostrarModal('sucesso', 'Memória Guardada!', 'Página trancada e salva no cofre com sucesso.');
+                mostrarModal('sucesso', 'Memória Guardada!', 'Página criptografada e salva no cofre.');
             }, 600);
         }).catch((error) => {
             btn.innerHTML = "<i class='fa-solid fa-key'></i> Salvar e Trancar Dia";
-            mostrarModal('erro', 'Erro', 'Sua pena falhou. Verifique a internet.');
+            mostrarModal('erro', 'Ops', 'Verifique a conexão e tente salvar novamente.');
         });
     }
 
