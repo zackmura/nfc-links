@@ -8,52 +8,48 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
     
     <style>
         :root {
-            --primary-color: #4A2E1B; /* Marrom escuro */
-            --accent-color: #E27D60;  /* Laranja terracota */
-            --bg-color: #fdf9f1;      /* Papel antigo suave de fundo */
+            --primary-color: #4A2E1B; 
+            --accent-color: #E27D60;  
+            --bg-color: #f5efe6; /* Cor de fundo mais limpa, estilo mesa de madeira clara */
             --text-color: #333;
-            --paper-line: rgba(74, 46, 27, 0.15); /* Linhas marrons suaves */
         }
         
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: var(--bg-color); 
-            /* MUDANÇA: Textura de fundo de pergaminho antigo */
-            background-image: url('https://www.transparenttextures.com/patterns/vintage-speckles.png');
             color: var(--text-color); 
             margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; box-sizing: border-box;
         }
         
         .container { 
             max-width: 450px; width: 100%; background: white; padding: 25px 25px 15px 25px; 
-            border-radius: 12px 20px 20px 12px; box-shadow: 15px 15px 30px rgba(0,0,0,0.1), -5px 0px 15px rgba(0,0,0,0.02); 
-            box-sizing: border-box; text-align: center; border-left: 20px solid var(--primary-color); position: relative;
+            border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.06); 
+            box-sizing: border-box; text-align: center; border-left: 18px solid var(--primary-color); position: relative;
         }
 
         .container::before {
-            content: ''; position: absolute; top: 10%; bottom: 10%; left: -14px; width: 4px;
-            background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, rgba(255,255,255,0.4) 10px, rgba(255,255,255,0.4) 25px);
+            content: ''; position: absolute; top: 5%; bottom: 5%; left: -12px; width: 3px;
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 15px, rgba(255,255,255,0.3) 15px, rgba(255,255,255,0.3) 30px);
         }
         
         .logo { max-width: 110px; margin-bottom: 10px; }
         
-        .diary-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .diary-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0e9e1; }
         .diary-header img { max-width: 70px; margin-bottom: 5px; }
-        .diary-header h2 { font-family: 'Patrick Hand', cursive; color: #8a705e; margin: 0; font-size: 20px; letter-spacing: 0.5px; font-weight: normal; }
+        .diary-header h2 { font-family: 'Patrick Hand', cursive; color: #7a6353; margin: 0; font-size: 20px; letter-spacing: 0.5px; font-weight: normal; }
 
         h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 5px; font-size: 26px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px;}
         p { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
@@ -81,6 +77,7 @@
         .user-profile div { text-align: left; }
         .user-profile span { display: block; color: var(--primary-color); font-size: 20px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px; }
         .user-profile small { color: #aaa; font-size: 11px; }
+        .user-profile small i { color: #ccc; }
 
         .date-navigation {
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%; gap: 5px;
@@ -101,64 +98,58 @@
             outline: none; text-align: center; cursor: pointer; width: 100%; max-width: 210px; 
         }
 
-        /* MUDANÇA: Folha de caderno com visual envelhecido realista */
+        /* MUDANÇA: Folha Orgânica e Limpa */
+        .paper-wrapper {
+            perspective: 1200px; /* Prepara o ambiente para o 3D */
+            margin-bottom: 15px;
+        }
+
         .paper-container { 
             position: relative; 
-            border-radius: 4px; /* Menos redondo para parecer folha rasgada */
-            margin-bottom: 15px; 
-            background-color: #f7ead5; /* Cor de pergaminho antigo */
-            /* Textura interna de papel kraft */
-            background-image: url('https://www.transparenttextures.com/patterns/criss-cross.png');
-            /* Sombra interna para criar efeito de borda envelhecida */
-            box-shadow: inset 0 0 15px rgba(74, 46, 27, 0.1), 0 2px 5px rgba(0,0,0,0.05);
-            /* Borda queimada suave */
-            border: 1px solid #e3d1b7;
-            overflow: hidden; /* Importante para a animação */
-            /* Define a origem da animação no canto inferior */
-            transform-origin: bottom right; 
+            background-color: #fcf8f2; /* Creme muito suave, quase branco */
+            /* O SEGREDO: Bordas levemente orgânicas/irregulares imitando corte de papel */
+            border-radius: 2px 255px 3px 255px / 255px 5px 225px 3px; 
+            box-shadow: 2px 3px 12px rgba(0,0,0,0.06); 
+            border: 1px solid #ebdaca;
+            transform-origin: left center; /* A folha vira a partir da lombada esquerda */
+            will-change: transform;
         }
 
         textarea {
             width: 100%; height: 280px; padding: 30px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; 
-            color: #1a1a1a; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent;
-            /* Linhas mais suaves e tremidas */
-            line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, var(--paper-line) 29px, var(--paper-line) 30px); background-attachment: local;
+            color: #2b2b2b; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent;
+            /* Linhas mais discretas */
+            line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(166, 138, 113, 0.25) 29px, rgba(166, 138, 113, 0.25) 30px); background-attachment: local;
         }
         .paper-container::before {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 2px;
-            background-color: rgba(226, 125, 96, 0.25); z-index: 1; pointer-events: none;
+            /* Linha da margem clássica avermelhada */
+            content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px;
+            background-color: rgba(217, 83, 79, 0.35); z-index: 1; pointer-events: none;
         }
 
-        /* MUDANÇA: Novas Animações Realistas de Folhear Livro (Slide and Fold) */
-        @keyframes folhearProxima {
-            0% { transform: perspective(1000px) rotateY(0deg) translateX(0); opacity: 1; }
-            30% { transform: perspective(1000px) rotateY(-5deg) translateX(0); } /* Começa a levantar */
-            60% { transform: perspective(1000px) rotateY(-30deg) translateX(-100%) scale(0.9); opacity: 1; } /* Puxa e dobra */
-            100% { transform: perspective(1000px) rotateY(-30deg) translateX(-150%) scale(0.9); opacity: 0; } /* Some da tela */
+        /* MUDANÇA: Animação Real de Livro (Vira na Lombada) */
+        @keyframes pageTurnOut {
+            0% { transform: rotateY(0deg); opacity: 1; }
+            100% { transform: rotateY(-90deg); opacity: 0; }
         }
-        @keyframes folhearAnterior {
-            0% { transform: perspective(1000px) rotateY(30deg) translateX(150%) scale(0.9); opacity: 0; }
-            40% { transform: perspective(1000px) rotateY(30deg) translateX(100%) scale(0.9); opacity: 1; } /* Entra dobrada */
-            70% { transform: perspective(1000px) rotateY(5deg) translateX(0); } /* Desdobra */
-            100% { transform: perspective(1000px) rotateY(0deg) translateX(0); opacity: 1; }
+        @keyframes pageTurnIn {
+            0% { transform: rotateY(90deg); opacity: 0; }
+            100% { transform: rotateY(0deg); opacity: 1; }
         }
 
-        .flatpickr-calendar { font-family: 'Segoe UI', sans-serif !important; border-radius: 15px !important; box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important; border: none !important; padding: 5px !important; background-color: #f7ead5 !important;}
+        .flatpickr-calendar { font-family: 'Segoe UI', sans-serif !important; border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important; border: 1px solid #f0e9e1 !important; padding: 5px !important; background-color: #fff !important;}
         .flatpickr-day.selected { background: var(--primary-color) !important; border-color: var(--primary-color) !important; }
         .dia-com-registro { position: relative; font-weight: bold; }
-        .dia-com-registro::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-color); }
+        .dia-com-registro::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background-color: var(--accent-color); }
 
         .contact-section { margin-top: 15px; padding-top: 12px; border-top: 1px solid #eee; }
         .contact-section p { font-size: 12px; color: #888; margin-bottom: 10px; font-weight: 500;}
         .social-links { display: flex; flex-direction: row; gap: 8px; width: 100%; justify-content: center;}
         
-        /* MUDANÇA: Botões de contato padronizados na paleta Mini Mundo */
         .btn-contact {
             color: white; border: none; padding: 10px 15px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 13px; transition: 0.3s; flex: 1; max-width: 180px;
         }
-        /* Cor 1: Variação suave do Terracota */
         .btn-instagram { background-color: #c96549; } 
-        /* Cor 2: Variação suave do Marrom */
         .btn-whatsapp { background-color: #6d4f3b; } 
         .btn-contact:hover { opacity: 0.9; transform: translateY(-1px); }
 
@@ -209,16 +200,18 @@
         </div>
         
         <div class="date-navigation">
-            <button class="nav-arrow" onclick="mudarPagina(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-arrow" onclick="mudarDataComAnimacao(-1)"><i class="fa-solid fa-chevron-left"></i></button>
             <div class="date-wrapper">
                 <i class="fa-regular fa-calendar-days"></i>
                 <input type="text" id="diary-date" class="date-picker">
             </div>
-            <button class="nav-arrow" onclick="mudarPagina(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="nav-arrow" onclick="mudarDataComAnimacao(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         
-        <div class="paper-container" id="meu-caderno">
-            <textarea id="diary-text" placeholder="Querido diário, hoje aconteceu algo incrível..."></textarea>
+        <div class="paper-wrapper">
+            <div class="paper-container" id="meu-caderno">
+                <textarea id="diary-text" placeholder="Querido diário, hoje aconteceu algo incrível..."></textarea>
+            </div>
         </div>
         
         <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()">
@@ -278,10 +271,10 @@
     let fpInstance = null; 
     let datasComRegistro = []; 
     let dataAnteriorGlobal = new Date(); 
+    let isAnimating = false; // Trava de segurança para não bugar clicando rápido
 
     auth.onAuthStateChanged((user) => {
         loadingScreen.style.display = 'none';
-        
         if (user) {
             usuarioAtual = user;
             const primeiroNome = user.displayName.split(" ")[0];
@@ -302,11 +295,14 @@
         fpInstance = flatpickr("#diary-date", {
             locale: "pt", dateFormat: "Y-m-d", altInput: true, altFormat: "d \\de F \\de Y", defaultDate: "today", disableMobile: true,
             onChange: function(selectedDates, dateStr, instance) {
-                if (!selectedDates[0] || !usuarioAtual) return;
+                if (!selectedDates[0] || !usuarioAtual || isAnimating) return;
                 const novaData = selectedDates[0];
                 let direcao = novaData.getTime() > dataAnteriorGlobal.getTime() ? 1 : -1;
-                mudarDataComAnimacao(dateStr, direcao);
-                dataAnteriorGlobal = new Date(novaData);
+                
+                if(novaData.getTime() !== dataAnteriorGlobal.getTime()){
+                    executarAnimacaoLivro(dateStr, direcao);
+                    dataAnteriorGlobal = new Date(novaData);
+                }
             },
             onDayCreate: function(dObj, dStr, fp, dayElem) {
                 const dataFormatada = dayElem.dateObj.getFullYear() + "-" + String(dayElem.dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dayElem.dateObj.getDate()).padStart(2, '0');
@@ -317,26 +313,42 @@
         carregarTextoDoDia(fpInstance.input.value);
     }
 
-    function mudarPagina(direcao) {
-        if(!fpInstance || !usuarioAtual) return;
+    function mudarDataComAnimacao(direcao) {
+        if(!fpInstance || !usuarioAtual || isAnimating) return;
         const dataAtual = fpInstance.selectedDates[0];
         const novaData = new Date(dataAtual);
         novaData.setDate(novaData.getDate() + direcao);
+        
         fpInstance.setDate(novaData, false); 
         const dataStr = fpInstance.input.value;
         dataAnteriorGlobal = new Date(novaData); 
-        mudarDataComAnimacao(dataStr, direcao);
+        
+        executarAnimacaoLivro(dataStr, direcao);
     }
 
-    // MUDANÇA: Lógica de animação unificada para setas e calendário
-    function mudarDataComAnimacao(dataStr, direcao) {
-        // Aplica a NOVA animação de folhear (Slide and Fold)
+    // MUDANÇA: Lógica blindada contra tela branca (Remove as propriedades no fim)
+    function executarAnimacaoLivro(dataStr, direcao) {
+        isAnimating = true;
+        
+        // 1. A página atual vira para a esquerda e some
         caderno.style.animation = 'none';
-        void caderno.offsetWidth;
-        caderno.style.animation = direcao > 0 ? "folhearProxima 0.6s forwards" : "folhearAnterior 0.6s forwards";
+        void caderno.offsetWidth; 
+        caderno.style.animation = "pageTurnOut 0.25s ease-in forwards";
 
-        // Troca o texto do diário exatamente na metade da animação
-        setTimeout(() => { carregarTextoDoDia(dataStr); }, 250);
+        setTimeout(() => { 
+            // 2. Troca o texto enquanto está invisível
+            carregarTextoDoDia(dataStr); 
+            
+            // 3. A página nova vem da direita e pousa
+            caderno.style.animation = "pageTurnIn 0.25s ease-out forwards";
+            
+            setTimeout(() => {
+                // 4. O SEGREDO: Limpa o CSS da animação para não bugar o teclado no celular!
+                caderno.style.animation = 'none';
+                isAnimating = false;
+            }, 250);
+
+        }, 250);
     }
 
     function buscarDiasMapeados() {
@@ -348,12 +360,10 @@
     }
 
     function fazerLogin() {
-        loadingScreen.style.display = 'block';
-        loginScreen.style.display = 'none';
+        loadingScreen.style.display = 'block'; loginScreen.style.display = 'none';
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider).catch((error) => {
-            loadingScreen.style.display = 'none';
-            loginScreen.style.display = 'block';
+            loadingScreen.style.display = 'none'; loginScreen.style.display = 'block';
             mostrarModal('erro', 'Ops!', 'Não foi possível destrancar o diário.');
         });
     }
@@ -373,7 +383,7 @@
                 } catch(e) { diaryText.value = textoSalvo; }
             } else { diaryText.value = ""; }
         }).catch((error) => {
-            diaryText.disabled = false; diaryText.value = ""; console.error("Erro ao ler:", error);
+            diaryText.disabled = false; diaryText.value = ""; 
         });
     }
 
@@ -388,7 +398,7 @@
             setTimeout(() => {
                 btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória";
                 mostrarModal('sucesso', 'Memória Guardada!', 'Página criptografada e salva no cofre.');
-            }, 600);
+            }, 500);
         }).catch((error) => {
             btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória";
             mostrarModal('erro', 'Ops', 'Verifique a conexão e tente salvar novamente.');
