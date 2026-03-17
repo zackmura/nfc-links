@@ -41,7 +41,7 @@
             border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
             box-sizing: border-box;
-            position: relative;
+            position: relative; /* Necessário para o posicionamento do ícone */
         }
         
         .logo { max-width: 150px; margin-bottom: 20px; }
@@ -80,9 +80,22 @@
         .btn-secondary { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); }
         .btn-secondary:hover { background-color: #f0e9e4; }
         
-        /* Novo estilo para o botão de apagar */
-        .btn-danger { background-color: transparent; color: #d9534f; border: 2px solid #d9534f; margin-top: 15px;}
-        .btn-danger:hover { background-color: #fdf2f2; }
+        /* NOVO ESTILO: Ícone de lixeira discreto */
+        .reset-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 18px;
+            color: #ccc; /* Cor discreta inicial */
+            cursor: pointer;
+            transition: 0.3s;
+            padding: 5px;
+            display: none; /* Escondido por padrão */
+        }
+        .reset-icon:hover {
+            color: #d9534f; /* Fica vermelho suave ao passar o mouse */
+            transform: scale(1.1);
+        }
         
         #loading { 
             font-size: 16px; color: var(--primary-color); font-weight: 500;
@@ -115,6 +128,7 @@
         }
         .btn-whatsapp:hover { background-color: #1ebe5d; transform: translateY(-2px); }
 
+        /* Estilos do Modal Dinâmico */
         #custom-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;
@@ -128,6 +142,15 @@
         .modal-content i { font-size: 45px; margin-bottom: 15px; }
         .modal-content h3 { margin: 0 0 10px; color: #333; }
         .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
+        
+        /* Container para botões no modal de confirmação */
+        .modal-buttons {
+            display: none; /* Escondido por padrão */
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
     </style>
@@ -135,6 +158,8 @@
 <body>
 
 <div class="container">
+    <i class="fa-solid fa-trash-can reset-icon" id="reset-icon" onclick="pedirConfirmacaoZerar()" title="Zerar Chaveiro"></i>
+
     <img src="logo.jpg" alt="Mini Mundo" class="logo">
     
     <div id="loading">
@@ -155,11 +180,9 @@
 
     <div id="action-screen">
         <h2>Chaveiro Configurado!</h2>
-        <p class="description">Sua playlist está salva neste chaveiro inteligente. O que deseja fazer?</p>
+        <p class="description">Sua música ou playlist está salva neste chaveiro inteligente. O que deseja fazer?</p>
         <button onclick="abrirMusica()"><i class="fa-solid fa-play"></i> Ouvir Playlist</button>
         <button class="btn-secondary" id="btn-regravar" onclick="mostrarFormulario()"><i class="fa-solid fa-pen-to-square"></i> Regravar Chaveiro</button>
-        
-        <button class="btn-danger" id="btn-zerar" onclick="confirmarZerar()"><i class="fa-solid fa-trash-can"></i> Resetar Chaveiro</button>
     </div>
 
     <div class="contact-section">
@@ -180,7 +203,13 @@
         <i id="modal-icon" class="fa-solid fa-circle-check"></i>
         <h3 id="modal-title">Tudo Certo!</h3>
         <p id="modal-text">Mensagem aqui</p>
-        <button id="modal-btn" onclick="fecharModal()">OK</button>
+        
+        <button id="modal-btn-ok" onclick="fecharModal()">OK</button>
+        
+        <div id="modal-confirm-btns" class="modal-buttons">
+            <button id="modal-btn-sim"><i class="fa-solid fa-trash-can"></i> Sim, apagar</button>
+            <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+        </div>
     </div>
 </div>
 
@@ -188,7 +217,7 @@
     const firebaseConfig = {
         databaseURL: "https://minimundo-nfc-music-default-rtdb.firebaseio.com/"
     };
-    firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfigConfig);
     const db = firebase.database();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -198,7 +227,7 @@
     const formDiv = document.getElementById('setup-form');
     const actionDiv = document.getElementById('action-screen');
     const btnRegravar = document.getElementById('btn-regravar');
-    const btnZerar = document.getElementById('btn-zerar'); // Referência ao novo botão
+    const resetIcon = document.getElementById('reset-icon'); // Referência ao novo ícone
     let linkSalvo = ""; 
 
     const isOwner = localStorage.getItem('dono_chaveiro_' + chaveiroId);
@@ -214,10 +243,11 @@
                 linkSalvo = linkDaPlaylist;
                 actionDiv.style.display = 'block';
                 
-                // Esconde os botões de edição se não for o dono
-                if (!isOwner) {
+                // Se for o dono, mostra o ícone discreto de reset
+                if (isOwner) {
+                    resetIcon.style.display = 'block';
+                } else {
                     btnRegravar.style.display = 'none';
-                    btnZerar.style.display = 'none'; 
                 }
             } else {
                 formDiv.style.display = 'block';
@@ -241,70 +271,93 @@
         if(welcomeBadge) welcomeBadge.style.display = 'none';
         
         document.querySelector('#setup-form h2').innerText = 'Regravar Chaveiro';
-        document.querySelector('#setup-form .description').innerText = 'Cole o novo link da sua playlist abaixo para atualizar o chaveiro:';
+        document.querySelector('#setup-form .description').innerText = 'Cole o novo link da sua música ou playlist abaixo:';
         
         document.getElementById('btn-voltar').style.display = 'flex';
+        resetIcon.style.display = 'none'; // Esconde a lixeira no form
     }
 
     function voltarParaAcao() {
         formDiv.style.display = 'none';
         actionDiv.style.display = 'block';
+        if(isOwner) resetIcon.style.display = 'block'; // Mostra a lixeira de volta
     }
 
-    // --- NOVA FUNÇÃO: Confirmar e Zerar ---
-    function confirmarZerar() {
-        // Pede uma confirmação rápida para evitar toques acidentais
-        if(confirm("Tem certeza que deseja apagar a música? O chaveiro ficará vazio como novo e pronto para outra pessoa.")) {
-            zerarChaveiro();
-        }
+    // --- RECURSO LAPIDADO: Confirmação Discreta com Modal Lindo ---
+    function pedirConfirmacaoZerar() {
+        mostrarModal(
+            'confirmar', // Novo tipo
+            'Tem Certeza?',
+            'Você vai apagar a música ou playlist atual. O chaveiro ficará vazio e pronto para ser reconfigurado.',
+            zerarChaveiro // Ação se clicar em Sim
+        );
     }
 
     function zerarChaveiro() {
-        const btn = document.getElementById('btn-zerar');
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Resetando...";
+        fecharModal(); // Fecha o modal de confirmação primeiro
         
-        // Remove os dados do Firebase
+        loadingDiv.innerHTML = "<div class='spinner'></div><span>Resetando...</span>";
+        loadingDiv.style.display = 'flex';
+        actionDiv.style.display = 'none';
+        resetIcon.style.display = 'none';
+
         db.ref('chaveiros/' + chaveiroId).remove().then(() => {
-            // Remove o carimbo VIP do celular
             localStorage.removeItem('dono_chaveiro_' + chaveiroId);
             
+            // Reutiliza o modal para o sucesso
             mostrarModal(
                 'sucesso',
                 'Chaveiro Zerado!',
-                'Os dados foram apagados. O chaveiro está pronto para um novo dono.',
+                'Os dados foram apagados. O chaveiro voltou à estaca zero.',
                 function() {
-                    window.location.reload(); // Recarrega a página para voltar à estaca zero
+                    window.location.reload();
                 },
                 "Voltar ao Início"
             );
         }).catch((error) => {
-            alert("Ocorreu um erro ao tentar zerar o chaveiro.");
-            btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Resetar Chaveiro";
+            mostrarModal('erro', 'Ops!', 'Ocorreu um erro ao tentar zerar.');
+            loadingDiv.style.display = 'none';
+            actionDiv.style.display = 'block';
+            resetIcon.style.display = 'block';
         });
     }
-    // --------------------------------------
+    // -------------------------------------------------------------
 
-    function mostrarModal(tipo, titulo, mensagem, acaoBotao, textoBotao = "OK") {
+    // Função Modal Dinâmico Atualizada para suportar Confirmações (Yes/No)
+    function mostrarModal(tipo, titulo, mensagem, acaoBotaoSim, textoBotaoOk = "OK") {
         const modal = document.getElementById('custom-modal');
         const icon = document.getElementById('modal-icon');
         const title = document.getElementById('modal-title');
         const text = document.getElementById('modal-text');
-        const btn = document.getElementById('modal-btn');
+        const btnOk = document.getElementById('modal-btn-ok');
+        const confirmBtns = document.getElementById('modal-confirm-btns');
+        const btnSim = document.getElementById('modal-btn-sim');
 
         title.innerText = titulo;
         text.innerText = mensagem;
-        btn.innerHTML = textoBotao;
+
+        // Limpa estados
+        modal.style.display = 'flex';
+        btnOk.style.display = 'none';
+        confirmBtns.style.display = 'none';
 
         if (tipo === 'sucesso') {
             icon.className = "fa-solid fa-circle-check";
             icon.style.color = "#4CAF50"; 
+            btnOk.style.display = 'block';
+            btnOk.innerHTML = textoBotaoOk;
+            btnOk.onclick = acaoBotaoSim || fecharModal; // Se não passar ação, só fecha
         } else if (tipo === 'erro') {
             icon.className = "fa-solid fa-circle-xmark";
             icon.style.color = "#E27D60"; 
+            btnOk.style.display = 'block';
+            btnOk.onclick = fecharModal;
+        } else if (tipo === 'confirmar') {
+            icon.className = "fa-solid fa-triangle-exclamation";
+            icon.style.color = "#E27D60"; // Usa a cor de destaque (laranja)
+            confirmBtns.style.display = 'flex';
+            btnSim.onclick = acaoBotaoSim; // Define a ação do Sim
         }
-
-        btn.onclick = acaoBotao;
-        modal.style.display = 'flex';
     }
 
     function fecharModal() {
