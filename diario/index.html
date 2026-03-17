@@ -12,18 +12,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-color: #4A2E1B; 
-            --accent-color: #E27D60;  
-            --bg-color: #f4f7f6;
+            --primary-color: #4A2E1B; /* Marrom escuro da logo */
+            --accent-color: #E27D60;  /* Laranja terracota */
+            --bg-color: #fdf9f1;      /* Cor de papel envelhecido suave */
             --text-color: #333;
+            --paper-line: #d1d5db;    /* Cor das linhas do caderno */
         }
         
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: var(--bg-color); 
+            /* Textura super suave de papel de fundo */
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
             color: var(--text-color); 
             margin: 0;
             display: flex;
@@ -38,16 +44,25 @@
             max-width: 450px; 
             width: 100%;
             background: white; 
-            padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            padding: 30px 30px 20px 30px; 
+            border-radius: 12px 20px 20px 12px; 
+            box-shadow: 15px 15px 30px rgba(0,0,0,0.1), -5px 0px 15px rgba(0,0,0,0.02); 
             box-sizing: border-box;
             text-align: center;
+            /* Efeito de Lombada de Caderno */
+            border-left: 20px solid var(--primary-color);
+            position: relative;
+        }
+
+        /* Detalhe da costura do caderno */
+        .container::before {
+            content: ''; position: absolute; top: 10%; bottom: 10%; left: -14px; width: 4px;
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 10px, rgba(255,255,255,0.4) 10px, rgba(255,255,255,0.4) 25px);
         }
         
-        .logo { max-width: 120px; margin-bottom: 15px; }
+        .logo { max-width: 110px; margin-bottom: 10px; }
         
-        h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 10px; font-size: 24px; }
+        h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 5px; font-size: 26px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px;}
         p { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
         
         .btn-google {
@@ -60,61 +75,87 @@
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-google img { width: 20px; }
 
-        button { 
+        button.btn-primary { 
             background-color: var(--primary-color); color: white; border: none; 
             padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; 
             width: 100%; font-size: 16px; transition: all 0.3s;
             display: flex; justify-content: center; align-items: center; gap: 10px;
         }
-        button:hover { background-color: #311e12; }
+        button.btn-primary:hover { background-color: #311e12; }
         
-        .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; margin-top: 15px; padding: 10px; }
+        .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; margin-top: 10px; padding: 10px; cursor: pointer; transition: 0.3s;}
         .btn-secondary:hover { color: #d9534f; background-color: transparent; text-decoration: underline; }
 
         .user-profile {
-            display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;
-            padding-bottom: 15px; border-bottom: 1px solid #eee;
+            display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 1px dashed #eee;
         }
-        .user-profile img { width: 40px; border-radius: 50%; border: 2px solid var(--accent-color); }
+        .user-profile img { width: 45px; border-radius: 50%; border: 2px solid var(--accent-color); padding: 2px;}
         .user-profile div { text-align: left; }
         .user-profile span { display: block; font-weight: bold; color: var(--primary-color); font-size: 16px; }
         .user-profile small { color: #888; font-size: 12px; }
 
         .date-picker {
-            width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; 
-            font-size: 16px; font-family: inherit; color: var(--primary-color); font-weight: bold;
+            width: 100%; padding: 10px; border: none; border-bottom: 2px solid var(--accent-color); 
+            font-size: 18px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: var(--primary-color); font-weight: bold; background: transparent;
             box-sizing: border-box; margin-bottom: 15px; outline: none; text-align: center;
         }
-        .date-picker:focus { border-color: var(--accent-color); }
 
-        textarea {
-            width: 100%; height: 200px; padding: 15px; border: 2px solid #eee; border-radius: 10px;
-            font-size: 15px; font-family: inherit; color: #444; box-sizing: border-box;
-            resize: none; outline: none; line-height: 1.6; margin-bottom: 15px;
+        /* O Papel Pautado Mágico */
+        .paper-container {
+            position: relative;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+            background-color: #fffaf0; /* Cor de folha de diário */
         }
-        textarea:focus { border-color: var(--primary-color); }
+        
+        textarea {
+            width: 100%; height: 250px; padding: 32px 15px 15px 45px; /* Espaço para a linha vermelha */
+            font-size: 20px; font-family: 'Patrick Hand', cursive; /* Fonte de mão */
+            color: #1a1a1a; box-sizing: border-box;
+            resize: none; outline: none; border: none; background: transparent;
+            /* As linhas azuis do caderno */
+            line-height: 30px;
+            background-image: repeating-linear-gradient(transparent, transparent 29px, var(--paper-line) 29px, var(--paper-line) 30px);
+            background-attachment: local;
+        }
+        
+        /* A margem vermelha típica de caderno */
+        .paper-container::before {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 30px; width: 2px;
+            background-color: rgba(226, 125, 96, 0.4); z-index: 1; pointer-events: none;
+        }
+
+        /* Contatos Mini Mundo */
+        .contact-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
+        .contact-section p { font-size: 13px; color: #888; margin-bottom: 15px; font-weight: 500; font-family: 'Segoe UI', sans-serif;}
+        .social-links { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white; border: none; padding: 12px 20px; border-radius: 10px; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px; transition: 0.3s;
+        }
+        .btn-whatsapp {
+            background-color: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 10px; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 14px; transition: 0.3s;
+        }
+        .btn-instagram:hover, .btn-whatsapp:hover { opacity: 0.9; transform: translateY(-2px); }
 
         #loading-screen, #login-screen, #diary-screen { display: none; }
         
-        .spinner {
-            border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color);
-            border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px;
-        }
+        .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #custom-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;
-            backdrop-filter: blur(3px);
-        }
-        .modal-content {
-            background: white; padding: 30px; border-radius: 15px; text-align: center;
-            max-width: 300px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: popIn 0.3s ease-out;
-        }
+        /* Modal Dinâmico */
+        #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; max-width: 300px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
         .modal-content i { font-size: 45px; margin-bottom: 15px; }
-        .modal-content h3 { margin: 0 0 10px; color: #333; }
-        .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
+        .modal-content h3 { margin: 0 0 10px; color: #333; font-family: 'Segoe UI', sans-serif;}
+        .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.4; font-family: 'Segoe UI', sans-serif;}
+        .modal-content button { background-color: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
@@ -123,17 +164,17 @@
 <div class="container">
     <div id="loading-screen" style="display: block; padding: 40px 0;">
         <div class="spinner"></div>
-        <span style="color: var(--primary-color); font-weight: bold;">Conectando ao diário...</span>
+        <span style="color: var(--primary-color); font-weight: bold;">Abrindo o cadeado...</span>
     </div>
 
     <div id="login-screen">
         <img src="logo.jpg" alt="Mini Mundo" class="logo" onerror="this.src='https://via.placeholder.com/120?text=Mini+Mundo'">
-        <h2>Diário Secreto</h2>
-        <p>Acesse o seu diário pessoal de forma segura. Somente você terá acesso às suas anotações.</p>
+        <h2>O Seu Refúgio Secreto</h2>
+        <p>Encoste o chaveiro, faça login e guarde suas memórias. Somente você tem a chave.</p>
         
         <button class="btn-google" onclick="fazerLogin()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
-            Entrar com o Google
+            Destrancar com o Google
         </button>
     </div>
 
@@ -142,16 +183,30 @@
             <img id="user-photo" src="" alt="Foto de Perfil">
             <div>
                 <span id="user-name">Carregando...</span>
-                <small>Seu diário privado e protegido</small>
+                <small><i class="fa-solid fa-lock" style="font-size:10px; color:#4CAF50;"></i> Diário criptografado ponta a ponta</small>
             </div>
         </div>
         
         <input type="date" id="diary-date" class="date-picker" onchange="carregarTextoDoDia()">
         
-        <textarea id="diary-text" placeholder="Querido diário, hoje o meu dia foi..."></textarea>
+        <div class="paper-container">
+            <textarea id="diary-text" placeholder="Querido diário, hoje aconteceu algo incrível..."></textarea>
+        </div>
         
-        <button id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-lock"></i> Salvar e Trancar Dia</button>
-        <button class="btn-secondary" onclick="fazerLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Fechar e Sair</button>
+        <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-key"></i> Salvar e Trancar Dia</button>
+        <button class="btn-secondary" onclick="fazerLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Fechar Caderno</button>
+    </div>
+
+    <div class="contact-section">
+        <p>Mais produtos inteligentes da Mini Mundo:</p>
+        <div class="social-links">
+            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-instagram">
+                <i class="fa-brands fa-instagram"></i> Siga no Instagram
+            </a>
+            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Achei%20incr%C3%ADvel%20o%20di%C3%A1rio%20inteligente%20e%20gostaria%20de%20saber%20mais." target="_blank" class="btn-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Fale no WhatsApp
+            </a>
+        </div>
     </div>
 </div>
 
@@ -165,8 +220,9 @@
 </div>
 
 <script>
+    // 👇👇 COLE AQUI A SUA FIREBASE CONFIG (Aquela com a apiKey gigante) 👇👇
     const firebaseConfig = {
-      apiKey: "AIzaSyDs5CcY66RU5ymMHQGhI58g1aVcyn7MeAw",
+      apiKey: "SUA_API_KEY_AQUI",
       authDomain: "minimundo-diario.firebaseapp.com",
       databaseURL: "https://minimundo-diario-default-rtdb.firebaseio.com",
       projectId: "minimundo-diario",
@@ -174,6 +230,7 @@
       messagingSenderId: "336220925130",
       appId: "1:336220925130:web:d846cc4be80e0f7a53d833"
     };
+    // 👆👆 COLE ACIMA 👆👆
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -186,7 +243,6 @@
     const diaryText = document.getElementById('diary-text');
 
     let usuarioAtual = null;
-
     datePicker.valueAsDate = new Date();
 
     auth.onAuthStateChanged((user) => {
@@ -194,7 +250,7 @@
         
         if (user) {
             usuarioAtual = user;
-            document.getElementById('user-name').innerText = "Olá, " + user.displayName.split(" ")[0];
+            document.getElementById('user-name').innerText = user.displayName;
             document.getElementById('user-photo').src = user.photoURL;
             
             loginScreen.style.display = 'none';
@@ -211,19 +267,17 @@
     function fazerLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider).catch((error) => {
-            mostrarModal('erro', 'Ops!', 'Não foi possível fazer o login.');
+            mostrarModal('erro', 'Ops!', 'Não foi possível destrancar o diário.');
         });
     }
 
-    function fazerLogout() {
-        auth.signOut();
-    }
+    function fazerLogout() { auth.signOut(); }
 
     function carregarTextoDoDia() {
         if(!usuarioAtual) return;
         
         const dataSelecionada = datePicker.value; 
-        diaryText.value = "Carregando memórias...";
+        diaryText.value = "Folheando as páginas...";
         diaryText.disabled = true;
 
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).once('value').then((snapshot) => {
@@ -232,17 +286,11 @@
             
             if(textoSalvo) {
                 try {
-                    // MÁGICA 1: Tenta descriptografar o texto do banco usando a chave do usuário
                     const bytes = CryptoJS.AES.decrypt(textoSalvo, usuarioAtual.uid);
                     const textoOriginal = bytes.toString(CryptoJS.enc.Utf8);
-                    
-                    if(textoOriginal) {
-                        diaryText.value = textoOriginal; // É um texto criptografado válido
-                    } else {
-                        diaryText.value = textoSalvo; // É um texto antigo puro (que você digitou antes)
-                    }
+                    diaryText.value = textoOriginal ? textoOriginal : textoSalvo; 
                 } catch(e) {
-                    diaryText.value = textoSalvo; // Cai aqui se for um texto antigo não criptografado
+                    diaryText.value = textoSalvo; 
                 }
             } else {
                 diaryText.value = ""; 
@@ -250,7 +298,7 @@
         }).catch((error) => {
             diaryText.disabled = false;
             diaryText.value = "";
-            console.error("Erro ao carregar:", error);
+            mostrarModal('erro', 'Ops', 'Erro ao ler a página.');
         });
     }
 
@@ -258,22 +306,20 @@
         if(!usuarioAtual) return;
 
         const btn = document.getElementById('btn-salvar');
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Trancando...";
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Trancando a página...";
         
         const dataSelecionada = datePicker.value;
         const textoParaSalvar = diaryText.value;
-
-        // MÁGICA 2: Criptografa o texto antes de enviar para o banco
         const textoCriptografado = CryptoJS.AES.encrypt(textoParaSalvar, usuarioAtual.uid).toString();
 
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             setTimeout(() => {
-                btn.innerHTML = "<i class='fa-solid fa-lock'></i> Salvar e Trancar Dia";
-                mostrarModal('sucesso', 'Salvo com sucesso!', 'As suas memórias estão criptografadas e trancadas no cofre.');
+                btn.innerHTML = "<i class='fa-solid fa-key'></i> Salvar e Trancar Dia";
+                mostrarModal('sucesso', 'Memória Guardada!', 'Página trancada e salva no cofre com sucesso.');
             }, 600);
         }).catch((error) => {
-            btn.innerHTML = "<i class='fa-solid fa-lock'></i> Salvar e Trancar Dia";
-            mostrarModal('erro', 'Erro ao salvar', 'Verifique sua conexão e tente novamente.');
+            btn.innerHTML = "<i class='fa-solid fa-key'></i> Salvar e Trancar Dia";
+            mostrarModal('erro', 'Erro', 'Sua pena falhou. Verifique a internet.');
         });
     }
 
@@ -285,20 +331,13 @@
 
         title.innerText = titulo;
         text.innerText = mensagem;
-
-        if (tipo === 'sucesso') {
-            icon.className = "fa-solid fa-circle-check";
-            icon.style.color = "#4CAF50"; 
-        } else if (tipo === 'erro') {
-            icon.className = "fa-solid fa-circle-xmark";
-            icon.style.color = "#E27D60"; 
-        }
+        icon.className = tipo === 'sucesso' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
+        icon.style.color = tipo === 'sucesso' ? "#4CAF50" : "#E27D60"; 
+        
         modal.style.display = 'flex';
     }
 
-    function fecharModal() {
-        document.getElementById('custom-modal').style.display = 'none';
-    }
+    function fecharModal() { document.getElementById('custom-modal').style.display = 'none'; }
 </script>
 
 </body>
