@@ -8,14 +8,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
     
@@ -146,10 +147,7 @@
         .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* MUDANÇA: Estilos para a nova tela de bloqueio e vendas */
-        .ad-box {
-            background-color: #f9f1e6; border: 1px dashed #d4c3b3; border-radius: 12px; padding: 20px; margin: 25px 0;
-        }
+        .ad-box { background-color: #f9f1e6; border: 1px dashed #d4c3b3; border-radius: 12px; padding: 20px; margin: 25px 0; }
         .ad-box p { font-size: 14px; color: #555; margin-top: 0; margin-bottom: 15px; }
 
         #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
@@ -244,6 +242,9 @@
         <button class="btn-secondary" onclick="fazerLogout()">
             <i class="fa-solid fa-book-open"></i> Fechar Caderno
         </button>
+        <button class="btn-secondary" onclick="pedirParaDesvincular()" style="margin-top: 5px; font-size: 13px; color: #a67c7b;">
+            <i class="fa-solid fa-link-slash"></i> Desvincular e Repassar Diário
+        </button>
         
         <div class="contact-section">
             <p>Mais segredos e produtos inteligentes da Mini Mundo:</p>
@@ -269,7 +270,7 @@
         <button id="modal-btn-ok" class="modal-btn-ok" onclick="fecharModal()">OK</button>
         
         <div id="modal-confirm-group" class="modal-confirm-group" style="display: none;">
-            <button id="modal-btn-sim" class="btn-sim"><i class="fa-solid fa-eraser"></i> Sim, apagar</button>
+            <button id="modal-btn-sim" class="btn-sim"><i class="fa-solid fa-check"></i> Sim</button>
             <button class="btn-nao" onclick="fecharModal()">Cancelar</button>
         </div>
     </div>
@@ -323,7 +324,6 @@
         }
     });
 
-    // MUDANÇA: Redirecionamentos para a nova Tela de Erro de Marketing
     function verificarPropriedadeDoDiario(user, id) {
         db.ref('chaves_diario/' + id).once('value').then((snapshot) => {
             if (!snapshot.exists()) {
@@ -340,7 +340,7 @@
                 liberarDiario(user);
             } else {
                 auth.signOut().then(() => {
-                    mostrarTelaErro('Acesso Negado', 'Este Diário físico já foi ativado e pertence a outra pessoa. Apenas o proprietário original possui a chave.');
+                    mostrarTelaErro('Acesso Negado', 'Este Diário físico já foi ativado e pertence a outra pessoa. Apenas o proprietário original possui a chave de destranca.');
                 });
             }
         });
@@ -349,7 +349,6 @@
     function mostrarTelaErro(titulo, mensagem) {
         document.getElementById('error-title').innerText = titulo;
         document.getElementById('error-message').innerText = mensagem;
-        
         loadingScreen.style.display = 'none';
         loginScreen.style.display = 'none';
         diaryScreen.style.display = 'none';
@@ -415,11 +414,7 @@
         setTimeout(() => { 
             carregarTextoDoDia(dataStr); 
             caderno.style.animation = "pageTurnIn 0.25s ease-out forwards";
-            
-            setTimeout(() => {
-                caderno.style.animation = 'none';
-                isAnimating = false;
-            }, 250);
+            setTimeout(() => { caderno.style.animation = 'none'; isAnimating = false; }, 250);
         }, 250);
     }
 
@@ -453,18 +448,12 @@
                     const bytes = CryptoJS.AES.decrypt(textoSalvo, usuarioAtual.uid);
                     const textoOriginal = bytes.toString(CryptoJS.enc.Utf8);
                     
-                    if (textoOriginal.length > 0) {
-                        diaryText.value = textoOriginal;
-                    } else if (textoSalvo.startsWith("U2FsdGVkX1")) {
-                        diaryText.value = ""; 
-                    } else {
-                        diaryText.value = textoSalvo; 
-                    }
+                    if (textoOriginal.length > 0) { diaryText.value = textoOriginal; } 
+                    else if (textoSalvo.startsWith("U2FsdGVkX1")) { diaryText.value = ""; } 
+                    else { diaryText.value = textoSalvo; }
                 } catch(e) { diaryText.value = textoSalvo; }
             } else { diaryText.value = ""; }
-        }).catch((error) => {
-            diaryText.disabled = false; diaryText.value = ""; 
-        });
+        }).catch((error) => { diaryText.disabled = false; diaryText.value = ""; });
     }
 
     function salvarDiario() {
@@ -495,8 +484,7 @@
     function pedirParaApagar() {
         if(!usuarioAtual || !fpInstance) return;
         if(diaryText.value.trim() === "") return; 
-        
-        mostrarModal('confirmar', 'Apagar Registro?', 'Tem certeza que deseja passar a borracha neste dia? A página ficará em branco.');
+        mostrarModal('apagar', 'Apagar Registro?', 'Tem certeza que deseja passar a borracha neste dia? A página ficará em branco.');
     }
 
     function executarApagar() {
@@ -523,6 +511,29 @@
         });
     }
 
+    // MUDANÇA: Lógica do Modal para a Desvinculação
+    function pedirParaDesvincular() {
+        if(!usuarioAtual) return;
+        mostrarModal('desvincular', 'Repassar Diário?', 'Isso vai desvincular o seu e-mail deste chaveiro físico. Suas memórias não serão apagadas, mas o diário plástico ficará livre para outra pessoa usar. Deseja continuar?');
+    }
+
+    function executarDesvinculacao() {
+        fecharModal();
+        loadingScreen.style.display = 'block';
+        diaryScreen.style.display = 'none';
+        
+        // Devolve o ID para LIVRE no banco de dados
+        db.ref('chaves_diario/' + produtoId).set('LIVRE').then(() => {
+            auth.signOut().then(() => {
+                window.location.reload(); // Recarrega a página para o estado limpo
+            });
+        }).catch((error) => {
+            loadingScreen.style.display = 'none';
+            diaryScreen.style.display = 'block';
+            mostrarModal('erro', 'Ops', 'Não foi possível desvincular no momento.');
+        });
+    }
+
     function mostrarModal(tipo, titulo, mensagem) {
         const modal = document.getElementById('custom-modal');
         const icon = document.getElementById('modal-icon');
@@ -530,15 +541,23 @@
         const text = document.getElementById('modal-text');
         const btnOk = document.getElementById('modal-btn-ok');
         const confirmGroup = document.getElementById('modal-confirm-group');
+        const btnSim = document.getElementById('modal-btn-sim');
         
         title.innerText = titulo; text.innerText = mensagem;
         
-        if (tipo === 'confirmar') {
+        if (tipo === 'apagar' || tipo === 'desvincular') {
             icon.className = "fa-solid fa-triangle-exclamation";
             icon.style.color = "#E27D60"; 
             btnOk.style.display = 'none';
             confirmGroup.style.display = 'flex';
-            document.getElementById('modal-btn-sim').onclick = executarApagar;
+            
+            if(tipo === 'apagar') {
+                btnSim.innerHTML = "<i class='fa-solid fa-eraser'></i> Sim, apagar";
+                btnSim.onclick = executarApagar;
+            } else {
+                btnSim.innerHTML = "<i class='fa-solid fa-link-slash'></i> Sim, repassar";
+                btnSim.onclick = executarDesvinculacao;
+            }
         } else {
             icon.className = tipo === 'sucesso' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
             icon.style.color = tipo === 'sucesso' ? "#4CAF50" : "#d9534f"; 
