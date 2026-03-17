@@ -22,9 +22,9 @@
     
     <style>
         :root {
-            --primary-color: #4A2E1B; /* Marrom escuro */
-            --accent-color: #E27D60;  /* Laranja terracota */
-            --bg-color: #fdf9f1;      /* Papel envelhecido */
+            --primary-color: #4A2E1B; 
+            --accent-color: #E27D60;  
+            --bg-color: #fdf9f1;      
             --text-color: #333;
             --paper-line: #d1d5db;
         }
@@ -76,18 +76,25 @@
         .user-profile span { display: block; font-weight: bold; color: var(--primary-color); font-size: 16px; }
         .user-profile small { color: #888; font-size: 12px; }
 
-        /* Estilos do Novo Seletor de Data */
-        .date-wrapper {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid var(--accent-color);
-            width: fit-content; margin-left: auto; margin-right: auto; cursor: pointer;
+        /* MUDANÇA: Navegação de Datas com Setinhas */
+        .date-navigation {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%;
         }
-        .date-wrapper i { color: var(--primary-color); font-size: 18px; }
+        .nav-arrow {
+            background: none; border: none; font-size: 18px; color: #bbb; cursor: pointer; padding: 10px; transition: 0.3s;
+        }
+        .nav-arrow:hover { color: var(--accent-color); transform: scale(1.2); }
+        
+        .date-wrapper {
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border-bottom: 2px solid var(--accent-color); padding-bottom: 2px;
+        }
+        /* Ícone mais discreto */
+        .date-wrapper i { color: #ccc; font-size: 16px; } 
         
         .date-picker {
             border: none; font-size: 18px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             color: var(--primary-color); font-weight: bold; background: transparent;
-            outline: none; text-align: center; cursor: pointer; width: auto;
+            outline: none; text-align: center; cursor: pointer; width: 160px;
         }
 
         /* O Papel Pautado */
@@ -102,17 +109,27 @@
             background-color: rgba(226, 125, 96, 0.4); z-index: 1; pointer-events: none;
         }
 
-        /* Estilos Customizados para o Calendário Flatpickr */
-        .flatpickr-calendar { font-family: 'Segoe UI', sans-serif !important; border-radius: 12px !important; box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important; border: 1px solid #eee !important;}
+        /* MUDANÇA: Animações 3D de Virar a Página */
+        @keyframes virarPaginaProxima {
+            0% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+            50% { transform: perspective(800px) rotateY(-90deg); opacity: 0; }
+            50.1% { transform: perspective(800px) rotateY(90deg); opacity: 0; }
+            100% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+        }
+        @keyframes virarPaginaAnterior {
+            0% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+            50% { transform: perspective(800px) rotateY(90deg); opacity: 0; }
+            50.1% { transform: perspective(800px) rotateY(-90deg); opacity: 0; }
+            100% { transform: perspective(800px) rotateY(0deg); opacity: 1; }
+        }
+
+        /* Estilos Customizados para o Calendário Flatpickr (Mais suave) */
+        .flatpickr-calendar { font-family: 'Segoe UI', sans-serif !important; border-radius: 15px !important; box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important; border: none !important; padding: 5px !important;}
         .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
             background: var(--primary-color) !important; border-color: var(--primary-color) !important;
         }
-        /* A Bolinha Laranja para os dias com registro */
         .dia-com-registro { position: relative; font-weight: bold; }
-        .dia-com-registro::after {
-            content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
-            width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-color);
-        }
+        .dia-com-registro::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-color); }
 
         /* Contatos */
         .contact-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
@@ -164,12 +181,16 @@
             </div>
         </div>
         
-        <div class="date-wrapper">
-            <i class="fa-regular fa-calendar-days"></i>
-            <input type="text" id="diary-date" class="date-picker" placeholder="Escolha um dia">
+        <div class="date-navigation">
+            <button class="nav-arrow" onclick="mudarPagina(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="date-wrapper">
+                <i class="fa-regular fa-calendar-days"></i>
+                <input type="text" id="diary-date" class="date-picker" placeholder="Escolha um dia">
+            </div>
+            <button class="nav-arrow" onclick="mudarPagina(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         
-        <div class="paper-container">
+        <div class="paper-container" id="meu-caderno">
             <textarea id="diary-text" placeholder="Querido diário, hoje aconteceu algo incrível..."></textarea>
         </div>
         
@@ -200,7 +221,6 @@
 </div>
 
 <script>
-    // Parâmetros Firebase integrados
     const firebaseConfig = {
       apiKey: "AIzaSyDs5CcY66RU5ymMHQGhI58g1aVcyn7MeAw",
       authDomain: "minimundo-diario.firebaseapp.com",
@@ -219,12 +239,12 @@
     const loginScreen = document.getElementById('login-screen');
     const diaryScreen = document.getElementById('diary-screen');
     const diaryText = document.getElementById('diary-text');
+    const caderno = document.getElementById('meu-caderno');
 
     let usuarioAtual = null;
-    let fpInstance = null; // Instância do calendário
-    let datasComRegistro = []; // Array que vai guardar os dias marcados
+    let fpInstance = null; 
+    let datasComRegistro = []; 
 
-    // Fica vigiando o login
     auth.onAuthStateChanged((user) => {
         loadingScreen.style.display = 'none';
         
@@ -236,7 +256,6 @@
             loginScreen.style.display = 'none';
             diaryScreen.style.display = 'block';
             
-            // Inicia o sistema de calendário
             buscarDiasMapeados();
         } else {
             usuarioAtual = null;
@@ -246,48 +265,64 @@
     });
 
     function inicializarCalendario() {
-        if(fpInstance) fpInstance.destroy(); // Limpa se já existir
+        if(fpInstance) fpInstance.destroy(); 
         
         fpInstance = flatpickr("#diary-date", {
             locale: "pt",
             dateFormat: "Y-m-d",
             altInput: true,
-            altFormat: "d \\de F \\de Y", // Mostra bonito: 16 de Março de 2026
+            altFormat: "d \\de F \\de Y",
             defaultDate: "today",
-            disableMobile: true, // Força usar o nosso calendário visual mesmo no celular
+            disableMobile: true,
             onChange: function(selectedDates, dateStr, instance) {
                 carregarTextoDoDia(dateStr);
             },
             onDayCreate: function(dObj, dStr, fp, dayElem) {
-                // Lógica mágica: Verifica se o dia renderizado está na lista do Firebase
                 const dataFormatada = dayElem.dateObj.getFullYear() + "-" + 
                                       String(dayElem.dateObj.getMonth() + 1).padStart(2, '0') + "-" + 
                                       String(dayElem.dateObj.getDate()).padStart(2, '0');
                 
                 if (datasComRegistro.includes(dataFormatada)) {
-                    dayElem.classList.add("dia-com-registro"); // Coloca a bolinha laranja
+                    dayElem.classList.add("dia-com-registro"); 
                 }
             }
         });
         
-        // Carrega o texto de hoje logo ao entrar
         carregarTextoDoDia(fpInstance.input.value);
     }
 
-    // Busca no Firebase apenas a lista de datas que o usuário já salvou algo
+    // MUDANÇA: Função de Virar Página pelas setinhas
+    function mudarPagina(direcao) {
+        if(!fpInstance || !usuarioAtual) return;
+
+        const dataAtual = fpInstance.selectedDates[0];
+        const novaData = new Date(dataAtual);
+        novaData.setDate(novaData.getDate() + direcao);
+
+        // Atualiza a data no calendário sem forçar o carregamento de texto imediato
+        fpInstance.setDate(novaData, false);
+        const dataStr = fpInstance.input.value;
+
+        // Reseta e aplica a animação
+        caderno.style.animation = 'none';
+        void caderno.offsetWidth; // Força o reflow do CSS
+        caderno.style.animation = direcao > 0 ? "virarPaginaProxima 0.5s forwards" : "virarPaginaAnterior 0.5s forwards";
+
+        // Troca o texto do diário exatamente na metade da animação (quando o papel "some" girando)
+        setTimeout(() => {
+            carregarTextoDoDia(dataStr);
+        }, 250);
+    }
+
     function buscarDiasMapeados() {
         if(!usuarioAtual) return;
         
-        // Fica "escutando" o banco. Se salvar um dia novo, a bolinha aparece na hora!
         db.ref('diarios/' + usuarioAtual.uid).on('value', (snapshot) => {
             if(snapshot.exists()) {
-                // Pega as chaves (que são as datas YYYY-MM-DD)
                 datasComRegistro = Object.keys(snapshot.val());
             } else {
                 datasComRegistro = [];
             }
-            
-            // Se o calendário já estava aberto, redesenha as bolinhas
             if(fpInstance) {
                 fpInstance.redraw();
             } else {
@@ -312,7 +347,6 @@
     function carregarTextoDoDia(dataSelecionada) {
         if(!usuarioAtual || !dataSelecionada) return;
         
-        diaryText.value = "Folheando as páginas...";
         diaryText.disabled = true;
 
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).once('value').then((snapshot) => {
@@ -343,7 +377,6 @@
         const btn = document.getElementById('btn-salvar');
         btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Trancando a página...";
         
-        // Pega a data real no formato YYYY-MM-DD do calendário
         const dataSelecionada = fpInstance.input.value;
         const textoParaSalvar = diaryText.value;
         const textoCriptografado = CryptoJS.AES.encrypt(textoParaSalvar, usuarioAtual.uid).toString();
