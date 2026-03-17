@@ -8,14 +8,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
     
@@ -23,13 +24,14 @@
         :root {
             --primary-color: #4A2E1B; 
             --accent-color: #E27D60;  
-            --bg-color: #f5efe6; /* Cor de fundo mais limpa, estilo mesa de madeira clara */
+            --bg-color: #f4eee6; /* Cor de mesa clara e quente */
             --text-color: #333;
         }
         
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background-color: var(--bg-color); 
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
             color: var(--text-color); 
             margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; box-sizing: border-box;
         }
@@ -38,6 +40,7 @@
             max-width: 450px; width: 100%; background: white; padding: 25px 25px 15px 25px; 
             border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.06); 
             box-sizing: border-box; text-align: center; border-left: 18px solid var(--primary-color); position: relative;
+            z-index: 10;
         }
 
         .container::before {
@@ -61,11 +64,22 @@
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-google img { width: 20px; }
 
+        /* MUDANÇA: Layout de Botões com a Borracha */
+        .actions-group {
+            display: flex; gap: 10px; margin-bottom: 10px; width: 100%;
+        }
+        
         button.btn-primary { 
             background-color: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; 
-            width: 100%; font-size: 16px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 10px;
+            font-size: 16px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; flex-grow: 1;
         }
         button.btn-primary:hover { background-color: #311e12; }
+
+        .btn-eraser {
+            background-color: transparent; color: #d9534f; border: 2px solid #d9534f; border-radius: 10px; width: 55px; 
+            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0;
+        }
+        .btn-eraser:hover { background-color: #fdf2f2; transform: scale(1.05); }
         
         .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%;}
         .btn-secondary:hover { color: #d9534f; text-decoration: underline; }
@@ -98,36 +112,50 @@
             outline: none; text-align: center; cursor: pointer; width: 100%; max-width: 210px; 
         }
 
-        /* MUDANÇA: Folha Orgânica e Limpa */
+        /* MUDANÇA: Folhas de papel antigas empilhadas */
         .paper-wrapper {
-            perspective: 1200px; /* Prepara o ambiente para o 3D */
-            margin-bottom: 15px;
+            perspective: 1200px; margin-bottom: 15px; position: relative;
+        }
+        
+        /* Folha de baixo (torta pra esquerda) */
+        .paper-wrapper::before {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0;
+            background-color: #f2e8d5; border: 1px solid #d4c3b3; border-radius: 4px;
+            transform: rotate(-2deg); box-shadow: 2px 2px 8px rgba(0,0,0,0.05); z-index: -1;
+        }
+        /* Folha do meio (torta pra direita) */
+        .paper-wrapper::after {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0;
+            background-color: #e8dbce; border: 1px solid #d4c3b3; border-radius: 4px;
+            transform: rotate(1.5deg); z-index: -2;
         }
 
         .paper-container { 
             position: relative; 
-            background-color: #fcf8f2; /* Creme muito suave, quase branco */
-            /* O SEGREDO: Bordas levemente orgânicas/irregulares imitando corte de papel */
-            border-radius: 2px 255px 3px 255px / 255px 5px 225px 3px; 
-            box-shadow: 2px 3px 12px rgba(0,0,0,0.06); 
-            border: 1px solid #ebdaca;
-            transform-origin: left center; /* A folha vira a partir da lombada esquerda */
+            background-color: #f9f1e6; /* Creme mais quente e rústico */
+            border-radius: 3px 6px 3px 5px; 
+            box-shadow: inset 0 0 30px rgba(138, 112, 94, 0.15), 2px 3px 10px rgba(0,0,0,0.08); 
+            border: 1px solid #d4c3b3;
+            transform-origin: left center; 
             will-change: transform;
+            z-index: 1;
         }
 
         textarea {
             width: 100%; height: 280px; padding: 30px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; 
-            color: #2b2b2b; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent;
-            /* Linhas mais discretas */
-            line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(166, 138, 113, 0.25) 29px, rgba(166, 138, 113, 0.25) 30px); background-attachment: local;
+            color: #3b2f2f; /* Letra cor de nanquim marrom escuro */
+            box-sizing: border-box; resize: none; outline: none; border: none; background: transparent;
+            line-height: 30px; 
+            background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); 
+            background-attachment: local;
         }
         .paper-container::before {
-            /* Linha da margem clássica avermelhada */
+            /* Margem dupla vermelha estilo antigo */
             content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px;
-            background-color: rgba(217, 83, 79, 0.35); z-index: 1; pointer-events: none;
+            background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none;
+            box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); 
         }
 
-        /* MUDANÇA: Animação Real de Livro (Vira na Lombada) */
         @keyframes pageTurnOut {
             0% { transform: rotateY(0deg); opacity: 1; }
             100% { transform: rotateY(-90deg); opacity: 0; }
@@ -137,7 +165,7 @@
             100% { transform: rotateY(0deg); opacity: 1; }
         }
 
-        .flatpickr-calendar { font-family: 'Segoe UI', sans-serif !important; border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important; border: 1px solid #f0e9e1 !important; padding: 5px !important; background-color: #fff !important;}
+        .flatpickr-calendar { font-family: 'Segoe UI', sans-serif !important; border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important; border: 1px solid #d4c3b3 !important; padding: 5px !important; background-color: #fcf6ef !important;}
         .flatpickr-day.selected { background: var(--primary-color) !important; border-color: var(--primary-color) !important; }
         .dia-com-registro { position: relative; font-weight: bold; }
         .dia-com-registro::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background-color: var(--accent-color); }
@@ -157,12 +185,23 @@
         .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
+        /* MUDANÇA: Modal atualizado com botões de confirmação */
+        #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
         .modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; max-width: 290px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
         .modal-content i { font-size: 40px; margin-bottom: 12px; }
         .modal-content h3 { margin: 0 0 8px; color: #333; font-size: 18px; }
-        .modal-content p { color: #666; font-size: 13px; margin-bottom: 15px; line-height: 1.4;}
-        .modal-content button { background-color: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .modal-content p { color: #666; font-size: 14px; margin-bottom: 15px; line-height: 1.4;}
+        
+        .modal-btn-ok { background-color: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s;}
+        .modal-btn-ok:hover { background-color: #311e12; }
+        
+        .modal-confirm-group { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-confirm-group button { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; flex: 1; transition: 0.3s; }
+        .btn-sim { background-color: #d9534f; color: white; }
+        .btn-sim:hover { background-color: #c9302c; }
+        .btn-nao { background-color: #eee; color: #333; }
+        .btn-nao:hover { background-color: #ddd; }
+
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
@@ -214,9 +253,14 @@
             </div>
         </div>
         
-        <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()">
-            <i class="fa-solid fa-feather-pointed"></i> Guardar Memória
-        </button>
+        <div class="actions-group">
+            <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()">
+                <i class="fa-solid fa-feather-pointed"></i> Guardar Memória
+            </button>
+            <button class="btn-eraser" id="btn-apagar" onclick="pedirParaApagar()" title="Apagar texto deste dia">
+                <i class="fa-solid fa-eraser"></i>
+            </button>
+        </div>
         
         <button class="btn-secondary" onclick="fazerLogout()">
             <i class="fa-solid fa-book-open"></i> Fechar Caderno
@@ -242,7 +286,13 @@
         <i id="modal-icon" class="fa-solid fa-circle-check"></i>
         <h3 id="modal-title">Tudo Certo!</h3>
         <p id="modal-text">Mensagem aqui</p>
-        <button id="modal-btn" onclick="fecharModal()">OK</button>
+        
+        <button id="modal-btn-ok" class="modal-btn-ok" onclick="fecharModal()">OK</button>
+        
+        <div id="modal-confirm-group" class="modal-confirm-group" style="display: none;">
+            <button id="modal-btn-sim" class="btn-sim"><i class="fa-solid fa-eraser"></i> Sim, apagar</button>
+            <button class="btn-nao" onclick="fecharModal()">Cancelar</button>
+        </div>
     </div>
 </div>
 
@@ -271,7 +321,7 @@
     let fpInstance = null; 
     let datasComRegistro = []; 
     let dataAnteriorGlobal = new Date(); 
-    let isAnimating = false; // Trava de segurança para não bugar clicando rápido
+    let isAnimating = false; 
 
     auth.onAuthStateChanged((user) => {
         loadingScreen.style.display = 'none';
@@ -326,28 +376,20 @@
         executarAnimacaoLivro(dataStr, direcao);
     }
 
-    // MUDANÇA: Lógica blindada contra tela branca (Remove as propriedades no fim)
     function executarAnimacaoLivro(dataStr, direcao) {
         isAnimating = true;
-        
-        // 1. A página atual vira para a esquerda e some
         caderno.style.animation = 'none';
         void caderno.offsetWidth; 
         caderno.style.animation = "pageTurnOut 0.25s ease-in forwards";
 
         setTimeout(() => { 
-            // 2. Troca o texto enquanto está invisível
             carregarTextoDoDia(dataStr); 
-            
-            // 3. A página nova vem da direita e pousa
             caderno.style.animation = "pageTurnIn 0.25s ease-out forwards";
             
             setTimeout(() => {
-                // 4. O SEGREDO: Limpa o CSS da animação para não bugar o teclado no celular!
                 caderno.style.animation = 'none';
                 isAnimating = false;
             }, 250);
-
         }, 250);
     }
 
@@ -379,7 +421,18 @@
             if(textoSalvo) {
                 try {
                     const bytes = CryptoJS.AES.decrypt(textoSalvo, usuarioAtual.uid);
-                    diaryText.value = bytes.toString(CryptoJS.enc.Utf8) || textoSalvo; 
+                    const textoOriginal = bytes.toString(CryptoJS.enc.Utf8);
+                    
+                    // Tratativa inteligente: se o texto decodificado existir, usa ele.
+                    // Se estiver vazio (mas o textoSalvo existe), ou se for uma string criptografada antiga ("U2Fsd..."), 
+                    // significa que era um bug antigo gravando espaços vazios. Ele limpa a tela.
+                    if (textoOriginal.length > 0) {
+                        diaryText.value = textoOriginal;
+                    } else if (textoSalvo.startsWith("U2FsdGVkX1")) {
+                        diaryText.value = ""; 
+                    } else {
+                        diaryText.value = textoSalvo; // Texto muito antigo que não era criptografado
+                    }
                 } catch(e) { diaryText.value = textoSalvo; }
             } else { diaryText.value = ""; }
         }).catch((error) => {
@@ -390,18 +443,58 @@
     function salvarDiario() {
         if(!usuarioAtual || !fpInstance) return;
         const btn = document.getElementById('btn-salvar');
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Guardando...";
         const dataSelecionada = fpInstance.input.value;
-        const textoParaSalvar = diaryText.value;
+        const textoParaSalvar = diaryText.value.trim();
+
+        // MUDANÇA: Se o texto estiver vazio, ele não tenta salvar e criptografar o nada. Ele apaga!
+        if (textoParaSalvar === "") {
+            executarApagarSilencioso(dataSelecionada, btn);
+            return;
+        }
+
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Guardando...";
         const textoCriptografado = CryptoJS.AES.encrypt(textoParaSalvar, usuarioAtual.uid).toString();
+        
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             setTimeout(() => {
                 btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória";
-                mostrarModal('sucesso', 'Memória Guardada!', 'Página criptografada e salva no cofre.');
+                mostrarModal('sucesso', 'Memória Guardada!', 'Sua anotação foi trancada com segurança.');
             }, 500);
         }).catch((error) => {
             btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória";
             mostrarModal('erro', 'Ops', 'Verifique a conexão e tente salvar novamente.');
+        });
+    }
+
+    // MUDANÇA: Funções da Borracha
+    function pedirParaApagar() {
+        if(!usuarioAtual || !fpInstance) return;
+        if(diaryText.value.trim() === "") return; // Se já está vazio, não faz nada
+        
+        mostrarModal('confirmar', 'Apagar Registro?', 'Tem certeza que deseja passar a borracha neste dia? A página ficará em branco.');
+    }
+
+    function executarApagar() {
+        fecharModal();
+        const dataSelecionada = fpInstance.input.value;
+        const btnBorracha = document.getElementById('btn-apagar');
+        btnBorracha.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i>";
+        
+        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => {
+            diaryText.value = "";
+            btnBorracha.innerHTML = "<i class='fa-solid fa-eraser'></i>";
+            mostrarModal('sucesso', 'Página Limpa!', 'A memória deste dia foi apagada.');
+        }).catch(() => {
+            btnBorracha.innerHTML = "<i class='fa-solid fa-eraser'></i>";
+            mostrarModal('erro', 'Ops', 'Não foi possível apagar. Verifique a internet.');
+        });
+    }
+
+    function executarApagarSilencioso(dataSelecionada, btnSalvar) {
+        btnSalvar.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Limpando...";
+        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => {
+            btnSalvar.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória";
+            mostrarModal('sucesso', 'Página Limpa!', 'Sua folha foi guardada em branco.');
         });
     }
 
@@ -410,11 +503,27 @@
         const icon = document.getElementById('modal-icon');
         const title = document.getElementById('modal-title');
         const text = document.getElementById('modal-text');
+        const btnOk = document.getElementById('modal-btn-ok');
+        const confirmGroup = document.getElementById('modal-confirm-group');
+        
         title.innerText = titulo; text.innerText = mensagem;
-        icon.className = tipo === 'sucesso' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
-        icon.style.color = tipo === 'sucesso' ? "#4CAF50" : "#E27D60"; 
+        
+        if (tipo === 'confirmar') {
+            icon.className = "fa-solid fa-triangle-exclamation";
+            icon.style.color = "#E27D60"; 
+            btnOk.style.display = 'none';
+            confirmGroup.style.display = 'flex';
+            document.getElementById('modal-btn-sim').onclick = executarApagar;
+        } else {
+            icon.className = tipo === 'sucesso' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
+            icon.style.color = tipo === 'sucesso' ? "#4CAF50" : "#d9534f"; 
+            btnOk.style.display = 'block';
+            confirmGroup.style.display = 'none';
+        }
+        
         modal.style.display = 'flex';
     }
+    
     function fecharModal() { document.getElementById('custom-modal').style.display = 'none'; }
 </script>
 
