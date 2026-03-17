@@ -146,6 +146,12 @@
         .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* MUDANÇA: Estilos para a nova tela de bloqueio e vendas */
+        .ad-box {
+            background-color: #f9f1e6; border: 1px dashed #d4c3b3; border-radius: 12px; padding: 20px; margin: 25px 0;
+        }
+        .ad-box p { font-size: 14px; color: #555; margin-top: 0; margin-bottom: 15px; }
+
         #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
         .modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; max-width: 290px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
         .modal-content i { font-size: 40px; margin-bottom: 12px; }
@@ -169,14 +175,21 @@
         <span style="color: var(--primary-color); font-weight: bold;">Validando a chave...</span>
     </div>
 
-    <div id="error-screen" style="padding: 20px 0;">
-        <i class="fa-solid fa-shield-halved" style="font-size: 50px; color: #d9534f; margin-bottom: 15px;"></i>
-        <h2>Acesso Negado</h2>
-        <p>Este aplicativo é exclusivo para proprietários do Diário Inteligente da Mini Mundo 3D.</p>
-        <p style="font-size: 13px; margin-top: 20px;">Adquira o seu para liberar o acesso:</p>
-        <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram" style="margin: 0 auto; max-width: 100%;">
-            <i class="fa-brands fa-instagram"></i> Conhecer Produto
-        </a>
+    <div id="error-screen" style="padding: 10px 0;">
+        <i class="fa-solid fa-lock" style="font-size: 45px; color: var(--primary-color); margin-bottom: 15px;"></i>
+        <h2 id="error-title">Acesso Restrito</h2>
+        <p id="error-message" style="margin-bottom: 10px;">Este Diário Inteligente pertence a outra pessoa.</p>
+        
+        <div class="ad-box">
+            <p>Gostou da ideia? Tenha o seu próprio Diário Secreto habilitado com tecnologia NFC.</p>
+            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram" style="margin: 0 auto; max-width: 100%;">
+                <i class="fa-brands fa-instagram"></i> Adquirir na Mini Mundo
+            </a>
+        </div>
+        
+        <button class="btn-secondary" onclick="window.location.reload()">
+            <i class="fa-solid fa-rotate-right"></i> Tentar Novamente
+        </button>
     </div>
 
     <div id="login-screen">
@@ -290,17 +303,12 @@
     let dataAnteriorGlobal = new Date(); 
     let isAnimating = false; 
 
-    // MUDANÇA: Captura do ID da URL para blindar o produto
     const urlParams = new URLSearchParams(window.location.search);
     const produtoId = urlParams.get('id');
 
     auth.onAuthStateChanged((user) => {
-        // 1º Checagem: Se não tem ID na URL, bloqueia tudo.
         if (!produtoId) {
-            loadingScreen.style.display = 'none';
-            loginScreen.style.display = 'none';
-            diaryScreen.style.display = 'none';
-            errorScreen.style.display = 'block';
+            mostrarTelaErro('Produto Não Detectado', 'Para acessar, encoste o seu celular no Diário Inteligente oficial da Mini Mundo 3D.');
             return;
         }
 
@@ -309,41 +317,45 @@
         } else {
             usuarioAtual = null;
             diaryScreen.style.display = 'none';
+            errorScreen.style.display = 'none';
             loadingScreen.style.display = 'none';
             loginScreen.style.display = 'block';
         }
     });
 
-   function verificarPropriedadeDoDiario(user, id) {
+    // MUDANÇA: Redirecionamentos para a nova Tela de Erro de Marketing
+    function verificarPropriedadeDoDiario(user, id) {
         db.ref('chaves_diario/' + id).once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                // MUDANÇA: Se o ID não existe no banco, é um "espertinho" inventando link.
                 auth.signOut().then(() => {
-                    mostrarModal('erro', 'Produto Inválido', 'Este link não é um produto oficial reconhecido. Código inválido ou pirata.');
-                    loadingScreen.style.display = 'none';
-                    loginScreen.style.display = 'block';
+                    mostrarTelaErro('Produto Não Encontrado', 'Este link não corresponde a um Diário Inteligente oficial e ativo.');
                 });
             } else if (snapshot.val() === 'LIVRE') {
-                // Diário oficial saindo da caixa! O cliente é o primeiro a usar.
                 db.ref('chaves_diario/' + id).set(user.uid).then(() => {
                     liberarDiario(user);
                 }).catch(() => {
-                    // Se der erro aqui, é porque a Regra do Firebase bloqueou (segurança extra)
-                    mostrarModal('erro', 'Ops', 'Erro ao registrar propriedade do diário.');
+                    mostrarTelaErro('Erro de Ativação', 'Ocorreu um erro ao vincular a sua chave.');
                 });
             } else if (snapshot.val() === user.uid) {
-                // O cliente já é o dono, pode entrar!
                 liberarDiario(user);
             } else {
-                // Tem dono e é outra pessoa!
                 auth.signOut().then(() => {
-                    mostrarModal('erro', 'Acesso Negado', 'Este diário físico já foi ativado e pertence a outra pessoa.');
-                    loadingScreen.style.display = 'none';
-                    loginScreen.style.display = 'block';
+                    mostrarTelaErro('Acesso Negado', 'Este Diário físico já foi ativado e pertence a outra pessoa. Apenas o proprietário original possui a chave.');
                 });
             }
         });
     }
+
+    function mostrarTelaErro(titulo, mensagem) {
+        document.getElementById('error-title').innerText = titulo;
+        document.getElementById('error-message').innerText = mensagem;
+        
+        loadingScreen.style.display = 'none';
+        loginScreen.style.display = 'none';
+        diaryScreen.style.display = 'none';
+        errorScreen.style.display = 'block';
+    }
+
     function liberarDiario(user) {
         usuarioAtual = user;
         const primeiroNome = user.displayName.split(" ")[0];
@@ -352,6 +364,7 @@
         
         loadingScreen.style.display = 'none';
         loginScreen.style.display = 'none';
+        errorScreen.style.display = 'none';
         diaryScreen.style.display = 'block';
         
         buscarDiasMapeados();
