@@ -9,6 +9,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -48,7 +50,6 @@
         h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 10px; font-size: 24px; }
         p { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
         
-        /* Botão do Google */
         .btn-google {
             background-color: white; color: #444; border: 1px solid #ccc; 
             padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; 
@@ -59,7 +60,6 @@
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-google img { width: 20px; }
 
-        /* Botões Padrões */
         button { 
             background-color: var(--primary-color); color: white; border: none; 
             padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; 
@@ -71,7 +71,6 @@
         .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; margin-top: 15px; padding: 10px; }
         .btn-secondary:hover { color: #d9534f; background-color: transparent; text-decoration: underline; }
 
-        /* Interface do Diário */
         .user-profile {
             display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;
             padding-bottom: 15px; border-bottom: 1px solid #eee;
@@ -95,7 +94,6 @@
         }
         textarea:focus { border-color: var(--primary-color); }
 
-        /* Telas */
         #loading-screen, #login-screen, #diary-screen { display: none; }
         
         .spinner {
@@ -104,7 +102,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Modal Dinâmico */
         #custom-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;
@@ -119,13 +116,11 @@
         .modal-content h3 { margin: 0 0 10px; color: #333; }
         .modal-content p { color: #666; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
     </style>
 </head>
 <body>
 
 <div class="container">
-    
     <div id="loading-screen" style="display: block; padding: 40px 0;">
         <div class="spinner"></div>
         <span style="color: var(--primary-color); font-weight: bold;">Conectando ao diário...</span>
@@ -147,7 +142,7 @@
             <img id="user-photo" src="" alt="Foto de Perfil">
             <div>
                 <span id="user-name">Carregando...</span>
-                <small>Seu diário privado</small>
+                <small>Seu diário privado e protegido</small>
             </div>
         </div>
         
@@ -155,10 +150,9 @@
         
         <textarea id="diary-text" placeholder="Querido diário, hoje o meu dia foi..."></textarea>
         
-        <button id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-cloud-arrow-up"></i> Salvar Dia</button>
+        <button id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-lock"></i> Salvar e Trancar Dia</button>
         <button class="btn-secondary" onclick="fazerLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Fechar e Sair</button>
     </div>
-
 </div>
 
 <div id="custom-modal">
@@ -171,7 +165,6 @@
 </div>
 
 <script>
-    // Suas credenciais recém criadas!
     const firebaseConfig = {
       apiKey: "AIzaSyDs5CcY66RU5ymMHQGhI58g1aVcyn7MeAw",
       authDomain: "minimundo-diario.firebaseapp.com",
@@ -186,7 +179,6 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // Referências das Telas
     const loadingScreen = document.getElementById('loading-screen');
     const loginScreen = document.getElementById('login-screen');
     const diaryScreen = document.getElementById('diary-screen');
@@ -195,35 +187,27 @@
 
     let usuarioAtual = null;
 
-    // Coloca a data de hoje no calendário logo que abre
     datePicker.valueAsDate = new Date();
 
-    // O "Cão de Guarda": Fica vigiando se tem alguém logado ou não
     auth.onAuthStateChanged((user) => {
         loadingScreen.style.display = 'none';
         
         if (user) {
-            // Usuário está logado! Mostra a tela do diário
             usuarioAtual = user;
-            
-            // Puxa o nome e foto do Google dele
-            document.getElementById('user-name').innerText = "Olá, " + user.displayName.split(" ")[0]; // Pega só o primeiro nome
+            document.getElementById('user-name').innerText = "Olá, " + user.displayName.split(" ")[0];
             document.getElementById('user-photo').src = user.photoURL;
             
             loginScreen.style.display = 'none';
             diaryScreen.style.display = 'block';
             
-            // Carrega o texto salvo daquele dia
             carregarTextoDoDia();
         } else {
-            // Ninguém logado. Mostra a porta de entrada.
             usuarioAtual = null;
             diaryScreen.style.display = 'none';
             loginScreen.style.display = 'block';
         }
     });
 
-    // Função 1: Fazer Login
     function fazerLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider).catch((error) => {
@@ -231,27 +215,37 @@
         });
     }
 
-    // Função 2: Fazer Logout
     function fazerLogout() {
         auth.signOut();
     }
 
-    // Função 3: Ler o diário do banco de dados
     function carregarTextoDoDia() {
         if(!usuarioAtual) return;
         
-        const dataSelecionada = datePicker.value; // Formato YYYY-MM-DD
+        const dataSelecionada = datePicker.value; 
         diaryText.value = "Carregando memórias...";
         diaryText.disabled = true;
 
-        // Vai na pasta "diarios", procura a pasta do usuário, e pega a folha do dia específico
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).once('value').then((snapshot) => {
             const textoSalvo = snapshot.val();
             diaryText.disabled = false;
+            
             if(textoSalvo) {
-                diaryText.value = textoSalvo;
+                try {
+                    // MÁGICA 1: Tenta descriptografar o texto do banco usando a chave do usuário
+                    const bytes = CryptoJS.AES.decrypt(textoSalvo, usuarioAtual.uid);
+                    const textoOriginal = bytes.toString(CryptoJS.enc.Utf8);
+                    
+                    if(textoOriginal) {
+                        diaryText.value = textoOriginal; // É um texto criptografado válido
+                    } else {
+                        diaryText.value = textoSalvo; // É um texto antigo puro (que você digitou antes)
+                    }
+                } catch(e) {
+                    diaryText.value = textoSalvo; // Cai aqui se for um texto antigo não criptografado
+                }
             } else {
-                diaryText.value = ""; // Dia em branco
+                diaryText.value = ""; 
             }
         }).catch((error) => {
             diaryText.disabled = false;
@@ -260,28 +254,29 @@
         });
     }
 
-    // Função 4: Salvar no banco de dados
     function salvarDiario() {
         if(!usuarioAtual) return;
 
         const btn = document.getElementById('btn-salvar');
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Salvando...";
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Trancando...";
         
         const dataSelecionada = datePicker.value;
         const textoParaSalvar = diaryText.value;
 
-        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoParaSalvar).then(() => {
+        // MÁGICA 2: Criptografa o texto antes de enviar para o banco
+        const textoCriptografado = CryptoJS.AES.encrypt(textoParaSalvar, usuarioAtual.uid).toString();
+
+        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             setTimeout(() => {
-                btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Salvar Dia";
-                mostrarModal('sucesso', 'Salvo com sucesso!', 'As suas memórias deste dia estão guardadas no cofre.');
+                btn.innerHTML = "<i class='fa-solid fa-lock'></i> Salvar e Trancar Dia";
+                mostrarModal('sucesso', 'Salvo com sucesso!', 'As suas memórias estão criptografadas e trancadas no cofre.');
             }, 600);
         }).catch((error) => {
-            btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up'></i> Salvar Dia";
+            btn.innerHTML = "<i class='fa-solid fa-lock'></i> Salvar e Trancar Dia";
             mostrarModal('erro', 'Erro ao salvar', 'Verifique sua conexão e tente novamente.');
         });
     }
 
-    // --- Funções do Modal de Aviso ---
     function mostrarModal(tipo, titulo, mensagem) {
         const modal = document.getElementById('custom-modal');
         const icon = document.getElementById('modal-icon');
