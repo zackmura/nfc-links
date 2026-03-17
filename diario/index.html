@@ -64,7 +64,6 @@
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-google img { width: 20px; }
 
-        /* MUDANÇA: Layout de Botões com a Borracha */
         .actions-group {
             display: flex; gap: 10px; margin-bottom: 10px; width: 100%;
         }
@@ -75,11 +74,27 @@
         }
         button.btn-primary:hover { background-color: #311e12; }
 
+        /* MUDANÇA: A nova borrachinha tátil e elegante */
         .btn-eraser {
-            background-color: transparent; color: #d9534f; border: 2px solid #d9534f; border-radius: 10px; width: 55px; 
-            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0;
+            background-color: var(--accent-color); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            width: 55px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 18px; 
+            flex-shrink: 0;
+            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); /* Efeito 3D imitando um bloquinho de borracha */
         }
-        .btn-eraser:hover { background-color: #fdf2f2; transform: scale(1.05); }
+        .btn-eraser:hover { 
+            background-color: #d16b4e; 
+            transform: translateY(1px); /* A borrachinha afunda levemente ao clicar */
+            box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15);
+        }
         
         .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%;}
         .btn-secondary:hover { color: #d9534f; text-decoration: underline; }
@@ -112,18 +127,15 @@
             outline: none; text-align: center; cursor: pointer; width: 100%; max-width: 210px; 
         }
 
-        /* MUDANÇA: Folhas de papel antigas empilhadas */
         .paper-wrapper {
             perspective: 1200px; margin-bottom: 15px; position: relative;
         }
         
-        /* Folha de baixo (torta pra esquerda) */
         .paper-wrapper::before {
             content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0;
             background-color: #f2e8d5; border: 1px solid #d4c3b3; border-radius: 4px;
             transform: rotate(-2deg); box-shadow: 2px 2px 8px rgba(0,0,0,0.05); z-index: -1;
         }
-        /* Folha do meio (torta pra direita) */
         .paper-wrapper::after {
             content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0;
             background-color: #e8dbce; border: 1px solid #d4c3b3; border-radius: 4px;
@@ -132,7 +144,7 @@
 
         .paper-container { 
             position: relative; 
-            background-color: #f9f1e6; /* Creme mais quente e rústico */
+            background-color: #f9f1e6; 
             border-radius: 3px 6px 3px 5px; 
             box-shadow: inset 0 0 30px rgba(138, 112, 94, 0.15), 2px 3px 10px rgba(0,0,0,0.08); 
             border: 1px solid #d4c3b3;
@@ -143,14 +155,13 @@
 
         textarea {
             width: 100%; height: 280px; padding: 30px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; 
-            color: #3b2f2f; /* Letra cor de nanquim marrom escuro */
+            color: #3b2f2f; 
             box-sizing: border-box; resize: none; outline: none; border: none; background: transparent;
             line-height: 30px; 
             background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); 
             background-attachment: local;
         }
         .paper-container::before {
-            /* Margem dupla vermelha estilo antigo */
             content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px;
             background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none;
             box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); 
@@ -185,7 +196,6 @@
         .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* MUDANÇA: Modal atualizado com botões de confirmação */
         #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
         .modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; max-width: 290px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
         .modal-content i { font-size: 40px; margin-bottom: 12px; }
@@ -423,15 +433,12 @@
                     const bytes = CryptoJS.AES.decrypt(textoSalvo, usuarioAtual.uid);
                     const textoOriginal = bytes.toString(CryptoJS.enc.Utf8);
                     
-                    // Tratativa inteligente: se o texto decodificado existir, usa ele.
-                    // Se estiver vazio (mas o textoSalvo existe), ou se for uma string criptografada antiga ("U2Fsd..."), 
-                    // significa que era um bug antigo gravando espaços vazios. Ele limpa a tela.
                     if (textoOriginal.length > 0) {
                         diaryText.value = textoOriginal;
                     } else if (textoSalvo.startsWith("U2FsdGVkX1")) {
                         diaryText.value = ""; 
                     } else {
-                        diaryText.value = textoSalvo; // Texto muito antigo que não era criptografado
+                        diaryText.value = textoSalvo; 
                     }
                 } catch(e) { diaryText.value = textoSalvo; }
             } else { diaryText.value = ""; }
@@ -446,7 +453,6 @@
         const dataSelecionada = fpInstance.input.value;
         const textoParaSalvar = diaryText.value.trim();
 
-        // MUDANÇA: Se o texto estiver vazio, ele não tenta salvar e criptografar o nada. Ele apaga!
         if (textoParaSalvar === "") {
             executarApagarSilencioso(dataSelecionada, btn);
             return;
@@ -466,10 +472,9 @@
         });
     }
 
-    // MUDANÇA: Funções da Borracha
     function pedirParaApagar() {
         if(!usuarioAtual || !fpInstance) return;
-        if(diaryText.value.trim() === "") return; // Se já está vazio, não faz nada
+        if(diaryText.value.trim() === "") return; 
         
         mostrarModal('confirmar', 'Apagar Registro?', 'Tem certeza que deseja passar a borracha neste dia? A página ficará em branco.');
     }
