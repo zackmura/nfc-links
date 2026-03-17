@@ -382,9 +382,12 @@
         loadingScreen.style.display = 'block';
         loginScreen.style.display = 'none';
         const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithRedirect(provider).catch((error) => {
+        
+        // MUDANÇA: Voltamos para o Popup! No ambiente seguro (HTTPS) ele é a melhor opção.
+        auth.signInWithPopup(provider).catch((error) => {
             loadingScreen.style.display = 'none';
             loginScreen.style.display = 'block';
+            console.error("Erro no login:", error);
             mostrarModal('erro', 'Ops!', 'Não foi possível destrancar o diário.');
         });
     }
