@@ -314,29 +314,36 @@
         }
     });
 
-    // MUDANÇA: O Cão de Guarda (Checa se quem logou é o dono daquele ID)
-    function verificarPropriedadeDoDiario(user, id) {
+   function verificarPropriedadeDoDiario(user, id) {
         db.ref('chaves_diario/' + id).once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                // O diário é novo, acabou de sair da fábrica!
-                // Anota no banco que o dono atual acabou de ativar.
+                // MUDANÇA: Se o ID não existe no banco, é um "espertinho" inventando link.
+                auth.signOut().then(() => {
+                    mostrarModal('erro', 'Produto Inválido', 'Este link não é um produto oficial reconhecido. Código inválido ou pirata.');
+                    loadingScreen.style.display = 'none';
+                    loginScreen.style.display = 'block';
+                });
+            } else if (snapshot.val() === 'LIVRE') {
+                // Diário oficial saindo da caixa! O cliente é o primeiro a usar.
                 db.ref('chaves_diario/' + id).set(user.uid).then(() => {
                     liberarDiario(user);
+                }).catch(() => {
+                    // Se der erro aqui, é porque a Regra do Firebase bloqueou (segurança extra)
+                    mostrarModal('erro', 'Ops', 'Erro ao registrar propriedade do diário.');
                 });
             } else if (snapshot.val() === user.uid) {
-                // Já é o dono, pode entrar!
+                // O cliente já é o dono, pode entrar!
                 liberarDiario(user);
             } else {
-                // INTRUSO! Um e-mail diferente tentou ler o diário desse ID.
+                // Tem dono e é outra pessoa!
                 auth.signOut().then(() => {
-                    mostrarModal('erro', 'Acesso Negado!', 'Este diário físico já foi ativado por outra pessoa. Apenas o proprietário original tem a chave.');
+                    mostrarModal('erro', 'Acesso Negado', 'Este diário físico já foi ativado e pertence a outra pessoa.');
                     loadingScreen.style.display = 'none';
                     loginScreen.style.display = 'block';
                 });
             }
         });
     }
-
     function liberarDiario(user) {
         usuarioAtual = user;
         const primeiroNome = user.displayName.split(" ")[0];
