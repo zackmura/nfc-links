@@ -217,7 +217,8 @@
     const firebaseConfig = {
         databaseURL: "https://minimundo-nfc-music-default-rtdb.firebaseio.com/"
     };
-    firebase.initializeApp(firebaseConfigConfig);
+    // Erro de digitação corrigido na linha abaixo:
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -227,7 +228,7 @@
     const formDiv = document.getElementById('setup-form');
     const actionDiv = document.getElementById('action-screen');
     const btnRegravar = document.getElementById('btn-regravar');
-    const resetIcon = document.getElementById('reset-icon'); // Referência ao novo ícone
+    const resetIcon = document.getElementById('reset-icon'); 
     let linkSalvo = ""; 
 
     const isOwner = localStorage.getItem('dono_chaveiro_' + chaveiroId);
@@ -243,7 +244,6 @@
                 linkSalvo = linkDaPlaylist;
                 actionDiv.style.display = 'block';
                 
-                // Se for o dono, mostra o ícone discreto de reset
                 if (isOwner) {
                     resetIcon.style.display = 'block';
                 } else {
@@ -274,27 +274,26 @@
         document.querySelector('#setup-form .description').innerText = 'Cole o novo link da sua música ou playlist abaixo:';
         
         document.getElementById('btn-voltar').style.display = 'flex';
-        resetIcon.style.display = 'none'; // Esconde a lixeira no form
+        resetIcon.style.display = 'none'; 
     }
 
     function voltarParaAcao() {
         formDiv.style.display = 'none';
         actionDiv.style.display = 'block';
-        if(isOwner) resetIcon.style.display = 'block'; // Mostra a lixeira de volta
+        if(isOwner) resetIcon.style.display = 'block'; 
     }
 
-    // --- RECURSO LAPIDADO: Confirmação Discreta com Modal Lindo ---
     function pedirConfirmacaoZerar() {
         mostrarModal(
-            'confirmar', // Novo tipo
+            'confirmar', 
             'Tem Certeza?',
             'Você vai apagar a música ou playlist atual. O chaveiro ficará vazio e pronto para ser reconfigurado.',
-            zerarChaveiro // Ação se clicar em Sim
+            zerarChaveiro 
         );
     }
 
     function zerarChaveiro() {
-        fecharModal(); // Fecha o modal de confirmação primeiro
+        fecharModal(); 
         
         loadingDiv.innerHTML = "<div class='spinner'></div><span>Resetando...</span>";
         loadingDiv.style.display = 'flex';
@@ -304,7 +303,6 @@
         db.ref('chaveiros/' + chaveiroId).remove().then(() => {
             localStorage.removeItem('dono_chaveiro_' + chaveiroId);
             
-            // Reutiliza o modal para o sucesso
             mostrarModal(
                 'sucesso',
                 'Chaveiro Zerado!',
@@ -321,9 +319,7 @@
             resetIcon.style.display = 'block';
         });
     }
-    // -------------------------------------------------------------
 
-    // Função Modal Dinâmico Atualizada para suportar Confirmações (Yes/No)
     function mostrarModal(tipo, titulo, mensagem, acaoBotaoSim, textoBotaoOk = "OK") {
         const modal = document.getElementById('custom-modal');
         const icon = document.getElementById('modal-icon');
@@ -336,7 +332,6 @@
         title.innerText = titulo;
         text.innerText = mensagem;
 
-        // Limpa estados
         modal.style.display = 'flex';
         btnOk.style.display = 'none';
         confirmBtns.style.display = 'none';
@@ -346,7 +341,7 @@
             icon.style.color = "#4CAF50"; 
             btnOk.style.display = 'block';
             btnOk.innerHTML = textoBotaoOk;
-            btnOk.onclick = acaoBotaoSim || fecharModal; // Se não passar ação, só fecha
+            btnOk.onclick = acaoBotaoSim || fecharModal; 
         } else if (tipo === 'erro') {
             icon.className = "fa-solid fa-circle-xmark";
             icon.style.color = "#E27D60"; 
@@ -354,9 +349,9 @@
             btnOk.onclick = fecharModal;
         } else if (tipo === 'confirmar') {
             icon.className = "fa-solid fa-triangle-exclamation";
-            icon.style.color = "#E27D60"; // Usa a cor de destaque (laranja)
+            icon.style.color = "#E27D60"; 
             confirmBtns.style.display = 'flex';
-            btnSim.onclick = acaoBotaoSim; // Define a ação do Sim
+            btnSim.onclick = acaoBotaoSim; 
         }
     }
 
