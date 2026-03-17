@@ -80,6 +80,10 @@
         .btn-secondary { background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color); }
         .btn-secondary:hover { background-color: #f0e9e4; }
         
+        /* Novo estilo para o botão de apagar */
+        .btn-danger { background-color: transparent; color: #d9534f; border: 2px solid #d9534f; margin-top: 15px;}
+        .btn-danger:hover { background-color: #fdf2f2; }
+        
         #loading { 
             font-size: 16px; color: var(--primary-color); font-weight: 500;
             display: flex; flex-direction: column; align-items: center; gap: 15px;
@@ -154,6 +158,8 @@
         <p class="description">Sua playlist está salva neste chaveiro inteligente. O que deseja fazer?</p>
         <button onclick="abrirMusica()"><i class="fa-solid fa-play"></i> Ouvir Playlist</button>
         <button class="btn-secondary" id="btn-regravar" onclick="mostrarFormulario()"><i class="fa-solid fa-pen-to-square"></i> Regravar Chaveiro</button>
+        
+        <button class="btn-danger" id="btn-zerar" onclick="confirmarZerar()"><i class="fa-solid fa-trash-can"></i> Resetar Chaveiro</button>
     </div>
 
     <div class="contact-section">
@@ -192,6 +198,7 @@
     const formDiv = document.getElementById('setup-form');
     const actionDiv = document.getElementById('action-screen');
     const btnRegravar = document.getElementById('btn-regravar');
+    const btnZerar = document.getElementById('btn-zerar'); // Referência ao novo botão
     let linkSalvo = ""; 
 
     const isOwner = localStorage.getItem('dono_chaveiro_' + chaveiroId);
@@ -207,8 +214,10 @@
                 linkSalvo = linkDaPlaylist;
                 actionDiv.style.display = 'block';
                 
+                // Esconde os botões de edição se não for o dono
                 if (!isOwner) {
                     btnRegravar.style.display = 'none';
+                    btnZerar.style.display = 'none'; 
                 }
             } else {
                 formDiv.style.display = 'block';
@@ -228,7 +237,6 @@
         formDiv.style.display = 'block';
         document.getElementById('playlist-url').value = '';
         
-        // Esconde a mensagem de boas-vindas se ele estiver apenas regravando
         const welcomeBadge = document.querySelector('.welcome-badge');
         if(welcomeBadge) welcomeBadge.style.display = 'none';
         
@@ -242,6 +250,39 @@
         formDiv.style.display = 'none';
         actionDiv.style.display = 'block';
     }
+
+    // --- NOVA FUNÇÃO: Confirmar e Zerar ---
+    function confirmarZerar() {
+        // Pede uma confirmação rápida para evitar toques acidentais
+        if(confirm("Tem certeza que deseja apagar a música? O chaveiro ficará vazio como novo e pronto para outra pessoa.")) {
+            zerarChaveiro();
+        }
+    }
+
+    function zerarChaveiro() {
+        const btn = document.getElementById('btn-zerar');
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Resetando...";
+        
+        // Remove os dados do Firebase
+        db.ref('chaveiros/' + chaveiroId).remove().then(() => {
+            // Remove o carimbo VIP do celular
+            localStorage.removeItem('dono_chaveiro_' + chaveiroId);
+            
+            mostrarModal(
+                'sucesso',
+                'Chaveiro Zerado!',
+                'Os dados foram apagados. O chaveiro está pronto para um novo dono.',
+                function() {
+                    window.location.reload(); // Recarrega a página para voltar à estaca zero
+                },
+                "Voltar ao Início"
+            );
+        }).catch((error) => {
+            alert("Ocorreu um erro ao tentar zerar o chaveiro.");
+            btn.innerHTML = "<i class='fa-solid fa-trash-can'></i> Resetar Chaveiro";
+        });
+    }
+    // --------------------------------------
 
     function mostrarModal(tipo, titulo, mensagem, acaoBotao, textoBotao = "OK") {
         const modal = document.getElementById('custom-modal');
