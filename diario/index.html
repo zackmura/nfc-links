@@ -23,7 +23,7 @@
         :root {
             --primary-color: #4A2E1B; 
             --accent-color: #E27D60;  
-            --bg-color: #f4eee6; 
+            --bg-color: #eaddcf; /* Fundo levemente mais escuro pra destacar o diário branco */
             --text-color: #333;
         }
         
@@ -32,27 +32,45 @@
             background-color: var(--bg-color); 
             background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
             color: var(--text-color); 
-            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; box-sizing: border-box;
+            margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px 15px; box-sizing: border-box;
         }
         
-        .container { 
-            max-width: 450px; width: 100%; background: white; padding: 25px 25px 15px 25px; 
-            border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.06); 
+        /* O Wrapper Geral centraliza o conteúdo verticalmente na tela */
+        .app-wrapper {
+            width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; margin: auto;
+        }
+
+        /* Estilo da caixa de Login/Erro e do próprio Diário */
+        .main-box { 
+            background: white; padding: 25px 25px 15px 25px; 
+            border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.08); 
             box-sizing: border-box; text-align: center; border-left: 18px solid var(--primary-color); position: relative;
             z-index: 10;
         }
-
-        .container::before {
+        .main-box::before {
             content: ''; position: absolute; top: 5%; bottom: 5%; left: -12px; width: 3px;
             background-image: repeating-linear-gradient(to bottom, transparent, transparent 15px, rgba(255,255,255,0.3) 15px, rgba(255,255,255,0.3) 30px);
         }
+
+        /* MUDANÇA: O Novo Painel do Sistema (Gaveta) */
+        .system-panel {
+            background-color: #f2e8d5; /* Papel kraft / papelão claro */
+            border: 1px dashed #d4c3b3;
+            border-radius: 15px; padding: 20px;
+            box-shadow: inset 0 0 15px rgba(138, 112, 94, 0.1), 5px 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .system-panel-title {
+            font-size: 12px; font-weight: bold; color: #a38c7a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;
+        }
         
         .logo { max-width: 110px; margin-bottom: 10px; }
-        
         .diary-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0e9e1; }
         .diary-header img { max-width: 70px; margin-bottom: 5px; }
         .diary-header h2 { font-family: 'Patrick Hand', cursive; color: #7a6353; margin: 0; font-size: 20px; letter-spacing: 0.5px; font-weight: normal; }
-
+        h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 5px; font-size: 26px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px;}
+        p { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
+        
         .btn-google {
             background-color: white; color: #444; border: 1px solid #ccc; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; 
             width: 100%; font-size: 16px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
@@ -60,22 +78,18 @@
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-google img { width: 20px; }
 
-        /* MUDANÇA: Organização da Ferramentas */
         .tools-group { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 10px; width: 100%; }
-        
         .btn-action-square {
             color: white; border: none; border-radius: 10px; height: 50px; 
             cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 18px; flex: 1;
             box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); 
         }
         .btn-action-square:hover { transform: translateY(1px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15); }
-        
         .btn-camera { background-color: #8a705e; } .btn-camera:hover { background-color: #7a6353; }
         .btn-mic { background-color: #5b7c8a; } .btn-mic:hover { background-color: #4b6673; }
         .btn-mic.recording { background-color: #d9534f; animation: pulse 1s infinite; }
         .btn-music { background-color: #7a8a5b; } .btn-music:hover { background-color: #65734b; }
         .btn-eraser { background-color: var(--accent-color); } .btn-eraser:hover { background-color: #d16b4e; }
-
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
         button.btn-primary { 
@@ -83,9 +97,28 @@
             font-size: 16px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin-bottom: 10px;
         }
         button.btn-primary:hover { background-color: #311e12; }
+
+        /* MUDANÇA: Botões 3D Vintage para o Painel de Sistema */
+        .btn-vintage {
+            background-color: #7a6353; color: white; border: none; padding: 14px 15px; border-radius: 10px;
+            font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.1s; width: 100%;
+            /* A mágica do botão 3D */
+            box-shadow: 0 5px 0 #5c4a3d, 0 8px 15px rgba(0,0,0,0.1); 
+            display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 15px;
+        }
+        .btn-vintage:active { 
+            transform: translateY(5px); /* Afunda o botão */
+            box-shadow: 0 0px 0 #5c4a3d, 0 2px 5px rgba(0,0,0,0.1); 
+        }
         
-        .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%;}
-        .btn-secondary:hover { color: #d9534f; text-decoration: underline; }
+        .btn-vintage.danger { 
+            background-color: #c96549; 
+            box-shadow: 0 5px 0 #9c4b33, 0 8px 15px rgba(0,0,0,0.1); 
+        }
+        .btn-vintage.danger:active { 
+            transform: translateY(5px); 
+            box-shadow: 0 0px 0 #9c4b33, 0 2px 5px rgba(0,0,0,0.1); 
+        }
 
         .user-profile { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #eee; }
         .user-profile img { width: 40px; border-radius: 50%; border: 2px solid var(--accent-color); padding: 2px;}
@@ -114,25 +147,17 @@
             background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none; box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); 
         }
 
-        /* MUDANÇA: Estilos dos Anexos (Mural) */
-        .attachments-area {
-            display: flex; flex-direction: column; align-items: center; gap: 15px; padding-top: 20px; z-index: 2;
-        }
-
+        .attachments-area { display: flex; flex-direction: column; align-items: center; gap: 15px; padding-top: 20px; z-index: 2; }
         .polaroid-wrapper { display: none; position: relative; width: 75%; max-width: 200px; background: white; padding: 8px 8px 20px 8px; box-shadow: 2px 4px 12px rgba(0,0,0,0.15); transform: rotate(-2deg); border-radius: 2px; }
         .polaroid-wrapper img { width: 100%; height: auto; border: 1px solid #eee; display: block; border-radius: 2px; }
-        
         .vintage-tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 60px; height: 22px; background-color: rgba(255, 255, 255, 0.65); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 1px; border: 1px solid rgba(0,0,0,0.03); z-index: 3;}
-        
         .btn-remove-attachment { position: absolute; top: -10px; right: -10px; background: #E27D60; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; z-index: 4; }
         .btn-remove-attachment:hover { background: #d9534f; transform: scale(1.1); }
 
-        /* Estilo da Fita K7 (Áudio) */
         .audio-wrapper { display: none; position: relative; width: 80%; background: #eae1d3; border: 1px dashed #c4b5a3; padding: 15px 10px; border-radius: 4px; transform: rotate(1deg); box-shadow: 1px 2px 5px rgba(0,0,0,0.05); }
         .audio-wrapper audio { width: 100%; height: 30px; outline: none; }
         .audio-wrapper span { font-family: 'Patrick Hand', cursive; font-size: 16px; color: #6b5a4d; display: block; margin-bottom: 5px; text-align: left;}
 
-        /* Estilo do Ticket (Música) */
         .music-wrapper { display: none; position: relative; width: 85%; transform: rotate(-1deg); }
         .music-wrapper iframe { width: 100%; border-radius: 8px; box-shadow: 1px 3px 8px rgba(0,0,0,0.1); }
 
@@ -155,11 +180,12 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .ad-box { background-color: #f9f1e6; border: 1px dashed #d4c3b3; border-radius: 12px; padding: 20px; margin: 25px 0; }
-        .contact-section { margin-top: 15px; padding-top: 12px; border-top: 1px solid #eee; }
-        .contact-section p { font-size: 12px; color: #888; margin-bottom: 10px; font-weight: 500;}
+        .contact-section { margin-top: 10px; padding-top: 15px; border-top: 1px solid #d4c3b3; }
+        .contact-section p { font-size: 13px; color: #8a705e; margin-bottom: 12px; font-weight: bold;}
         .social-links { display: flex; flex-direction: row; gap: 8px; width: 100%; justify-content: center;}
-        .btn-contact { color: white; border: none; padding: 10px 15px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 13px; transition: 0.3s; flex: 1; max-width: 180px; }
-        .btn-instagram { background-color: #c96549; } .btn-whatsapp { background-color: #6d4f3b; } 
+        .btn-contact { color: white; border: none; padding: 10px 15px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 13px; transition: 0.3s; flex: 1; max-width: 180px; box-shadow: 0 3px 0 rgba(0,0,0,0.15);}
+        .btn-instagram { background-color: #c96549; } .btn-whatsapp { background-color: #7a8a5b; } 
+        .btn-contact:active { transform: translateY(3px); box-shadow: 0 0px 0 rgba(0,0,0,0.15); }
 
         #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
         .modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; max-width: 290px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
@@ -178,13 +204,14 @@
 </head>
 <body>
 
-<div class="container">
-    <div id="loading-screen" style="display: block; padding: 40px 0;">
+<div class="app-wrapper">
+
+    <div id="loading-screen" class="main-box" style="display: block; padding: 60px 25px;">
         <div class="spinner"></div>
         <span style="color: var(--primary-color); font-weight: bold;">Validando a chave...</span>
     </div>
 
-    <div id="error-screen" style="padding: 10px 0;">
+    <div id="error-screen" class="main-box" style="padding: 30px 25px;">
         <i class="fa-solid fa-lock" style="font-size: 45px; color: var(--primary-color); margin-bottom: 15px;"></i>
         <h2 id="error-title">Acesso Restrito</h2>
         <p id="error-message" style="margin-bottom: 10px;">Este Diário Inteligente pertence a outra pessoa.</p>
@@ -194,10 +221,10 @@
                 <i class="fa-brands fa-instagram"></i> Adquirir na Mini Mundo
             </a>
         </div>
-        <button class="btn-secondary" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Tentar Novamente</button>
+        <button class="btn-vintage" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Tentar Novamente</button>
     </div>
 
-    <div id="login-screen">
+    <div id="login-screen" class="main-box">
         <img src="logo.jpg" alt="Mini Mundo" class="logo" onerror="this.src='https://via.placeholder.com/120?text=Mini+Mundo'">
         <h2>O Seu Refúgio Secreto</h2>
         <p>Encoste o diário, faça login e guarde suas memórias. Somente você tem a chave.</p>
@@ -208,72 +235,85 @@
     </div>
 
     <div id="diary-screen">
-        <div class="diary-header"><img src="logo.jpg" alt="Mini Mundo"><h2>Seu Espaço de Memórias</h2></div>
-        <div class="user-profile"><img id="user-photo" src="" alt="Foto"><div><span id="user-name">Carregando...</span><small><i class="fa-solid fa-lock"></i> Produto ativado e seguro</small></div></div>
         
-        <div class="date-navigation">
-            <button class="nav-arrow" onclick="mudarDataComAnimacao(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <div class="date-wrapper"><i class="fa-regular fa-calendar-days"></i><input type="text" id="diary-date" class="date-picker"></div>
-            <button class="nav-arrow" onclick="mudarDataComAnimacao(1)"><i class="fa-solid fa-chevron-right"></i></button>
-        </div>
-        
-        <div class="paper-wrapper">
-            <div class="paper-container" id="meu-caderno">
-                
-                <div class="attachments-area">
-                    <div id="polaroid-wrapper" class="polaroid-wrapper">
-                        <div class="vintage-tape"></div>
-                        <button class="btn-remove-attachment" onclick="removerAnexo('foto')" title="Remover"><i class="fa-solid fa-xmark"></i></button>
-                        <img id="polaroid-img" src="" alt="Lembrança">
-                    </div>
+        <div class="main-box">
+            <div class="diary-header"><img src="logo.jpg" alt="Mini Mundo"><h2>Seu Espaço de Memórias</h2></div>
+            <div class="user-profile"><img id="user-photo" src="" alt="Foto"><div><span id="user-name">Carregando...</span><small><i class="fa-solid fa-lock"></i> Produto ativado e seguro</small></div></div>
+            
+            <div class="date-navigation">
+                <button class="nav-arrow" onclick="mudarDataComAnimacao(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="date-wrapper"><i class="fa-regular fa-calendar-days"></i><input type="text" id="diary-date" class="date-picker"></div>
+                <button class="nav-arrow" onclick="mudarDataComAnimacao(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="paper-wrapper">
+                <div class="paper-container" id="meu-caderno">
                     
-                    <div id="audio-wrapper" class="audio-wrapper">
-                        <div class="vintage-tape" style="width: 40px; top: -8px;"></div>
-                        <button class="btn-remove-attachment" onclick="removerAnexo('audio')" title="Remover"><i class="fa-solid fa-xmark"></i></button>
-                        <span><i class="fa-solid fa-microphone-lines"></i> Nota de Voz</span>
-                        <audio id="audio-player" controls></audio>
+                    <div class="attachments-area">
+                        <div id="polaroid-wrapper" class="polaroid-wrapper">
+                            <div class="vintage-tape"></div>
+                            <button class="btn-remove-attachment" onclick="removerAnexo('foto')" title="Remover"><i class="fa-solid fa-xmark"></i></button>
+                            <img id="polaroid-img" src="" alt="Lembrança">
+                        </div>
+                        
+                        <div id="audio-wrapper" class="audio-wrapper">
+                            <div class="vintage-tape" style="width: 40px; top: -8px;"></div>
+                            <button class="btn-remove-attachment" onclick="removerAnexo('audio')" title="Remover"><i class="fa-solid fa-xmark"></i></button>
+                            <span><i class="fa-solid fa-microphone-lines"></i> Nota de Voz</span>
+                            <audio id="audio-player" controls></audio>
+                        </div>
+
+                        <div id="music-wrapper" class="music-wrapper">
+                            <div class="vintage-tape" style="transform: translateX(-50%) rotate(-1deg);"></div>
+                            <button class="btn-remove-attachment" onclick="removerAnexo('musica')" title="Remover" style="top: -5px;"><i class="fa-solid fa-xmark"></i></button>
+                            <iframe id="music-iframe" src="" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                        </div>
                     </div>
 
-                    <div id="music-wrapper" class="music-wrapper">
-                        <div class="vintage-tape" style="transform: translateX(-50%) rotate(-1deg);"></div>
-                        <button class="btn-remove-attachment" onclick="removerAnexo('musica')" title="Remover" style="top: -5px;"><i class="fa-solid fa-xmark"></i></button>
-                        <iframe id="music-iframe" src="" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-                    </div>
+                    <textarea id="diary-text" placeholder="Querido diário, hoje o dia foi..."></textarea>
                 </div>
+            </div>
+            
+            <input type="file" id="foto-input" accept="image/*" style="display:none;" onchange="processarFoto(event)">
+            
+            <div class="tools-group">
+                <button class="btn-action-square btn-camera" onclick="document.getElementById('foto-input').click()" title="Anexar Foto">
+                    <i class="fa-solid fa-camera-retro"></i>
+                </button>
+                <button class="btn-action-square btn-mic" id="btn-mic" onclick="toggleGravacao()" title="Gravar Voz">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                <button class="btn-action-square btn-music" onclick="abrirModalMusica()" title="Adicionar Trilha Sonora">
+                    <i class="fa-solid fa-music"></i>
+                </button>
+                <button class="btn-action-square btn-eraser" onclick="pedirParaApagar()" title="Apagar tudo deste dia">
+                    <i class="fa-solid fa-eraser"></i>
+                </button>
+            </div>
 
-                <textarea id="diary-text" placeholder="Querido diário, hoje o dia foi..."></textarea>
+            <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-feather-pointed"></i> Guardar Memória</button>
+        </div>
+
+        <div class="system-panel">
+            <div class="system-panel-title">Painel de Controle</div>
+            
+            <button class="btn-vintage" onclick="fazerLogout()">
+                <i class="fa-solid fa-book-open"></i> Fechar Caderno
+            </button>
+            
+            <button class="btn-vintage danger" onclick="pedirParaDesvincular()">
+                <i class="fa-solid fa-link-slash"></i> Desvincular Diário
+            </button>
+            
+            <div class="contact-section">
+                <p>Mais produtos inteligentes da Mini Mundo:</p>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                    <a href="https://wa.me/5511992279009" target="_blank" class="btn-contact btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                </div>
             </div>
         </div>
-        
-        <input type="file" id="foto-input" accept="image/*" style="display:none;" onchange="processarFoto(event)">
-        
-        <div class="tools-group">
-            <button class="btn-action-square btn-camera" onclick="document.getElementById('foto-input').click()" title="Anexar Foto">
-                <i class="fa-solid fa-camera-retro"></i>
-            </button>
-            <button class="btn-action-square btn-mic" id="btn-mic" onclick="toggleGravacao()" title="Gravar Voz">
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-            <button class="btn-action-square btn-music" onclick="abrirModalMusica()" title="Adicionar Trilha Sonora">
-                <i class="fa-solid fa-music"></i>
-            </button>
-            <button class="btn-action-square btn-eraser" onclick="pedirParaApagar()" title="Apagar tudo deste dia">
-                <i class="fa-solid fa-eraser"></i>
-            </button>
-        </div>
 
-        <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-feather-pointed"></i> Guardar Memória</button>
-        
-        <button class="btn-secondary" onclick="fazerLogout()"><i class="fa-solid fa-book-open"></i> Fechar Caderno</button>
-        <button class="btn-secondary" onclick="pedirParaDesvincular()" style="margin-top: 5px; font-size: 13px; color: #a67c7b;"><i class="fa-solid fa-link-slash"></i> Desvincular e Repassar</button>
-        
-        <div class="contact-section">
-            <p>Mais produtos da Mini Mundo:</p>
-            <div class="social-links">
-                <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
-                <a href="https://wa.me/5511992279009" target="_blank" class="btn-contact btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -286,7 +326,7 @@
         <div id="modal-input-group" style="display: none;">
             <input type="text" id="music-link-input" placeholder="Cole o link do Spotify ou YouTube aqui">
             <button class="modal-btn-ok" onclick="processarLinkMusica()">Adicionar Trilha</button>
-            <button class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+            <button class="btn-secondary" onclick="fecharModal()" style="margin-top: 10px;">Cancelar</button>
         </div>
 
         <button id="modal-btn-ok" class="modal-btn-ok" onclick="fecharModal()">OK</button>
@@ -331,7 +371,6 @@
     let audioAtualBase64 = null;
     let musicaAtualUrl = null;
 
-    // Lógica de Gravação de Áudio
     let mediaRecorder;
     let audioChunks = [];
     let isRecording = false;
@@ -446,7 +485,6 @@
                     };
                 };
                 mediaRecorder.start(); isRecording = true; btnMic.classList.add('recording');
-                // Limite de 60s
                 setTimeout(() => { if(isRecording) toggleGravacao(); }, 60000);
             } catch (err) { mostrarModal('erro', 'Microfone', 'Permissão negada ou indisponível.'); }
         } else {
@@ -476,7 +514,6 @@
             if(embedUrl) {
                 musicaAtualUrl = embedUrl;
                 document.getElementById('music-iframe').src = embedUrl;
-                // Alturas diferentes para Spotify e YT
                 document.getElementById('music-iframe').style.height = embedUrl.includes("spotify") ? "152px" : "200px";
                 document.getElementById('music-wrapper').style.display = 'block';
                 fecharModal();
