@@ -38,29 +38,13 @@
         
         .app-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; margin: auto; }
 
-        /* MUDANÇA: O Novo Estilo "Capa de Livro/Certificado" para as Telas Iniciais */
         .cover-card {
-            background-color: #fcf8f2;
-            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            padding: 15px;
-            width: 100%;
-            min-height: 80vh; /* Altura de tela cheia no celular */
-            box-sizing: border-box;
+            background-color: #fcf8f2; background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 15px; width: 100%; min-height: 80vh; box-sizing: border-box;
         }
         .cover-card .border-inner {
-            border: 2px solid #4A2E1B;
-            border-radius: 5px;
-            height: 100%;
-            min-height: calc(80vh - 30px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px 20px;
-            text-align: center;
-            box-sizing: border-box;
+            border: 2px solid #4A2E1B; border-radius: 5px; height: 100%; min-height: calc(80vh - 30px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; box-sizing: border-box;
         }
         
         .cover-logo-main { max-width: 65%; margin-bottom: 15px; mix-blend-mode: multiply; }
@@ -71,22 +55,13 @@
         .cover-footer { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-top: auto; padding-top: 30px;}
         .cover-footer span { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 2px; font-family: 'Montserrat', sans-serif;}
 
-        /* Estilo do Diário Aberto (Mantido) */
         .main-box { 
-            background: white; padding: 25px 25px 15px 25px; 
-            border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.08); 
-            box-sizing: border-box; text-align: center; border-left: 18px solid var(--primary-color); position: relative;
-            z-index: 10;
+            background: white; padding: 25px 25px 15px 25px; border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.08); 
+            box-sizing: border-box; text-align: center; border-left: 18px solid var(--primary-color); position: relative; z-index: 10;
         }
-        .main-box::before {
-            content: ''; position: absolute; top: 5%; bottom: 5%; left: -12px; width: 3px;
-            background-image: repeating-linear-gradient(to bottom, transparent, transparent 15px, rgba(255,255,255,0.3) 15px, rgba(255,255,255,0.3) 30px);
-        }
+        .main-box::before { content: ''; position: absolute; top: 5%; bottom: 5%; left: -12px; width: 3px; background-image: repeating-linear-gradient(to bottom, transparent, transparent 15px, rgba(255,255,255,0.3) 15px, rgba(255,255,255,0.3) 30px); }
 
-        .system-panel {
-            background-color: #f2e8d5; border: 1px dashed #d4c3b3; border-radius: 15px; padding: 20px;
-            box-shadow: inset 0 0 15px rgba(138, 112, 94, 0.1), 5px 5px 15px rgba(0,0,0,0.05); text-align: center;
-        }
+        .system-panel { background-color: #f2e8d5; border: 1px dashed #d4c3b3; border-radius: 15px; padding: 20px; box-shadow: inset 0 0 15px rgba(138, 112, 94, 0.1), 5px 5px 15px rgba(0,0,0,0.05); text-align: center; }
         .system-panel-title { font-size: 12px; font-weight: bold; color: #a38c7a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-family: 'Montserrat', sans-serif;}
         
         .diary-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0e9e1; }
@@ -95,17 +70,15 @@
         
         .btn-google {
             background-color: white; color: #444; border: 1px solid #ccc; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; 
-            width: 100%; font-size: 15px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            font-family: 'Montserrat', sans-serif;
+            width: 100%; font-size: 15px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-family: 'Montserrat', sans-serif;
         }
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 6px 12px rgba(0,0,0,0.1); transform: translateY(-1px);}
-        .btn-google img { width: 20px; }
         .btn-google svg { width: 20px; height: 20px; }
 
-        .tools-group { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 10px; width: 100%; }
+        .tools-group { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 10px; width: 100%; }
         .btn-action-square {
-            color: white; border: none; border-radius: 10px; height: 50px; 
-            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 18px; flex: 1;
+            color: white; border: none; border-radius: 10px; height: 45px; 
+            cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 16px; flex: 1;
             box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); 
         }
         .btn-action-square:hover { transform: translateY(1px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15); }
@@ -113,6 +86,7 @@
         .btn-mic { background-color: #5b7c8a; } .btn-mic:hover { background-color: #4b6673; }
         .btn-mic.recording { background-color: #d9534f; animation: pulse 1s infinite; }
         .btn-music { background-color: #7a8a5b; } .btn-music:hover { background-color: #65734b; }
+        .btn-insta { background-color: #E1306C; } .btn-insta:hover { background-color: #C13584; } /* NOVO BOTÃO INSTA */
         .btn-eraser { background-color: var(--accent-color); } .btn-eraser:hover { background-color: #d16b4e; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
@@ -123,8 +97,7 @@
         button.btn-primary:hover { background-color: #311e12; }
 
         .btn-vintage {
-            background-color: #7a6353; color: white; border: none; padding: 14px 15px; border-radius: 10px;
-            font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.1s; width: 100%;
+            background-color: #7a6353; color: white; border: none; padding: 14px 15px; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.1s; width: 100%;
             box-shadow: 0 5px 0 #5c4a3d, 0 8px 15px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 15px;
         }
         .btn-vintage:active { transform: translateY(5px); box-shadow: 0 0px 0 #5c4a3d, 0 2px 5px rgba(0,0,0,0.1); }
@@ -153,10 +126,7 @@
             border: 1px solid #d4c3b3; transform-origin: left center; will-change: transform; z-index: 1;
             display: flex; flex-direction: column; overflow: hidden; 
         }
-        .paper-container::before {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px;
-            background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none; box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); 
-        }
+        .paper-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px; background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none; box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); }
 
         .attachments-area { display: flex; flex-direction: column; align-items: center; gap: 15px; padding-top: 20px; z-index: 2; }
         .polaroid-wrapper { display: none; position: relative; width: 55%; max-width: 150px; background: white; padding: 6px 6px 18px 6px; box-shadow: 2px 4px 10px rgba(0,0,0,0.15); transform: rotate(-2deg); border-radius: 2px; }
@@ -171,6 +141,10 @@
 
         .music-wrapper { display: none; position: relative; width: 85%; transform: rotate(-1deg); }
         .music-wrapper iframe { width: 100%; border-radius: 8px; box-shadow: 1px 3px 8px rgba(0,0,0,0.1); }
+
+        /* Estilo do Embed do Instagram */
+        .insta-wrapper { display: none; position: relative; width: 90%; transform: rotate(1deg); margin-top: 5px;}
+        .insta-wrapper iframe { width: 100%; border-radius: 8px; box-shadow: 1px 3px 8px rgba(0,0,0,0.1); background: white;}
 
         textarea {
             width: 100%; flex-grow: 1; min-height: 200px; padding: 20px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; 
@@ -229,14 +203,12 @@
             <i class="fa-solid fa-lock" style="font-size: 45px; color: var(--primary-color); margin-bottom: 15px;"></i>
             <h1 class="cover-title" id="error-title">Acesso Restrito</h1>
             <p class="cover-text" id="error-message">Este Diário Inteligente pertence a outra pessoa.</p>
-            
             <div class="ad-box" style="margin-bottom: 25px; width: 100%; padding: 15px;">
                 <p style="margin-bottom: 10px; font-size: 13px;">Gostou da ideia? Tenha o seu próprio Diário Secreto habilitado com tecnologia NFC.</p>
                 <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram" style="margin: 0 auto; width: 100%; max-width: none;">
                     <i class="fa-brands fa-instagram"></i> Adquirir na Mini Mundo
                 </a>
             </div>
-            
             <button class="btn-vintage" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Tentar Novamente</button>
         </div>
     </div>
@@ -244,17 +216,13 @@
     <div id="login-screen" class="cover-card" style="display: none;">
         <div class="border-inner">
             <img src="logo-minimundo.jpg" alt="Mini Mundo 3D" class="cover-logo-main" onerror="this.src='https://via.placeholder.com/150?text=Mini+Mundo'">
-            
             <h1 class="cover-title">Diário Inteligente NFC</h1>
             <h2 class="cover-subtitle">O Seu Refúgio Secreto</h2>
-            
             <p class="cover-text">Faça login e guarde suas memórias. Somente você tem a chave.</p>
-            
             <button class="btn-google" onclick="fazerLogin()">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
                 Destrancar com o Google
             </button>
-
             <div class="cover-footer">
                 <span>Tecnologia & Segurança por</span>
                 <img src="logo-viva.png" alt="Viva Inteligente" class="cover-logo-sec" onerror="this.src='https://via.placeholder.com/100?text=Viva'">
@@ -296,9 +264,15 @@
                             <button class="btn-remove-attachment" onclick="removerAnexo('musica')" title="Remover" style="top: -5px;"><i class="fa-solid fa-xmark"></i></button>
                             <iframe id="music-iframe" src="" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
                         </div>
+
+                        <div id="insta-wrapper" class="insta-wrapper">
+                            <div class="vintage-tape" style="transform: translateX(-50%) rotate(2deg);"></div>
+                            <button class="btn-remove-attachment" onclick="removerAnexo('insta')" title="Remover" style="top: -12px; z-index: 10;"><i class="fa-solid fa-xmark"></i></button>
+                            <iframe id="insta-iframe" src="" height="420" frameborder="0" scrolling="no" allowtransparency="true"></iframe>
+                        </div>
                     </div>
 
-                    <textarea id="diary-text" placeholder="Querido diário, hoje o dia foi..."></textarea>
+                    <textarea id="diary-text" placeholder="Querido diário, hoje a verdade foi..."></textarea>
                 </div>
             </div>
             
@@ -307,8 +281,9 @@
             <div class="tools-group">
                 <button class="btn-action-square btn-camera" onclick="document.getElementById('foto-input').click()" title="Anexar Foto"><i class="fa-solid fa-camera-retro"></i></button>
                 <button class="btn-action-square btn-mic" id="btn-mic" onclick="toggleGravacao()" title="Gravar Voz"><i class="fa-solid fa-microphone"></i></button>
-                <button class="btn-action-square btn-music" onclick="abrirModalMusica()" title="Adicionar Trilha Sonora"><i class="fa-solid fa-music"></i></button>
-                <button class="btn-action-square btn-eraser" onclick="pedirParaApagar()" title="Apagar tudo deste dia"><i class="fa-solid fa-eraser"></i></button>
+                <button class="btn-action-square btn-music" onclick="abrirModalLink('musica')" title="Adicionar Música"><i class="fa-solid fa-music"></i></button>
+                <button class="btn-action-square btn-insta" onclick="abrirModalLink('insta')" title="Embutir Instagram"><i class="fa-brands fa-instagram"></i></button>
+                <button class="btn-action-square btn-eraser" onclick="pedirParaApagar()" title="Apagar Dia"><i class="fa-solid fa-eraser"></i></button>
             </div>
 
             <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-feather-pointed"></i> Guardar Memória</button>
@@ -316,7 +291,6 @@
 
         <div class="system-panel">
             <div class="system-panel-title">Painel de Controle</div>
-            
             <button class="btn-vintage" onclick="fazerLogout()"><i class="fa-solid fa-book-open"></i> Fechar Caderno</button>
             <button class="btn-vintage danger" onclick="pedirParaDesvincular()"><i class="fa-solid fa-link-slash"></i> Desvincular Diário</button>
             
@@ -339,8 +313,8 @@
         <p id="modal-text">Mensagem</p>
         
         <div id="modal-input-group" style="display: none;">
-            <input type="text" id="music-link-input" placeholder="Cole o link do Spotify ou YouTube aqui">
-            <button class="modal-btn-ok" onclick="processarLinkMusica()">Adicionar Trilha</button>
+            <input type="text" id="link-input" placeholder="Cole o link aqui">
+            <button class="modal-btn-ok" onclick="processarLink()">Confirmar Link</button>
             <button class="btn-secondary" onclick="fecharModal()" style="margin-top: 10px; width: 100%;">Cancelar</button>
         </div>
 
@@ -375,19 +349,13 @@
     const diaryText = document.getElementById('diary-text');
     const caderno = document.getElementById('meu-caderno');
 
-    let usuarioAtual = null;
-    let fpInstance = null; 
-    let datasComRegistro = []; 
-    let dataAnteriorGlobal = new Date(); 
-    let isAnimating = false; 
+    let usuarioAtual = null; let fpInstance = null; let datasComRegistro = []; let dataAnteriorGlobal = new Date(); let isAnimating = false; 
 
-    let imagemAtualBase64 = null;
-    let audioAtualBase64 = null;
-    let musicaAtualUrl = null;
+    // MUDANÇA: Nova variável para a URL do Insta
+    let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null;
 
-    let mediaRecorder;
-    let audioChunks = [];
-    let isRecording = false;
+    let mediaRecorder; let audioChunks = []; let isRecording = false;
+    let tipoLinkAtual = ''; // Controla se o modal é de música ou insta
 
     const urlParams = new URLSearchParams(window.location.search);
     const produtoId = urlParams.get('id');
@@ -395,17 +363,13 @@
     auth.onAuthStateChanged((user) => {
         if (!produtoId) { mostrarTelaErro('Produto Não Detectado', 'Encoste no diário físico.'); return; }
         if (user) { verificarPropriedadeDoDiario(user, produtoId); } 
-        else {
-            usuarioAtual = null; diaryScreen.style.display = 'none'; errorScreen.style.display = 'none'; loadingScreen.style.display = 'none'; loginScreen.style.display = 'block';
-        }
+        else { usuarioAtual = null; diaryScreen.style.display = 'none'; errorScreen.style.display = 'none'; loadingScreen.style.display = 'none'; loginScreen.style.display = 'block'; }
     });
 
     function verificarPropriedadeDoDiario(user, id) {
         db.ref('chaves_diario/' + id).once('value').then((snapshot) => {
             if (!snapshot.exists()) { auth.signOut().then(() => { mostrarTelaErro('Produto Inválido', 'Este link não é oficial.'); }); } 
-            else if (snapshot.val() === 'LIVRE') {
-                db.ref('chaves_diario/' + id).set(user.uid).then(() => { liberarDiario(user); }).catch(() => { mostrarTelaErro('Erro', 'Erro ao vincular.'); });
-            } 
+            else if (snapshot.val() === 'LIVRE') { db.ref('chaves_diario/' + id).set(user.uid).then(() => { liberarDiario(user); }).catch(() => { mostrarTelaErro('Erro', 'Erro ao vincular.'); }); } 
             else if (snapshot.val() === user.uid) { liberarDiario(user); } 
             else { auth.signOut().then(() => { mostrarTelaErro('Acesso Negado', 'Pertence a outra pessoa.'); }); }
         });
@@ -463,10 +427,12 @@
     }
     function fazerLogout() { auth.signOut(); }
 
+    // MUDANÇA: Limpa todos os 4 anexos de forma silenciosa
     function limparAnexosDaTela() {
         imagemAtualBase64 = null; document.getElementById('polaroid-wrapper').style.display = 'none'; document.getElementById('polaroid-img').src = "";
         audioAtualBase64 = null; document.getElementById('audio-wrapper').style.display = 'none'; document.getElementById('audio-player').src = "";
         musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = "";
+        instaAtualUrl = null; document.getElementById('insta-wrapper').style.display = 'none'; document.getElementById('insta-iframe').src = "";
     }
 
     function processarFoto(event) {
@@ -500,8 +466,7 @@
                     const reader = new FileReader(); reader.readAsDataURL(audioBlob);
                     reader.onloadend = () => {
                         audioAtualBase64 = reader.result;
-                        document.getElementById('audio-player').src = audioAtualBase64;
-                        document.getElementById('audio-wrapper').style.display = 'block';
+                        document.getElementById('audio-player').src = audioAtualBase64; document.getElementById('audio-wrapper').style.display = 'block';
                         salvarDiario(true); 
                     };
                 };
@@ -514,14 +479,26 @@
         }
     }
 
-    function abrirModalMusica() {
-        document.getElementById('music-link-input').value = "";
-        mostrarModal('input', 'Trilha Sonora', 'Cole o link do Spotify ou YouTube:');
+    // MUDANÇA: Modal Unificado para Links (Insta ou Música)
+    function abrirModalLink(tipo) {
+        tipoLinkAtual = tipo;
+        document.getElementById('link-input').value = "";
+        
+        if(tipo === 'musica') {
+            document.getElementById('link-input').placeholder = "Cole o link do Spotify ou YouTube";
+            mostrarModal('input-musica', 'Trilha Sonora', 'Cole o link de uma música:');
+        } else {
+            document.getElementById('link-input').placeholder = "Cole o link da foto/reel do Instagram";
+            mostrarModal('input-insta', 'Post do Insta', 'Copie o link no Instagram e cole aqui:');
+        }
     }
 
-    function processarLinkMusica() {
-        const link = document.getElementById('music-link-input').value.trim();
-        if(link) {
+    // MUDANÇA: Lógica de processamento do Link (Música ou Insta)
+    function processarLink() {
+        const link = document.getElementById('link-input').value.trim();
+        if(!link) return;
+
+        if(tipoLinkAtual === 'musica') {
             let embedUrl = "";
             if(link.includes("spotify.com/track/")) {
                 const trackId = link.split("track/")[1].split("?")[0];
@@ -537,21 +514,33 @@
                 document.getElementById('music-iframe').src = embedUrl;
                 document.getElementById('music-iframe').style.height = embedUrl.includes("spotify") ? "152px" : "200px";
                 document.getElementById('music-wrapper').style.display = 'block';
-                fecharModal();
-                salvarDiario(true); 
-            } else {
-                alert("Link inválido! Use um link direto de música do Spotify ou vídeo do YouTube.");
-            }
+                fecharModal(); salvarDiario(true); 
+            } else { alert("Link inválido! Use um link do Spotify ou YouTube."); }
+            
+        } else if (tipoLinkAtual === 'insta') {
+            if (link.includes("instagram.com/p/") || link.includes("instagram.com/reel/")) {
+                let cleanLink = link.split("?")[0]; // Remove parâmetros de rastreio
+                if(!cleanLink.endsWith("/")) cleanLink += "/";
+                let embedUrl = cleanLink + "embed";
+                
+                instaAtualUrl = embedUrl;
+                document.getElementById('insta-iframe').src = embedUrl;
+                document.getElementById('insta-wrapper').style.display = 'block';
+                fecharModal(); salvarDiario(true);
+            } else { alert("Link inválido! Use um link de post ou reel do Instagram."); }
         }
     }
 
+    // MUDANÇA: Remover os 4 tipos de anexo
     function removerAnexo(tipo) {
         if(tipo === 'foto') { imagemAtualBase64 = null; document.getElementById('polaroid-wrapper').style.display = 'none'; document.getElementById('polaroid-img').src = ""; }
         if(tipo === 'audio') { audioAtualBase64 = null; document.getElementById('audio-wrapper').style.display = 'none'; document.getElementById('audio-player').src = ""; }
         if(tipo === 'musica') { musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = ""; }
+        if(tipo === 'insta') { instaAtualUrl = null; document.getElementById('insta-wrapper').style.display = 'none'; document.getElementById('insta-iframe').src = ""; }
         salvarDiario(true); 
     }
 
+    // MUDANÇA: Carregar pacote com as 4 mídias
     function carregarTextoDoDia(dataSelecionada) {
         if(!usuarioAtual || !dataSelecionada) return;
         diaryText.disabled = true; diaryText.value = "";
@@ -570,6 +559,7 @@
                             if(pacote.imagem) { imagemAtualBase64 = pacote.imagem; document.getElementById('polaroid-img').src = imagemAtualBase64; document.getElementById('polaroid-wrapper').style.display = 'block'; }
                             if(pacote.audio) { audioAtualBase64 = pacote.audio; document.getElementById('audio-player').src = audioAtualBase64; document.getElementById('audio-wrapper').style.display = 'block'; }
                             if(pacote.musica) { musicaAtualUrl = pacote.musica; document.getElementById('music-iframe').src = musicaAtualUrl; document.getElementById('music-iframe').style.height = musicaAtualUrl.includes("spotify") ? "152px" : "200px"; document.getElementById('music-wrapper').style.display = 'block'; }
+                            if(pacote.insta) { instaAtualUrl = pacote.insta; document.getElementById('insta-iframe').src = instaAtualUrl; document.getElementById('insta-wrapper').style.display = 'block'; }
                         } catch(e) { diaryText.value = textoOriginal; }
                     } else if (!textoSalvo.startsWith("U2FsdGVkX1")) { diaryText.value = textoSalvo; }
                 } catch(e) { diaryText.value = textoSalvo; }
@@ -577,26 +567,23 @@
         }).catch((error) => { diaryText.disabled = false; });
     }
 
+    // MUDANÇA: Salvar pacote com as 4 mídias
     function salvarDiario(isAutoSave = false) {
         if(!usuarioAtual || !fpInstance) return;
-        const btn = document.getElementById('btn-salvar');
-        const dataSelecionada = fpInstance.input.value;
-        const textoParaSalvar = diaryText.value.trim();
+        const btn = document.getElementById('btn-salvar'); const dataSelecionada = fpInstance.input.value; const textoParaSalvar = diaryText.value.trim();
 
-        if (textoParaSalvar === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl) { 
-            executarApagarSilencioso(dataSelecionada, btn, isAutoSave); 
-            return; 
+        if (textoParaSalvar === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl && !instaAtualUrl) { 
+            executarApagarSilencioso(dataSelecionada, btn, isAutoSave); return; 
         }
 
         btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Salvando...";
         
-        const pacote = { texto: textoParaSalvar, imagem: imagemAtualBase64, audio: audioAtualBase64, musica: musicaAtualUrl };
+        const pacote = { texto: textoParaSalvar, imagem: imagemAtualBase64, audio: audioAtualBase64, musica: musicaAtualUrl, insta: instaAtualUrl };
         const textoCriptografado = CryptoJS.AES.encrypt(JSON.stringify(pacote), usuarioAtual.uid).toString();
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!";
             setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
-            
             if(!isAutoSave) { mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.'); }
         }).catch((error) => { 
             btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; 
@@ -604,21 +591,16 @@
         });
     }
 
-    function pedirParaApagar() { if(diaryText.value.trim() === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl) return; mostrarModal('apagar', 'Apagar tudo?', 'A página voltará a ficar em branco.'); }
+    function pedirParaApagar() { if(diaryText.value.trim() === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl && !instaAtualUrl) return; mostrarModal('apagar', 'Apagar tudo?', 'A página voltará a ficar em branco.'); }
 
     function executarApagar() {
         fecharModal(); const dataSelecionada = fpInstance.input.value;
-        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => { 
-            diaryText.value = ""; limparAnexosDaTela(); mostrarModal('sucesso', 'Limpo!', 'Página apagada.'); 
-        });
+        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => { diaryText.value = ""; limparAnexosDaTela(); mostrarModal('sucesso', 'Limpo!', 'Página apagada.'); });
     }
     
     function executarApagarSilencioso(data, btn, isAutoSave = false) { 
         btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Limpando...";
-        db.ref('diarios/' + usuarioAtual.uid + '/' + data).remove().then(() => { 
-            btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!";
-            setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
-        }); 
+        db.ref('diarios/' + usuarioAtual.uid + '/' + data).remove().then(() => { btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000); }); 
     }
 
     function pedirParaDesvincular() { mostrarModal('desvincular', 'Repassar Diário?', 'Irá desvincular seu e-mail da peça física. Continuar?'); }
@@ -636,8 +618,10 @@
             icon.className = "fa-solid fa-triangle-exclamation"; icon.style.color = "#E27D60"; confirmGroup.style.display = 'flex';
             if(tipo === 'apagar') { btnSim.innerHTML = "<i class='fa-solid fa-eraser'></i> Sim, apagar"; btnSim.onclick = executarApagar; } 
             else { btnSim.innerHTML = "<i class='fa-solid fa-link-slash'></i> Sim"; btnSim.onclick = executarDesvinculacao; }
-        } else if (tipo === 'input') {
+        } else if (tipo === 'input-musica') {
             icon.className = "fa-brands fa-spotify"; icon.style.color = "#1DB954"; inputGroup.style.display = 'block';
+        } else if (tipo === 'input-insta') {
+            icon.className = "fa-brands fa-instagram"; icon.style.color = "#E1306C"; inputGroup.style.display = 'block';
         } else {
             icon.className = tipo === 'sucesso' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark"; icon.style.color = tipo === 'sucesso' ? "#4CAF50" : "#d9534f"; btnOk.style.display = 'block';
         }
