@@ -57,7 +57,6 @@
         .tools-group { display: none; justify-content: space-between; gap: 6px; margin-bottom: 15px; width: 100%; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* MUDANÇA: O Estilo para o Botão com "Check" */
         .btn-action-square { position: relative; color: white; border: none; border-radius: 10px; height: 45px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 16px; flex: 1; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); }
         .btn-action-square:hover { transform: translateY(1px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15); }
         .btn-action-square.eraser { flex: 0 0 50px; background-color: var(--accent-color); } .btn-action-square.eraser:hover { background-color: #d16b4e; }
@@ -69,7 +68,6 @@
         .btn-mood { background-color: #eab676; } .btn-mood:hover { background-color: #d9a565; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* O pequeno selinho verde de "Concluído" */
         .badge-check { display: none; position: absolute; top: -5px; right: -5px; background: #4CAF50; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
         .has-media .badge-check { display: flex; }
 
@@ -100,13 +98,15 @@
         .paper-container { position: relative; background-color: #f9f1e6; border-radius: 3px 6px 3px 5px; box-shadow: inset 0 0 30px rgba(138, 112, 94, 0.15), 2px 3px 10px rgba(0,0,0,0.08); border: 1px solid #d4c3b3; transform-origin: left center; will-change: transform; z-index: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 280px; }
         .paper-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px; background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none; box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); }
 
-        .mood-stamp { display: none; position: absolute; top: 15px; right: 15px; font-size: 32px; transform: rotate(12deg); z-index: 5; filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.1)); cursor: pointer; transition: 0.2s; }
+        /* MUDANÇA: Carimbo de humor menor e mais encolhido no canto */
+        .mood-stamp { display: none; position: absolute; top: 12px; right: 12px; font-size: 28px; transform: rotate(12deg); z-index: 5; filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.1)); cursor: pointer; transition: 0.2s; }
         .mood-stamp:hover { transform: rotate(0deg) scale(1.1); opacity: 0.7; }
 
-        /* MUDANÇA: Estilo da Inspiração do Dia */
-        .daily-prompt { font-family: 'Patrick Hand', cursive; font-size: 16px; color: #a38c7a; text-align: center; margin: 20px 15px 0 42px; font-style: italic; }
+        /* MUDANÇA: Margem na direita para não encostar no carimbo */
+        .daily-prompt { font-family: 'Patrick Hand', cursive; font-size: 16px; color: #a38c7a; text-align: center; margin: 15px 45px 10px 42px; font-style: italic; }
 
-        textarea { width: 100%; flex-grow: 1; min-height: 180px; padding: 15px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent; line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); background-attachment: local; }
+        /* MUDANÇA: O Padding do topo foi matematicamente calculado (2px) para a linha bater na base da letra */
+        textarea { width: 100%; flex-grow: 1; min-height: 180px; padding: 2px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent; line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); background-attachment: local; }
 
         .attachments-area { display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 15px 0 25px 0; z-index: 2; width: 100%;}
         .polaroid-wrapper { display: none; position: relative; width: 55%; max-width: 150px; background: white; padding: 6px 6px 18px 6px; box-shadow: 2px 4px 10px rgba(0,0,0,0.15); transform: rotate(-2deg); border-radius: 2px; margin-top: 10px;}
@@ -347,7 +347,6 @@
     let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null; let humorAtual = null;
     let mediaRecorder; let audioChunks = []; let isRecording = false; let tipoLinkAtual = ''; 
 
-    // MUDANÇA: O Banco de Perguntas (Inspirações)
     const perguntasDiarias = [
         "O que te fez sorrir hoje?", "Qual foi o seu maior desafio hoje?", "Sobre o que você não quer esquecer?", 
         "Se o dia de hoje fosse uma música, qual seria?", "Pelo que você é grato(a) hoje?", "O que você aprendeu de novo hoje?",
@@ -387,10 +386,8 @@
         buscarDiasMapeados();
     }
 
-    // MUDANÇA: Atualizar Pergunta do Dia
     function atualizarPrompt(dataStr) {
-        const dataObj = new Date(dataStr);
-        // Usa o dia do mês (1 a 31) para puxar a pergunta da lista
+        const dataObj = new Date(dataStr + 'T12:00:00'); // Evitar fuso horário mudando o dia
         const dia = dataObj.getDate() || 1; 
         const pergunta = perguntasDiarias[(dia - 1) % perguntasDiarias.length];
         document.getElementById('daily-prompt').innerText = "✨ " + pergunta;
@@ -431,7 +428,6 @@
 
     function toggleTools() { const menu = document.getElementById('tools-menu'); menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex'; }
 
-    // MUDANÇA: Atualizar Badges
     function atualizarBadges() {
         document.getElementById('tool-foto').classList.toggle('has-media', imagemAtualBase64 !== null);
         document.getElementById('tool-audio').classList.toggle('has-media', audioAtualBase64 !== null);
