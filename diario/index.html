@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -37,6 +38,40 @@
         
         .app-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; margin: auto; }
 
+        /* MUDANÇA: O Novo Estilo "Capa de Livro/Certificado" para as Telas Iniciais */
+        .cover-card {
+            background-color: #fcf8f2;
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 15px;
+            width: 100%;
+            min-height: 80vh; /* Altura de tela cheia no celular */
+            box-sizing: border-box;
+        }
+        .cover-card .border-inner {
+            border: 2px solid #4A2E1B;
+            border-radius: 5px;
+            height: 100%;
+            min-height: calc(80vh - 30px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .cover-logo-main { max-width: 65%; margin-bottom: 15px; mix-blend-mode: multiply; }
+        .cover-logo-sec { max-width: 110px; mix-blend-mode: multiply; margin-top: 5px; }
+        .cover-title { font-family: 'Montserrat', sans-serif; color: #4A2E1B; font-weight: 800; font-size: 18px; margin: 0 0 5px 0; letter-spacing: 1px; text-transform: uppercase;}
+        .cover-subtitle { color: #E27D60; font-family: 'Patrick Hand', cursive; font-size: 26px; margin: 0 0 20px 0;}
+        .cover-text { font-size: 15px; color: #555; line-height: 1.5; margin-bottom: 30px; padding: 0 10px;}
+        .cover-footer { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-top: auto; padding-top: 30px;}
+        .cover-footer span { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 2px; font-family: 'Montserrat', sans-serif;}
+
+        /* Estilo do Diário Aberto (Mantido) */
         .main-box { 
             background: white; padding: 25px 25px 15px 25px; 
             border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.08); 
@@ -52,21 +87,20 @@
             background-color: #f2e8d5; border: 1px dashed #d4c3b3; border-radius: 15px; padding: 20px;
             box-shadow: inset 0 0 15px rgba(138, 112, 94, 0.1), 5px 5px 15px rgba(0,0,0,0.05); text-align: center;
         }
-        .system-panel-title { font-size: 12px; font-weight: bold; color: #a38c7a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .system-panel-title { font-size: 12px; font-weight: bold; color: #a38c7a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; font-family: 'Montserrat', sans-serif;}
         
-        .logo { max-width: 110px; margin-bottom: 10px; }
         .diary-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0e9e1; }
-        .diary-header img { max-width: 70px; margin-bottom: 5px; }
+        .diary-header img { max-width: 70px; margin-bottom: 5px; mix-blend-mode: multiply;}
         .diary-header h2 { font-family: 'Patrick Hand', cursive; color: #7a6353; margin: 0; font-size: 20px; letter-spacing: 0.5px; font-weight: normal; }
-        h2 { color: var(--primary-color); margin-top: 0; margin-bottom: 5px; font-size: 26px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px;}
-        p { color: #666; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
         
         .btn-google {
-            background-color: white; color: #444; border: 1px solid #ccc; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; 
-            width: 100%; font-size: 16px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background-color: white; color: #444; border: 1px solid #ccc; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; 
+            width: 100%; font-size: 15px; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            font-family: 'Montserrat', sans-serif;
         }
-        .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 6px 12px rgba(0,0,0,0.1); transform: translateY(-1px);}
         .btn-google img { width: 20px; }
+        .btn-google svg { width: 20px; height: 20px; }
 
         .tools-group { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 10px; width: 100%; }
         .btn-action-square {
@@ -158,21 +192,21 @@
 
         .ad-box { background-color: #f9f1e6; border: 1px dashed #d4c3b3; border-radius: 12px; padding: 20px; margin: 25px 0; }
         .contact-section { margin-top: 10px; padding-top: 15px; border-top: 1px solid #d4c3b3; }
-        .contact-section p { font-size: 13px; color: #8a705e; margin-bottom: 12px; font-weight: bold;}
+        .contact-section p { font-size: 13px; color: #8a705e; margin-bottom: 12px; font-weight: bold; font-family: 'Montserrat', sans-serif;}
         .social-links { display: flex; flex-direction: row; gap: 8px; width: 100%; justify-content: center;}
-        .btn-contact { color: white; border: none; padding: 10px 15px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 13px; transition: 0.3s; flex: 1; max-width: 180px; box-shadow: 0 3px 0 rgba(0,0,0,0.15);}
+        .btn-contact { color: white; border: none; padding: 10px 15px; border-radius: 8px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; font-size: 13px; transition: 0.3s; flex: 1; max-width: 180px; box-shadow: 0 3px 0 rgba(0,0,0,0.15); font-family: 'Montserrat', sans-serif;}
         .btn-instagram { background-color: #c96549; } .btn-whatsapp { background-color: #7a8a5b; } 
         .btn-contact:active { transform: translateY(3px); box-shadow: 0 0px 0 rgba(0,0,0,0.15); }
 
         #custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
         .modal-content { background: white; padding: 25px; border-radius: 15px; text-align: center; max-width: 290px; width: 80%; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; }
         .modal-content i { font-size: 40px; margin-bottom: 12px; }
-        .modal-content h3 { margin: 0 0 8px; color: #333; font-size: 18px; }
+        .modal-content h3 { margin: 0 0 8px; color: #333; font-size: 18px; font-family: 'Montserrat', sans-serif;}
         .modal-content p { color: #666; font-size: 14px; margin-bottom: 15px; line-height: 1.4;}
         .modal-content input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; margin-bottom: 15px; font-family: inherit;}
-        .modal-btn-ok { background-color: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s;}
+        .modal-btn-ok { background-color: var(--primary-color); color: white; border: none; padding: 10px 15px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.3s; font-family: 'Montserrat', sans-serif;}
         .modal-confirm-group { display: flex; gap: 10px; margin-top: 15px; }
-        .modal-confirm-group button { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; flex: 1; transition: 0.3s; }
+        .modal-confirm-group button { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; flex: 1; transition: 0.3s; font-family: 'Montserrat', sans-serif;}
         .btn-sim { background-color: #d9534f; color: white; }
         .btn-nao { background-color: #eee; color: #333; }
 
@@ -183,38 +217,55 @@
 
 <div class="app-wrapper">
 
-    <div id="loading-screen" class="main-box" style="display: block; padding: 60px 25px;">
-        <div class="spinner"></div>
-        <span style="color: var(--primary-color); font-weight: bold;">Validando a chave...</span>
-    </div>
-
-    <div id="error-screen" class="main-box" style="padding: 30px 25px;">
-        <i class="fa-solid fa-lock" style="font-size: 45px; color: var(--primary-color); margin-bottom: 15px;"></i>
-        <h2 id="error-title">Acesso Restrito</h2>
-        <p id="error-message" style="margin-bottom: 10px;">Este Diário Inteligente pertence a outra pessoa.</p>
-        <div class="ad-box">
-            <p>Gostou da ideia? Tenha o seu próprio Diário Secreto habilitado com tecnologia NFC.</p>
-            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram" style="margin: 0 auto; max-width: 100%;">
-                <i class="fa-brands fa-instagram"></i> Adquirir na Mini Mundo
-            </a>
+    <div id="loading-screen" class="cover-card" style="display: block;">
+        <div class="border-inner">
+            <div class="spinner"></div>
+            <span style="color: var(--primary-color); font-weight: bold; font-family: 'Montserrat', sans-serif; margin-top: 15px;">Validando a Chave...</span>
         </div>
-        <button class="btn-vintage" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Tentar Novamente</button>
     </div>
 
-    <div id="login-screen" class="main-box">
-        <img src="logo.jpg" alt="Mini Mundo" class="logo" onerror="this.src='https://via.placeholder.com/120?text=Mini+Mundo'">
-        <h2>O Seu Refúgio Secreto</h2>
-        <p>Encoste o diário, faça login e guarde suas memórias. Somente você tem a chave.</p>
-        <button class="btn-google" onclick="fazerLogin()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
-            Destrancar com o Google
-        </button>
+    <div id="error-screen" class="cover-card" style="display: none;">
+        <div class="border-inner">
+            <i class="fa-solid fa-lock" style="font-size: 45px; color: var(--primary-color); margin-bottom: 15px;"></i>
+            <h1 class="cover-title" id="error-title">Acesso Restrito</h1>
+            <p class="cover-text" id="error-message">Este Diário Inteligente pertence a outra pessoa.</p>
+            
+            <div class="ad-box" style="margin-bottom: 25px; width: 100%; padding: 15px;">
+                <p style="margin-bottom: 10px; font-size: 13px;">Gostou da ideia? Tenha o seu próprio Diário Secreto habilitado com tecnologia NFC.</p>
+                <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="btn-contact btn-instagram" style="margin: 0 auto; width: 100%; max-width: none;">
+                    <i class="fa-brands fa-instagram"></i> Adquirir na Mini Mundo
+                </a>
+            </div>
+            
+            <button class="btn-vintage" onclick="window.location.reload()"><i class="fa-solid fa-rotate-right"></i> Tentar Novamente</button>
+        </div>
     </div>
 
-    <div id="diary-screen">
+    <div id="login-screen" class="cover-card" style="display: none;">
+        <div class="border-inner">
+            <img src="logo-minimundo.jpg" alt="Mini Mundo 3D" class="cover-logo-main" onerror="this.src='https://via.placeholder.com/150?text=Mini+Mundo'">
+            
+            <h1 class="cover-title">Diário Inteligente NFC</h1>
+            <h2 class="cover-subtitle">O Seu Refúgio Secreto</h2>
+            
+            <p class="cover-text">Faça login e guarde suas memórias. Somente você tem a chave.</p>
+            
+            <button class="btn-google" onclick="fazerLogin()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+                Destrancar com o Google
+            </button>
+
+            <div class="cover-footer">
+                <span>Tecnologia & Segurança por</span>
+                <img src="logo-viva.png" alt="Viva Inteligente" class="cover-logo-sec" onerror="this.src='https://via.placeholder.com/100?text=Viva'">
+            </div>
+        </div>
+    </div>
+
+    <div id="diary-screen" style="display: none;">
         
         <div class="main-box">
-            <div class="diary-header"><img src="logo.jpg" alt="Mini Mundo"><h2>Seu Espaço de Memórias</h2></div>
+            <div class="diary-header"><img src="logo-minimundo.jpg" alt="Mini Mundo" onerror="this.src='logo.jpg'"><h2>Seu Espaço de Memórias</h2></div>
             <div class="user-profile"><img id="user-photo" src="" alt="Foto"><div><span id="user-name">Carregando...</span><small><i class="fa-solid fa-lock"></i> Produto ativado e seguro</small></div></div>
             
             <div class="date-navigation">
@@ -254,18 +305,10 @@
             <input type="file" id="foto-input" accept="image/*" style="display:none;" onchange="processarFoto(event)">
             
             <div class="tools-group">
-                <button class="btn-action-square btn-camera" onclick="document.getElementById('foto-input').click()" title="Anexar Foto">
-                    <i class="fa-solid fa-camera-retro"></i>
-                </button>
-                <button class="btn-action-square btn-mic" id="btn-mic" onclick="toggleGravacao()" title="Gravar Voz">
-                    <i class="fa-solid fa-microphone"></i>
-                </button>
-                <button class="btn-action-square btn-music" onclick="abrirModalMusica()" title="Adicionar Trilha Sonora">
-                    <i class="fa-solid fa-music"></i>
-                </button>
-                <button class="btn-action-square btn-eraser" onclick="pedirParaApagar()" title="Apagar tudo deste dia">
-                    <i class="fa-solid fa-eraser"></i>
-                </button>
+                <button class="btn-action-square btn-camera" onclick="document.getElementById('foto-input').click()" title="Anexar Foto"><i class="fa-solid fa-camera-retro"></i></button>
+                <button class="btn-action-square btn-mic" id="btn-mic" onclick="toggleGravacao()" title="Gravar Voz"><i class="fa-solid fa-microphone"></i></button>
+                <button class="btn-action-square btn-music" onclick="abrirModalMusica()" title="Adicionar Trilha Sonora"><i class="fa-solid fa-music"></i></button>
+                <button class="btn-action-square btn-eraser" onclick="pedirParaApagar()" title="Apagar tudo deste dia"><i class="fa-solid fa-eraser"></i></button>
             </div>
 
             <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-feather-pointed"></i> Guardar Memória</button>
@@ -274,13 +317,8 @@
         <div class="system-panel">
             <div class="system-panel-title">Painel de Controle</div>
             
-            <button class="btn-vintage" onclick="fazerLogout()">
-                <i class="fa-solid fa-book-open"></i> Fechar Caderno
-            </button>
-            
-            <button class="btn-vintage danger" onclick="pedirParaDesvincular()">
-                <i class="fa-solid fa-link-slash"></i> Desvincular Diário
-            </button>
+            <button class="btn-vintage" onclick="fazerLogout()"><i class="fa-solid fa-book-open"></i> Fechar Caderno</button>
+            <button class="btn-vintage danger" onclick="pedirParaDesvincular()"><i class="fa-solid fa-link-slash"></i> Desvincular Diário</button>
             
             <div class="contact-section">
                 <p>Mais produtos inteligentes da Mini Mundo:</p>
@@ -303,7 +341,7 @@
         <div id="modal-input-group" style="display: none;">
             <input type="text" id="music-link-input" placeholder="Cole o link do Spotify ou YouTube aqui">
             <button class="modal-btn-ok" onclick="processarLinkMusica()">Adicionar Trilha</button>
-            <button class="btn-secondary" onclick="fecharModal()" style="margin-top: 10px;">Cancelar</button>
+            <button class="btn-secondary" onclick="fecharModal()" style="margin-top: 10px; width: 100%;">Cancelar</button>
         </div>
 
         <button id="modal-btn-ok" class="modal-btn-ok" onclick="fecharModal()">OK</button>
@@ -343,7 +381,6 @@
     let dataAnteriorGlobal = new Date(); 
     let isAnimating = false; 
 
-    // Variáveis das Mídias
     let imagemAtualBase64 = null;
     let audioAtualBase64 = null;
     let musicaAtualUrl = null;
@@ -426,14 +463,12 @@
     }
     function fazerLogout() { auth.signOut(); }
 
-    // NOVA FUNÇÃO: Limpa a interface sem engatilhar o salvamento
     function limparAnexosDaTela() {
         imagemAtualBase64 = null; document.getElementById('polaroid-wrapper').style.display = 'none'; document.getElementById('polaroid-img').src = "";
         audioAtualBase64 = null; document.getElementById('audio-wrapper').style.display = 'none'; document.getElementById('audio-player').src = "";
         musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = "";
     }
 
-    /* PROCESSAMENTO DE MÍDIAS COM AUTO-SAVE CORRIGIDO */
     function processarFoto(event) {
         const file = event.target.files[0]; if (!file) return;
         const reader = new FileReader(); reader.readAsDataURL(file);
@@ -520,7 +555,7 @@
     function carregarTextoDoDia(dataSelecionada) {
         if(!usuarioAtual || !dataSelecionada) return;
         diaryText.disabled = true; diaryText.value = "";
-        limparAnexosDaTela(); // CORREÇÃO: Limpa a tela de forma silenciosa sem ativar o auto-save
+        limparAnexosDaTela(); 
 
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).once('value').then((snapshot) => {
             const textoSalvo = snapshot.val(); diaryText.disabled = false;
@@ -562,9 +597,7 @@
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!";
             setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
             
-            if(!isAutoSave) {
-                mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.');
-            }
+            if(!isAutoSave) { mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.'); }
         }).catch((error) => { 
             btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; 
             if(!isAutoSave) mostrarModal('erro', 'Ops', 'Erro de conexão.'); 
@@ -576,9 +609,7 @@
     function executarApagar() {
         fecharModal(); const dataSelecionada = fpInstance.input.value;
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => { 
-            diaryText.value = ""; 
-            limparAnexosDaTela(); // CORREÇÃO: Limpa de forma segura
-            mostrarModal('sucesso', 'Limpo!', 'Página apagada.'); 
+            diaryText.value = ""; limparAnexosDaTela(); mostrarModal('sucesso', 'Limpo!', 'Página apagada.'); 
         });
     }
     
