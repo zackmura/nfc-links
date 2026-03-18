@@ -64,20 +64,27 @@
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-google img { width: 20px; }
 
-        .actions-group { display: flex; gap: 10px; margin-bottom: 10px; width: 100%; }
+        /* AÇÕES ATUALIZADAS COM A CÂMERA */
+        .actions-group { display: flex; gap: 8px; margin-bottom: 10px; width: 100%; }
         
         button.btn-primary { 
-            background-color: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; 
+            background-color: var(--primary-color); color: white; border: none; padding: 12px 10px; border-radius: 10px; cursor: pointer; font-weight: 600; 
             font-size: 16px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; flex-grow: 1;
         }
         button.btn-primary:hover { background-color: #311e12; }
 
-        .btn-eraser {
-            background-color: var(--accent-color); color: white; border: none; border-radius: 10px; width: 55px; 
+        .btn-action-square {
+            color: white; border: none; border-radius: 10px; width: 55px; 
             cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 18px; flex-shrink: 0;
             box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); 
         }
-        .btn-eraser:hover { background-color: #d16b4e; transform: translateY(1px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15); }
+        .btn-action-square:hover { transform: translateY(1px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15); }
+        
+        .btn-camera { background-color: #8a705e; }
+        .btn-camera:hover { background-color: #7a6353; }
+        
+        .btn-eraser { background-color: var(--accent-color); }
+        .btn-eraser:hover { background-color: #d16b4e; }
         
         .btn-secondary { background-color: transparent; color: #888; border: none; font-size: 14px; padding: 5px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%;}
         .btn-secondary:hover { color: #d9534f; text-decoration: underline; }
@@ -89,7 +96,6 @@
         .user-profile div { text-align: left; }
         .user-profile span { display: block; color: var(--primary-color); font-size: 20px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px; }
         .user-profile small { color: #aaa; font-size: 11px; }
-        .user-profile small i { color: #ccc; }
 
         .date-navigation { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%; gap: 5px; }
         .nav-arrow { background: none; border: none; font-size: 18px; color: #bbb; cursor: pointer; padding: 5px; transition: 0.3s; flex-shrink: 0; }
@@ -97,36 +103,55 @@
         
         .date-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border-bottom: 2px solid var(--accent-color); padding-bottom: 2px; flex-grow: 1; min-width: 0; }
         .date-wrapper i { color: #ccc; font-size: 15px; flex-shrink: 0; } 
-        
         .date-picker { border: none; font-size: 17px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--primary-color); font-weight: bold; background: transparent; outline: none; text-align: center; cursor: pointer; width: 100%; max-width: 210px; }
 
         .paper-wrapper { perspective: 1200px; margin-bottom: 15px; position: relative; }
-        
-        .paper-wrapper::before {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0;
-            background-color: #f2e8d5; border: 1px solid #d4c3b3; border-radius: 4px;
-            transform: rotate(-2deg); box-shadow: 2px 2px 8px rgba(0,0,0,0.05); z-index: -1;
-        }
-        .paper-wrapper::after {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0;
-            background-color: #e8dbce; border: 1px solid #d4c3b3; border-radius: 4px;
-            transform: rotate(1.5deg); z-index: -2;
-        }
+        .paper-wrapper::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: #f2e8d5; border: 1px solid #d4c3b3; border-radius: 4px; transform: rotate(-2deg); box-shadow: 2px 2px 8px rgba(0,0,0,0.05); z-index: -1; }
+        .paper-wrapper::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: #e8dbce; border: 1px solid #d4c3b3; border-radius: 4px; transform: rotate(1.5deg); z-index: -2; }
 
+        /* Ajuste do container para aceitar foto e texto flexível */
         .paper-container { 
             position: relative; background-color: #f9f1e6; border-radius: 3px 6px 3px 5px; 
             box-shadow: inset 0 0 30px rgba(138, 112, 94, 0.15), 2px 3px 10px rgba(0,0,0,0.08); 
             border: 1px solid #d4c3b3; transform-origin: left center; will-change: transform; z-index: 1;
-        }
-
-        textarea {
-            width: 100%; height: 280px; padding: 30px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; 
-            box-sizing: border-box; resize: none; outline: none; border: none; background: transparent; line-height: 30px; 
-            background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); background-attachment: local;
+            display: flex; flex-direction: column; overflow: hidden; /* Mantém a margem da foto contida */
         }
         .paper-container::before {
             content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px;
             background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none; box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); 
+        }
+
+        /* MUDANÇA: O Design da Foto Polaroid */
+        .polaroid-wrapper {
+            display: none; /* Escondido por padrão */
+            position: relative; margin: 20px auto 5px auto; width: 75%; max-width: 220px;
+            background: white; padding: 10px 10px 25px 10px; box-shadow: 2px 4px 12px rgba(0,0,0,0.15);
+            transform: rotate(-3deg); border-radius: 2px; z-index: 2;
+            animation: dropPhoto 0.4s ease-out;
+        }
+        @keyframes dropPhoto {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+            100% { transform: translateY(0) rotate(-3deg); opacity: 1; }
+        }
+        .polaroid-wrapper img { width: 100%; height: auto; border: 1px solid #eee; display: block; border-radius: 2px; }
+        
+        .polaroid-tape {
+            position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(2deg);
+            width: 70px; height: 25px; background-color: rgba(255, 255, 255, 0.65);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 1px; border: 1px solid rgba(0,0,0,0.03);
+        }
+        
+        .btn-remove-photo {
+            position: absolute; top: -10px; right: -10px; background: #E27D60; color: white; border: none; border-radius: 50%;
+            width: 26px; height: 26px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s;
+        }
+        .btn-remove-photo:hover { background: #d9534f; transform: scale(1.1); }
+
+        textarea {
+            width: 100%; flex-grow: 1; min-height: 250px; padding: 25px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; 
+            box-sizing: border-box; resize: none; outline: none; border: none; background: transparent; line-height: 30px; 
+            background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); background-attachment: local;
         }
 
         @keyframes pageTurnOut { 0% { transform: rotateY(0deg); opacity: 1; } 100% { transform: rotateY(-90deg); opacity: 0; } }
@@ -226,15 +251,31 @@
         
         <div class="paper-wrapper">
             <div class="paper-container" id="meu-caderno">
+                
+                <div id="polaroid-wrapper" class="polaroid-wrapper">
+                    <div class="polaroid-tape"></div>
+                    <button class="btn-remove-photo" onclick="removerFoto(true)" title="Remover Foto">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <img id="polaroid-img" src="" alt="Lembrança do dia">
+                </div>
+
                 <textarea id="diary-text" placeholder="Querido diário, hoje aconteceu algo incrível..."></textarea>
             </div>
         </div>
+        
+        <input type="file" id="foto-input" accept="image/*" style="display:none;" onchange="processarFoto(event)">
         
         <div class="actions-group">
             <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()">
                 <i class="fa-solid fa-feather-pointed"></i> Guardar Memória
             </button>
-            <button class="btn-eraser" id="btn-apagar" onclick="pedirParaApagar()" title="Apagar texto deste dia">
+            
+            <button class="btn-action-square btn-camera" onclick="document.getElementById('foto-input').click()" title="Anexar Lembrança">
+                <i class="fa-solid fa-camera-retro"></i>
+            </button>
+
+            <button class="btn-action-square btn-eraser" id="btn-apagar" onclick="pedirParaApagar()" title="Apagar texto deste dia">
                 <i class="fa-solid fa-eraser"></i>
             </button>
         </div>
@@ -297,12 +338,18 @@
     const diaryScreen = document.getElementById('diary-screen');
     const diaryText = document.getElementById('diary-text');
     const caderno = document.getElementById('meu-caderno');
+    
+    const polaroidWrapper = document.getElementById('polaroid-wrapper');
+    const polaroidImg = document.getElementById('polaroid-img');
 
     let usuarioAtual = null;
     let fpInstance = null; 
     let datasComRegistro = []; 
     let dataAnteriorGlobal = new Date(); 
     let isAnimating = false; 
+    
+    // Variável para segurar a foto criptografada temporariamente
+    let imagemAtualBase64 = null;
 
     const urlParams = new URLSearchParams(window.location.search);
     const produtoId = urlParams.get('id');
@@ -327,21 +374,15 @@
     function verificarPropriedadeDoDiario(user, id) {
         db.ref('chaves_diario/' + id).once('value').then((snapshot) => {
             if (!snapshot.exists()) {
-                auth.signOut().then(() => {
-                    mostrarTelaErro('Produto Não Encontrado', 'Este link não corresponde a um Diário Inteligente oficial e ativo.');
-                });
+                auth.signOut().then(() => { mostrarTelaErro('Produto Não Encontrado', 'Este link não corresponde a um Diário Inteligente oficial e ativo.'); });
             } else if (snapshot.val() === 'LIVRE') {
-                db.ref('chaves_diario/' + id).set(user.uid).then(() => {
-                    liberarDiario(user);
-                }).catch(() => {
+                db.ref('chaves_diario/' + id).set(user.uid).then(() => { liberarDiario(user); }).catch(() => {
                     mostrarTelaErro('Erro de Ativação', 'Ocorreu um erro ao vincular a sua chave.');
                 });
             } else if (snapshot.val() === user.uid) {
                 liberarDiario(user);
             } else {
-                auth.signOut().then(() => {
-                    mostrarTelaErro('Acesso Negado', 'Este Diário físico já foi ativado e pertence a outra pessoa. Apenas o proprietário original possui a chave de destranca.');
-                });
+                auth.signOut().then(() => { mostrarTelaErro('Acesso Negado', 'Este Diário físico já foi ativado e pertence a outra pessoa. Apenas o proprietário original possui a chave de destranca.'); });
             }
         });
     }
@@ -349,10 +390,7 @@
     function mostrarTelaErro(titulo, mensagem) {
         document.getElementById('error-title').innerText = titulo;
         document.getElementById('error-message').innerText = mensagem;
-        loadingScreen.style.display = 'none';
-        loginScreen.style.display = 'none';
-        diaryScreen.style.display = 'none';
-        errorScreen.style.display = 'block';
+        loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; diaryScreen.style.display = 'none'; errorScreen.style.display = 'block';
     }
 
     function liberarDiario(user) {
@@ -361,11 +399,7 @@
         document.getElementById('user-name').innerText = "Diário de " + primeiroNome;
         document.getElementById('user-photo').src = user.photoURL;
         
-        loadingScreen.style.display = 'none';
-        loginScreen.style.display = 'none';
-        errorScreen.style.display = 'none';
-        diaryScreen.style.display = 'block';
-        
+        loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; errorScreen.style.display = 'none'; diaryScreen.style.display = 'block';
         buscarDiasMapeados();
     }
 
@@ -437,23 +471,94 @@
 
     function fazerLogout() { auth.signOut(); }
 
+    // MUDANÇA: Processar a Foto Magicamente (Comprime e joga na tela)
+    function processarFoto(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+                // Comprime a foto no próprio celular do cliente!
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600;
+                const MAX_HEIGHT = 600;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                } else {
+                    if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                }
+                
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Transforma em texto código com qualidade boa e peso leve (JPEG 60%)
+                imagemAtualBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                
+                // Mostra a Polaroid
+                polaroidImg.src = imagemAtualBase64;
+                polaroidWrapper.style.display = 'block';
+            }
+        };
+        // Reseta o input para poder escolher a mesma foto de novo se quiser
+        document.getElementById('foto-input').value = ""; 
+    }
+
+    function removerFoto(perguntar) {
+        if(perguntar) {
+            // Pode colocar um confirm aqui no futuro se quiser
+            polaroidWrapper.style.display = 'none';
+            imagemAtualBase64 = null;
+            polaroidImg.src = "";
+        } else {
+            polaroidWrapper.style.display = 'none';
+            imagemAtualBase64 = null;
+            polaroidImg.src = "";
+        }
+    }
+
     function carregarTextoDoDia(dataSelecionada) {
         if(!usuarioAtual || !dataSelecionada) return;
         diaryText.disabled = true;
+        diaryText.value = "";
+        removerFoto(false); // Limpa a folha antes de puxar
+
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).once('value').then((snapshot) => {
             const textoSalvo = snapshot.val();
             diaryText.disabled = false;
+            
             if(textoSalvo) {
                 try {
                     const bytes = CryptoJS.AES.decrypt(textoSalvo, usuarioAtual.uid);
                     const textoOriginal = bytes.toString(CryptoJS.enc.Utf8);
                     
-                    if (textoOriginal.length > 0) { diaryText.value = textoOriginal; } 
+                    if (textoOriginal.length > 0) { 
+                        // MÁGICA: Ele tenta ler se o segredo é um Pacote (Texto + Foto)
+                        try {
+                            const pacoteDeMemoria = JSON.parse(textoOriginal);
+                            diaryText.value = pacoteDeMemoria.texto || "";
+                            if(pacoteDeMemoria.imagem) {
+                                imagemAtualBase64 = pacoteDeMemoria.imagem;
+                                polaroidImg.src = imagemAtualBase64;
+                                polaroidWrapper.style.display = 'block';
+                            }
+                        } catch(e) {
+                            // Se não for pacote (JSON), é o texto puro antigo
+                            diaryText.value = textoOriginal; 
+                        }
+                    } 
                     else if (textoSalvo.startsWith("U2FsdGVkX1")) { diaryText.value = ""; } 
                     else { diaryText.value = textoSalvo; }
                 } catch(e) { diaryText.value = textoSalvo; }
-            } else { diaryText.value = ""; }
-        }).catch((error) => { diaryText.disabled = false; diaryText.value = ""; });
+            }
+        }).catch((error) => { diaryText.disabled = false; });
     }
 
     function salvarDiario() {
@@ -462,18 +567,28 @@
         const dataSelecionada = fpInstance.input.value;
         const textoParaSalvar = diaryText.value.trim();
 
-        if (textoParaSalvar === "") {
+        // Se não tiver nem texto nem foto, ele apaga a folha.
+        if (textoParaSalvar === "" && !imagemAtualBase64) {
             executarApagarSilencioso(dataSelecionada, btn);
             return;
         }
 
         btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Guardando...";
-        const textoCriptografado = CryptoJS.AES.encrypt(textoParaSalvar, usuarioAtual.uid).toString();
+        
+        // MUDANÇA: Criando o Pacote de Memória
+        const pacoteDeMemoria = {
+            texto: textoParaSalvar,
+            imagem: imagemAtualBase64
+        };
+        const pacoteString = JSON.stringify(pacoteDeMemoria);
+        
+        // Criptografando texto E foto juntos
+        const textoCriptografado = CryptoJS.AES.encrypt(pacoteString, usuarioAtual.uid).toString();
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             setTimeout(() => {
                 btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória";
-                mostrarModal('sucesso', 'Memória Guardada!', 'Sua anotação foi trancada com segurança.');
+                mostrarModal('sucesso', 'Memória Guardada!', 'Sua anotação e foto foram trancadas com segurança.');
             }, 500);
         }).catch((error) => {
             btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória";
@@ -483,8 +598,8 @@
 
     function pedirParaApagar() {
         if(!usuarioAtual || !fpInstance) return;
-        if(diaryText.value.trim() === "") return; 
-        mostrarModal('apagar', 'Apagar Registro?', 'Tem certeza que deseja passar a borracha neste dia? A página ficará em branco.');
+        if(diaryText.value.trim() === "" && !imagemAtualBase64) return; 
+        mostrarModal('apagar', 'Apagar Registro?', 'Tem certeza que deseja passar a borracha neste dia? A página ficará em branco e a foto será deletada.');
     }
 
     function executarApagar() {
@@ -495,6 +610,7 @@
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => {
             diaryText.value = "";
+            removerFoto(false);
             btnBorracha.innerHTML = "<i class='fa-solid fa-eraser'></i>";
             mostrarModal('sucesso', 'Página Limpa!', 'A memória deste dia foi apagada.');
         }).catch(() => {
@@ -511,7 +627,6 @@
         });
     }
 
-    // MUDANÇA: Lógica do Modal para a Desvinculação
     function pedirParaDesvincular() {
         if(!usuarioAtual) return;
         mostrarModal('desvincular', 'Repassar Diário?', 'Isso vai desvincular o seu e-mail deste chaveiro físico. Suas memórias não serão apagadas, mas o diário plástico ficará livre para outra pessoa usar. Deseja continuar?');
@@ -519,17 +634,11 @@
 
     function executarDesvinculacao() {
         fecharModal();
-        loadingScreen.style.display = 'block';
-        diaryScreen.style.display = 'none';
-        
-        // Devolve o ID para LIVRE no banco de dados
+        loadingScreen.style.display = 'block'; diaryScreen.style.display = 'none';
         db.ref('chaves_diario/' + produtoId).set('LIVRE').then(() => {
-            auth.signOut().then(() => {
-                window.location.reload(); // Recarrega a página para o estado limpo
-            });
+            auth.signOut().then(() => { window.location.reload(); });
         }).catch((error) => {
-            loadingScreen.style.display = 'none';
-            diaryScreen.style.display = 'block';
+            loadingScreen.style.display = 'none'; diaryScreen.style.display = 'block';
             mostrarModal('erro', 'Ops', 'Não foi possível desvincular no momento.');
         });
     }
@@ -546,25 +655,19 @@
         title.innerText = titulo; text.innerText = mensagem;
         
         if (tipo === 'apagar' || tipo === 'desvincular') {
-            icon.className = "fa-solid fa-triangle-exclamation";
-            icon.style.color = "#E27D60"; 
-            btnOk.style.display = 'none';
-            confirmGroup.style.display = 'flex';
+            icon.className = "fa-solid fa-triangle-exclamation"; icon.style.color = "#E27D60"; 
+            btnOk.style.display = 'none'; confirmGroup.style.display = 'flex';
             
             if(tipo === 'apagar') {
-                btnSim.innerHTML = "<i class='fa-solid fa-eraser'></i> Sim, apagar";
-                btnSim.onclick = executarApagar;
+                btnSim.innerHTML = "<i class='fa-solid fa-eraser'></i> Sim, apagar"; btnSim.onclick = executarApagar;
             } else {
-                btnSim.innerHTML = "<i class='fa-solid fa-link-slash'></i> Sim, repassar";
-                btnSim.onclick = executarDesvinculacao;
+                btnSim.innerHTML = "<i class='fa-solid fa-link-slash'></i> Sim, repassar"; btnSim.onclick = executarDesvinculacao;
             }
         } else {
             icon.className = tipo === 'sucesso' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
             icon.style.color = tipo === 'sucesso' ? "#4CAF50" : "#d9534f"; 
-            btnOk.style.display = 'block';
-            confirmGroup.style.display = 'none';
+            btnOk.style.display = 'block'; confirmGroup.style.display = 'none';
         }
-        
         modal.style.display = 'flex';
     }
     
