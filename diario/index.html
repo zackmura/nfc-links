@@ -125,16 +125,9 @@
         }
 
         .attachments-area { display: flex; flex-direction: column; align-items: center; gap: 15px; padding-top: 20px; z-index: 2; }
-        
-        /* MUDANÇA: Polaroid Menor e Mais Delicada */
-        .polaroid-wrapper { 
-            display: none; position: relative; width: 55%; max-width: 150px; 
-            background: white; padding: 6px 6px 18px 6px; box-shadow: 2px 4px 10px rgba(0,0,0,0.15); 
-            transform: rotate(-2deg); border-radius: 2px; 
-        }
+        .polaroid-wrapper { display: none; position: relative; width: 55%; max-width: 150px; background: white; padding: 6px 6px 18px 6px; box-shadow: 2px 4px 10px rgba(0,0,0,0.15); transform: rotate(-2deg); border-radius: 2px; }
         .polaroid-wrapper img { width: 100%; height: auto; border: 1px solid #eee; display: block; border-radius: 2px; }
         .vintage-tape { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 50px; height: 18px; background-color: rgba(255, 255, 255, 0.65); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 1px; border: 1px solid rgba(0,0,0,0.03); z-index: 3;}
-        
         .btn-remove-attachment { position: absolute; top: -10px; right: -10px; background: #E27D60; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; z-index: 4; }
         .btn-remove-attachment:hover { background: #d9534f; transform: scale(1.1); }
 
@@ -433,7 +426,14 @@
     }
     function fazerLogout() { auth.signOut(); }
 
-    /* PROCESSAMENTO DE MÍDIAS COM AUTO-SAVE */
+    // NOVA FUNÇÃO: Limpa a interface sem engatilhar o salvamento
+    function limparAnexosDaTela() {
+        imagemAtualBase64 = null; document.getElementById('polaroid-wrapper').style.display = 'none'; document.getElementById('polaroid-img').src = "";
+        audioAtualBase64 = null; document.getElementById('audio-wrapper').style.display = 'none'; document.getElementById('audio-player').src = "";
+        musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = "";
+    }
+
+    /* PROCESSAMENTO DE MÍDIAS COM AUTO-SAVE CORRIGIDO */
     function processarFoto(event) {
         const file = event.target.files[0]; if (!file) return;
         const reader = new FileReader(); reader.readAsDataURL(file);
@@ -447,7 +447,7 @@
                 canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
                 imagemAtualBase64 = canvas.toDataURL('image/jpeg', 0.6);
                 document.getElementById('polaroid-img').src = imagemAtualBase64; document.getElementById('polaroid-wrapper').style.display = 'block';
-                salvarDiario(true); // Auto-save ativado
+                salvarDiario(true); 
             }
         }; document.getElementById('foto-input').value = ""; 
     }
@@ -467,7 +467,7 @@
                         audioAtualBase64 = reader.result;
                         document.getElementById('audio-player').src = audioAtualBase64;
                         document.getElementById('audio-wrapper').style.display = 'block';
-                        salvarDiario(true); // Auto-save ativado
+                        salvarDiario(true); 
                     };
                 };
                 mediaRecorder.start(); isRecording = true; btnMic.classList.add('recording');
@@ -503,7 +503,7 @@
                 document.getElementById('music-iframe').style.height = embedUrl.includes("spotify") ? "152px" : "200px";
                 document.getElementById('music-wrapper').style.display = 'block';
                 fecharModal();
-                salvarDiario(true); // Auto-save ativado
+                salvarDiario(true); 
             } else {
                 alert("Link inválido! Use um link direto de música do Spotify ou vídeo do YouTube.");
             }
@@ -514,13 +514,13 @@
         if(tipo === 'foto') { imagemAtualBase64 = null; document.getElementById('polaroid-wrapper').style.display = 'none'; document.getElementById('polaroid-img').src = ""; }
         if(tipo === 'audio') { audioAtualBase64 = null; document.getElementById('audio-wrapper').style.display = 'none'; document.getElementById('audio-player').src = ""; }
         if(tipo === 'musica') { musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = ""; }
-        salvarDiario(true); // Auto-save ao remover
+        salvarDiario(true); 
     }
 
     function carregarTextoDoDia(dataSelecionada) {
         if(!usuarioAtual || !dataSelecionada) return;
         diaryText.disabled = true; diaryText.value = "";
-        removerAnexo('foto'); removerAnexo('audio'); removerAnexo('musica');
+        limparAnexosDaTela(); // CORREÇÃO: Limpa a tela de forma silenciosa sem ativar o auto-save
 
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).once('value').then((snapshot) => {
             const textoSalvo = snapshot.val(); diaryText.disabled = false;
@@ -542,7 +542,6 @@
         }).catch((error) => { diaryText.disabled = false; });
     }
 
-    // MUDANÇA: Lógica de Auto-Save integrada
     function salvarDiario(isAutoSave = false) {
         if(!usuarioAtual || !fpInstance) return;
         const btn = document.getElementById('btn-salvar');
@@ -563,7 +562,6 @@
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!";
             setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
             
-            // Só mostra o popup se a pessoa clicou no botão fisicamente
             if(!isAutoSave) {
                 mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.');
             }
@@ -577,7 +575,11 @@
 
     function executarApagar() {
         fecharModal(); const dataSelecionada = fpInstance.input.value;
-        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => { diaryText.value = ""; removerAnexo('foto'); removerAnexo('audio'); removerAnexo('musica'); mostrarModal('sucesso', 'Limpo!', 'Página apagada.'); });
+        db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => { 
+            diaryText.value = ""; 
+            limparAnexosDaTela(); // CORREÇÃO: Limpa de forma segura
+            mostrarModal('sucesso', 'Limpo!', 'Página apagada.'); 
+        });
     }
     
     function executarApagarSilencioso(data, btn, isAutoSave = false) { 
