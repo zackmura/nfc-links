@@ -26,7 +26,6 @@
         
         .app-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; margin: auto; }
 
-        /* Capas de Loading, Erro e Login */
         .cover-card { background-color: #fcf8f2; background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png'); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 15px; width: 100%; min-height: 80vh; box-sizing: border-box; }
         .cover-card .border-inner { border: 2px solid #4A2E1B; border-radius: 5px; height: 100%; min-height: calc(80vh - 30px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; box-sizing: border-box; }
         .cover-logo-main { max-width: 65%; margin-bottom: 15px; mix-blend-mode: multiply; }
@@ -51,7 +50,6 @@
         .btn-google:hover { background-color: #f9f9f9; box-shadow: 0 6px 12px rgba(0,0,0,0.1); transform: translateY(-1px);}
         .btn-google svg { width: 20px; height: 20px; }
 
-        /* MUDANÇA: Organização do Menu de Ferramentas */
         .tools-header { display: flex; gap: 10px; margin-bottom: 10px; }
         .btn-toggle-menu { background-color: #f9f1e6; color: #4A2E1B; border: 1px dashed #d4c3b3; padding: 12px 15px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .btn-toggle-menu:hover { background-color: #eaddcf; }
@@ -59,7 +57,8 @@
         .tools-group { display: none; justify-content: space-between; gap: 6px; margin-bottom: 15px; width: 100%; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
         
-        .btn-action-square { color: white; border: none; border-radius: 10px; height: 45px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 16px; flex: 1; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); }
+        /* MUDANÇA: O Estilo para o Botão com "Check" */
+        .btn-action-square { position: relative; color: white; border: none; border-radius: 10px; height: 45px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; font-size: 16px; flex: 1; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.15); }
         .btn-action-square:hover { transform: translateY(1px); box-shadow: inset 0 -1px 0 rgba(0,0,0,0.15); }
         .btn-action-square.eraser { flex: 0 0 50px; background-color: var(--accent-color); } .btn-action-square.eraser:hover { background-color: #d16b4e; }
         .btn-camera { background-color: #8a705e; } .btn-camera:hover { background-color: #7a6353; }
@@ -69,6 +68,10 @@
         .btn-insta { background-color: #E1306C; } .btn-insta:hover { background-color: #C13584; } 
         .btn-mood { background-color: #eab676; } .btn-mood:hover { background-color: #d9a565; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        /* O pequeno selinho verde de "Concluído" */
+        .badge-check { display: none; position: absolute; top: -5px; right: -5px; background: #4CAF50; color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 9px; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        .has-media .badge-check { display: flex; }
 
         button.btn-primary { background-color: var(--primary-color); color: white; border: none; padding: 14px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 16px; transition: all 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin-bottom: 10px; }
         button.btn-primary:hover { background-color: #311e12; }
@@ -94,43 +97,28 @@
         .paper-wrapper::before { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: #f2e8d5; border: 1px solid #d4c3b3; border-radius: 4px; transform: rotate(-2deg); box-shadow: 2px 2px 8px rgba(0,0,0,0.05); z-index: -1; }
         .paper-wrapper::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: #e8dbce; border: 1px solid #d4c3b3; border-radius: 4px; transform: rotate(1.5deg); z-index: -2; }
 
-        .paper-container { 
-            position: relative; background-color: #f9f1e6; border-radius: 3px 6px 3px 5px; box-shadow: inset 0 0 30px rgba(138, 112, 94, 0.15), 2px 3px 10px rgba(0,0,0,0.08); 
-            border: 1px solid #d4c3b3; transform-origin: left center; will-change: transform; z-index: 1; display: flex; flex-direction: column; overflow: hidden; 
-            min-height: 280px; /* Garante tamanho inicial da folha */
-        }
+        .paper-container { position: relative; background-color: #f9f1e6; border-radius: 3px 6px 3px 5px; box-shadow: inset 0 0 30px rgba(138, 112, 94, 0.15), 2px 3px 10px rgba(0,0,0,0.08); border: 1px solid #d4c3b3; transform-origin: left center; will-change: transform; z-index: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 280px; }
         .paper-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px; background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none; box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); }
 
-        /* MUDANÇA: Carimbo de Humor */
-        .mood-stamp { 
-            display: none; position: absolute; top: 15px; right: 15px; font-size: 32px; transform: rotate(12deg); z-index: 5; 
-            filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.1)); cursor: pointer; transition: 0.2s;
-        }
+        .mood-stamp { display: none; position: absolute; top: 15px; right: 15px; font-size: 32px; transform: rotate(12deg); z-index: 5; filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.1)); cursor: pointer; transition: 0.2s; }
         .mood-stamp:hover { transform: rotate(0deg) scale(1.1); opacity: 0.7; }
 
-        /* MUDANÇA: O texto agora vem em cima, flex-grow para ocupar espaço */
-        textarea {
-            width: 100%; flex-grow: 1; min-height: 180px; padding: 20px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; 
-            box-sizing: border-box; resize: none; outline: none; border: none; background: transparent; line-height: 30px; 
-            background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); background-attachment: local;
-        }
+        /* MUDANÇA: Estilo da Inspiração do Dia */
+        .daily-prompt { font-family: 'Patrick Hand', cursive; font-size: 16px; color: #a38c7a; text-align: center; margin: 20px 15px 0 42px; font-style: italic; }
 
-        /* MUDANÇA: Anexos ficam embaixo */
+        textarea { width: 100%; flex-grow: 1; min-height: 180px; padding: 15px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent; line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); background-attachment: local; }
+
         .attachments-area { display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 15px 0 25px 0; z-index: 2; width: 100%;}
-        
         .polaroid-wrapper { display: none; position: relative; width: 55%; max-width: 150px; background: white; padding: 6px 6px 18px 6px; box-shadow: 2px 4px 10px rgba(0,0,0,0.15); transform: rotate(-2deg); border-radius: 2px; margin-top: 10px;}
         .polaroid-wrapper img { width: 100%; height: auto; border: 1px solid #eee; display: block; border-radius: 2px; }
         .vintage-tape { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 50px; height: 18px; background-color: rgba(255, 255, 255, 0.65); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 1px; border: 1px solid rgba(0,0,0,0.03); z-index: 3;}
         .btn-remove-attachment { position: absolute; top: -10px; right: -10px; background: #E27D60; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; z-index: 4; }
         .btn-remove-attachment:hover { background: #d9534f; transform: scale(1.1); }
-
         .audio-wrapper { display: none; position: relative; width: 80%; background: #eae1d3; border: 1px dashed #c4b5a3; padding: 15px 10px; border-radius: 4px; transform: rotate(1deg); box-shadow: 1px 2px 5px rgba(0,0,0,0.05); }
         .audio-wrapper audio { width: 100%; height: 30px; outline: none; }
         .audio-wrapper span { font-family: 'Patrick Hand', cursive; font-size: 16px; color: #6b5a4d; display: block; margin-bottom: 5px; text-align: left;}
-
         .music-wrapper { display: none; position: relative; width: 85%; transform: rotate(-1deg); }
         .music-wrapper iframe { width: 100%; border-radius: 8px; box-shadow: 1px 3px 8px rgba(0,0,0,0.1); }
-
         .insta-wrapper { display: none; position: relative; width: 90%; transform: rotate(1deg); }
         .insta-wrapper iframe { width: 100%; border-radius: 8px; box-shadow: 1px 3px 8px rgba(0,0,0,0.1); background: white;}
 
@@ -165,8 +153,6 @@
         .modal-confirm-group { display: flex; gap: 10px; margin-top: 15px; }
         .modal-confirm-group button { padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; flex: 1; transition: 0.3s; font-family: 'Montserrat', sans-serif;}
         .btn-sim { background-color: #d9534f; color: white; } .btn-nao { background-color: #eee; color: #333; }
-
-        /* MUDANÇA: Modal de Emojis */
         .mood-options { display: flex; justify-content: space-around; font-size: 32px; margin: 15px 0; }
         .mood-options span { cursor: pointer; transition: 0.2s; }
         .mood-options span:hover { transform: scale(1.2); }
@@ -232,9 +218,11 @@
             <div class="paper-wrapper">
                 <div class="paper-container" id="meu-caderno">
                     
-                    <div id="mood-stamp" class="mood-stamp" onclick="removerAnexo('humor')" title="Clique para remover o selo"></div>
+                    <div id="mood-stamp" class="mood-stamp" onclick="removerAnexo('humor')" title="Remover"></div>
+                    
+                    <div id="daily-prompt" class="daily-prompt"></div>
 
-                    <textarea id="diary-text" placeholder="Querido diário, hoje aconteceu..."></textarea>
+                    <textarea id="diary-text" placeholder="Querido diário..."></textarea>
                     
                     <div class="attachments-area">
                         <div id="polaroid-wrapper" class="polaroid-wrapper">
@@ -273,11 +261,21 @@
             </div>
             
             <div class="tools-group" id="tools-menu">
-                <button class="btn-action-square btn-camera" onclick="document.getElementById('foto-input').click()" title="Foto"><i class="fa-solid fa-camera-retro"></i></button>
-                <button class="btn-action-square btn-mic" id="btn-mic" onclick="toggleGravacao()" title="Voz"><i class="fa-solid fa-microphone"></i></button>
-                <button class="btn-action-square btn-music" onclick="abrirModalLink('musica')" title="Música"><i class="fa-solid fa-music"></i></button>
-                <button class="btn-action-square btn-insta" onclick="abrirModalLink('insta')" title="Instagram"><i class="fa-brands fa-instagram"></i></button>
-                <button class="btn-action-square btn-mood" onclick="abrirModalHumor()" title="Selo de Humor"><i class="fa-solid fa-face-smile"></i></button>
+                <button class="btn-action-square btn-camera" id="tool-foto" onclick="document.getElementById('foto-input').click()" title="Foto">
+                    <i class="fa-solid fa-camera-retro"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
+                </button>
+                <button class="btn-action-square btn-mic" id="tool-audio" onclick="toggleGravacao()" title="Voz">
+                    <i class="fa-solid fa-microphone"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
+                </button>
+                <button class="btn-action-square btn-music" id="tool-musica" onclick="abrirModalLink('musica')" title="Música">
+                    <i class="fa-solid fa-music"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
+                </button>
+                <button class="btn-action-square btn-insta" id="tool-insta" onclick="abrirModalLink('insta')" title="Instagram">
+                    <i class="fa-brands fa-instagram"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
+                </button>
+                <button class="btn-action-square btn-mood" id="tool-humor" onclick="abrirModalHumor()" title="Selo de Humor">
+                    <i class="fa-solid fa-face-smile"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
+                </button>
             </div>
 
             <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-feather-pointed"></i> Guardar Memória</button>
@@ -313,11 +311,8 @@
         </div>
 
         <div id="modal-mood-group" class="mood-options" style="display: none;">
-            <span onclick="setMood('😍')">😍</span>
-            <span onclick="setMood('😊')">😊</span>
-            <span onclick="setMood('😌')">😌</span>
-            <span onclick="setMood('😔')">😔</span>
-            <span onclick="setMood('😡')">😡</span>
+            <span onclick="setMood('😍')">😍</span><span onclick="setMood('😊')">😊</span><span onclick="setMood('😌')">😌</span>
+            <span onclick="setMood('😔')">😔</span><span onclick="setMood('😡')">😡</span>
         </div>
 
         <button id="modal-btn-ok" class="modal-btn-ok" onclick="fecharModal()">OK</button>
@@ -349,9 +344,23 @@
 
     let usuarioAtual = null; let fpInstance = null; let datasComRegistro = []; let dataAnteriorGlobal = new Date(); let isAnimating = false; 
 
-    // Mídias
     let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null; let humorAtual = null;
     let mediaRecorder; let audioChunks = []; let isRecording = false; let tipoLinkAtual = ''; 
+
+    // MUDANÇA: O Banco de Perguntas (Inspirações)
+    const perguntasDiarias = [
+        "O que te fez sorrir hoje?", "Qual foi o seu maior desafio hoje?", "Sobre o que você não quer esquecer?", 
+        "Se o dia de hoje fosse uma música, qual seria?", "Pelo que você é grato(a) hoje?", "O que você aprendeu de novo hoje?",
+        "Qual foi o momento mais relaxante do seu dia?", "Com quem você mais gostou de conversar hoje?", "O que você faria diferente hoje?",
+        "Qual é o seu maior desejo para amanhã?", "Se você pudesse congelar um momento de hoje, qual seria?", "Como você se sentiu hoje na maior parte do tempo?",
+        "O que consumiu mais a sua energia hoje?", "O que você fez hoje só para você?", "Qual pensamento não saiu da sua cabeça hoje?",
+        "Se hoje fosse uma cor, qual seria e por quê?", "O que você leu, viu ou ouviu que te inspirou?", "Você se surpreendeu com algo hoje?",
+        "Qual foi a melhor refeição do dia?", "Alguém te fez um elogio ou te ajudou hoje?", "Qual foi a sensação ao acordar hoje?",
+        "O que você concluiu hoje que estava adiando?", "Se você tivesse que dar um título para o dia de hoje, qual seria?", "O que te fez rir alto hoje?",
+        "Você cuidou bem do seu corpo hoje?", "Qual pequena vitória você comemora hoje?", "O que você descobriu sobre si mesmo(a) hoje?",
+        "Teve algum momento de silêncio que você apreciou?", "Qual conselho você daria para você de ontem?", "Para onde a sua mente viajou hoje?",
+        "Qual foi o som mais marcante do seu dia?"
+    ];
 
     const urlParams = new URLSearchParams(window.location.search); const produtoId = urlParams.get('id');
 
@@ -376,6 +385,15 @@
         usuarioAtual = user; document.getElementById('user-name').innerText = "Diário de " + user.displayName.split(" ")[0]; document.getElementById('user-photo').src = user.photoURL;
         loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; errorScreen.style.display = 'none'; diaryScreen.style.display = 'block';
         buscarDiasMapeados();
+    }
+
+    // MUDANÇA: Atualizar Pergunta do Dia
+    function atualizarPrompt(dataStr) {
+        const dataObj = new Date(dataStr);
+        // Usa o dia do mês (1 a 31) para puxar a pergunta da lista
+        const dia = dataObj.getDate() || 1; 
+        const pergunta = perguntasDiarias[(dia - 1) % perguntasDiarias.length];
+        document.getElementById('daily-prompt').innerText = "✨ " + pergunta;
     }
 
     function inicializarCalendario() {
@@ -411,10 +429,15 @@
     function fazerLogin() { loadingScreen.style.display = 'block'; loginScreen.style.display = 'none'; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(() => { loadingScreen.style.display = 'none'; loginScreen.style.display = 'block'; mostrarModal('erro', 'Ops!', 'Não foi possível destrancar.'); }); }
     function fazerLogout() { auth.signOut(); }
 
-    // MUDANÇA: Abrir e Fechar Menu de Ferramentas
-    function toggleTools() {
-        const menu = document.getElementById('tools-menu');
-        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    function toggleTools() { const menu = document.getElementById('tools-menu'); menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex'; }
+
+    // MUDANÇA: Atualizar Badges
+    function atualizarBadges() {
+        document.getElementById('tool-foto').classList.toggle('has-media', imagemAtualBase64 !== null);
+        document.getElementById('tool-audio').classList.toggle('has-media', audioAtualBase64 !== null);
+        document.getElementById('tool-musica').classList.toggle('has-media', musicaAtualUrl !== null);
+        document.getElementById('tool-insta').classList.toggle('has-media', instaAtualUrl !== null);
+        document.getElementById('tool-humor').classList.toggle('has-media', humorAtual !== null);
     }
 
     function limparAnexosDaTela() {
@@ -423,6 +446,7 @@
         musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = "";
         instaAtualUrl = null; document.getElementById('insta-wrapper').style.display = 'none'; document.getElementById('insta-iframe').src = "";
         humorAtual = null; document.getElementById('mood-stamp').style.display = 'none'; document.getElementById('mood-stamp').innerText = "";
+        atualizarBadges();
     }
 
     function processarFoto(event) {
@@ -436,7 +460,7 @@
                 if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
                 canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
                 imagemAtualBase64 = canvas.toDataURL('image/jpeg', 0.6);
-                document.getElementById('polaroid-img').src = imagemAtualBase64; document.getElementById('polaroid-wrapper').style.display = 'block'; toggleTools(); salvarDiario(true); 
+                document.getElementById('polaroid-img').src = imagemAtualBase64; document.getElementById('polaroid-wrapper').style.display = 'block'; toggleTools(); atualizarBadges(); salvarDiario(true); 
             }
         }; document.getElementById('foto-input').value = ""; 
     }
@@ -450,7 +474,7 @@
                 mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
                 mediaRecorder.onstop = () => {
                     const reader = new FileReader(); reader.readAsDataURL(new Blob(audioChunks, { type: 'audio/webm' }));
-                    reader.onloadend = () => { audioAtualBase64 = reader.result; document.getElementById('audio-player').src = audioAtualBase64; document.getElementById('audio-wrapper').style.display = 'block'; toggleTools(); salvarDiario(true); };
+                    reader.onloadend = () => { audioAtualBase64 = reader.result; document.getElementById('audio-player').src = audioAtualBase64; document.getElementById('audio-wrapper').style.display = 'block'; toggleTools(); atualizarBadges(); salvarDiario(true); };
                 };
                 mediaRecorder.start(); isRecording = true; btnMic.classList.add('recording'); setTimeout(() => { if(isRecording) toggleGravacao(); }, 60000);
             } catch (err) { mostrarModal('erro', 'Microfone', 'Permissão negada.'); }
@@ -469,17 +493,16 @@
             let embedUrl = "";
             if(link.includes("spotify.com")) { const trackId = link.split("track/")[1].split("?")[0]; embedUrl = `https://open.spotify.com/embed/track/${trackId}?utm_source=generator`; } 
             else if (link.includes("youtu")) { let videoId = link.includes("youtu.be/") ? link.split("youtu.be/")[1].split("?")[0] : link.split("v=")[1].split("&")[0]; embedUrl = `https://www.youtube.com/embed/${videoId}`; }
-            if(embedUrl) { musicaAtualUrl = embedUrl; document.getElementById('music-iframe').src = embedUrl; document.getElementById('music-iframe').style.height = embedUrl.includes("spotify") ? "152px" : "200px"; document.getElementById('music-wrapper').style.display = 'block'; fecharModal(); toggleTools(); salvarDiario(true); } 
+            if(embedUrl) { musicaAtualUrl = embedUrl; document.getElementById('music-iframe').src = embedUrl; document.getElementById('music-iframe').style.height = embedUrl.includes("spotify") ? "152px" : "200px"; document.getElementById('music-wrapper').style.display = 'block'; fecharModal(); toggleTools(); atualizarBadges(); salvarDiario(true); } 
             else { alert("Link inválido!"); }
         } else if (tipoLinkAtual === 'insta') {
-            if (link.includes("instagram.com")) { let cleanLink = link.split("?")[0]; if(!cleanLink.endsWith("/")) cleanLink += "/"; instaAtualUrl = cleanLink + "embed"; document.getElementById('insta-iframe').src = instaAtualUrl; document.getElementById('insta-wrapper').style.display = 'block'; fecharModal(); toggleTools(); salvarDiario(true); } 
+            if (link.includes("instagram.com")) { let cleanLink = link.split("?")[0]; if(!cleanLink.endsWith("/")) cleanLink += "/"; instaAtualUrl = cleanLink + "embed"; document.getElementById('insta-iframe').src = instaAtualUrl; document.getElementById('insta-wrapper').style.display = 'block'; fecharModal(); toggleTools(); atualizarBadges(); salvarDiario(true); } 
             else { alert("Link inválido!"); }
         }
     }
 
-    // MUDANÇA: Lógica do Carimbo de Humor
     function abrirModalHumor() { mostrarModal('humor', 'Como foi o seu dia?', 'Escolha o selo perfeito:'); }
-    function setMood(emoji) { humorAtual = emoji; const stamp = document.getElementById('mood-stamp'); stamp.innerText = emoji; stamp.style.display = 'block'; fecharModal(); toggleTools(); salvarDiario(true); }
+    function setMood(emoji) { humorAtual = emoji; const stamp = document.getElementById('mood-stamp'); stamp.innerText = emoji; stamp.style.display = 'block'; fecharModal(); toggleTools(); atualizarBadges(); salvarDiario(true); }
 
     function removerAnexo(tipo) {
         if(tipo === 'foto') { imagemAtualBase64 = null; document.getElementById('polaroid-wrapper').style.display = 'none'; document.getElementById('polaroid-img').src = ""; }
@@ -487,12 +510,13 @@
         if(tipo === 'musica') { musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = ""; }
         if(tipo === 'insta') { instaAtualUrl = null; document.getElementById('insta-wrapper').style.display = 'none'; document.getElementById('insta-iframe').src = ""; }
         if(tipo === 'humor') { humorAtual = null; document.getElementById('mood-stamp').style.display = 'none'; document.getElementById('mood-stamp').innerText = ""; }
-        salvarDiario(true); 
+        atualizarBadges(); salvarDiario(true); 
     }
 
     function carregarTextoDoDia(dataSelecionada) {
         if(!usuarioAtual || !dataSelecionada) return;
-        diaryText.disabled = true; diaryText.value = ""; limparAnexosDaTela(); 
+        diaryText.disabled = true; diaryText.value = ""; limparAnexosDaTela(); atualizarPrompt(dataSelecionada);
+        
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).once('value').then((snapshot) => {
             const textoSalvo = snapshot.val(); diaryText.disabled = false;
             if(textoSalvo) {
@@ -506,6 +530,7 @@
                             if(pacote.musica) { musicaAtualUrl = pacote.musica; document.getElementById('music-iframe').src = musicaAtualUrl; document.getElementById('music-iframe').style.height = musicaAtualUrl.includes("spotify") ? "152px" : "200px"; document.getElementById('music-wrapper').style.display = 'block'; }
                             if(pacote.insta) { instaAtualUrl = pacote.insta; document.getElementById('insta-iframe').src = instaAtualUrl; document.getElementById('insta-wrapper').style.display = 'block'; }
                             if(pacote.humor) { humorAtual = pacote.humor; document.getElementById('mood-stamp').innerText = humorAtual; document.getElementById('mood-stamp').style.display = 'block'; }
+                            atualizarBadges();
                         } catch(e) { diaryText.value = textoOriginal; }
                     } else if (!textoSalvo.startsWith("U2FsdGVkX1")) { diaryText.value = textoSalvo; }
                 } catch(e) { diaryText.value = textoSalvo; }
