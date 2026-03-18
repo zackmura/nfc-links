@@ -23,7 +23,7 @@
         :root {
             --primary-color: #4A2E1B; 
             --accent-color: #E27D60;  
-            --bg-color: #eaddcf; /* Fundo levemente mais escuro pra destacar o diário branco */
+            --bg-color: #eaddcf; 
             --text-color: #333;
         }
         
@@ -35,12 +35,8 @@
             margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px 15px; box-sizing: border-box;
         }
         
-        /* O Wrapper Geral centraliza o conteúdo verticalmente na tela */
-        .app-wrapper {
-            width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; margin: auto;
-        }
+        .app-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; margin: auto; }
 
-        /* Estilo da caixa de Login/Erro e do próprio Diário */
         .main-box { 
             background: white; padding: 25px 25px 15px 25px; 
             border-radius: 12px 20px 20px 12px; box-shadow: 10px 10px 25px rgba(0,0,0,0.08); 
@@ -52,17 +48,11 @@
             background-image: repeating-linear-gradient(to bottom, transparent, transparent 15px, rgba(255,255,255,0.3) 15px, rgba(255,255,255,0.3) 30px);
         }
 
-        /* MUDANÇA: O Novo Painel do Sistema (Gaveta) */
         .system-panel {
-            background-color: #f2e8d5; /* Papel kraft / papelão claro */
-            border: 1px dashed #d4c3b3;
-            border-radius: 15px; padding: 20px;
-            box-shadow: inset 0 0 15px rgba(138, 112, 94, 0.1), 5px 5px 15px rgba(0,0,0,0.05);
-            text-align: center;
+            background-color: #f2e8d5; border: 1px dashed #d4c3b3; border-radius: 15px; padding: 20px;
+            box-shadow: inset 0 0 15px rgba(138, 112, 94, 0.1), 5px 5px 15px rgba(0,0,0,0.05); text-align: center;
         }
-        .system-panel-title {
-            font-size: 12px; font-weight: bold; color: #a38c7a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;
-        }
+        .system-panel-title { font-size: 12px; font-weight: bold; color: #a38c7a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
         
         .logo { max-width: 110px; margin-bottom: 10px; }
         .diary-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0e9e1; }
@@ -98,27 +88,14 @@
         }
         button.btn-primary:hover { background-color: #311e12; }
 
-        /* MUDANÇA: Botões 3D Vintage para o Painel de Sistema */
         .btn-vintage {
             background-color: #7a6353; color: white; border: none; padding: 14px 15px; border-radius: 10px;
             font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.1s; width: 100%;
-            /* A mágica do botão 3D */
-            box-shadow: 0 5px 0 #5c4a3d, 0 8px 15px rgba(0,0,0,0.1); 
-            display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 15px;
+            box-shadow: 0 5px 0 #5c4a3d, 0 8px 15px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 15px;
         }
-        .btn-vintage:active { 
-            transform: translateY(5px); /* Afunda o botão */
-            box-shadow: 0 0px 0 #5c4a3d, 0 2px 5px rgba(0,0,0,0.1); 
-        }
-        
-        .btn-vintage.danger { 
-            background-color: #c96549; 
-            box-shadow: 0 5px 0 #9c4b33, 0 8px 15px rgba(0,0,0,0.1); 
-        }
-        .btn-vintage.danger:active { 
-            transform: translateY(5px); 
-            box-shadow: 0 0px 0 #9c4b33, 0 2px 5px rgba(0,0,0,0.1); 
-        }
+        .btn-vintage:active { transform: translateY(5px); box-shadow: 0 0px 0 #5c4a3d, 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-vintage.danger { background-color: #c96549; box-shadow: 0 5px 0 #9c4b33, 0 8px 15px rgba(0,0,0,0.1); }
+        .btn-vintage.danger:active { transform: translateY(5px); box-shadow: 0 0px 0 #9c4b33, 0 2px 5px rgba(0,0,0,0.1); }
 
         .user-profile { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #eee; }
         .user-profile img { width: 40px; border-radius: 50%; border: 2px solid var(--accent-color); padding: 2px;}
@@ -148,9 +125,16 @@
         }
 
         .attachments-area { display: flex; flex-direction: column; align-items: center; gap: 15px; padding-top: 20px; z-index: 2; }
-        .polaroid-wrapper { display: none; position: relative; width: 75%; max-width: 200px; background: white; padding: 8px 8px 20px 8px; box-shadow: 2px 4px 12px rgba(0,0,0,0.15); transform: rotate(-2deg); border-radius: 2px; }
+        
+        /* MUDANÇA: Polaroid Menor e Mais Delicada */
+        .polaroid-wrapper { 
+            display: none; position: relative; width: 55%; max-width: 150px; 
+            background: white; padding: 6px 6px 18px 6px; box-shadow: 2px 4px 10px rgba(0,0,0,0.15); 
+            transform: rotate(-2deg); border-radius: 2px; 
+        }
         .polaroid-wrapper img { width: 100%; height: auto; border: 1px solid #eee; display: block; border-radius: 2px; }
-        .vintage-tape { position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 60px; height: 22px; background-color: rgba(255, 255, 255, 0.65); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 1px; border: 1px solid rgba(0,0,0,0.03); z-index: 3;}
+        .vintage-tape { position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(2deg); width: 50px; height: 18px; background-color: rgba(255, 255, 255, 0.65); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-radius: 1px; border: 1px solid rgba(0,0,0,0.03); z-index: 3;}
+        
         .btn-remove-attachment { position: absolute; top: -10px; right: -10px; background: #E27D60; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; z-index: 4; }
         .btn-remove-attachment:hover { background: #d9534f; transform: scale(1.1); }
 
@@ -449,7 +433,7 @@
     }
     function fazerLogout() { auth.signOut(); }
 
-    /* PROCESSAMENTO DE MÍDIAS */
+    /* PROCESSAMENTO DE MÍDIAS COM AUTO-SAVE */
     function processarFoto(event) {
         const file = event.target.files[0]; if (!file) return;
         const reader = new FileReader(); reader.readAsDataURL(file);
@@ -463,6 +447,7 @@
                 canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
                 imagemAtualBase64 = canvas.toDataURL('image/jpeg', 0.6);
                 document.getElementById('polaroid-img').src = imagemAtualBase64; document.getElementById('polaroid-wrapper').style.display = 'block';
+                salvarDiario(true); // Auto-save ativado
             }
         }; document.getElementById('foto-input').value = ""; 
     }
@@ -482,6 +467,7 @@
                         audioAtualBase64 = reader.result;
                         document.getElementById('audio-player').src = audioAtualBase64;
                         document.getElementById('audio-wrapper').style.display = 'block';
+                        salvarDiario(true); // Auto-save ativado
                     };
                 };
                 mediaRecorder.start(); isRecording = true; btnMic.classList.add('recording');
@@ -517,6 +503,7 @@
                 document.getElementById('music-iframe').style.height = embedUrl.includes("spotify") ? "152px" : "200px";
                 document.getElementById('music-wrapper').style.display = 'block';
                 fecharModal();
+                salvarDiario(true); // Auto-save ativado
             } else {
                 alert("Link inválido! Use um link direto de música do Spotify ou vídeo do YouTube.");
             }
@@ -527,6 +514,7 @@
         if(tipo === 'foto') { imagemAtualBase64 = null; document.getElementById('polaroid-wrapper').style.display = 'none'; document.getElementById('polaroid-img').src = ""; }
         if(tipo === 'audio') { audioAtualBase64 = null; document.getElementById('audio-wrapper').style.display = 'none'; document.getElementById('audio-player').src = ""; }
         if(tipo === 'musica') { musicaAtualUrl = null; document.getElementById('music-wrapper').style.display = 'none'; document.getElementById('music-iframe').src = ""; }
+        salvarDiario(true); // Auto-save ao remover
     }
 
     function carregarTextoDoDia(dataSelecionada) {
@@ -554,22 +542,35 @@
         }).catch((error) => { diaryText.disabled = false; });
     }
 
-    function salvarDiario() {
+    // MUDANÇA: Lógica de Auto-Save integrada
+    function salvarDiario(isAutoSave = false) {
         if(!usuarioAtual || !fpInstance) return;
         const btn = document.getElementById('btn-salvar');
         const dataSelecionada = fpInstance.input.value;
         const textoParaSalvar = diaryText.value.trim();
 
-        if (textoParaSalvar === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl) { executarApagarSilencioso(dataSelecionada, btn); return; }
+        if (textoParaSalvar === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl) { 
+            executarApagarSilencioso(dataSelecionada, btn, isAutoSave); 
+            return; 
+        }
 
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Guardando...";
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Salvando...";
         
         const pacote = { texto: textoParaSalvar, imagem: imagemAtualBase64, audio: audioAtualBase64, musica: musicaAtualUrl };
         const textoCriptografado = CryptoJS.AES.encrypt(JSON.stringify(pacote), usuarioAtual.uid).toString();
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
-            setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.'); }, 500);
-        }).catch((error) => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; mostrarModal('erro', 'Ops', 'Erro de conexão.'); });
+            btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!";
+            setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
+            
+            // Só mostra o popup se a pessoa clicou no botão fisicamente
+            if(!isAutoSave) {
+                mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.');
+            }
+        }).catch((error) => { 
+            btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; 
+            if(!isAutoSave) mostrarModal('erro', 'Ops', 'Erro de conexão.'); 
+        });
     }
 
     function pedirParaApagar() { if(diaryText.value.trim() === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl) return; mostrarModal('apagar', 'Apagar tudo?', 'A página voltará a ficar em branco.'); }
@@ -578,7 +579,14 @@
         fecharModal(); const dataSelecionada = fpInstance.input.value;
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).remove().then(() => { diaryText.value = ""; removerAnexo('foto'); removerAnexo('audio'); removerAnexo('musica'); mostrarModal('sucesso', 'Limpo!', 'Página apagada.'); });
     }
-    function executarApagarSilencioso(data, btn) { db.ref('diarios/' + usuarioAtual.uid + '/' + data).remove().then(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }); }
+    
+    function executarApagarSilencioso(data, btn, isAutoSave = false) { 
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Limpando...";
+        db.ref('diarios/' + usuarioAtual.uid + '/' + data).remove().then(() => { 
+            btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!";
+            setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
+        }); 
+    }
 
     function pedirParaDesvincular() { mostrarModal('desvincular', 'Repassar Diário?', 'Irá desvincular seu e-mail da peça física. Continuar?'); }
     function executarDesvinculacao() { fecharModal(); loadingScreen.style.display = 'block'; diaryScreen.style.display = 'none'; db.ref('chaves_diario/' + produtoId).set('LIVRE').then(() => { auth.signOut().then(() => { window.location.reload(); }); }); }
