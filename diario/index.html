@@ -367,6 +367,7 @@
     let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null; let humorAtual = null;
     let mediaRecorder; let audioChunks = []; let isRecording = false; let tipoLinkAtual = ''; 
 
+    // Relógio do Servidor
     let serverTimeOffset = 0;
     db.ref('.info/serverTimeOffset').on('value', function(snapshot) { serverTimeOffset = snapshot.val(); });
 
@@ -407,75 +408,50 @@
         usuarioAtual = user; document.getElementById('user-name').innerText = "Diário de " + user.displayName.split(" ")[0]; document.getElementById('user-photo').src = user.photoURL;
         loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; errorScreen.style.display = 'none'; diaryScreen.style.display = 'block';
         buscarDiasMapeados();
-        carregarOfensiva(); 
     }
 
     function obterDataServidor() {
-      const estimatedServerTimeMs = Date.now() + serverTimeOffset;
-      const dataServidor = new Date(estimatedServerTimeMs);
+      const dataServidor = new Date(Date.now() + serverTimeOffset);
       return dataServidor.getFullYear() + "-" + String(dataServidor.getMonth() + 1).padStart(2, '0') + "-" + String(dataServidor.getDate()).padStart(2, '0');
     }
 
-    // MUDANÇA NA LÓGICA: O Foguinho amanhece cinza se a tarefa não foi feita hoje
-    function carregarOfensiva() {
-        db.ref('ofensivas/' + usuarioAtual.uid).on('value', (snapshot) => {
-            if(snapshot.exists()) {
-                const dados = snapshot.val();
-                const hojeStr = obterDataServidor();
-                
-                // Se ele já escreveu hoje, fica laranja e mostra o número atual.
-                if (dados.ultimoDia === hojeStr && dados.dias > 0) {
-                    atualizarUIOfensiva(dados.dias, true);
-                } else {
-                    // Não escreveu hoje ainda. Fica cinza.
-                    let diasParaMostrar = dados.dias;
+    // MUDANÇA DE MESTRE: O Cérebro Dinâmico da Ofensiva
+    function calcularOfensivaDinamicamente(listaDeDatas) {
+        if (!listaDeDatas || listaDeDatas.length === 0) return { dias: 0, fezHoje: false };
 
-                    const hojeDate = new Date(hojeStr + 'T12:00:00');
-                    const ultimoDate = new Date(dados.ultimoDia + 'T12:00:00');
-                    const diffTime = Math.abs(hojeDate - ultimoDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    if (diffDays > 1) { diasParaMostrar = 0; } // Perdeu a ofensiva!
-
-                    atualizarUIOfensiva(diasParaMostrar, false);
-                }
-            } else {
-                atualizarUIOfensiva(0, false);
-            }
-        });
-    }
-
-    function verificarEAtualizarOfensiva() {
         const hojeStr = obterDataServidor();
-        const refOfensiva = db.ref('ofensivas/' + usuarioAtual.uid);
+        const hojeDate = new Date(hojeStr + 'T12:00:00');
+        const ontemDate = new Date(hojeDate);
+        ontemDate.setDate(ontemDate.getDate() - 1);
+        const ontemStr = ontemDate.getFullYear() + "-" + String(ontemDate.getMonth() + 1).padStart(2, '0') + "-" + String(ontemDate.getDate()).padStart(2, '0');
 
-        refOfensiva.once('value').then((snapshot) => {
-            let dados = snapshot.val() || { dias: 0, ultimoDia: null };
-            
-            if (dados.ultimoDia === hojeStr && dados.dias > 0) { return; } // Já garantiu o dia
+        const fezHoje = listaDeDatas.includes(hojeStr);
+        let streak = 0;
+        let dataAtualVerificacao = new Date(hojeDate);
 
-            let novaOfensiva = dados.dias;
-            
-            const hojeDate = new Date(hojeStr + 'T12:00:00');
-            const ontemDate = new Date(hojeDate);
-            ontemDate.setDate(ontemDate.getDate() - 1);
-            const ontemStr = ontemDate.getFullYear() + "-" + String(ontemDate.getMonth() + 1).padStart(2, '0') + "-" + String(ontemDate.getDate()).padStart(2, '0');
+        // Se não escreveu hoje, começa a contar a partir de ontem
+        if (!fezHoje) {
+            if (listaDeDatas.includes(ontemStr)) { dataAtualVerificacao = new Date(ontemDate); } 
+            else { return { dias: 0, fezHoje: false }; } // Quebrou a ofensiva
+        }
 
-            if (dados.ultimoDia === ontemStr) { novaOfensiva++; } 
-            else { novaOfensiva = 1; }
-
-            refOfensiva.set({ dias: novaOfensiva, ultimoDia: hojeStr }).then(() => {
-                mostrarModalOfensivaGigante(novaOfensiva);
-            });
-        });
+        // Volta no tempo contando dias consecutivos
+        while (true) {
+            let dataStr = dataAtualVerificacao.getFullYear() + "-" + String(dataAtualVerificacao.getMonth() + 1).padStart(2, '0') + "-" + String(dataAtualVerificacao.getDate()).padStart(2, '0');
+            if (listaDeDatas.includes(dataStr)) {
+                streak++;
+                dataAtualVerificacao.setDate(dataAtualVerificacao.getDate() - 1); // Volta 1 dia
+            } else {
+                break;
+            }
+        }
+        return { dias: streak, fezHoje: fezHoje };
     }
 
     function atualizarUIOfensiva(dias, isConcluidoHoje) {
         const badge = document.getElementById('streak-badge');
         document.getElementById('streak-count').innerText = dias;
-        
-        if(isConcluidoHoje) { badge.classList.add('active-streak'); } 
-        else { badge.classList.remove('active-streak'); }
+        if(isConcluidoHoje) { badge.classList.add('active-streak'); } else { badge.classList.remove('active-streak'); }
     }
 
     function mostrarModalOfensivaGigante(dias) {
@@ -521,7 +497,18 @@
         setTimeout(() => { carregarTextoDoDia(dataStr); caderno.style.animation = "pageTurnIn 0.25s ease-out forwards"; setTimeout(() => { caderno.style.animation = 'none'; isAnimating = false; }, 250); }, 250);
     }
 
-    function buscarDiasMapeados() { if(!usuarioAtual) return; db.ref('diarios/' + usuarioAtual.uid).on('value', (snapshot) => { datasComRegistro = snapshot.exists() ? Object.keys(snapshot.val()) : []; if(fpInstance) fpInstance.redraw(); else inicializarCalendario(); }); }
+    function buscarDiasMapeados() { 
+        if(!usuarioAtual) return; 
+        db.ref('diarios/' + usuarioAtual.uid).on('value', (snapshot) => { 
+            datasComRegistro = snapshot.exists() ? Object.keys(snapshot.val()) : []; 
+            
+            // Recalcula o fogo toda vez que o banco muda (mesmo se apagar na mão)
+            const infoOfensiva = calcularOfensivaDinamicamente(datasComRegistro);
+            atualizarUIOfensiva(infoOfensiva.dias, infoOfensiva.fezHoje);
+
+            if(fpInstance) fpInstance.redraw(); else inicializarCalendario(); 
+        }); 
+    }
 
     function fazerLogin() { loadingScreen.style.display = 'block'; loginScreen.style.display = 'none'; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(() => { loadingScreen.style.display = 'none'; loginScreen.style.display = 'block'; mostrarModal('erro', 'Ops!', 'Não foi possível destrancar.'); }); }
     function fazerLogout() { auth.signOut(); }
@@ -640,15 +627,29 @@
 
         if (textoParaSalvar === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl && !instaAtualUrl && !humorAtual) { executarApagarSilencioso(dataSelecionada, btn, isAutoSave); return; }
 
+        // Verifica se é a primeira vez escrevendo hoje
+        const hojeStr = obterDataServidor();
+        const eraIneditoHoje = (dataSelecionada === hojeStr && !datasComRegistro.includes(hojeStr));
+
         btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Salvando...";
         const pacote = { texto: textoParaSalvar, imagem: imagemAtualBase64, audio: audioAtualBase64, musica: musicaAtualUrl, insta: instaAtualUrl, humor: humorAtual };
         const textoCriptografado = CryptoJS.AES.encrypt(JSON.stringify(pacote), usuarioAtual.uid).toString();
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; 
-            verificarEAtualizarOfensiva();
             setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
-            if(!isAutoSave) { mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.'); }
+            
+            if(!isAutoSave) {
+                if (eraIneditoHoje) {
+                    // Dá um tempinho de 300ms pro banco Firebase atualizar as contas da Ofensiva
+                    setTimeout(() => {
+                        const info = calcularOfensivaDinamicamente(datasComRegistro);
+                        mostrarModalOfensivaGigante(info.dias);
+                    }, 300);
+                } else {
+                    mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.');
+                }
+            }
         }).catch(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; if(!isAutoSave) mostrarModal('erro', 'Ops', 'Erro de conexão.'); });
     }
 
