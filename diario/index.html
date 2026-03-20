@@ -85,12 +85,20 @@
         .user-profile span { display: block; color: var(--primary-color); font-size: 20px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px; }
         .user-profile small { color: #aaa; font-size: 11px; }
 
-        /* MUDANÇA: O Contador Frio (Desativado) x O Contador Quente (Ativado) */
-        .streak-badge { margin-left: auto; background-color: #f9f9f9; border: 2px solid #e0e0e0; border-radius: 15px; padding: 5px 12px; display: flex; align-items: center; gap: 6px; font-weight: bold; color: #999; font-size: 16px; transition: 0.3s; cursor: default; }
-        .streak-badge i { color: #ccc; font-size: 18px; transition: 0.3s;}
+        /* MUDANÇA: Container para os Selos (Cristal e Fogo) */
+        .badges-container { display: flex; gap: 6px; margin-left: auto; }
         
+        .streak-badge { background-color: #f9f9f9; border: 2px solid #e0e0e0; border-radius: 15px; padding: 5px 10px; display: flex; align-items: center; gap: 6px; font-weight: bold; color: #999; font-size: 15px; transition: 0.3s; cursor: default; }
+        .streak-badge i { color: #ccc; font-size: 16px; transition: 0.3s;}
         .streak-badge.active-streak { background-color: #fff4e6; border-color: #ff9800; color: #d98845; }
         .streak-badge.active-streak i { color: #ff9800; animation: fireFlicker 1.5s infinite alternate; }
+        
+        /* MUDANÇA: Selo de Bloqueio (Gelo) */
+        .freeze-badge { background-color: #f9f9f9; border: 2px solid #e0e0e0; border-radius: 15px; padding: 5px 10px; display: flex; align-items: center; gap: 6px; font-weight: bold; color: #999; font-size: 15px; transition: 0.3s; cursor: default; }
+        .freeze-badge i { color: #ccc; font-size: 16px; transition: 0.3s; }
+        .freeze-badge.active-freeze { background-color: #e0f7fa; border-color: #00bcd4; color: #0097a7; }
+        .freeze-badge.active-freeze i { color: #00bcd4; }
+
         @keyframes fireFlicker { 0% { transform: scale(1); filter: brightness(1); } 100% { transform: scale(1.15); filter: brightness(1.2); } }
 
         .date-navigation { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%; gap: 5px; }
@@ -162,12 +170,12 @@
         .mood-options span { cursor: pointer; transition: 0.2s; }
         .mood-options span:hover { transform: scale(1.2); }
 
-        /* MUDANÇA: O Modal Épico Estilo Duolingo */
+        /* Modal Gigante Duolingo Modificado */
         #streak-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); display: none;}
         .streak-content { background: #fff8f0; border: 4px solid #ff9800; border-radius: 20px; text-align: center; padding: 40px 25px; animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 300px; width: 90%;}
         .fire-icon-large { font-size: 90px; color: #ff9800; margin-bottom: 15px; animation: pulseFireLarge 1s infinite alternate; text-shadow: 0 10px 20px rgba(255, 152, 0, 0.4); }
         .streak-title { color: #d98845; font-size: 28px; font-family: 'Montserrat', sans-serif; font-weight: 900; margin: 0 0 10px 0; }
-        .streak-msg { color: #555; font-size: 16px; margin-bottom: 25px; line-height: 1.4; font-family: 'Segoe UI', sans-serif;}
+        .streak-msg { color: #555; font-size: 15px; margin-bottom: 25px; line-height: 1.4; font-family: 'Segoe UI', sans-serif;}
         
         @keyframes pulseFireLarge { 0% { transform: scale(1); filter: brightness(1); } 100% { transform: scale(1.15); filter: brightness(1.2); } }
         @keyframes bounceIn { 0% { transform: scale(0.5); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); } }
@@ -230,8 +238,13 @@
                     <small><i class="fa-solid fa-lock"></i> Produto ativado e seguro</small>
                 </div>
                 
-                <div id="streak-badge" class="streak-badge" title="Sua Ofensiva">
-                    <i class="fa-solid fa-fire"></i> <span id="streak-count">0</span>
+                <div class="badges-container">
+                    <div id="freeze-badge" class="freeze-badge" title="Bloqueios de Ofensiva Disponíveis">
+                        <i class="fa-solid fa-snowflake"></i> <span id="freeze-count">0</span>
+                    </div>
+                    <div id="streak-badge" class="streak-badge" title="Sua Ofensiva Atual">
+                        <i class="fa-solid fa-fire"></i> <span id="streak-count">0</span>
+                    </div>
                 </div>
             </div>
             
@@ -339,7 +352,7 @@
     <div class="streak-content">
         <div class="fire-icon-large"><i class="fa-solid fa-fire"></i></div>
         <h2 class="streak-title"><span id="streak-modal-count">1</span> Dias!</h2>
-        <p class="streak-msg">Você guardou uma memória hoje e manteve a sua chama acesa.</p>
+        <p class="streak-msg" id="streak-msg-text">Você guardou uma memória hoje e manteve a sua chama acesa.</p>
         <button class="btn-primary" onclick="fecharModalOfensiva()" style="margin: 0;">Continuar</button>
     </div>
 </div>
@@ -362,7 +375,7 @@
     const errorScreen = document.getElementById('error-screen'); const diaryScreen = document.getElementById('diary-screen');
     const diaryText = document.getElementById('diary-text'); const caderno = document.getElementById('meu-caderno');
 
-    let usuarioAtual = null; let fpInstance = null; let datasComRegistro = []; let dataAnteriorGlobal = new Date(); let isAnimating = false; 
+    let usuarioAtual = null; let fpInstance = null; let dataAnteriorGlobal = new Date(); let isAnimating = false; 
 
     let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null; let humorAtual = null;
     let mediaRecorder; let audioChunks = []; let isRecording = false; let tipoLinkAtual = ''; 
@@ -407,7 +420,8 @@
     function liberarDiario(user) {
         usuarioAtual = user; document.getElementById('user-name').innerText = "Diário de " + user.displayName.split(" ")[0]; document.getElementById('user-photo').src = user.photoURL;
         loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; errorScreen.style.display = 'none'; diaryScreen.style.display = 'block';
-        buscarDiasMapeados();
+        carregarOfensiva(); 
+        inicializarCalendario();
     }
 
     function obterDataServidor() {
@@ -415,37 +429,88 @@
       return dataServidor.getFullYear() + "-" + String(dataServidor.getMonth() + 1).padStart(2, '0') + "-" + String(dataServidor.getDate()).padStart(2, '0');
     }
 
-    // MUDANÇA DE MESTRE: O Cérebro Dinâmico da Ofensiva
-    function calcularOfensivaDinamicamente(listaDeDatas) {
-        if (!listaDeDatas || listaDeDatas.length === 0) return { dias: 0, fezHoje: false };
+    function diffDias(d1Str, d2Str) {
+        const d1 = new Date(d1Str + 'T12:00:00');
+        const d2 = new Date(d2Str + 'T12:00:00');
+        return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
+    }
 
-        const hojeStr = obterDataServidor();
-        const hojeDate = new Date(hojeStr + 'T12:00:00');
-        const ontemDate = new Date(hojeDate);
-        ontemDate.setDate(ontemDate.getDate() - 1);
-        const ontemStr = ontemDate.getFullYear() + "-" + String(ontemDate.getMonth() + 1).padStart(2, '0') + "-" + String(ontemDate.getDate()).padStart(2, '0');
-
-        const fezHoje = listaDeDatas.includes(hojeStr);
-        let streak = 0;
-        let dataAtualVerificacao = new Date(hojeDate);
-
-        // Se não escreveu hoje, começa a contar a partir de ontem
-        if (!fezHoje) {
-            if (listaDeDatas.includes(ontemStr)) { dataAtualVerificacao = new Date(ontemDate); } 
-            else { return { dias: 0, fezHoje: false }; } // Quebrou a ofensiva
-        }
-
-        // Volta no tempo contando dias consecutivos
-        while (true) {
-            let dataStr = dataAtualVerificacao.getFullYear() + "-" + String(dataAtualVerificacao.getMonth() + 1).padStart(2, '0') + "-" + String(dataAtualVerificacao.getDate()).padStart(2, '0');
-            if (listaDeDatas.includes(dataStr)) {
-                streak++;
-                dataAtualVerificacao.setDate(dataAtualVerificacao.getDate() - 1); // Volta 1 dia
+    // MUDANÇA: O Cérebro da Gamificação e Bloqueio (Lê do Firebase)
+    function carregarOfensiva() {
+        db.ref('ofensivas/' + usuarioAtual.uid).on('value', (snapshot) => {
+            let dados = snapshot.val();
+            if(!dados) dados = { dias: 0, ultimoDia: null, bloqueios: 0 };
+            
+            document.getElementById('freeze-count').innerText = dados.bloqueios || 0;
+            const badgeGelo = document.getElementById('freeze-badge');
+            if (dados.bloqueios > 0) badgeGelo.classList.add('active-freeze'); else badgeGelo.classList.remove('active-freeze');
+            
+            const hojeStr = obterDataServidor();
+            if (dados.ultimoDia === hojeStr && dados.dias > 0) {
+                atualizarUIOfensiva(dados.dias, true);
             } else {
-                break;
+                let diasParaMostrar = dados.dias;
+                if (dados.ultimoDia) {
+                    const diff = diffDias(dados.ultimoDia, hojeStr);
+                    const missedDays = diff - 1; // Quantos dias ficou sem abrir?
+                    if (missedDays > (dados.bloqueios || 0)) {
+                        diasParaMostrar = 0; // Perdeu a ofensiva (não tinha cristais suficientes)
+                    }
+                }
+                atualizarUIOfensiva(diasParaMostrar, false);
             }
-        }
-        return { dias: streak, fezHoje: fezHoje };
+        });
+    }
+
+    // MUDANÇA: Atualiza e Gasta o Bloqueio se necessário ao Salvar
+    function verificarEAtualizarOfensiva() {
+        const hojeStr = obterDataServidor();
+        const refOfensiva = db.ref('ofensivas/' + usuarioAtual.uid);
+
+        refOfensiva.once('value').then((snapshot) => {
+            let dados = snapshot.val() || { dias: 0, ultimoDia: null, bloqueios: 0 };
+            
+            if (dados.ultimoDia === hojeStr && dados.dias > 0) return; // Já fez hoje
+
+            let novaOfensiva = dados.dias;
+            let novosBloqueios = dados.bloqueios || 0;
+            let msgExtra = "Você guardou uma memória hoje e manteve a sua chama acesa.";
+
+            if (!dados.ultimoDia) {
+                novaOfensiva = 1; // Primeiro dia
+            } else {
+                const diff = diffDias(dados.ultimoDia, hojeStr);
+                const missedDays = diff - 1;
+
+                if (missedDays === 0) {
+                    novaOfensiva++; // Dia seguido
+                } else if (missedDays > 0) {
+                    // Ficou dias sem acessar. Tem cristais suficientes?
+                    if (novosBloqueios >= missedDays) {
+                        novosBloqueios -= missedDays;
+                        novaOfensiva++;
+                        msgExtra = `Sua chama quase apagou! Mas você usou <b style="color:#00acc1">${missedDays} Bloqueio(s) ❄️</b> para salvar a sua ofensiva!`;
+                    } else {
+                        novaOfensiva = 1; // Zera tudo
+                        novosBloqueios = 0;
+                        msgExtra = "Sua ofensiva recomeçou. Continue forte, um dia de cada vez!";
+                    }
+                }
+            }
+
+            // Ganhar novos cristais a cada 10 dias
+            if (novaOfensiva > 0 && novaOfensiva % 10 === 0) {
+                if (novosBloqueios < 3) {
+                    novosBloqueios++;
+                    msgExtra += `<br><br><b style="color:#4CAF50"><i class="fa-solid fa-gift"></i> Parabéns! Você ganhou 1 Bloqueio de Ofensiva!</b>`;
+                }
+            }
+
+            refOfensiva.set({ dias: novaOfensiva, ultimoDia: hojeStr, bloqueios: novosBloqueios }).then(() => {
+                document.getElementById('streak-msg-text').innerHTML = msgExtra;
+                mostrarModalOfensivaGigante(novaOfensiva);
+            });
+        });
     }
 
     function atualizarUIOfensiva(dias, isConcluidoHoje) {
@@ -476,10 +541,6 @@
                 if (!selectedDates[0] || !usuarioAtual || isAnimating) return;
                 const novaData = selectedDates[0]; let direcao = novaData.getTime() > dataAnteriorGlobal.getTime() ? 1 : -1;
                 if(novaData.getTime() !== dataAnteriorGlobal.getTime()){ executarAnimacaoLivro(dateStr, direcao); dataAnteriorGlobal = new Date(novaData); }
-            },
-            onDayCreate: function(dObj, dStr, fp, dayElem) {
-                const dataFormatada = dayElem.dateObj.getFullYear() + "-" + String(dayElem.dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dayElem.dateObj.getDate()).padStart(2, '0');
-                if (datasComRegistro.includes(dataFormatada)) dayElem.classList.add("dia-com-registro"); 
             }
         });
         dataAnteriorGlobal = new Date(); carregarTextoDoDia(fpInstance.input.value);
@@ -495,19 +556,6 @@
     function executarAnimacaoLivro(dataStr, direcao) {
         isAnimating = true; caderno.style.animation = 'none'; void caderno.offsetWidth; caderno.style.animation = "pageTurnOut 0.25s ease-in forwards";
         setTimeout(() => { carregarTextoDoDia(dataStr); caderno.style.animation = "pageTurnIn 0.25s ease-out forwards"; setTimeout(() => { caderno.style.animation = 'none'; isAnimating = false; }, 250); }, 250);
-    }
-
-    function buscarDiasMapeados() { 
-        if(!usuarioAtual) return; 
-        db.ref('diarios/' + usuarioAtual.uid).on('value', (snapshot) => { 
-            datasComRegistro = snapshot.exists() ? Object.keys(snapshot.val()) : []; 
-            
-            // Recalcula o fogo toda vez que o banco muda (mesmo se apagar na mão)
-            const infoOfensiva = calcularOfensivaDinamicamente(datasComRegistro);
-            atualizarUIOfensiva(infoOfensiva.dias, infoOfensiva.fezHoje);
-
-            if(fpInstance) fpInstance.redraw(); else inicializarCalendario(); 
-        }); 
     }
 
     function fazerLogin() { loadingScreen.style.display = 'block'; loginScreen.style.display = 'none'; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(() => { loadingScreen.style.display = 'none'; loginScreen.style.display = 'block'; mostrarModal('erro', 'Ops!', 'Não foi possível destrancar.'); }); }
@@ -627,28 +675,25 @@
 
         if (textoParaSalvar === "" && !imagemAtualBase64 && !audioAtualBase64 && !musicaAtualUrl && !instaAtualUrl && !humorAtual) { executarApagarSilencioso(dataSelecionada, btn, isAutoSave); return; }
 
-        // Verifica se é a primeira vez escrevendo hoje
-        const hojeStr = obterDataServidor();
-        const eraIneditoHoje = (dataSelecionada === hojeStr && !datasComRegistro.includes(hojeStr));
-
         btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Salvando...";
         const pacote = { texto: textoParaSalvar, imagem: imagemAtualBase64, audio: audioAtualBase64, musica: musicaAtualUrl, insta: instaAtualUrl, humor: humorAtual };
         const textoCriptografado = CryptoJS.AES.encrypt(JSON.stringify(pacote), usuarioAtual.uid).toString();
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; 
-            setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
             
+            // Chama o Cérebro Inviolável do Gelo e Fogo!
+            verificarEAtualizarOfensiva();
+
+            setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
             if(!isAutoSave) {
-                if (eraIneditoHoje) {
-                    // Dá um tempinho de 300ms pro banco Firebase atualizar as contas da Ofensiva
-                    setTimeout(() => {
-                        const info = calcularOfensivaDinamicamente(datasComRegistro);
-                        mostrarModalOfensivaGigante(info.dias);
-                    }, 300);
-                } else {
-                    mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.');
-                }
+                // O modal da chama vai pular se a Ofensiva verificar que é a primeira vez hoje. 
+                // Se não for, mostramos o aviso normal.
+                setTimeout(() => {
+                    if (document.getElementById('streak-modal').style.display !== 'flex') {
+                        mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.');
+                    }
+                }, 300);
             }
         }).catch(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; if(!isAutoSave) mostrarModal('erro', 'Ops', 'Erro de conexão.'); });
     }
