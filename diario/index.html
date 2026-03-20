@@ -375,7 +375,7 @@
     const errorScreen = document.getElementById('error-screen'); const diaryScreen = document.getElementById('diary-screen');
     const diaryText = document.getElementById('diary-text'); const caderno = document.getElementById('meu-caderno');
 
-    let usuarioAtual = null; let fpInstance = null; let dataAnteriorGlobal = new Date(); let isAnimating = false; 
+    let usuarioAtual = null; let fpInstance = null; let datasComRegistro = []; let dataAnteriorGlobal = new Date(); let isAnimating = false; 
 
     let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null; let humorAtual = null;
     let mediaRecorder; let audioChunks = []; let isRecording = false; let tipoLinkAtual = ''; 
@@ -421,7 +421,7 @@
         usuarioAtual = user; document.getElementById('user-name').innerText = "Diário de " + user.displayName.split(" ")[0]; document.getElementById('user-photo').src = user.photoURL;
         loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; errorScreen.style.display = 'none'; diaryScreen.style.display = 'block';
         carregarOfensiva(); 
-        inicializarCalendario();
+        buscarDiasMapeados();
     }
 
     function obterDataServidor() {
@@ -435,7 +435,6 @@
         return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
     }
 
-    // MUDANÇA: O Cérebro da Gamificação e Bloqueio (Lê do Firebase)
     function carregarOfensiva() {
         db.ref('ofensivas/' + usuarioAtual.uid).on('value', (snapshot) => {
             let dados = snapshot.val();
@@ -452,63 +451,70 @@
                 let diasParaMostrar = dados.dias;
                 if (dados.ultimoDia) {
                     const diff = diffDias(dados.ultimoDia, hojeStr);
-                    const missedDays = diff - 1; // Quantos dias ficou sem abrir?
+                    const missedDays = diff - 1; 
                     if (missedDays > (dados.bloqueios || 0)) {
-                        diasParaMostrar = 0; // Perdeu a ofensiva (não tinha cristais suficientes)
+                        diasParaMostrar = 0; 
                     }
+                } else {
+                    diasParaMostrar = 0; // Conta nova
                 }
                 atualizarUIOfensiva(diasParaMostrar, false);
             }
         });
     }
 
-    // MUDANÇA: Atualiza e Gasta o Bloqueio se necessário ao Salvar
+    // MUDANÇA: A Função agora usa "Promise" para o botão salvar esperar a resposta
     function verificarEAtualizarOfensiva() {
-        const hojeStr = obterDataServidor();
-        const refOfensiva = db.ref('ofensivas/' + usuarioAtual.uid);
+        return new Promise((resolve) => {
+            const hojeStr = obterDataServidor();
+            const refOfensiva = db.ref('ofensivas/' + usuarioAtual.uid);
 
-        refOfensiva.once('value').then((snapshot) => {
-            let dados = snapshot.val() || { dias: 0, ultimoDia: null, bloqueios: 0 };
-            
-            if (dados.ultimoDia === hojeStr && dados.dias > 0) return; // Já fez hoje
+            refOfensiva.once('value').then((snapshot) => {
+                let dados = snapshot.val() || { dias: 0, ultimoDia: null, bloqueios: 0 };
+                
+                // Já fez hoje, não precisa subir o modal gigante
+                if (dados.ultimoDia === hojeStr && dados.dias > 0) {
+                    resolve(false); 
+                    return; 
+                }
 
-            let novaOfensiva = dados.dias;
-            let novosBloqueios = dados.bloqueios || 0;
-            let msgExtra = "Você guardou uma memória hoje e manteve a sua chama acesa.";
+                let novaOfensiva = dados.dias;
+                let novosBloqueios = dados.bloqueios || 0;
+                let msgExtra = "Você guardou uma memória hoje e manteve a sua chama acesa.";
 
-            if (!dados.ultimoDia) {
-                novaOfensiva = 1; // Primeiro dia
-            } else {
-                const diff = diffDias(dados.ultimoDia, hojeStr);
-                const missedDays = diff - 1;
+                if (!dados.ultimoDia) {
+                    novaOfensiva = 1; // 1º dia de todos!
+                } else {
+                    const diff = diffDias(dados.ultimoDia, hojeStr);
+                    const missedDays = diff - 1;
 
-                if (missedDays === 0) {
-                    novaOfensiva++; // Dia seguido
-                } else if (missedDays > 0) {
-                    // Ficou dias sem acessar. Tem cristais suficientes?
-                    if (novosBloqueios >= missedDays) {
-                        novosBloqueios -= missedDays;
-                        novaOfensiva++;
-                        msgExtra = `Sua chama quase apagou! Mas você usou <b style="color:#00acc1">${missedDays} Bloqueio(s) ❄️</b> para salvar a sua ofensiva!`;
-                    } else {
-                        novaOfensiva = 1; // Zera tudo
-                        novosBloqueios = 0;
-                        msgExtra = "Sua ofensiva recomeçou. Continue forte, um dia de cada vez!";
+                    if (missedDays === 0) {
+                        novaOfensiva++; 
+                    } else if (missedDays > 0) {
+                        if (novosBloqueios >= missedDays) {
+                            novosBloqueios -= missedDays;
+                            novaOfensiva++;
+                            msgExtra = `Sua chama quase apagou! Mas você usou <b style="color:#00acc1">${missedDays} Bloqueio(s) ❄️</b> para salvar a sua ofensiva!`;
+                        } else {
+                            novaOfensiva = 1; 
+                            novosBloqueios = 0;
+                            msgExtra = "Sua ofensiva recomeçou. Continue forte, um dia de cada vez!";
+                        }
                     }
                 }
-            }
 
-            // Ganhar novos cristais a cada 10 dias
-            if (novaOfensiva > 0 && novaOfensiva % 10 === 0) {
-                if (novosBloqueios < 3) {
-                    novosBloqueios++;
-                    msgExtra += `<br><br><b style="color:#4CAF50"><i class="fa-solid fa-gift"></i> Parabéns! Você ganhou 1 Bloqueio de Ofensiva!</b>`;
+                if (novaOfensiva > 0 && novaOfensiva % 10 === 0) {
+                    if (novosBloqueios < 3) {
+                        novosBloqueios++;
+                        msgExtra += `<br><br><b style="color:#4CAF50"><i class="fa-solid fa-gift"></i> Parabéns! Você ganhou 1 Bloqueio de Ofensiva!</b>`;
+                    }
                 }
-            }
 
-            refOfensiva.set({ dias: novaOfensiva, ultimoDia: hojeStr, bloqueios: novosBloqueios }).then(() => {
-                document.getElementById('streak-msg-text').innerHTML = msgExtra;
-                mostrarModalOfensivaGigante(novaOfensiva);
+                refOfensiva.set({ dias: novaOfensiva, ultimoDia: hojeStr, bloqueios: novosBloqueios }).then(() => {
+                    document.getElementById('streak-msg-text').innerHTML = msgExtra;
+                    mostrarModalOfensivaGigante(novaOfensiva);
+                    resolve(true); // Avisa a função de salvar que o Modal Gigante abriu!
+                });
             });
         });
     }
@@ -541,6 +547,10 @@
                 if (!selectedDates[0] || !usuarioAtual || isAnimating) return;
                 const novaData = selectedDates[0]; let direcao = novaData.getTime() > dataAnteriorGlobal.getTime() ? 1 : -1;
                 if(novaData.getTime() !== dataAnteriorGlobal.getTime()){ executarAnimacaoLivro(dateStr, direcao); dataAnteriorGlobal = new Date(novaData); }
+            },
+            onDayCreate: function(dObj, dStr, fp, dayElem) {
+                const dataFormatada = dayElem.dateObj.getFullYear() + "-" + String(dayElem.dateObj.getMonth() + 1).padStart(2, '0') + "-" + String(dayElem.dateObj.getDate()).padStart(2, '0');
+                if (datasComRegistro.includes(dataFormatada)) dayElem.classList.add("dia-com-registro"); 
             }
         });
         dataAnteriorGlobal = new Date(); carregarTextoDoDia(fpInstance.input.value);
@@ -557,6 +567,8 @@
         isAnimating = true; caderno.style.animation = 'none'; void caderno.offsetWidth; caderno.style.animation = "pageTurnOut 0.25s ease-in forwards";
         setTimeout(() => { carregarTextoDoDia(dataStr); caderno.style.animation = "pageTurnIn 0.25s ease-out forwards"; setTimeout(() => { caderno.style.animation = 'none'; isAnimating = false; }, 250); }, 250);
     }
+
+    function buscarDiasMapeados() { if(!usuarioAtual) return; db.ref('diarios/' + usuarioAtual.uid).on('value', (snapshot) => { datasComRegistro = snapshot.exists() ? Object.keys(snapshot.val()) : []; if(fpInstance) fpInstance.redraw(); else inicializarCalendario(); }); }
 
     function fazerLogin() { loadingScreen.style.display = 'block'; loginScreen.style.display = 'none'; auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(() => { loadingScreen.style.display = 'none'; loginScreen.style.display = 'block'; mostrarModal('erro', 'Ops!', 'Não foi possível destrancar.'); }); }
     function fazerLogout() { auth.signOut(); }
@@ -681,19 +693,17 @@
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; 
-            
-            // Chama o Cérebro Inviolável do Gelo e Fogo!
-            verificarEAtualizarOfensiva();
-
             setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
+            
             if(!isAutoSave) {
-                // O modal da chama vai pular se a Ofensiva verificar que é a primeira vez hoje. 
-                // Se não for, mostramos o aviso normal.
-                setTimeout(() => {
-                    if (document.getElementById('streak-modal').style.display !== 'flex') {
+                // MUDANÇA: A mágica da Promessa em ação!
+                verificarEAtualizarOfensiva().then((mostrouModalGigante) => {
+                    if (!mostrouModalGigante) {
                         mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.');
                     }
-                }, 300);
+                });
+            } else {
+                verificarEAtualizarOfensiva(); 
             }
         }).catch(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; if(!isAutoSave) mostrarModal('erro', 'Ops', 'Erro de conexão.'); });
     }
@@ -733,6 +743,5 @@
     }
     function fecharModal() { document.getElementById('custom-modal').style.display = 'none'; }
 </script>
-
 </body>
 </html>
