@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -79,23 +79,19 @@
         .btn-vintage.danger { background-color: #c96549; box-shadow: 0 5px 0 #9c4b33, 0 8px 15px rgba(0,0,0,0.1); }
         .btn-vintage.danger:active { transform: translateY(5px); box-shadow: 0 0px 0 #9c4b33, 0 2px 5px rgba(0,0,0,0.1); }
 
-        /* MUDANÇA: O container do Perfil agora abriga o Foguinho */
         .user-profile { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #eee; position: relative; }
         .user-profile img { width: 40px; border-radius: 50%; border: 2px solid var(--accent-color); padding: 2px;}
         .user-profile div { text-align: left; }
         .user-profile span { display: block; color: var(--primary-color); font-size: 20px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px; }
         .user-profile small { color: #aaa; font-size: 11px; }
 
-        /* MUDANÇA: Estilo da Ofensiva (Streak) */
-        .streak-badge { margin-left: auto; background-color: #fdf5e6; border: 2px solid #eab676; border-radius: 12px; padding: 5px 12px; display: flex; align-items: center; gap: 6px; font-weight: bold; color: #d98845; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; }
-        .streak-badge i { color: #ff9800; font-size: 18px; transition: 0.3s;}
+        /* MUDANÇA: O Contador Frio (Desativado) x O Contador Quente (Ativado) */
+        .streak-badge { margin-left: auto; background-color: #f9f9f9; border: 2px solid #e0e0e0; border-radius: 15px; padding: 5px 12px; display: flex; align-items: center; gap: 6px; font-weight: bold; color: #999; font-size: 16px; transition: 0.3s; cursor: default; }
+        .streak-badge i { color: #ccc; font-size: 18px; transition: 0.3s;}
         
-        /* Classe ativada quando a ofensiva é ganha hoje */
-        .streak-badge.active { background-color: #ff9800; border-color: #ff9800; color: white; animation: popStreak 0.6s ease-out; box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3); }
-        .streak-badge.active i { color: #fff; animation: fireFlicker 1s infinite alternate; }
-        
-        @keyframes popStreak { 0% { transform: scale(1); } 50% { transform: scale(1.2) rotate(3deg); } 100% { transform: scale(1) rotate(0deg); } }
-        @keyframes fireFlicker { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0.85; } }
+        .streak-badge.active-streak { background-color: #fff4e6; border-color: #ff9800; color: #d98845; }
+        .streak-badge.active-streak i { color: #ff9800; animation: fireFlicker 1.5s infinite alternate; }
+        @keyframes fireFlicker { 0% { transform: scale(1); filter: brightness(1); } 100% { transform: scale(1.15); filter: brightness(1.2); } }
 
         .date-navigation { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%; gap: 5px; }
         .nav-arrow { background: none; border: none; font-size: 18px; color: #bbb; cursor: pointer; padding: 5px; transition: 0.3s; flex-shrink: 0; }
@@ -165,6 +161,16 @@
         .mood-options { display: flex; justify-content: space-around; font-size: 32px; margin: 15px 0; }
         .mood-options span { cursor: pointer; transition: 0.2s; }
         .mood-options span:hover { transform: scale(1.2); }
+
+        /* MUDANÇA: O Modal Épico Estilo Duolingo */
+        #streak-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); display: none;}
+        .streak-content { background: #fff8f0; border: 4px solid #ff9800; border-radius: 20px; text-align: center; padding: 40px 25px; animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 300px; width: 90%;}
+        .fire-icon-large { font-size: 90px; color: #ff9800; margin-bottom: 15px; animation: pulseFireLarge 1s infinite alternate; text-shadow: 0 10px 20px rgba(255, 152, 0, 0.4); }
+        .streak-title { color: #d98845; font-size: 28px; font-family: 'Montserrat', sans-serif; font-weight: 900; margin: 0 0 10px 0; }
+        .streak-msg { color: #555; font-size: 16px; margin-bottom: 25px; line-height: 1.4; font-family: 'Segoe UI', sans-serif;}
+        
+        @keyframes pulseFireLarge { 0% { transform: scale(1); filter: brightness(1); } 100% { transform: scale(1.15); filter: brightness(1.2); } }
+        @keyframes bounceIn { 0% { transform: scale(0.5); opacity: 0; } 80% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); } }
 
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
@@ -329,6 +335,15 @@
     </div>
 </div>
 
+<div id="streak-modal" style="display: none;">
+    <div class="streak-content">
+        <div class="fire-icon-large"><i class="fa-solid fa-fire"></i></div>
+        <h2 class="streak-title"><span id="streak-modal-count">1</span> Dias!</h2>
+        <p class="streak-msg">Você guardou uma memória hoje e manteve a sua chama acesa.</p>
+        <button class="btn-primary" onclick="fecharModalOfensiva()" style="margin: 0;">Continuar</button>
+    </div>
+</div>
+
 <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDs5CcY66RU5ymMHQGhI58g1aVcyn7MeAw",
@@ -352,13 +367,8 @@
     let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null; let humorAtual = null;
     let mediaRecorder; let audioChunks = []; let isRecording = false; let tipoLinkAtual = ''; 
 
-    // MUDANÇA: Variável para calibrar o relógio interno
     let serverTimeOffset = 0;
-    
-    // Conectando com o relógio interno do Google Firebase
-    db.ref('.info/serverTimeOffset').on('value', function(snapshot) {
-      serverTimeOffset = snapshot.val();
-    });
+    db.ref('.info/serverTimeOffset').on('value', function(snapshot) { serverTimeOffset = snapshot.val(); });
 
     const perguntasDiarias = [
         "O que te fez sorrir hoje?", "Qual foi o seu maior desafio hoje?", "Sobre o que você não quer esquecer?", 
@@ -397,81 +407,77 @@
         usuarioAtual = user; document.getElementById('user-name').innerText = "Diário de " + user.displayName.split(" ")[0]; document.getElementById('user-photo').src = user.photoURL;
         loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; errorScreen.style.display = 'none'; diaryScreen.style.display = 'block';
         buscarDiasMapeados();
-        carregarOfensiva(); // MUDANÇA: Carrega o foguinho assim que logar
+        carregarOfensiva(); 
     }
 
-    // MUDANÇA: Pega a Data Real do Servidor para evitar fraudes de relógio
     function obterDataServidor() {
       const estimatedServerTimeMs = Date.now() + serverTimeOffset;
       const dataServidor = new Date(estimatedServerTimeMs);
       return dataServidor.getFullYear() + "-" + String(dataServidor.getMonth() + 1).padStart(2, '0') + "-" + String(dataServidor.getDate()).padStart(2, '0');
     }
 
-    // MUDANÇA: Lógica Completa do Foguinho (Streak)
     function carregarOfensiva() {
         db.ref('ofensivas/' + usuarioAtual.uid).on('value', (snapshot) => {
             if(snapshot.exists()) {
                 const dados = snapshot.val();
-                atualizarUIOfensiva(dados.dias, false);
+                const hojeStr = obterDataServidor();
+                
+                const hojeDate = new Date(hojeStr + 'T12:00:00');
+                const ultimoDate = new Date(dados.ultimoDia + 'T12:00:00');
+                const diffTime = Math.abs(hojeDate - ultimoDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                // Se o cara abriu o app e já pulou um dia, fica cinza
+                if (diffDays > 1) { atualizarUIOfensiva(0); } 
+                else { atualizarUIOfensiva(dados.dias); }
             } else {
-                atualizarUIOfensiva(0, false);
+                atualizarUIOfensiva(0);
             }
         });
     }
 
     function verificarEAtualizarOfensiva() {
-        const hojeServidor = obterDataServidor();
+        const hojeStr = obterDataServidor();
         const refOfensiva = db.ref('ofensivas/' + usuarioAtual.uid);
 
         refOfensiva.once('value').then((snapshot) => {
             let dados = snapshot.val() || { dias: 0, ultimoDia: null };
+            
+            // Se ele já ganhou a ofensiva HOJE, o sistema não faz nada
+            if (dados.ultimoDia === hojeStr && dados.dias > 0) { return; }
+
             let novaOfensiva = dados.dias;
+            
+            const hojeDate = new Date(hojeStr + 'T12:00:00');
+            const ontemDate = new Date(hojeDate);
+            ontemDate.setDate(ontemDate.getDate() - 1);
+            const ontemStr = ontemDate.getFullYear() + "-" + String(ontemDate.getMonth() + 1).padStart(2, '0') + "-" + String(ontemDate.getDate()).padStart(2, '0');
 
-            // Se o cliente ainda não registrou memórias NO DIA DE HOJE (hora do servidor)
-            if (dados.ultimoDia !== hojeServidor) {
-                
-                const dataHoje = new Date(hojeServidor + 'T12:00:00');
-                const dataUltimo = dados.ultimoDia ? new Date(dados.ultimoDia + 'T12:00:00') : null;
+            // Se a última vez foi Ontem, a chama cresce! Se não, volta pro dia 1.
+            if (dados.ultimoDia === ontemStr) { novaOfensiva++; } 
+            else { novaOfensiva = 1; }
 
-                if (dataUltimo) {
-                    const diffTime = Math.abs(dataHoje - dataUltimo);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    if (diffDays === 1) {
-                        novaOfensiva++; // Voltou no dia seguinte! Aumenta o fogo.
-                    } else if (diffDays > 1) {
-                        novaOfensiva = 1; // Pulou um dia. Perdeu a ofensiva.
-                    }
-                } else {
-                    novaOfensiva = 1; // Primeiro dia da vida
-                }
-
-                // Salva no banco e ativa a animação de celebração
-                refOfensiva.set({ dias: novaOfensiva, ultimoDia: hojeServidor }).then(() => {
-                    atualizarUIOfensiva(novaOfensiva, true);
-                });
-            }
+            refOfensiva.set({ dias: novaOfensiva, ultimoDia: hojeStr }).then(() => {
+                mostrarModalOfensivaGigante(novaOfensiva);
+            });
         });
     }
 
-    function atualizarUIOfensiva(dias, comAnimacao) {
+    function atualizarUIOfensiva(dias) {
         const badge = document.getElementById('streak-badge');
-        const count = document.getElementById('streak-count');
+        document.getElementById('streak-count').innerText = dias;
         
-        count.innerText = dias;
-        
-        if(dias > 0) {
-            badge.style.display = 'flex';
-        } else {
-            badge.style.display = 'none';
-        }
-
-        if (comAnimacao) {
-            badge.classList.add('active');
-            // Remove a classe de animação depois pra poder animar amanhã de novo
-            setTimeout(() => { badge.classList.remove('active'); }, 2000);
-        }
+        if(dias > 0) { badge.classList.add('active-streak'); } 
+        else { badge.classList.remove('active-streak'); }
     }
+
+    function mostrarModalOfensivaGigante(dias) {
+        document.getElementById('streak-modal-count').innerText = dias;
+        document.getElementById('streak-modal').style.display = 'flex';
+        atualizarUIOfensiva(dias);
+    }
+
+    function fecharModalOfensiva() { document.getElementById('streak-modal').style.display = 'none'; }
 
     function atualizarPrompt(dataStr) {
         const dataObj = new Date(dataStr + 'T12:00:00'); 
@@ -634,8 +640,7 @@
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; 
             
-            // MUDANÇA: Dispara a verificação do Foguinho sempre que salvar algo válido!
-            verificarEAtualizarOfensiva();
+            verificarEAtualizarOfensiva(); // Chama o Cérebro da Ofensiva
 
             setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
             if(!isAutoSave) { mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.'); }
