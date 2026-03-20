@@ -416,22 +416,31 @@
       return dataServidor.getFullYear() + "-" + String(dataServidor.getMonth() + 1).padStart(2, '0') + "-" + String(dataServidor.getDate()).padStart(2, '0');
     }
 
+    // MUDANÇA NA LÓGICA: O Foguinho amanhece cinza se a tarefa não foi feita hoje
     function carregarOfensiva() {
         db.ref('ofensivas/' + usuarioAtual.uid).on('value', (snapshot) => {
             if(snapshot.exists()) {
                 const dados = snapshot.val();
                 const hojeStr = obterDataServidor();
                 
-                const hojeDate = new Date(hojeStr + 'T12:00:00');
-                const ultimoDate = new Date(dados.ultimoDia + 'T12:00:00');
-                const diffTime = Math.abs(hojeDate - ultimoDate);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                // Se ele já escreveu hoje, fica laranja e mostra o número atual.
+                if (dados.ultimoDia === hojeStr && dados.dias > 0) {
+                    atualizarUIOfensiva(dados.dias, true);
+                } else {
+                    // Não escreveu hoje ainda. Fica cinza.
+                    let diasParaMostrar = dados.dias;
 
-                // Se o cara abriu o app e já pulou um dia, fica cinza
-                if (diffDays > 1) { atualizarUIOfensiva(0); } 
-                else { atualizarUIOfensiva(dados.dias); }
+                    const hojeDate = new Date(hojeStr + 'T12:00:00');
+                    const ultimoDate = new Date(dados.ultimoDia + 'T12:00:00');
+                    const diffTime = Math.abs(hojeDate - ultimoDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays > 1) { diasParaMostrar = 0; } // Perdeu a ofensiva!
+
+                    atualizarUIOfensiva(diasParaMostrar, false);
+                }
             } else {
-                atualizarUIOfensiva(0);
+                atualizarUIOfensiva(0, false);
             }
         });
     }
@@ -443,8 +452,7 @@
         refOfensiva.once('value').then((snapshot) => {
             let dados = snapshot.val() || { dias: 0, ultimoDia: null };
             
-            // Se ele já ganhou a ofensiva HOJE, o sistema não faz nada
-            if (dados.ultimoDia === hojeStr && dados.dias > 0) { return; }
+            if (dados.ultimoDia === hojeStr && dados.dias > 0) { return; } // Já garantiu o dia
 
             let novaOfensiva = dados.dias;
             
@@ -453,7 +461,6 @@
             ontemDate.setDate(ontemDate.getDate() - 1);
             const ontemStr = ontemDate.getFullYear() + "-" + String(ontemDate.getMonth() + 1).padStart(2, '0') + "-" + String(ontemDate.getDate()).padStart(2, '0');
 
-            // Se a última vez foi Ontem, a chama cresce! Se não, volta pro dia 1.
             if (dados.ultimoDia === ontemStr) { novaOfensiva++; } 
             else { novaOfensiva = 1; }
 
@@ -463,18 +470,18 @@
         });
     }
 
-    function atualizarUIOfensiva(dias) {
+    function atualizarUIOfensiva(dias, isConcluidoHoje) {
         const badge = document.getElementById('streak-badge');
         document.getElementById('streak-count').innerText = dias;
         
-        if(dias > 0) { badge.classList.add('active-streak'); } 
+        if(isConcluidoHoje) { badge.classList.add('active-streak'); } 
         else { badge.classList.remove('active-streak'); }
     }
 
     function mostrarModalOfensivaGigante(dias) {
         document.getElementById('streak-modal-count').innerText = dias;
         document.getElementById('streak-modal').style.display = 'flex';
-        atualizarUIOfensiva(dias);
+        atualizarUIOfensiva(dias, true);
     }
 
     function fecharModalOfensiva() { document.getElementById('streak-modal').style.display = 'none'; }
@@ -639,9 +646,7 @@
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
             btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; 
-            
-            verificarEAtualizarOfensiva(); // Chama o Cérebro da Ofensiva
-
+            verificarEAtualizarOfensiva();
             setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
             if(!isAutoSave) { mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.'); }
         }).catch(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; if(!isAutoSave) mostrarModal('erro', 'Ops', 'Erro de conexão.'); });
