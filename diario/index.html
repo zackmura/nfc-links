@@ -79,11 +79,23 @@
         .btn-vintage.danger { background-color: #c96549; box-shadow: 0 5px 0 #9c4b33, 0 8px 15px rgba(0,0,0,0.1); }
         .btn-vintage.danger:active { transform: translateY(5px); box-shadow: 0 0px 0 #9c4b33, 0 2px 5px rgba(0,0,0,0.1); }
 
-        .user-profile { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #eee; }
+        /* MUDANÇA: O container do Perfil agora abriga o Foguinho */
+        .user-profile { display: flex; align-items: center; justify-content: flex-start; gap: 12px; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px dashed #eee; position: relative; }
         .user-profile img { width: 40px; border-radius: 50%; border: 2px solid var(--accent-color); padding: 2px;}
         .user-profile div { text-align: left; }
         .user-profile span { display: block; color: var(--primary-color); font-size: 20px; font-family: 'Patrick Hand', cursive; letter-spacing: 1px; }
         .user-profile small { color: #aaa; font-size: 11px; }
+
+        /* MUDANÇA: Estilo da Ofensiva (Streak) */
+        .streak-badge { margin-left: auto; background-color: #fdf5e6; border: 2px solid #eab676; border-radius: 12px; padding: 5px 12px; display: flex; align-items: center; gap: 6px; font-weight: bold; color: #d98845; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s; }
+        .streak-badge i { color: #ff9800; font-size: 18px; transition: 0.3s;}
+        
+        /* Classe ativada quando a ofensiva é ganha hoje */
+        .streak-badge.active { background-color: #ff9800; border-color: #ff9800; color: white; animation: popStreak 0.6s ease-out; box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3); }
+        .streak-badge.active i { color: #fff; animation: fireFlicker 1s infinite alternate; }
+        
+        @keyframes popStreak { 0% { transform: scale(1); } 50% { transform: scale(1.2) rotate(3deg); } 100% { transform: scale(1) rotate(0deg); } }
+        @keyframes fireFlicker { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0.85; } }
 
         .date-navigation { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; width: 100%; gap: 5px; }
         .nav-arrow { background: none; border: none; font-size: 18px; color: #bbb; cursor: pointer; padding: 5px; transition: 0.3s; flex-shrink: 0; }
@@ -98,14 +110,11 @@
         .paper-container { position: relative; background-color: #f9f1e6; border-radius: 3px 6px 3px 5px; box-shadow: inset 0 0 30px rgba(138, 112, 94, 0.15), 2px 3px 10px rgba(0,0,0,0.08); border: 1px solid #d4c3b3; transform-origin: left center; will-change: transform; z-index: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 280px; }
         .paper-container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 28px; width: 1px; background-color: rgba(194, 89, 83, 0.4); z-index: 1; pointer-events: none; box-shadow: 2px 0 0 rgba(194, 89, 83, 0.2); }
 
-        /* MUDANÇA: Carimbo de humor menor e mais encolhido no canto */
         .mood-stamp { display: none; position: absolute; top: 12px; right: 12px; font-size: 28px; transform: rotate(12deg); z-index: 5; filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.1)); cursor: pointer; transition: 0.2s; }
         .mood-stamp:hover { transform: rotate(0deg) scale(1.1); opacity: 0.7; }
 
-        /* MUDANÇA: Margem na direita para não encostar no carimbo */
         .daily-prompt { font-family: 'Patrick Hand', cursive; font-size: 16px; color: #a38c7a; text-align: center; margin: 15px 45px 10px 42px; font-style: italic; }
 
-        /* MUDANÇA: O Padding do topo foi matematicamente calculado (2px) para a linha bater na base da letra */
         textarea { width: 100%; flex-grow: 1; min-height: 180px; padding: 2px 15px 15px 42px; font-size: 20px; font-family: 'Patrick Hand', cursive; color: #3b2f2f; box-sizing: border-box; resize: none; outline: none; border: none; background: transparent; line-height: 30px; background-image: repeating-linear-gradient(transparent, transparent 29px, rgba(138, 112, 94, 0.3) 29px, rgba(138, 112, 94, 0.3) 30px); background-attachment: local; }
 
         .attachments-area { display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 15px 0 25px 0; z-index: 2; width: 100%;}
@@ -207,7 +216,18 @@
         
         <div class="main-box">
             <div class="diary-header"><img src="logo-minimundo.jpg" alt="Mini Mundo" onerror="this.src='logo.jpg'"><h2>Seu Espaço de Memórias</h2></div>
-            <div class="user-profile"><img id="user-photo" src="" alt="Foto"><div><span id="user-name">Carregando...</span><small><i class="fa-solid fa-lock"></i> Produto ativado e seguro</small></div></div>
+            
+            <div class="user-profile">
+                <img id="user-photo" src="" alt="Foto">
+                <div>
+                    <span id="user-name">Carregando...</span>
+                    <small><i class="fa-solid fa-lock"></i> Produto ativado e seguro</small>
+                </div>
+                
+                <div id="streak-badge" class="streak-badge" title="Sua Ofensiva">
+                    <i class="fa-solid fa-fire"></i> <span id="streak-count">0</span>
+                </div>
+            </div>
             
             <div class="date-navigation">
                 <button class="nav-arrow" onclick="mudarDataComAnimacao(-1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -217,9 +237,7 @@
             
             <div class="paper-wrapper">
                 <div class="paper-container" id="meu-caderno">
-                    
                     <div id="mood-stamp" class="mood-stamp" onclick="removerAnexo('humor')" title="Remover"></div>
-                    
                     <div id="daily-prompt" class="daily-prompt"></div>
 
                     <textarea id="diary-text" placeholder="Querido diário..."></textarea>
@@ -230,20 +248,17 @@
                             <button class="btn-remove-attachment" onclick="removerAnexo('foto')" title="Remover"><i class="fa-solid fa-xmark"></i></button>
                             <img id="polaroid-img" src="" alt="Lembrança">
                         </div>
-                        
                         <div id="audio-wrapper" class="audio-wrapper">
                             <div class="vintage-tape" style="width: 40px; top: -8px;"></div>
                             <button class="btn-remove-attachment" onclick="removerAnexo('audio')" title="Remover"><i class="fa-solid fa-xmark"></i></button>
                             <span><i class="fa-solid fa-microphone-lines"></i> Nota de Voz</span>
                             <audio id="audio-player" controls></audio>
                         </div>
-
                         <div id="music-wrapper" class="music-wrapper">
                             <div class="vintage-tape" style="transform: translateX(-50%) rotate(-1deg);"></div>
                             <button class="btn-remove-attachment" onclick="removerAnexo('musica')" title="Remover" style="top: -5px;"><i class="fa-solid fa-xmark"></i></button>
                             <iframe id="music-iframe" src="" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
                         </div>
-
                         <div id="insta-wrapper" class="insta-wrapper">
                             <div class="vintage-tape" style="transform: translateX(-50%) rotate(2deg);"></div>
                             <button class="btn-remove-attachment" onclick="removerAnexo('insta')" title="Remover" style="top: -12px; z-index: 10;"><i class="fa-solid fa-xmark"></i></button>
@@ -261,21 +276,11 @@
             </div>
             
             <div class="tools-group" id="tools-menu">
-                <button class="btn-action-square btn-camera" id="tool-foto" onclick="document.getElementById('foto-input').click()" title="Foto">
-                    <i class="fa-solid fa-camera-retro"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
-                </button>
-                <button class="btn-action-square btn-mic" id="tool-audio" onclick="toggleGravacao()" title="Voz">
-                    <i class="fa-solid fa-microphone"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
-                </button>
-                <button class="btn-action-square btn-music" id="tool-musica" onclick="abrirModalLink('musica')" title="Música">
-                    <i class="fa-solid fa-music"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
-                </button>
-                <button class="btn-action-square btn-insta" id="tool-insta" onclick="abrirModalLink('insta')" title="Instagram">
-                    <i class="fa-brands fa-instagram"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
-                </button>
-                <button class="btn-action-square btn-mood" id="tool-humor" onclick="abrirModalHumor()" title="Selo de Humor">
-                    <i class="fa-solid fa-face-smile"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div>
-                </button>
+                <button class="btn-action-square btn-camera" id="tool-foto" onclick="document.getElementById('foto-input').click()" title="Foto"><i class="fa-solid fa-camera-retro"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div></button>
+                <button class="btn-action-square btn-mic" id="tool-audio" onclick="toggleGravacao()" title="Voz"><i class="fa-solid fa-microphone"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div></button>
+                <button class="btn-action-square btn-music" id="tool-musica" onclick="abrirModalLink('musica')" title="Música"><i class="fa-solid fa-music"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div></button>
+                <button class="btn-action-square btn-insta" id="tool-insta" onclick="abrirModalLink('insta')" title="Instagram"><i class="fa-brands fa-instagram"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div></button>
+                <button class="btn-action-square btn-mood" id="tool-humor" onclick="abrirModalHumor()" title="Selo de Humor"><i class="fa-solid fa-face-smile"></i><div class="badge-check"><i class="fa-solid fa-check"></i></div></button>
             </div>
 
             <button class="btn-primary" id="btn-salvar" onclick="salvarDiario()"><i class="fa-solid fa-feather-pointed"></i> Guardar Memória</button>
@@ -347,6 +352,14 @@
     let imagemAtualBase64 = null; let audioAtualBase64 = null; let musicaAtualUrl = null; let instaAtualUrl = null; let humorAtual = null;
     let mediaRecorder; let audioChunks = []; let isRecording = false; let tipoLinkAtual = ''; 
 
+    // MUDANÇA: Variável para calibrar o relógio interno
+    let serverTimeOffset = 0;
+    
+    // Conectando com o relógio interno do Google Firebase
+    db.ref('.info/serverTimeOffset').on('value', function(snapshot) {
+      serverTimeOffset = snapshot.val();
+    });
+
     const perguntasDiarias = [
         "O que te fez sorrir hoje?", "Qual foi o seu maior desafio hoje?", "Sobre o que você não quer esquecer?", 
         "Se o dia de hoje fosse uma música, qual seria?", "Pelo que você é grato(a) hoje?", "O que você aprendeu de novo hoje?",
@@ -384,10 +397,84 @@
         usuarioAtual = user; document.getElementById('user-name').innerText = "Diário de " + user.displayName.split(" ")[0]; document.getElementById('user-photo').src = user.photoURL;
         loadingScreen.style.display = 'none'; loginScreen.style.display = 'none'; errorScreen.style.display = 'none'; diaryScreen.style.display = 'block';
         buscarDiasMapeados();
+        carregarOfensiva(); // MUDANÇA: Carrega o foguinho assim que logar
+    }
+
+    // MUDANÇA: Pega a Data Real do Servidor para evitar fraudes de relógio
+    function obterDataServidor() {
+      const estimatedServerTimeMs = Date.now() + serverTimeOffset;
+      const dataServidor = new Date(estimatedServerTimeMs);
+      return dataServidor.getFullYear() + "-" + String(dataServidor.getMonth() + 1).padStart(2, '0') + "-" + String(dataServidor.getDate()).padStart(2, '0');
+    }
+
+    // MUDANÇA: Lógica Completa do Foguinho (Streak)
+    function carregarOfensiva() {
+        db.ref('ofensivas/' + usuarioAtual.uid).on('value', (snapshot) => {
+            if(snapshot.exists()) {
+                const dados = snapshot.val();
+                atualizarUIOfensiva(dados.dias, false);
+            } else {
+                atualizarUIOfensiva(0, false);
+            }
+        });
+    }
+
+    function verificarEAtualizarOfensiva() {
+        const hojeServidor = obterDataServidor();
+        const refOfensiva = db.ref('ofensivas/' + usuarioAtual.uid);
+
+        refOfensiva.once('value').then((snapshot) => {
+            let dados = snapshot.val() || { dias: 0, ultimoDia: null };
+            let novaOfensiva = dados.dias;
+
+            // Se o cliente ainda não registrou memórias NO DIA DE HOJE (hora do servidor)
+            if (dados.ultimoDia !== hojeServidor) {
+                
+                const dataHoje = new Date(hojeServidor + 'T12:00:00');
+                const dataUltimo = dados.ultimoDia ? new Date(dados.ultimoDia + 'T12:00:00') : null;
+
+                if (dataUltimo) {
+                    const diffTime = Math.abs(dataHoje - dataUltimo);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    if (diffDays === 1) {
+                        novaOfensiva++; // Voltou no dia seguinte! Aumenta o fogo.
+                    } else if (diffDays > 1) {
+                        novaOfensiva = 1; // Pulou um dia. Perdeu a ofensiva.
+                    }
+                } else {
+                    novaOfensiva = 1; // Primeiro dia da vida
+                }
+
+                // Salva no banco e ativa a animação de celebração
+                refOfensiva.set({ dias: novaOfensiva, ultimoDia: hojeServidor }).then(() => {
+                    atualizarUIOfensiva(novaOfensiva, true);
+                });
+            }
+        });
+    }
+
+    function atualizarUIOfensiva(dias, comAnimacao) {
+        const badge = document.getElementById('streak-badge');
+        const count = document.getElementById('streak-count');
+        
+        count.innerText = dias;
+        
+        if(dias > 0) {
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
+
+        if (comAnimacao) {
+            badge.classList.add('active');
+            // Remove a classe de animação depois pra poder animar amanhã de novo
+            setTimeout(() => { badge.classList.remove('active'); }, 2000);
+        }
     }
 
     function atualizarPrompt(dataStr) {
-        const dataObj = new Date(dataStr + 'T12:00:00'); // Evitar fuso horário mudando o dia
+        const dataObj = new Date(dataStr + 'T12:00:00'); 
         const dia = dataObj.getDate() || 1; 
         const pergunta = perguntasDiarias[(dia - 1) % perguntasDiarias.length];
         document.getElementById('daily-prompt').innerText = "✨ " + pergunta;
@@ -545,7 +632,12 @@
         const textoCriptografado = CryptoJS.AES.encrypt(JSON.stringify(pacote), usuarioAtual.uid).toString();
         
         db.ref('diarios/' + usuarioAtual.uid + '/' + dataSelecionada).set(textoCriptografado).then(() => {
-            btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
+            btn.innerHTML = "<i class='fa-solid fa-check'></i> Salvo!"; 
+            
+            // MUDANÇA: Dispara a verificação do Foguinho sempre que salvar algo válido!
+            verificarEAtualizarOfensiva();
+
+            setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; }, 2000);
             if(!isAutoSave) { mostrarModal('sucesso', 'Guardado!', 'Memórias trancadas no cofre.'); }
         }).catch(() => { btn.innerHTML = "<i class='fa-solid fa-feather-pointed'></i> Guardar Memória"; if(!isAutoSave) mostrarModal('erro', 'Ops', 'Erro de conexão.'); });
     }
