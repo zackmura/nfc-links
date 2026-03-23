@@ -19,6 +19,22 @@
         .music-btn { margin-top: 15px; background: #ffffff; color: #cc0000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s; font-family: 'Inter', sans-serif; }
         .music-btn:active { transform: scale(0.95); }
 
+        /* === 🔴 CSS DO PLACAR AO VIVO (Vermelho) === */
+        .live-container { background: #ffffff; border: 2px solid #cc0000; border-radius: 15px; margin: 15px 10px; padding: 15px; box-shadow: 0 5px 20px rgba(204,0,0,0.15); }
+        .live-header { text-align: center; font-weight: 900; color: #cc0000; font-size: 0.9rem; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; letter-spacing: 1px;}
+        .live-dot { width: 10px; height: 10px; background-color: #cc0000; border-radius: 50%; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .live-scoreboard { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 10px; border: 1px solid #eee;}
+        .live-team { display: flex; flex-direction: column; align-items: center; width: 30%; font-weight: 800; font-size: 0.75rem; color: #000; text-align: center; }
+        .live-team img { width: 45px; height: 45px; margin-bottom: 5px; object-fit: contain;}
+        .live-score { font-size: 2.2rem; font-weight: 900; color: #000; letter-spacing: 2px; }
+        .live-stats { border-top: 1px dashed #ccc; padding-top: 10px; }
+        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f5f5f5; }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { font-size: 0.7rem; font-weight: 800; color: #555; text-transform: uppercase; }
+        .stat-val { font-size: 0.95rem; font-weight: 900; color: #000; width: 35px; text-align: center; }
+        /* ================================ */
+
         .section-title { font-size: 0.75rem; color: #333; padding: 15px 15px 8px; background: #f8f9fa; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; display: flex; justify-content: space-between; align-items: center;}
         .cache-info { font-size: 0.6rem; color: #888; text-transform: none; font-weight: 400;}
         
@@ -61,86 +77,31 @@
         .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
         .trophy-icon { font-size: 1.1rem; }
 
-        /* Rodapé e Redes Sociais Mini Mundo */
         .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
         .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
         .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
-        
+
         .social-links { display: flex; gap: 10px; margin-top: 15px; width: 100%; justify-content: center;}
         .social-btn { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: white; display: flex; align-items: center; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
         .social-btn:active { transform: scale(0.95); }
         .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
         .zap { background: #25D366; }
 
-        /* Estrutura Base do Botão YouTube */
         .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
         .dynamic-button:active { transform: scale(0.95); }
         .youtube-button { background: #cc0000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(204,0,0,0.2); }
-        
+
         /* === DESIGN DO QUIZ TRICOLOR === */
-        .quiz-container {
-            background: #111111;
-            border: 2px solid #cc0000;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px auto;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 15px rgba(204,0,0,0.2);
-        }
-        .quiz-question {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 15px;
-            text-align: center;
-            line-height: 1.3;
-        }
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .quiz-btn {
-            background: #222222;
-            color: #f0f0f0;
-            border: 1px solid #cc0000;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: left;
-        }
+        .quiz-container { background: #111111; border: 2px solid #cc0000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(204,0,0,0.2); }
+        .quiz-question { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; text-align: center; line-height: 1.3; }
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+        .quiz-btn { background: #222222; color: #f0f0f0; border: 1px solid #cc0000; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; text-align: left; }
         .quiz-btn:active { transform: scale(0.98); }
-        
-        /* Cores de Acerto e Erro */
         .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; }
         .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; animation: tremer 0.4s; }
-        
-        .btn-proxima {
-            margin-top: 15px;
-            background: transparent;
-            color: #cccccc;
-            border: 1px solid #555555;
-            padding: 8px 15px;
-            border-radius: 20px;
-            width: 100%;
-            cursor: pointer;
-            font-weight: bold;
-            display: none; 
-        }
+        .btn-proxima { margin-top: 15px; background: transparent; color: #cccccc; border: 1px solid #555555; padding: 8px 15px; border-radius: 20px; width: 100%; cursor: pointer; font-weight: bold; display: none; }
         .btn-proxima:hover { background: #222; color: #fff; border-color: #fff; }
-        
-        /* Animação de erro */
-        @keyframes tremer {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
-        }
+        @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
     </style>
 </head>
 <body>
@@ -156,6 +117,8 @@
 
         <a href="https://www.espn.com.br/futebol/time/elenco/_/id/2026/sao-paulo" target="_blank" style="margin-top: 10px; background: transparent; color: #d1e7d1; border: 1px solid #d1e7d1; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; text-decoration: none; transition: 0.2s;">📋 Ver Elenco Atual</a>
     </div>
+
+    <div id="live-match-container" class="live-container" style="display: none;"></div>
     
     <div class="section-title">Últimos Resultados <span class="cache-info" id="status-update">Buscando...</span></div>
     <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor...</p></div>
@@ -183,8 +146,7 @@
     <div class="section-title">🏆 Desafio do Torcedor</div>
     <div class="quiz-container" id="quiz-box" style="display: none;">
         <p id="quiz-pergunta" class="quiz-question">Carregando desafio...</p>
-        <div id="quiz-botoes" class="quiz-options">
-            </div>
+        <div id="quiz-botoes" class="quiz-options"></div>
         <button id="btn-proxima" class="btn-proxima" onclick="sortearPergunta()">🔄 Puxar Outra Pergunta</button>
     </div>
 
@@ -223,8 +185,9 @@
 <script>
     let bancoDePerguntas = [];
     let perguntaAtual = null;
+    let radarInterval = null; 
 
-    // ⚠️ MANTIDO O LINK DA API DO SÃO PAULO
+    // ⚠️ LINK DO SEU GOOGLE APPS SCRIPT DO SÃO PAULO
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec"; 
     
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
@@ -250,14 +213,8 @@
     function controlarMusica() {
         const audio = document.getElementById("hino-audio");
         const btn = document.getElementById("btn-tocar");
-        
-        if (audio.paused) {
-            audio.play();
-            btn.innerHTML = "⏸️ Pausar Hino";
-        } else {
-            audio.pause();
-            btn.innerHTML = "🎵 Tocar Hino";
-        }
+        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } 
+        else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
     }
 
     function traduzirCampeonato(nomeOuSlug) {
@@ -275,6 +232,98 @@
         return nomeOuSlug;
     }
 
+    // === 🔴 MOTOR DO RADAR AO VIVO ===
+    function checarJogoAoVivo(dados) {
+        const todosJogos = [...(dados.past || []), ...(dados.next || [])];
+        const jogoAoVivo = todosJogos.find(j => j.status === 'in');
+
+        if (jogoAoVivo && jogoAoVivo.id) {
+            document.getElementById("live-match-container").style.display = "block";
+            atualizarRadarESPN(jogoAoVivo.id); 
+            
+            if(radarInterval) clearInterval(radarInterval);
+            radarInterval = setInterval(() => {
+                atualizarRadarESPN(jogoAoVivo.id);
+            }, 30000);
+        } else {
+            document.getElementById("live-match-container").style.display = "none";
+            if(radarInterval) clearInterval(radarInterval);
+        }
+    }
+
+    async function atualizarRadarESPN(idPartida) {
+        try {
+            const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`;
+            const res = await fetch(url);
+            const json = await res.json();
+
+            const header = json.header.competitions[0];
+            const tempoStr = header.status.displayClock;
+            const periodo = header.status.period > 1 ? "2ºT" : "1ºT";
+            const timeInfo = tempoStr ? `${tempoStr}' ${periodo}` : "Aguardando Apito";
+            
+            const home = header.competitors.find(c => c.homeAway === 'home');
+            const away = header.competitors.find(c => c.homeAway === 'away');
+            
+            const boxscore = json.boxscore?.teams || [];
+            let statsHTML = '';
+
+            if (boxscore.length === 2) {
+                const getStat = (teamStats, statName) => {
+                    if (!teamStats.statistics) return "0";
+                    const s = teamStats.statistics.find(x => x.name === statName);
+                    return s ? s.displayValue : "0";
+                };
+                
+                const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
+                const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
+
+                const estatisticas = [
+                    { label: "Posse de Bola", key: "possession" },
+                    { label: "Finalizações", key: "shotsTotal" },
+                    { label: "No Gol", key: "shotsOnTarget" },
+                    { label: "Escanteios", key: "wonCorners" },
+                    { label: "Faltas", key: "foulsCommitted" },
+                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
+                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
+                ];
+
+                statsHTML = estatisticas.map(stat => {
+                    const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
+                    return `
+                    <div class="stat-row">
+                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
+                        <span class="stat-label">${stat.label}</span>
+                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
+                    </div>
+                `}).join('');
+            }
+
+            document.getElementById("live-match-container").innerHTML = `
+                <div class="live-header">
+                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
+                </div>
+                <div class="live-scoreboard">
+                    <div class="live-team">
+                        <img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'">
+                        <span>${home.team.abbreviation || home.team.shortDisplayName}</span>
+                    </div>
+                    <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
+                    <div class="live-team">
+                        <img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'">
+                        <span>${away.team.abbreviation || away.team.shortDisplayName}</span>
+                    </div>
+                </div>
+                <div class="live-stats">
+                    ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
+                </div>
+            `;
+        } catch (e) {
+            console.error("Erro no radar: ", e);
+        }
+    }
+    // ==================================
+
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
@@ -289,7 +338,9 @@
             const resposta = await fetch(MINHA_API_GOOGLE);
             const dados = await resposta.json();
 
-            // === ATIVANDO O QUIZ QUANDO OS DADOS CHEGAM ===
+            // 🔴 ATIVA O RADAR AO VIVO SE TIVER JOGO
+            checarJogoAoVivo(dados);
+
             if (dados.quiz && dados.quiz.length > 0) {
                 bancoDePerguntas = dados.quiz;
                 document.getElementById("quiz-box").style.display = "block";
@@ -357,7 +408,7 @@
         }
     }
 
-   function criarCard(e, isFinished) {
+    function criarCard(e, isFinished) {
         const dataObj = new Date(e.date);
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
@@ -404,20 +455,14 @@
     }
     window.onload = carregarDoMeuServidor;
 
-    // === MOTOR DO QUIZ ===
     function sortearPergunta() {
         if (bancoDePerguntas.length === 0) return;
-        
         document.getElementById("btn-proxima").style.display = "none";
-        
         const index = Math.floor(Math.random() * bancoDePerguntas.length);
         perguntaAtual = bancoDePerguntas[index];
-        
         document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta;
-        
         const divBotoes = document.getElementById("quiz-botoes");
         divBotoes.innerHTML = ""; 
-        
         perguntaAtual.opcoes.forEach((opcao, i) => {
             const numOpcao = i + 1;
             const btn = document.createElement("button");
@@ -430,16 +475,13 @@
 
     function verificarResposta(botaoClicado, numEscolhido) {
         const botoes = document.querySelectorAll(".quiz-btn");
-        
         botoes.forEach(b => b.onclick = null);
-        
         if (numEscolhido === perguntaAtual.correta) {
             botaoClicado.classList.add("correct");
         } else {
             botaoClicado.classList.add("wrong");
             botoes[perguntaAtual.correta - 1].classList.add("correct");
         }
-        
         document.getElementById("btn-proxima").style.display = "block";
     }
 </script>
