@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerador de Rótulos - Novera Scent</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #BCA4D3; 
+        --text-dark: #222222;
+        --text-light: #777777;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f4f4f9;
+        display: flex;
+        height: 100vh;
+    }
+
+    /* ===================== */
+    /* PAINEL DE CONTROLE    */
+    /* ===================== */
+    .controls {
+        width: 380px;
+        background: #ffffff;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .controls h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 16px;
+        color: var(--primary);
+        margin: 0 0 5px 0;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .form-group label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 13px;
+        box-sizing: border-box;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        height: 50px;
+    }
+
+    button.print-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: background 0.3s;
+    }
+
+    button.print-btn:hover {
+        background: #a38db8;
+    }
+
+    /* ===================== */
+    /* ÁREA DE VISUALIZAÇÃO  */
+    /* ===================== */
+    .preview-area {
+        flex: 1;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background: #e9ecef;
+    }
+
+    /* RÓTULO GERAL (6x6 cm) */
+    .label {
+        width: 6cm;
+        height: 6cm;
+        background: #ffffff;
+        border: 1px dashed #cccccc; 
+        padding: 0.5cm;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* FRENTE */
+    .front-label {
+        align-items: center;
+        text-align: center;
+        justify-content: flex-start;
+    }
+
+    /* ====== CORREÇÃO DA LOGO ====== */
+    .logo-img {
+        width: 100%;
+        max-width: 85%; /* Logo mais larga */
+        max-height: 2.5cm; /* Logo mais alta */
+        object-fit: contain;
+        margin-top: -0.1cm; /* Puxa levemente para cima */
+        margin-bottom: 0.1cm; 
+        mix-blend-mode: multiply; /* Remove o fundo branco */
+        /* Saturação aumenta a cor, brilho menor escurece levemente o lilás para ele aparecer mais forte */
+        filter: contrast(1.2) saturate(1.5) brightness(0.9); 
+    }
+
+    .novera-code-front {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 6.5px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        color: var(--primary);
+        margin-bottom: 0.3cm;
+        border-bottom: 0.5px solid #eee;
+        padding-bottom: 3px;
+        width: 50%;
+    }
+
+    .title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 6px; 
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 3px; 
+        color: var(--text-light);
+        margin-bottom: 4px;
+    }
+
+    .fragrance {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 13px; 
+        font-weight: 500;
+        text-transform: uppercase;
+        color: var(--text-dark);
+        margin-bottom: 2px;
+        letter-spacing: 2.5px;
+    }
+
+    .inspiration {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 5px;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        color: #888;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+    }
+
+    .subtitle {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 10px;
+        font-weight: 400;
+        font-style: italic;
+        letter-spacing: 0.5px;
+        color: #888;
+    }
+
+    .volume {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 7.5px;
+        font-weight: 500;
+        letter-spacing: 2px;
+        color: #666;
+        position: absolute;
+        bottom: 0.5cm;
+        width: 100%;
+        text-align: center;
+        left: 0;
+    }
+
+    /* VERSO */
+    .brand-back {
+        text-align: center;
+        margin-bottom: 0.4cm;
+        line-height: 1.2;
+    }
+
+    .brand-novera {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 13px;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        color: var(--primary);
+        display: block;
+    }
+
+    .brand-scent {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 5.5px;
+        font-weight: 400;
+        letter-spacing: 3.5px;
+        color: var(--primary);
+        text-transform: uppercase;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .text-small {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 5.5px; 
+        line-height: 1.3;
+        color: #555;
+        font-weight: 300;
+    }
+
+    .text-small p {
+        margin: 0 0 5px 0;
+    }
+
+    .text-small strong {
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .footer-grid {
+        display: flex;
+        justify-content: space-between;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 5.5px;
+        font-weight: 300;
+        color: var(--text-light);
+        margin-top: auto;
+        border-top: 0.5px solid #eaeaea;
+        padding-top: 4px;
+        line-height: 1.4;
+    }
+
+    /* ===================== */
+    /* ESTILOS DE IMPRESSÃO  */
+    /* ===================== */
+    @media print {
+        body { background: white; }
+        .controls { display: none; }
+        .preview-area { background: white; padding: 0; justify-content: flex-start; gap: 0.5cm; }
+        .label { border: 0.1mm solid #eeeeee; page-break-inside: avoid; }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="controls">
+    <h2>Dados do Produto</h2>
+    
+    <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+            <label>Código do Produto</label>
+            <input type="text" value="N002" oninput="updateCodigo(this.value)">
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label>Volume / Peso</label>
+            <input type="text" value="150 ml" oninput="updateVolume(this.value)">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Tipo (Frente)</label>
+        <input type="text" value="Creme Hidratante" oninput="updateLabel('lblTipoFrente', this.value)">
+    </div>
+
+    <div class="form-group">
+        <label>Nome da Versão</label>
+        <input type="text" value="" oninput="updateLabel('lblNome', this.value)">
+    </div>
+
+    <div class="form-group">
+        <label>Referência/Inspiração (Opcional)</label>
+        <input type="text" value="Alta perfumaria" oninput="updateInspiracao(this.value)">
+    </div>
+
+    <div class="form-group">
+        <label>Subtítulo / Coleção</label>
+        <input type="text" value="Inspiração Árabe" oninput="updateLabel('lblSubtitulo', this.value)">
+    </div>
+
+    <div class="form-group">
+        <label>Descrição (Verso)</label>
+        <textarea oninput="updateLabel('lblDescricao', this.value)">Fórmula exclusiva de alta absorção com notas sofisticadas.</textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Modo de Uso</label>
+        <textarea oninput="updateLabel('lblUso', this.value)">Aplicar sobre a pele limpa e seca, massageando suavemente até completa absorção.</textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Composição</label>
+        <textarea oninput="updateLabel('lblComposicao', this.value)">Base hidratante, fragrância, conservantes autorizados.</textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Precauções</label>
+        <textarea oninput="updateLabel('lblPrecaucoes', this.value)">Uso externo. Evitar contato com os olhos. Manter fora do alcance de crianças.</textarea>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+            <label>Fabricação</label>
+            <input type="text" value="22/03/2026" oninput="updateLabel('lblFab', this.value)">
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label>Validade</label>
+            <input type="text" value="22/09/2026" oninput="updateLabel('lblVal', this.value)">
+        </div>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">Imprimir Rótulos</button>
+</div>
+
+<div class="preview-area">
+    
+    <div class="label front-label">
+        <img src="logo.png" class="logo-img" alt="Novera Scent Logo">
+        <div class="novera-code-front" id="lblCodigoFrente">REF. N002</div>
+        <div class="title" id="lblTipoFrente">Creme Hidratante</div>
+        <div class="fragrance" id="lblNome"></div>
+        <div class="inspiration" id="lblInspiracao">Alta perfumaria</div>
+        <div class="subtitle" id="lblSubtitulo">Inspiração Árabe</div>
+        <div class="volume" id="lblVolume">150 ml</div>
+    </div>
+
+    <div class="label">
+        <div class="brand-back">
+            <span class="brand-novera">NOVERA</span>
+            <span class="brand-scent">SCENT</span>
+        </div>
+
+        <div class="text-small">
+            <p><strong id="lblTipoVerso">Creme Hidratante Corporal</strong><br>
+            <span id="lblDescricao">Fórmula exclusiva de alta absorção com notas sofisticadas.</span></p>
+
+            <p><strong>Modo de uso:</strong> <span id="lblUso">Aplicar sobre a pele limpa e seca, massageando suavemente até completa absorção.</span></p>
+
+            <p><strong>Composição:</strong> <span id="lblComposicao">Base hidratante, fragrância, conservantes autorizados.</span></p>
+
+            <p><strong>Precauções:</strong> <span id="lblPrecaucoes">Uso externo. Evitar contato com os olhos. Manter fora do alcance de crianças.</span></p>
+            
+            <p><strong>Fabricado por:</strong> Novera Scent Cosméticos.</p>
+        </div>
+
+        <div class="footer-grid">
+            <div>
+                Conteúdo: <span id="lblVolumeVerso">150 ml</span><br>
+                Cód: <span id="lblCodigo">N002</span>
+            </div>
+            <div style="text-align: right;">
+                Fab: <span id="lblFab">22/03/2026</span><br>
+                Val: <span id="lblVal">22/09/2026</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function updateLabel(elementId, value) {
+        document.getElementById(elementId).innerText = value;
+        
+        if(elementId === 'lblTipoFrente') {
+            document.getElementById('lblTipoVerso').innerText = value + " Corporal";
+        }
+    }
+
+    function updateVolume(value) {
+        document.getElementById('lblVolume').innerText = value;
+        document.getElementById('lblVolumeVerso').innerText = value;
+    }
+
+    function updateCodigo(value) {
+        document.getElementById('lblCodigo').innerText = value;
+        document.getElementById('lblCodigoFrente').innerText = "REF. " + value;
+    }
+
+    function updateInspiracao(value) {
+        const el = document.getElementById('lblInspiracao');
+        el.innerText = value;
+        // Se deixar em branco, oculta a linha para não ocupar espaço à toa
+        el.style.display = value.trim() === "" ? "none" : "block";
+    }
+</script>
+
+</body>
+</html>
