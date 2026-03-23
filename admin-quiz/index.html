@@ -8,61 +8,143 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
         .admin-box { background: white; width: 100%; max-width: 600px; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h1 { margin-top: 0; color: #333; font-size: 1.5rem; text-align: center; }
-        label { font-weight: 700; color: #555; display: block; margin-top: 15px; margin-bottom: 5px; }
-        select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; box-sizing: border-box; }
-        textarea { height: 300px; resize: vertical; }
-        button { margin-top: 20px; width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
-        button:active { transform: scale(0.98); }
-        #status { margin-top: 15px; text-align: center; font-weight: 600; padding: 10px; border-radius: 8px; display: none; }
-        .success { background: #d1e7d1; color: #006400; }
-        .error { background: #ffe6e6; color: #c90000; }
-        .loading { background: #fff3cd; color: #856404; }
+        h1 { margin-top: 0; color: #111; font-size: 1.6rem; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px;}
+        
+        .section-title { font-size: 1rem; color: #444; font-weight: 800; margin-top: 25px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;}
+        label { font-weight: 600; color: #555; display: block; margin-top: 10px; margin-bottom: 5px; font-size: 0.85rem;}
+        select, input, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; box-sizing: border-box; background: #fafafa;}
+        select:focus, input:focus, textarea:focus { border-color: #000; outline: none; background: #fff;}
+        textarea { height: 180px; resize: vertical; }
+        
+        .row { display: flex; gap: 15px; }
+        .col { flex: 1; }
+
+        .btn { margin-top: 15px; width: 100%; border: none; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .btn:active { transform: scale(0.98); }
+        .btn-blue { background: #0056b3; color: white; }
+        .btn-blue:hover { background: #004494; }
+        .btn-black { background: #000; color: white; margin-top: 20px;}
+        .btn-black:hover { background: #333; }
+
+        .prompt-container { position: relative; margin-top: 10px;}
+        #prompt-box { height: 120px; background: #f8f9fa; color: #333; font-size: 0.85rem;}
+        
+        #status { margin-top: 15px; text-align: center; font-weight: 600; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem;}
+        .success { background: #d1e7d1; color: #006400; border: 1px solid #c8e6c9;}
+        .error { background: #ffe6e6; color: #c90000; border: 1px solid #ffcccc;}
+        .loading { background: #fff3cd; color: #856404; border: 1px solid #ffeeba;}
     </style>
 </head>
 <body>
 
 <div class="admin-box">
-    <h1>⚙️ Alimentador de Quiz</h1>
+    <h1>⚙️ Central do Quiz - Mini Mundo</h1>
     
-    <label for="time">Selecione o Time:</label>
-    <select id="time">
-        <option value="COLE_O_LINK_DO_CORINTHIANS_AQUI">Corinthians</option>
-        <option value="COLE_O_LINK_DO_SAO_PAULO_AQUI">São Paulo</option>
-        <option value="COLE_O_LINK_DO_PALMEIRAS_AQUI">Palmeiras</option>
-        <option value="COLE_O_LINK_DO_SANTOS_AQUI">Santos</option>
-        <option value="COLE_O_LINK_DO_FLAMENGO_AQUI">Flamengo</option>
+    <div class="section-title">🛠️ 1. Configuração do Time</div>
+    <label for="time">Qual time vamos atualizar?</label>
+    <select id="time" onchange="gerarPrompt()">
+        <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
+        <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
+        <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
+        <option value="https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec" data-nome="Santos">🐳 Santos</option>
+        <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
     </select>
 
-    <label for="texto-bruto">Cole as perguntas geradas pela IA:</label>
-    <textarea id="texto-bruto" placeholder="Pergunta: Quem é o maior ídolo?&#10;A) Zico&#10;B) Pelé&#10;C) Neymar&#10;D) Gabigol&#10;Correta: 1&#10;&#10;(Deixe uma linha em branco entre cada pergunta)"></textarea>
+    <hr style="border: 0; border-top: 1px dashed #ddd; margin: 25px 0;">
 
-    <button onclick="processarEEnviar()">🚀 Enviar para o Banco de Dados</button>
+    <div class="section-title">🤖 2. Gerador de Pedido para IA</div>
+    <div class="row">
+        <div class="col" style="flex: 0.4;">
+            <label for="qtd-perguntas">Quantas?</label>
+            <input type="number" id="qtd-perguntas" value="5" min="1" max="20" onchange="gerarPrompt()">
+        </div>
+        <div class="col">
+            <label>&nbsp;</label>
+            <button class="btn btn-blue" onclick="copiarPrompt()">📋 Copiar Pedido</button>
+        </div>
+    </div>
+    <div class="prompt-container">
+        <textarea id="prompt-box" readonly>Carregando prompt...</textarea>
+    </div>
+
+    <hr style="border: 0; border-top: 1px dashed #ddd; margin: 25px 0;">
+
+    <div class="section-title">📥 3. Alimentar Banco de Dados</div>
+    <label for="texto-bruto">Cole aqui a resposta exata da IA:</label>
+    <textarea id="texto-bruto" placeholder="Cole as perguntas geradas aqui..."></textarea>
+
+    <button class="btn btn-black" onclick="processarEEnviar()" id="btn-enviar">🚀 Enviar para a Planilha</button>
 
     <div id="status"></div>
 </div>
 
 <script>
+    // Ao carregar a página, já gera o primeiro prompt
+    window.onload = gerarPrompt;
+
+    function gerarPrompt() {
+        const select = document.getElementById("time");
+        const timeNome = select.options[select.selectedIndex].getAttribute("data-nome");
+        const qtd = document.getElementById("qtd-perguntas").value || 5;
+
+        const prompt = `Atue como um especialista em futebol. Gere ${qtd} perguntas difíceis e interessantes de quiz sobre o time ${timeNome}.
+Siga ESTRITAMENTE este formato abaixo, separando cada pergunta com uma linha em branco. Não adicione texto de introdução ou conclusão.
+
+Pergunta: [Escreva a pergunta aqui]
+A) [Opção 1]
+B) [Opção 2]
+C) [Opção 3]
+D) [Opção 4]
+Correta: [Apenas o número da opção correta, de 1 a 4]`;
+
+        document.getElementById("prompt-box").value = prompt;
+    }
+
+    function copiarPrompt() {
+        const copyText = document.getElementById("prompt-box");
+        copyText.select();
+        document.execCommand("copy");
+        
+        // Efeitinho visual no botão
+        const btn = document.querySelector(".btn-blue");
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = "✅ Copiado!";
+        btn.style.background = "#198754";
+        setTimeout(() => {
+            btn.innerHTML = textoOriginal;
+            btn.style.background = "#0056b3";
+        }, 2000);
+    }
+
     function analisarTexto(texto) {
         const perguntas = [];
-        // Separa os blocos usando quebras de linha duplas
-        const blocos = texto.split(/\n\s*\n/); 
         
+        // Melhorei o filtro para aceitar qualquer texto que comece com "Pergunta:" ou "Q:"
+        const blocos = texto.split(/(?:Pergunta|Q):/i).filter(b => b.trim().length > 0);
+
         blocos.forEach(bloco => {
             const linhas = bloco.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
-            if (linhas.length >= 6) {
-                // Limpa as tags "Pergunta:", "A)", etc.
-                const pergunta = linhas[0].replace(/^(Pergunta|Q):?\s*/i, '').trim();
-                const op1 = linhas[1].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
-                const op2 = linhas[2].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
-                const op3 = linhas[3].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
-                const op4 = linhas[4].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
+            if (linhas.length >= 5) { // Precisa ter pelo menos a pergunta e 4 opções
+                const pergunta = linhas[0];
+                const op1 = linhas[1].replace(/^[A-D1-4][\)\.-]?\s*/i, '').trim();
+                const op2 = linhas[2].replace(/^[A-D1-4][\)\.-]?\s*/i, '').trim();
+                const op3 = linhas[3].replace(/^[A-D1-4][\)\.-]?\s*/i, '').trim();
+                const op4 = linhas[4].replace(/^[A-D1-4][\)\.-]?\s*/i, '').trim();
                 
-                // Extrai apenas o número da resposta correta
-                const corretaMatch = linhas[5].match(/\d+/);
-                const correta = corretaMatch ? parseInt(corretaMatch[0]) : 1;
+                // Procura a linha que tem a resposta correta
+                const linhaCorreta = linhas.find(l => /Correta/i.test(l));
+                let correta = 1;
+                
+                if (linhaCorreta) {
+                    const match = linhaCorreta.match(/\d+/);
+                    if (match) correta = parseInt(match[0]);
+                } else if (linhas[5]) { // Se a IA esqueceu a palavra "Correta:" mas botou o número na 6ª linha
+                    const match = linhas[5].match(/\d+/);
+                    if (match) correta = parseInt(match[0]);
+                }
 
-                if (pergunta && op1) {
+                // Só adiciona se conseguiu extrair tudo bonitinho
+                if (pergunta && op1 && op2 && op3 && op4) {
                     perguntas.push({ pergunta, opcoes: [op1, op2, op3, op4], correta });
                 }
             }
@@ -73,21 +155,17 @@
     async function processarEEnviar() {
         const url = document.getElementById("time").value;
         const textoBruto = document.getElementById("texto-bruto").value;
-        const statusDiv = document.getElementById("status");
-
-        if (url.includes("COLE_O_LINK")) {
-            mostrarStatus("⚠️ Insira os links reais do Google Apps Script no código HTML!", "error");
-            return;
-        }
+        const btnEnviar = document.getElementById("btn-enviar");
 
         const perguntasProcessadas = analisarTexto(textoBruto);
 
         if (perguntasProcessadas.length === 0) {
-            mostrarStatus("❌ Nenhuma pergunta válida encontrada. Verifique o formato.", "error");
+            mostrarStatus("❌ Nenhuma pergunta detectada. Verifique se copiou a resposta da IA corretamente.", "error");
             return;
         }
 
-        mostrarStatus(`⏳ Enviando ${perguntasProcessadas.length} perguntas...`, "loading");
+        mostrarStatus(`⏳ Conectando à Planilha e enviando ${perguntasProcessadas.length} perguntas...`, "loading");
+        btnEnviar.disabled = true;
 
         try {
             const resposta = await fetch(url, {
@@ -98,13 +176,15 @@
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                mostrarStatus(`✅ Sucesso! ${resultado.adicionadas} adicionadas. ${resultado.repetidas} repetidas ignoradas.`, "success");
-                document.getElementById("texto-bruto").value = ""; // Limpa o campo
+                mostrarStatus(`✅ Maravilha! ${resultado.adicionadas} salvas e ${resultado.repetidas} repetidas ignoradas. O App já está atualizado.`, "success");
+                document.getElementById("texto-bruto").value = ""; 
             } else {
                 mostrarStatus("❌ Erro no Google Sheets: " + resultado.erro, "error");
             }
         } catch (erro) {
-            mostrarStatus("❌ Erro de conexão. Verifique se o Script do Google foi atualizado com Nova Versão.", "error");
+            mostrarStatus("❌ Erro de comunicação. Verifique se o script do time está publicado e recebendo dados.", "error");
+        } finally {
+            btnEnviar.disabled = false;
         }
     }
 
