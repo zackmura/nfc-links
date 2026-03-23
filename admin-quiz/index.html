@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | Mini Mundo Quiz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .admin-box { background: white; width: 100%; max-width: 600px; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { margin-top: 0; color: #333; font-size: 1.5rem; text-align: center; }
+        label { font-weight: 700; color: #555; display: block; margin-top: 15px; margin-bottom: 5px; }
+        select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; box-sizing: border-box; }
+        textarea { height: 300px; resize: vertical; }
+        button { margin-top: 20px; width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
+        button:active { transform: scale(0.98); }
+        #status { margin-top: 15px; text-align: center; font-weight: 600; padding: 10px; border-radius: 8px; display: none; }
+        .success { background: #d1e7d1; color: #006400; }
+        .error { background: #ffe6e6; color: #c90000; }
+        .loading { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+
+<div class="admin-box">
+    <h1>⚙️ Alimentador de Quiz</h1>
+    
+    <label for="time">Selecione o Time:</label>
+    <select id="time">
+        <option value="COLE_O_LINK_DO_CORINTHIANS_AQUI">Corinthians</option>
+        <option value="COLE_O_LINK_DO_SAO_PAULO_AQUI">São Paulo</option>
+        <option value="COLE_O_LINK_DO_PALMEIRAS_AQUI">Palmeiras</option>
+        <option value="COLE_O_LINK_DO_SANTOS_AQUI">Santos</option>
+        <option value="COLE_O_LINK_DO_FLAMENGO_AQUI">Flamengo</option>
+    </select>
+
+    <label for="texto-bruto">Cole as perguntas geradas pela IA:</label>
+    <textarea id="texto-bruto" placeholder="Pergunta: Quem é o maior ídolo?&#10;A) Zico&#10;B) Pelé&#10;C) Neymar&#10;D) Gabigol&#10;Correta: 1&#10;&#10;(Deixe uma linha em branco entre cada pergunta)"></textarea>
+
+    <button onclick="processarEEnviar()">🚀 Enviar para o Banco de Dados</button>
+
+    <div id="status"></div>
+</div>
+
+<script>
+    function analisarTexto(texto) {
+        const perguntas = [];
+        // Separa os blocos usando quebras de linha duplas
+        const blocos = texto.split(/\n\s*\n/); 
+        
+        blocos.forEach(bloco => {
+            const linhas = bloco.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+            if (linhas.length >= 6) {
+                // Limpa as tags "Pergunta:", "A)", etc.
+                const pergunta = linhas[0].replace(/^(Pergunta|Q):?\s*/i, '').trim();
+                const op1 = linhas[1].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
+                const op2 = linhas[2].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
+                const op3 = linhas[3].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
+                const op4 = linhas[4].replace(/^([A-D1-4][\)\.-]?)\s*/i, '').trim();
+                
+                // Extrai apenas o número da resposta correta
+                const corretaMatch = linhas[5].match(/\d+/);
+                const correta = corretaMatch ? parseInt(corretaMatch[0]) : 1;
+
+                if (pergunta && op1) {
+                    perguntas.push({ pergunta, opcoes: [op1, op2, op3, op4], correta });
+                }
+            }
+        });
+        return perguntas;
+    }
+
+    async function processarEEnviar() {
+        const url = document.getElementById("time").value;
+        const textoBruto = document.getElementById("texto-bruto").value;
+        const statusDiv = document.getElementById("status");
+
+        if (url.includes("COLE_O_LINK")) {
+            mostrarStatus("⚠️ Insira os links reais do Google Apps Script no código HTML!", "error");
+            return;
+        }
+
+        const perguntasProcessadas = analisarTexto(textoBruto);
+
+        if (perguntasProcessadas.length === 0) {
+            mostrarStatus("❌ Nenhuma pergunta válida encontrada. Verifique o formato.", "error");
+            return;
+        }
+
+        mostrarStatus(`⏳ Enviando ${perguntasProcessadas.length} perguntas...`, "loading");
+
+        try {
+            const resposta = await fetch(url, {
+                method: "POST",
+                body: JSON.stringify({ acao: "salvar_quiz", perguntas: perguntasProcessadas })
+            });
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                mostrarStatus(`✅ Sucesso! ${resultado.adicionadas} adicionadas. ${resultado.repetidas} repetidas ignoradas.`, "success");
+                document.getElementById("texto-bruto").value = ""; // Limpa o campo
+            } else {
+                mostrarStatus("❌ Erro no Google Sheets: " + resultado.erro, "error");
+            }
+        } catch (erro) {
+            mostrarStatus("❌ Erro de conexão. Verifique se o Script do Google foi atualizado com Nova Versão.", "error");
+        }
+    }
+
+    function mostrarStatus(mensagem, classe) {
+        const statusDiv = document.getElementById("status");
+        statusDiv.innerText = mensagem;
+        statusDiv.className = classe;
+        statusDiv.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
