@@ -489,7 +489,7 @@
         }
         document.getElementById("btn-proxima").style.display = "block";
     }
-// === 🧪 SIMULADOR DE JOGO AO VIVO (APAGUE DEPOIS DO TESTE!) ===
+// === 🧪 SIMULADOR DE JOGO AO VIVO V2 (APAGUE DEPOIS DO TESTE!) ===
     setTimeout(() => {
         document.getElementById("live-match-container").style.display = "block";
         document.getElementById("live-match-container").innerHTML = `
@@ -503,18 +503,20 @@
                 </div>
                 <div class="live-score">2 - 1</div>
                 <div class="live-team">
-                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/2025.png">
-                    <span>PAL</span>
+                    <img src="https://a.espncdn.com/i/teamlogos/soccer/500/2029.png"> <span>PAL</span>
                 </div>
             </div>
             <div class="live-stats">
                 <div class="stat-row"><span class="stat-val">55%</span><span class="stat-label">Posse de Bola</span><span class="stat-val">45%</span></div>
                 <div class="stat-row"><span class="stat-val">12</span><span class="stat-label">Finalizações</span><span class="stat-val">8</span></div>
+                <div class="stat-row"><span class="stat-val">4</span><span class="stat-label">No Gol</span><span class="stat-val">3</span></div>
                 <div class="stat-row"><span class="stat-val">5</span><span class="stat-label">Escanteios</span><span class="stat-val">3</span></div>
                 <div class="stat-row"><span class="stat-val">14</span><span class="stat-label">Faltas</span><span class="stat-val">18</span></div>
+                <div class="stat-row"><span class="stat-val" style="color:#b8860b;">2</span><span class="stat-label">🟨 Amarelos</span><span class="stat-val" style="color:#b8860b;">3</span></div>
+                <div class="stat-row"><span class="stat-val" style="color:#cc0000;">0</span><span class="stat-label">🟥 Vermelhos</span><span class="stat-val" style="color:#cc0000;">1</span></div>
             </div>
         `;
-    }, 2000); // Aparece 2 segundos após carregar a página
+    }, 3000);
     
 </script>
 
