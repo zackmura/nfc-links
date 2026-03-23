@@ -3,77 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin | Mini Mundo Automático</title>
+    <title>Mini Mundo | Automação IA</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #eef2f5; padding: 20px; display: flex; justify-content: center; }
-        .admin-box { background: white; width: 100%; max-width: 650px; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        h1 { margin-top: 0; color: #111; font-size: 1.6rem; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px;}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Fira+Code:wght@400;500&display=swap');
         
-        .section-title { font-size: 1rem; color: #444; font-weight: 800; margin-top: 25px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;}
-        label { font-weight: 600; color: #555; display: block; margin-top: 10px; margin-bottom: 5px; font-size: 0.85rem;}
-        select, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; box-sizing: border-box; background: #fafafa;}
-        select:focus, input:focus { border-color: #0056b3; outline: none; background: #fff;}
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-color); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .admin-card { 
+            background: var(--card-bg); 
+            width: 100%; 
+            max-width: 600px; 
+            padding: 35px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05); 
+            box-sizing: border-box;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-header img {
+            width: 160px;
+            height: auto;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+        }
+
+        .brand-header h1 { 
+            margin: 0; 
+            color: var(--text-main); 
+            font-size: 1.5rem; 
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-header p {
+            margin: 5px 0 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
         
-        .row { display: flex; gap: 15px; align-items: flex-end;}
+        .section-title { 
+            font-size: 0.95rem; 
+            color: var(--text-main); 
+            font-weight: 800; 
+            margin: 25px 0 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        label { 
+            font-weight: 600; 
+            color: var(--text-muted); 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 0.85rem;
+        }
+
+        select, input { 
+            width: 100%; 
+            padding: 14px 16px; 
+            border: 2px solid var(--border-color); 
+            border-radius: 12px; 
+            font-family: 'Inter', sans-serif; 
+            font-size: 1rem; 
+            color: var(--text-main);
+            box-sizing: border-box; 
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus { 
+            border-color: var(--primary); 
+            outline: none; 
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+        
+        .row { display: flex; gap: 15px; }
         .col { flex: 1; }
 
-        .btn { width: 100%; border: none; padding: 14px; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;}
-        .btn:active { transform: scale(0.98); }
-        .btn-magic { background: linear-gradient(45deg, #6a11cb, #2575fc); color: white; margin-top: 20px; box-shadow: 0 4px 15px rgba(37, 117, 252, 0.3);}
-        .btn-magic:hover { opacity: 0.9; }
-        .btn-magic:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; color: #666;}
+        .btn-magic { 
+            width: 100%; 
+            border: none; 
+            padding: 18px; 
+            border-radius: 14px; 
+            font-weight: 800; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); 
+            color: white; 
+            margin-top: 30px; 
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        /* Terminal de Logs do Hackerman */
-        .log-container { background: #1e1e1e; border-radius: 8px; padding: 15px; margin-top: 20px; height: 200px; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 0.8rem; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);}
-        .log-line { margin: 4px 0; border-bottom: 1px dashed #333; padding-bottom: 4px;}
-        .log-time { color: #888; margin-right: 8px; }
-        .log-info { color: #00ff00; }
-        .log-warn { color: #ffcc00; }
-        .log-error { color: #ff3333; }
-        .log-success { color: #00ffff; font-weight: bold;}
+        .btn-magic:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-magic:active { 
+            transform: translateY(1px); 
+        }
+
+        .btn-magic:disabled { 
+            background: #cbd5e1; 
+            cursor: not-allowed; 
+            box-shadow: none; 
+            color: #94a3b8;
+            transform: none;
+        }
+
+        /* Terminal Estilo Dev */
+        .log-container { 
+            background: #0f172a; 
+            border-radius: 14px; 
+            padding: 16px; 
+            margin-top: 15px; 
+            height: 220px; 
+            overflow-y: auto; 
+            font-family: 'Fira Code', monospace; 
+            font-size: 0.8rem; 
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.3);
+            line-height: 1.5;
+        }
+
+        .log-container::-webkit-scrollbar { width: 8px; }
+        .log-container::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px;}
+        .log-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+
+        .log-line { margin: 6px 0; border-bottom: 1px dashed #1e293b; padding-bottom: 6px;}
+        .log-time { color: #64748b; margin-right: 10px; font-size: 0.75rem;}
+        .log-info { color: #38bdf8; }
+        .log-warn { color: #f59e0b; }
+        .log-error { color: #ef4444; }
+        .log-success { color: #10b981; font-weight: 500;}
+
+        /* Responsividade para Celular */
+        @media (max-width: 600px) {
+            .admin-card { padding: 25px 20px; }
+            .row { flex-direction: column; gap: 0; }
+            .input-group { margin-bottom: 15px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="admin-box">
-    <h1>🚀 Automação Total IA - Mini Mundo</h1>
+<div class="admin-card">
+    <div class="brand-header">
+        <img src="logo.jpg" alt="Mini Mundo 3D" onerror="this.style.display='none'">
+        <h1>Central de Automação</h1>
+        <p>Gerenciamento de IA para Chaveiros Inteligentes</p>
+    </div>
     
-    <div class="section-title">🔐 1. Conexão com o Cérebro (Gemini API)</div>
-    <label for="api-key">Sua Chave Privada do Google AI Studio:</label>
-    <input type="password" id="api-key" placeholder="Cole sua chave AI_zaxy... aqui" onchange="salvarChave()">
-    <p style="font-size: 0.7rem; color: #888; margin-top: 5px;">Fica salva apenas no seu navegador para segurança.</p>
+    <div class="section-title">🔐 1. Credenciais da IA</div>
+    <div class="input-group">
+        <label for="api-key">Chave Privada (Google AI Studio):</label>
+        <input type="password" id="api-key" placeholder="AIzaSy..." onchange="salvarChave()">
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; font-weight: 500;">Sua chave fica armazenada com segurança apenas neste navegador.</p>
+    </div>
 
-    <hr style="border: 0; border-top: 1px dashed #ddd; margin: 20px 0;">
-
-    <div class="section-title">⚙️ 2. Configurar Produção</div>
+    <div class="section-title">⚙️ 2. Parâmetros do Lote</div>
     <div class="row">
         <div class="col" style="flex: 2;">
-            <label for="time">Time Alvo:</label>
-            <select id="time">
-                <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
-                <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
-                <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
-                <option value="https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec" data-nome="Santos">🐳 Santos</option>
-                <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
-            </select>
+            <div class="input-group">
+                <label for="time">Time de Destino:</label>
+                <select id="time">
+                    <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
+                    <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
+                    <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
+                    <option value="https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec" data-nome="Santos">🐳 Santos</option>
+                    <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
+                </select>
+            </div>
         </div>
         <div class="col">
-            <label for="qtd">Quantidade:</label>
-            <input type="number" id="qtd" value="5" min="1" max="15">
+            <div class="input-group">
+                <label for="qtd">Qtd. Perguntas:</label>
+                <input type="number" id="qtd" value="5" min="1" max="15">
+            </div>
         </div>
     </div>
 
-    <button id="btn-iniciar" class="btn btn-magic" onclick="iniciarAutomacao()">✨ Gerar e Enviar Sozinho</button>
+    <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Gerar e Sincronizar
+    </button>
 
-    <div class="section-title">📟 3. Terminal de Operações</div>
+    <div class="section-title">📟 3. Terminal de Atividade</div>
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Aguardando ordens do mestre Fernando...</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Interface carregada. Aguardando inicialização.</span></div>
     </div>
 </div>
 
 <script>
-    // Carrega a chave se já estiver salva no navegador
     window.onload = () => {
         const chaveSalva = localStorage.getItem("gemini_api_key");
         if(chaveSalva) document.getElementById("api-key").value = chaveSalva;
@@ -87,11 +249,12 @@
         const terminal = document.getElementById("terminal");
         const hora = new Date().toLocaleTimeString('pt-BR');
         terminal.innerHTML += `<div class="log-line"><span class="log-time">[${hora}]</span><span class="log-${tipo}">${mensagem}</span></div>`;
-        terminal.scrollTop = terminal.scrollHeight; // Rola pro final
+        terminal.scrollTop = terminal.scrollHeight; 
     }
 
     async function chamarIA(timeNome, qtd, apiKey) {
-       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        // Atualizado para a versão 2.5 flash
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
         
         const prompt = `Atue como um especialista em futebol e na história dos clubes. Gere ${qtd} perguntas difíceis e criativas de múltipla escolha sobre o ${timeNome}.
 Regras ESTRITAS de formatação (Siga exatamente assim para cada pergunta, com uma linha em branco separando os blocos):
@@ -116,7 +279,7 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         });
 
         if (!resposta.ok) {
-            throw new Error(`A API da IA rejeitou a chave ou deu erro (${resposta.status}).`);
+            throw new Error(`Acesso negado pela IA (${resposta.status}). Verifique sua chave.`);
         }
 
         const dados = await resposta.json();
@@ -165,7 +328,7 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
 
     async function iniciarAutomacao() {
         const apiKey = document.getElementById("api-key").value.trim();
-        if(!apiKey) return addLog("ERRO CRÍTICO: Chave da IA não informada!", "error");
+        if(!apiKey) return addLog("ERRO: Chave da IA não informada!", "error");
 
         const select = document.getElementById("time");
         const timeUrl = select.value;
@@ -174,30 +337,41 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         const btn = document.getElementById("btn-iniciar");
 
         btn.disabled = true;
-        btn.innerHTML = "⏳ Trabalhando duro...";
+        btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sincronizando...`;
+
+        // Adiciona a keyframes para o icone girar no css via JS rapidinho
+        if(!document.getElementById("spin-style")) {
+            const style = document.createElement('style');
+            style.id = "spin-style";
+            style.innerHTML = `@keyframes spin { 100% { transform: rotate(360deg); } }`;
+            document.head.appendChild(style);
+        }
 
         try {
-            addLog(`--- INICIANDO PROTOCOLO ${timeNome.toUpperCase()} ---`, "warn");
+            addLog(`--- INICIANDO LOTE: ${timeNome.toUpperCase()} ---`, "warn");
             
-            addLog(`Solicitando ${qtd} perguntas para a Inteligência Artificial...`, "info");
+            addLog(`Solicitando ${qtd} perguntas ao motor da IA...`, "info");
             const respostaIA = await chamarIA(timeNome, qtd, apiKey);
-            addLog("Resposta recebida. Mente artificial funcionou.", "success");
+            addLog("Sucesso. Cérebro artificial respondeu.", "success");
             
-            addLog("Limpando e formatando os dados...", "info");
+            addLog("Processando e limpando os dados...", "info");
             const perguntasFormatadas = extrairPerguntas(respostaIA);
             
             if(perguntasFormatadas.length === 0) {
                 throw new Error("A IA gerou um texto fora do padrão. Impossível extrair.");
             }
-            addLog(`${perguntasFormatadas.length} perguntas validadas com sucesso.`, "success");
+            addLog(`${perguntasFormatadas.length} perguntas validadas.`, "success");
 
-            addLog("Abrindo túnel de dados com a Planilha do Google...", "info");
+            addLog("Injetando dados na Planilha do Google...", "info");
             const resultadoPlanilha = await enviarParaPlanilha(timeUrl, perguntasFormatadas);
 
             if(resultadoPlanilha.sucesso) {
-                addLog(`DADOS INJETADOS COM SUCESSO!`, "success");
-                addLog(`Resumo: ${resultadoPlanilha.adicionadas} Novas | ${resultadoPlanilha.repetidas} Repetidas ignoradas.`, "success");
-                addLog("O Aplicativo do Chaveiro já está atualizado no ar.", "info");
+                addLog(`OPERAÇÃO CONCLUÍDA COM SUCESSO!`, "success");
+                addLog(`Foram adicionadas ${resultadoPlanilha.adicionadas} novas perguntas.`, "info");
+                if (resultadoPlanilha.repetidas > 0) {
+                     addLog(`${resultadoPlanilha.repetidas} perguntas repetidas foram descartadas.`, "warn");
+                }
+                addLog("O aplicativo já reflete as novas atualizações.", "success");
             } else {
                 throw new Error(resultadoPlanilha.erro);
             }
@@ -206,8 +380,8 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
             addLog(`FALHA NA OPERAÇÃO: ${erro.message}`, "error");
         } finally {
             btn.disabled = false;
-            btn.innerHTML = "✨ Gerar e Enviar Sozinho";
-            addLog("--- PROTOCOLO FINALIZADO ---", "warn");
+            btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Gerar e Sincronizar`;
+            addLog("--- FIM DA OPERAÇÃO ---", "warn");
         }
     }
 </script>
