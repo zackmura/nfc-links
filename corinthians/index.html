@@ -254,23 +254,18 @@
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            // O próprio celular do cliente busca direto na fonte americana
             const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`;
             const res = await fetch(url);
             const json = await res.json();
 
             const header = json.header.competitions[0];
-            
-            // Relógio (Ex: 45' 1ºT)
             const tempoStr = header.status.displayClock;
             const periodo = header.status.period > 1 ? "2ºT" : "1ºT";
             const timeInfo = tempoStr ? `${tempoStr}' ${periodo}` : "Aguardando Apito";
             
-            // Times e Placar
             const home = header.competitors.find(c => c.homeAway === 'home');
             const away = header.competitors.find(c => c.homeAway === 'away');
             
-            // Estatísticas
             const boxscore = json.boxscore?.teams || [];
             let statsHTML = '';
 
@@ -284,26 +279,28 @@
                 const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
                 const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
 
+                // AQUI ESTÁ A MÁGICA DOS CARTÕES COLORIDOS NO JOGO REAL!
                 const estatisticas = [
                     { label: "Posse de Bola", key: "possession" },
                     { label: "Finalizações", key: "shotsTotal" },
                     { label: "No Gol", key: "shotsOnTarget" },
                     { label: "Escanteios", key: "wonCorners" },
                     { label: "Faltas", key: "foulsCommitted" },
-                    { label: "Amarelos", key: "yellowCards" },
-                    { label: "Vermelhos", key: "redCards" }
+                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
+                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
                 ];
 
-                statsHTML = estatisticas.map(stat => `
+                statsHTML = estatisticas.map(stat => {
+                    const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
+                    return `
                     <div class="stat-row">
-                        <span class="stat-val">${getStat(homeStats, stat.key)}</span>
+                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
                         <span class="stat-label">${stat.label}</span>
-                        <span class="stat-val">${getStat(awayStats, stat.key)}</span>
+                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
                     </div>
-                `).join('');
+                `}).join('');
             }
 
-            // Atualiza a tela (O Milagre Visual)
             document.getElementById("live-match-container").innerHTML = `
                 <div class="live-header">
                     <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
