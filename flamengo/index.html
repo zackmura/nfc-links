@@ -123,10 +123,10 @@
         
         .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px;}
         .modal-btn-share:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
+        .modal-btn-premio { background: #f09433 !important; box-shadow: 0 5px 0 #c2701e !important; }
         
         .modal-btn-close { background: transparent; color: #888; border: none; font-size: 0.85rem; text-decoration: underline; cursor: pointer; padding: 10px; width: 100%; font-weight: 600;}
         
-        /* Efeito de Confetes Simples CSS */
         .confetti-wrap { position: absolute; top: -20px; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1;}
         .confetti { position: absolute; width: 10px; height: 10px; background: #f00; animation: fall 3s linear infinite; }
         .confetti:nth-child(2) { left: 20%; background: #0f0; animation-delay: 0.5s; }
@@ -239,7 +239,7 @@
         </div>
         <span class="modal-icon" id="modal-icone">🔥</span>
         <h2 class="modal-title" id="modal-titulo">NOVO RECORDE!</h2>
-        <p class="modal-text" id="modal-mensagem">Você atingiu a marca de 5 acertos seguidos. Mostre para seus amigos quem é que manda!</p>
+        <p class="modal-text" id="modal-mensagem">Você atingiu a marca impressionante!</p>
         
         <a id="modal-btn-share" class="modal-btn-share" target="_blank" href="#">📱 Compartilhar e Zoar</a>
         <button class="modal-btn-close" onclick="fecharModal()">Continuar Jogando ➡️</button>
@@ -516,22 +516,8 @@
     }
     window.onload = carregarDoMeuServidor;
 
-    // === MÁQUINAS DE FRASES DINÂMICAS ===
-    const frasesAcerto = [
-        "🔥 Mandou bem! Próxima ➡️",
-        "⚽ Golaço! Avançar ➡️",
-        "🎯 Na mosca! Próxima ➡️",
-        "🧠 É o Craque! Próxima ➡️",
-        "⚡ Voando! Próxima ➡️"
-    ];
-
-    const frasesErro = [
-        "❌ Ops! Tentar Outra ➡️",
-        "🚫 Passou perto! Tentar Outra ➡️",
-        "🥅 Na trave! Tentar Outra ➡️",
-        "📺 VAR anulou! Tentar Outra ➡️",
-        "😅 Essa foi quase! Próxima ➡️"
-    ];
+    const frasesAcerto = ["🔥 Mandou bem! Próxima ➡️", "⚽ Golaço! Avançar ➡️", "🎯 Na mosca! Próxima ➡️", "🧠 É o Craque! Próxima ➡️", "⚡ Voando! Próxima ➡️"];
+    const frasesErro = ["❌ Ops! Tentar Outra ➡️", "🚫 Passou perto! Tentar Outra ➡️", "🥅 Na trave! Tentar Outra ➡️", "📺 VAR anulou! Tentar Outra ➡️", "😅 Essa foi quase! Próxima ➡️"];
 
     function sortearPergunta() {
         if (bancoDePerguntas.length === 0) return;
@@ -562,8 +548,14 @@
     }
 
     function abrirModalConquista(marca) {
-        let nivel = "";
-        let icone = "";
+        let nivel = ""; let icone = "";
+        
+        // Efeito Sonoro no Modal (Vibração Festiva)
+        if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]);
+
+        const btnShare = document.getElementById("modal-btn-share");
+        btnShare.classList.remove("modal-btn-premio"); // Reseta a classe do botão
+
         if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; }
         else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; }
         else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; }
@@ -571,18 +563,31 @@
 
         document.getElementById("modal-icone").innerText = icone;
         document.getElementById("modal-titulo").innerText = nivel;
-        document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`;
 
-        const textoZoeira = `${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
-        const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
-        
-        document.getElementById("modal-btn-share").href = linkZap;
+        // O GRANDE PRÊMIO NA MARCA DE 15!
+        if (marca === 15) {
+            document.getElementById("modal-mensagem").innerHTML = `Você é uma lenda! Tire um print desta tela e mande no WhatsApp da Mini Mundo para ganhar <b>R$5 de Desconto</b> em um novo Chaveiro Inteligente para presentear um amigo!`;
+            
+            // Link direto para o SEU WhatsApp cobrando o desconto
+            const linkZapDesconto = `https://wa.me/5511992279009?text=Zerei%20o%20jogo%20do%20Flamengo%21%20Quero%20meu%20desconto%20num%20chaveiro%20novo%21`;
+            btnShare.href = linkZapDesconto;
+            btnShare.innerText = "🎁 Resgatar Meu Desconto";
+            btnShare.classList.add("modal-btn-premio"); // Fica dourado!
+
+        } else {
+            document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`;
+            const textoZoeira = `${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
+            const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
+            btnShare.href = linkZap;
+            btnShare.innerText = "📱 Compartilhar e Zoar";
+        }
+
         document.getElementById("modal-conquista").style.display = "flex";
     }
 
     function fecharModal() {
         document.getElementById("modal-conquista").style.display = "none";
-        sortearPergunta(); // Puxa a próxima pergunta automaticamente ao fechar o modal
+        sortearPergunta(); 
     }
 
     function verificarResposta(botaoClicado, numEscolhido) {
@@ -591,11 +596,14 @@
         
         const elementoChama = document.getElementById("q-chama");
         const btnProxima = document.getElementById("btn-proxima");
-        
         btnProxima.className = "btn-proxima";
         
         if (numEscolhido === perguntaAtual.correta) {
             botaoClicado.classList.add("correct");
+            
+            // Vibração curta de acerto
+            if ("vibrate" in navigator) navigator.vibrate(50);
+
             acertos++;
             ofensiva++;
             elementoChama.classList.add("chama-ativa"); 
@@ -610,16 +618,19 @@
                 document.getElementById("q-recorde").innerText = recorde;
             }
             
-            // 🔴 LÓGICA DO MODAL (Pop-up) PARA MÚLTIPLOS DE 5
             if (ofensiva > 0 && ofensiva % 5 === 0) {
                 abrirModalConquista(ofensiva);
             } else {
-                btnProxima.style.display = "block"; // Só mostra o botão se não abriu o modal
+                btnProxima.style.display = "block"; 
             }
 
         } else {
             botaoClicado.classList.add("wrong");
             botoes[perguntaAtual.correta - 1].classList.add("correct");
+            
+            // Vibração dupla de erro
+            if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
+
             erros++;
             ofensiva = 0;
             elementoChama.classList.remove("chama-ativa");
