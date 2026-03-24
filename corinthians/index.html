@@ -7,8 +7,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
-        body { font-family: 'Inter', sans-serif; background: #f4f6f8; margin: 0; padding: 15px 10px; display: flex; justify-content: center; }
-        .widget { width: 100%; max-width: 420px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f4f6f8; 
+            margin: 0; 
+            padding: 15px 10px; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .widget { 
+            width: 100%; 
+            max-width: 420px; 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+        }
         
         /* Tema Corinthians - Preto e Branco */
         .header { background: #000000; color: white; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #555555; }
@@ -16,7 +30,7 @@
         .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;}
         .header p { margin: 4px 0 0; font-size: 0.75rem; color: #cccccc; font-weight: 600;}
 
-        .music-btn { margin-top: 15px; background: #ffffff; color: #000000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(255,255,255,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s; font-family: 'Inter', sans-serif; }
+        .music-btn { margin-top: 15px; background: #ffffff; color: #000000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(255,255,255,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
         .music-btn:active { transform: scale(0.95); }
 
         /* === 🔴 CSS DO PLACAR AO VIVO === */
@@ -41,7 +55,6 @@
         .match-card:last-child { border-bottom: none; }
         .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
         .match-row { display: flex; width: 100%; align-items: center; }
-        
         .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
         .team-col img { width: 30px; height: 30px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
@@ -75,6 +88,82 @@
         .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
         .trophy-icon { font-size: 1.1rem; }
 
+        /* === 🏆 QUIZ GAMIFICADO (ALVINEGRO) === */
+        .quiz-container { background: #ffffff; border: 2px solid #000000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; overflow: hidden;}
+        .quiz-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px); }
+        .promo-banner { background: #000000; color: #ffffff; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; border-bottom: 3px solid #555555;}
+        
+        .quiz-stats { display: flex; justify-content: space-between; background: #f8f9fa; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #ddd; }
+        .stat-box { flex: 1; color: #000000; font-weight: 900; font-size: 1.1rem; border-right: 1px solid #ddd; }
+        .stat-box:last-child { border-right: none; }
+        .stat-box small { display: block; font-size: 0.6rem; color: #666; font-weight: 700; text-transform: uppercase; margin-top: 4px;}
+        .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.4); }
+        
+        .timer-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); display: none;}
+        .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
+        
+        .quiz-question { font-size: 1.1rem; font-weight: 800; color: #111; margin-bottom: 15px; text-align: center; line-height: 1.3; }
+        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+        
+        .quiz-btn { background: #ffffff; color: #000; border: 2px solid #000000; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: left; box-shadow: 0 4px 0 #000000;}
+        .quiz-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #000000; }
+        .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; box-shadow: 0 4px 0 #115c38; }
+        .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; box-shadow: 0 4px 0 #921925; animation: tremer 0.4s; }
+        
+        .btn-proxima { margin-top: 15px; color: #ffffff; border: none; padding: 14px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 900; font-size: 1.05rem; display: none; text-transform: uppercase; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s;}
+        .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
+        .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
+        .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
+
+        /* Botão para iniciar o Quiz */
+        .btn-iniciar-quiz { background: linear-gradient(135deg, #333333 0%, #000000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #000000; transition: all 0.2s; box-sizing: border-box;}
+        .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #000000; }
+
+        /* === 🛒 VITRINE MINI MUNDO === */
+        .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;}
+        .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .minimundo-title-box { text-align: left; }
+        .minimundo-title { color: #4E342E; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
+        .minimundo-subtitle { color: #8D6E63; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
+        
+        .carrossel-produtos { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
+        .carrossel-produtos::-webkit-scrollbar { height: 4px; }
+        .carrossel-produtos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .carrossel-produtos::-webkit-scrollbar-thumb { background: #8D6E63; border-radius: 10px; }
+
+        .produto-card-mini { min-width: 140px; max-width: 140px; background: #ffffff; border: 1px solid #efebe9; border-radius: 12px; text-align: left; scroll-snap-align: start; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s;}
+        .produto-card-mini:active { transform: scale(0.96); }
+        .produto-img-mini { width: 100%; height: 130px; object-fit: cover; background: #fafafa; border-bottom: 1px solid #f5f5f5;}
+        .produto-info-mini { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
+        .produto-tag-mini { font-size: 0.55rem; background: #efebe9; color: #5D4037; padding: 3px 6px; border-radius: 4px; font-weight: 800; align-self: flex-start; margin-bottom: 6px; text-transform: uppercase;}
+        .produto-nome-mini { font-size: 0.8rem; font-weight: 800; color: #3E2723; margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+        .produto-preco-mini { font-size: 0.95rem; font-weight: 900; color: #2E7D32; margin-top: auto;}
+
+        /* === 🛍️ MODAL DE PRODUTO DETALHADO === */
+        .modal-produto-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-produto-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;}
+        
+        .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #333; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+        
+        .galeria-produto { width: 100%; background: #f8f9fa; }
+        .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
+        .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: #fff; border-bottom: 1px solid #eee;}
+        .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s;}
+        .miniatura.ativa { border-color: #5D4037; opacity: 1; }
+        
+        .info-produto-completa { padding: 20px 20px 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
+        .tag-modal { font-size: 0.65rem; background: #efebe9; color: #5D4037; padding: 4px 8px; border-radius: 4px; font-weight: 800; align-self: flex-start; text-transform: uppercase;}
+        .titulo-modal { font-size: 1.3rem; font-weight: 900; color: #222; margin: 0; line-height: 1.2;}
+        .preco-modal { font-size: 1.5rem; font-weight: 900; color: #2E7D32; margin: 0;}
+        .desc-modal { font-size: 0.85rem; color: #555; line-height: 1.5; margin: 5px 0 15px; white-space: pre-wrap;}
+        
+        .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); transition: transform 0.1s, box-shadow 0.1s; text-decoration: none;}
+        .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a, 0 2px 5px rgba(37,211,102,0.3); }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        /* === RODAPÉ === */
         .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
         .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
         .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
@@ -89,95 +178,23 @@
         .dynamic-button:active { transform: scale(0.95); }
         .youtube-button { background: #000000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         
-        /* === 🏆 DESIGN DO QUIZ GAMIFICADO (ALVINEGRO) === */
-        .quiz-container { 
-            background: #ffffff; 
-            border: 2px solid #000000; 
-            border-radius: 12px; 
-            padding: 20px; 
-            margin: 20px auto; 
-            width: 90%; 
-            max-width: 400px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* Faixa Zebrada no topo do Quiz */
-        .quiz-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 8px;
-            background: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px);
-        }
-
-        .promo-banner { background: #000000; color: #ffffff; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; border-bottom: 3px solid #555555;}
-        
-        .quiz-stats { display: flex; justify-content: space-between; background: #f8f9fa; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #ddd; }
-        .stat-box { flex: 1; color: #000000; font-weight: 900; font-size: 1.1rem; border-right: 1px solid #ddd; }
-        .stat-box:last-child { border-right: none; }
-        .stat-box small { display: block; font-size: 0.6rem; color: #666; font-weight: 700; text-transform: uppercase; margin-top: 4px;}
-        .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.4); }
-
-        .timer-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);}
-        .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
-
-        .quiz-question { font-size: 1.1rem; font-weight: 800; color: #111; margin-bottom: 15px; text-align: center; line-height: 1.3; }
-        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
-        
-        .quiz-btn { background: #ffffff; color: #000; border: 2px solid #000000; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: left; box-shadow: 0 4px 0 #000000;}
-        .quiz-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #000000; }
-        .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; box-shadow: 0 4px 0 #115c38; }
-        .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; box-shadow: 0 4px 0 #921925; animation: tremer 0.4s; }
-        
-        .btn-proxima { margin-top: 15px; color: #ffffff; border: none; padding: 14px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 900; font-size: 1.05rem; display: none; text-transform: uppercase; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s;}
-        .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
-        .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
-        .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
-        
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
         @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* === 🌟 MODAL DE CONQUISTA (ALVINEGRO) === */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
-        
-        .achievement-modal { 
-            background: #ffffff; 
-            border: 2px solid #000000;
-            border-radius: 20px; 
-            padding: 35px 20px 20px; 
-            text-align: center; 
-            width: 85%; 
-            max-width: 340px; 
-            color: #000; 
-            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Faixa Zebrada no topo do Modal */
-        .achievement-modal::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 10px;
-            background: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px);
-        }
-
+        /* === MODAL CONQUISTA === */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
+        .achievement-modal { background: #ffffff; border: 2px solid #000000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: #000; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+        .achievement-modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px); }
         .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 5px 15px rgba(0,0,0,0.1);}
         .modal-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; color: #000000;}
         .modal-text { font-size: 0.95rem; color: #444; margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
-        
-        .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px;}
+        .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px; box-sizing: border-box;}
         .modal-btn-share:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
         .modal-btn-premio { background: #f09433 !important; box-shadow: 0 5px 0 #c2701e !important; color: #000 !important; }
-        
         .modal-btn-close { background: #000000; color: #ffffff; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; padding: 12px; width: 100%; font-weight: 700; transition: background 0.2s;}
         .modal-btn-close:active { background: #333333; }
-        
-        /* Confetes Preto e Branco */
         .confetti-wrap { position: absolute; top: -20px; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1;}
         .confetti { position: absolute; width: 10px; height: 10px; background: #000000; animation: fall 3s linear infinite; }
         .confetti:nth-child(2) { left: 20%; background: #555555; animation-delay: 0.5s; }
@@ -241,9 +258,14 @@
             <div class="stat-box"><span id="q-recorde" style="color: #ff8c00;">0</span><small>Recorde 🏆</small></div>
         </div>
 
-        <div class="timer-container"><div class="timer-bar" id="barra-tempo"></div></div>
+        <div class="timer-container" id="timer-container"><div class="timer-bar" id="barra-tempo"></div></div>
 
-        <div id="quiz-anim-area">
+        <div id="tela-inicio-quiz" style="text-align: center; padding: 15px 0;">
+            <p style="color: #444; font-size: 0.95rem; margin-bottom: 20px; font-weight: 600;">Mostre que você entende tudo do Timão e concorra a prêmios!</p>
+            <button class="btn-iniciar-quiz" onclick="iniciarQuiz()">▶️ INICIAR DESAFIO</button>
+        </div>
+
+        <div id="quiz-anim-area" style="display: none;">
             <p id="quiz-pergunta" class="quiz-question">Carregando desafio...</p>
             <div id="quiz-botoes" class="quiz-options"></div>
         </div>
@@ -275,6 +297,19 @@
         </div>
     </div>
 
+    <div id="secao-minimundo" class="minimundo-section">
+        <div class="minimundo-header">
+            <img src="logo.jpg" alt="Mini Mundo Logo" onerror="this.style.display='none'">
+            <div class="minimundo-title-box">
+                <h3 class="minimundo-title">LOJA MINI MUNDO 3D</h3>
+                <p class="minimundo-subtitle">Conheça nossos produtos exclusivos</p>
+            </div>
+        </div>
+        <div id="vitrine-produtos" class="carrossel-produtos">
+            <p style="text-align: center; width: 100%; color: #8D6E63; font-size: 0.8rem; font-style: italic;">Carregando vitrine...</p>
+        </div>
+    </div>
+
     <div class="brand-footer">
         Desenvolvido com tecnologia de
         <img src="logo.jpg" alt="Logo Mini Mundo" onerror="this.style.display='none'">
@@ -287,6 +322,28 @@
     </div>
 </div>
 
+<div id="modal-produto" class="modal-produto-overlay">
+    <div class="modal-produto-content">
+        <button class="btn-fechar-modal" onclick="fecharModalProduto()">×</button>
+        
+        <div class="galeria-produto">
+            <img id="modal-foto-principal" src="" alt="Produto" class="foto-principal">
+            <div id="modal-miniaturas" class="miniaturas-container"></div>
+        </div>
+
+        <div class="info-produto-completa">
+            <span id="modal-tag" class="tag-modal">Categoria</span>
+            <h3 id="modal-titulo-prod" class="titulo-modal">Nome do Produto</h3>
+            <h2 id="modal-preco" class="preco-modal">R$ 00,00</h2>
+            <p id="modal-desc" class="desc-modal">Descrição do produto vai aqui...</p>
+            
+            <a id="modal-btn-zap" href="#" target="_blank" class="btn-comprar-zap">
+                🛒 COMPRAR PELO WHATSAPP
+            </a>
+        </div>
+    </div>
+</div>
+
 <div id="modal-conquista" class="modal-overlay">
     <div class="achievement-modal">
         <div class="confetti-wrap">
@@ -295,28 +352,24 @@
         <span class="modal-icon" id="modal-icone">🔥</span>
         <h2 class="modal-title" id="modal-titulo">NOVO RECORDE!</h2>
         <p class="modal-text" id="modal-mensagem">Você atingiu a marca impressionante!</p>
-        
         <a id="modal-btn-share" class="modal-btn-share" target="_blank" href="#">📱 Compartilhar e Zoar</a>
-        <button class="modal-btn-close" onclick="fecharModal()">Voltar para o Quiz</button>
+        <button class="modal-btn-close" onclick="fecharModal()">Continuar Jogando ➡️</button>
     </div>
 </div>
 
 <script>
-    // ⚠️ LINK DA SUA API DO CORINTHIANS
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec"; 
+    const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
     let bancoDePerguntas = [];
     let perguntaAtual = null;
-    let acertos = 0;
-    let erros = 0;
-    let ofensiva = 0;
+    let acertos = 0, erros = 0, ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_corinthians") || 0;
     let radarInterval = null; 
-    
     const TEMPO_MAXIMO = 15; 
-    let tempoAtual = TEMPO_MAXIMO;
-    let timerQuiz = null;
+    let tempoAtual = TEMPO_MAXIMO, timerQuiz = null;
+    let catalogoGlobal = [];
 
     function verificarPasseLivre() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -324,134 +377,60 @@
         const agora = new Date().getTime();
         
         if (!token || (agora - parseInt(token)) > 120000) {
-            document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f0f2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;">
-                    <img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-                    <h2 style="color:#000000; margin-bottom:10px;">Acesso Expirado</h2>
-                    <p style="color:#444; font-size:0.95rem; line-height:1.5;">Para sua segurança e exclusividade, as estatísticas ao vivo só podem ser acessadas encostando o celular no seu <b>Chaveiro Inteligente</b>.</p>
-                </div>
-            `;
+            document.body.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f0f2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;"><img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);"><h2 style="color:#000000; margin-bottom:10px;">Acesso Expirado</h2><p style="color:#444; font-size:0.95rem; line-height:1.5;">Para sua segurança e exclusividade, as estatísticas ao vivo só podem ser acessadas encostando o celular no seu <b>Chaveiro Inteligente</b>.</p></div>`;
             return false; 
         }
         return true; 
     }
 
     function controlarMusica() {
-        const audio = document.getElementById("hino-audio");
-        const btn = document.getElementById("btn-tocar");
-        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } 
-        else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
+        const audio = document.getElementById("hino-audio"), btn = document.getElementById("btn-tocar");
+        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
     }
 
     function traduzirCampeonato(nomeOuSlug) {
         if (!nomeOuSlug) return "Campeonato";
         const s = nomeOuSlug.toLowerCase();
-        if (s.includes("paulista")) return "Paulistão";
-        if (s.includes("carioca")) return "Cariocão";
-        if (s.includes("bra.1") || s.includes("brazilian serie a") || s.includes("brasileirão serie a")) return "Brasileirão Série A";
-        if (s.includes("bra.2") || s.includes("brasileirão serie b")) return "Brasileirão Série B";
-        if (s.includes("libertadores")) return "Libertadores";
-        if (s.includes("copa_do_brasil") || s.includes("copa do brasil")) return "Copa do Brasil";
-        if (s.includes("supercopa")) return "Supercopa do Brasil";
-        if (s.includes("recopa")) return "Recopa Sul-Americana";
+        if (s.includes("paulista")) return "Paulistão"; if (s.includes("carioca")) return "Cariocão";
+        if (s.includes("bra.1") || s.includes("serie a")) return "Brasileirão Série A";
+        if (s.includes("libertadores")) return "Libertadores"; if (s.includes("copa do brasil")) return "Copa do Brasil";
         if (s.includes("sul-americana") || s.includes("sudamericana")) return "Copa Sul-Americana";
-        if (s.includes("mundial") || s.includes("world cup")) return "Mundial de Clubes";
         return nomeOuSlug;
     }
 
     function checarJogoAoVivo(dados) {
-        const todosJogos = [...(dados.past || []), ...(dados.next || [])];
-        const jogoAoVivo = todosJogos.find(j => j.status === 'in');
-
+        const jogoAoVivo = [...(dados.past || []), ...(dados.next || [])].find(j => j.status === 'in');
         if (jogoAoVivo && jogoAoVivo.id) {
             document.getElementById("live-match-container").style.display = "block";
             atualizarRadarESPN(jogoAoVivo.id); 
-            if(radarInterval) clearInterval(radarInterval);
             radarInterval = setInterval(() => { atualizarRadarESPN(jogoAoVivo.id); }, 30000);
-        } else {
-            document.getElementById("live-match-container").style.display = "none";
-            if(radarInterval) clearInterval(radarInterval);
-        }
+        } else { document.getElementById("live-match-container").style.display = "none"; }
     }
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`;
-            const res = await fetch(url);
+            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`);
             const json = await res.json();
-            const header = json.header.competitions[0];
-            const tempoStr = header.status.displayClock;
-            const periodo = header.status.period > 1 ? "2ºT" : "1ºT";
-            const timeInfo = tempoStr ? `${tempoStr}' ${periodo}` : "Aguardando Apito";
-            const home = header.competitors.find(c => c.homeAway === 'home');
-            const away = header.competitors.find(c => c.homeAway === 'away');
-            const boxscore = json.boxscore?.teams || [];
-            let statsHTML = '';
-
-            if (boxscore.length === 2) {
-                const getStat = (teamStats, statName) => {
-                    if (!teamStats.statistics) return "0";
-                    const s = teamStats.statistics.find(x => x.name === statName);
-                    return s ? s.displayValue : "0";
-                };
-                
-                const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
-                const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
-
-                const estatisticas = [
-                    { label: "Posse de Bola", key: "possession" },
-                    { label: "Finalizações", key: "shotsTotal" },
-                    { label: "No Gol", key: "shotsOnTarget" },
-                    { label: "Escanteios", key: "wonCorners" },
-                    { label: "Faltas", key: "foulsCommitted" },
-                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
-                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
-                ];
-
-                statsHTML = estatisticas.map(stat => {
-                    const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
-                    return `
-                    <div class="stat-row">
-                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
-                        <span class="stat-label">${stat.label}</span>
-                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
-                    </div>
-                `}).join('');
-            }
-
+            const header = json.header.competitions[0], timeInfo = header.status.displayClock ? `${header.status.displayClock}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
+            const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
+            
             document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header">
-                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
-                </div>
+                <div class="live-header"><span class="live-dot"></span> TEMPO REAL - ${timeInfo}</div>
                 <div class="live-scoreboard">
-                    <div class="live-team">
-                        <img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${home.team.abbreviation || home.team.shortDisplayName}</span>
-                    </div>
+                    <div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation}</span></div>
                     <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
-                    <div class="live-team">
-                        <img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${away.team.abbreviation || away.team.shortDisplayName}</span>
-                    </div>
-                </div>
-                <div class="live-stats">
-                    ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
+                    <div class="live-team"><img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${away.team.abbreviation}</span></div>
                 </div>
             `;
-        } catch (e) {
-            console.error("Erro no radar: ", e);
-        }
+        } catch (e) { console.error(e); }
     }
 
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
-        const resDiv = document.getElementById("resultados");
-        const classDiv = document.getElementById("classificacao");
-        const ageDiv = document.getElementById("agenda");
-        const newsDiv = document.getElementById("noticias");
-        const statusUpdate = document.getElementById("status-update");
-        const tituloClassificacao = document.getElementById("titulo-classificacao");
+        carregarVitrine();
+
+        const resDiv = document.getElementById("resultados"), classDiv = document.getElementById("classificacao"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias");
 
         try {
             const resposta = await fetch(MINHA_API_GOOGLE);
@@ -462,143 +441,145 @@
             if (dados.quiz && dados.quiz.length > 0) {
                 bancoDePerguntas = dados.quiz;
                 document.getElementById("quiz-box").style.display = "block";
-                
                 document.getElementById("q-recorde").innerText = recorde;
-                sortearPergunta();
             }
 
             const d = new Date(dados.lastUpdate);
-            statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
+            document.getElementById("status-update").innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
             resDiv.innerHTML = "";
-            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
-            else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
+            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center;'>Sem dados recentes.</p>";
 
             classDiv.innerHTML = "";
             if (dados.leagueName && dados.leagueName !== "Classificação") {
-                tituloClassificacao.innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
+                document.getElementById("titulo-classificacao").innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
             }
             
             if (dados.table && dados.table.length > 0) {
                 let tableToRender = dados.table.slice(0, 10);
                 if (!tableToRender.some(t => t.team.toLowerCase().includes('corinthians'))) {
                     const corData = dados.table.find(t => t.team.toLowerCase().includes('corinthians'));
-                    if (corData) {
-                        tableToRender.push({ isDivider: true });
-                        tableToRender.push(corData);
-                    }
+                    if (corData) { tableToRender.push({ isDivider: true }); tableToRender.push(corData); }
                 }
                 tableToRender.forEach(t => {
-                    if (t.isDivider) {
-                        classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`;
-                        return;
-                    }
+                    if (t.isDivider) { classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`; return; }
                     const bgClass = t.team.toLowerCase().includes('corinthians') ? 'highlight-team' : '';
-                    classDiv.innerHTML += `
-                        <tr class="${bgClass}">
-                            <td style="color:#777;">${t.rank}</td>
-                            <td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td>
-                            <td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td>
-                        </tr>`;
+                    classDiv.innerHTML += `<tr class="${bgClass}"><td style="color:#777;">${t.rank}</td><td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td><td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td></tr>`;
                 });
             } else classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível.</td></tr>";
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
-            else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado.</p>";
 
             newsDiv.innerHTML = "";
             if (dados.news && dados.news.length > 0) {
-                dados.news.forEach(n => {
-                    newsDiv.innerHTML += `
-                        <a href="${n.link}" target="_blank" class="news-card">
-                            <div class="news-source"><span>📰 ${n.source}</span></div>
-                            <h3 class="news-title">${n.title}</h3>
-                        </a>`;
-                });
-            } else newsDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhuma notícia no momento.</p>";
-
+                dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
+            }
         } catch (err) {
-            console.error(err);
-            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
-            classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#cc0000;'>Erro de conexão.</td></tr>";
-            ageDiv.innerHTML = "";
-            newsDiv.innerHTML = "";
-            statusUpdate.innerText = "Offline";
+            console.error(err); resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
         }
     }
+
+    async function carregarVitrine() {
+        try {
+            const res = await fetch(API_CATALOGO);
+            const dados = await res.json();
+            const divVitrine = document.getElementById("vitrine-produtos");
+            
+            if(dados.sucesso && dados.vitrine && dados.vitrine.length > 0) {
+                catalogoGlobal = dados.vitrine; 
+                let html = "";
+                
+                catalogoGlobal.forEach((p, index) => {
+                    const primeiraFoto = p.foto.split(',')[0].trim();
+                    html += `
+                    <div class="produto-card-mini" onclick="abrirModalProduto(${index})">
+                        <img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'">
+                        <div class="produto-info-mini">
+                            <span class="produto-tag-mini">${p.categoria}</span>
+                            <h4 class="produto-nome-mini">${p.nome}</h4>
+                            <div class="produto-preco-mini">${p.preco}</div>
+                        </div>
+                    </div>`;
+                });
+                divVitrine.innerHTML = html;
+                document.getElementById("secao-minimundo").style.display = "block";
+            }
+        } catch(e) { console.error("Erro catálogo:", e); }
+    }
+
+    function abrirModalProduto(index) {
+        const p = catalogoGlobal[index];
+        if(!p) return;
+
+        const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
+        const imgPrincipal = document.getElementById("modal-foto-principal");
+        imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
+
+        const divMiniaturas = document.getElementById("modal-miniaturas");
+        divMiniaturas.innerHTML = "";
+        
+        if (arrayFotos.length > 1) {
+            arrayFotos.forEach((linkFoto, i) => {
+                const imgMini = document.createElement("img");
+                imgMini.src = linkFoto;
+                imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
+                imgMini.onclick = function() {
+                    imgPrincipal.src = linkFoto;
+                    document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa"));
+                    imgMini.classList.add("ativa");
+                };
+                divMiniaturas.appendChild(imgMini);
+            });
+            divMiniaturas.style.display = "flex";
+        } else { divMiniaturas.style.display = "none"; }
+
+        document.getElementById("modal-tag").innerText = p.categoria;
+        document.getElementById("modal-titulo-prod").innerText = p.nome;
+        document.getElementById("modal-preco").innerText = p.preco;
+        document.getElementById("modal-desc").innerText = p.descricao;
+
+        const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
+        document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
+
+        document.getElementById("modal-produto").style.display = "flex";
+    }
+
+    function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
+    document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
     function criarCard(e, isFinished) {
-        const dataObj = new Date(e.date);
-        const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-        const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        const dataObj = new Date(e.date), dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}), horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
-        
         const leagueStr = traduzirCampeonato(e.slug);
+        const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
+        const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
 
-        let estadioHtml = "";
-        if (e.stadium) {
-            estadioHtml = `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>`;
-        }
-
-        let botaoYouTube = "";
-        if (isFinished) {
-            const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
-            const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
-            
-            botaoYouTube = `
-                <a href="${linkBusca}" target="_blank" class="youtube-button dynamic-button">
-                    ▶️ Assistir Melhores Momentos
-                </a>
-            `;
-        }
-
-        return `
-            <div class="match-card">
-                <div class="league-label">${leagueStr}</div>
-                <div class="match-row">
-                    <div class="team-col home">
-                        ${e.homeTeam}
-                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                    </div>
-                    <div class="score-box">
-                        <span class="score">${infoPlacar}</span>
-                        <span class="date">${dataF}</span>
-                    </div>
-                    <div class="team-col away">
-                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                        ${e.awayTeam}
-                    </div>
-                </div>
-                ${estadioHtml} ${botaoYouTube}
-            </div>`;
+        return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
     }
-    window.onload = carregarDoMeuServidor;
+    
+    // 🔥 A CHAVE DE IGNIÇÃO DO APLICATIVO
+    document.addEventListener("DOMContentLoaded", carregarDoMeuServidor);
+
+    // === INICIAR O QUIZ ===
+    function iniciarQuiz() {
+        document.getElementById("tela-inicio-quiz").style.display = "none";
+        document.getElementById("timer-container").style.display = "block";
+        document.getElementById("quiz-anim-area").style.display = "block";
+        sortearPergunta();
+    }
 
     function iniciarTimer() {
-        clearInterval(timerQuiz);
-        tempoAtual = TEMPO_MAXIMO;
-        atualizarBarraVisual();
-        
+        clearInterval(timerQuiz); tempoAtual = TEMPO_MAXIMO; atualizarBarraVisual();
         timerQuiz = setInterval(() => {
-            tempoAtual--;
-            atualizarBarraVisual();
-            
-            if (tempoAtual <= 0) {
-                clearInterval(timerQuiz);
-                verificarResposta(null, -1); 
-            }
+            tempoAtual--; atualizarBarraVisual();
+            if (tempoAtual <= 0) { clearInterval(timerQuiz); verificarResposta(null, -1); }
         }, 1000);
     }
 
     function atualizarBarraVisual() {
-        const barra = document.getElementById("barra-tempo");
-        const porcentagem = (tempoAtual / TEMPO_MAXIMO) * 100;
-        barra.style.width = porcentagem + "%";
-        
-        if (porcentagem > 50) barra.style.background = "#25D366"; 
-        else if (porcentagem > 20) barra.style.background = "#ffcc00"; 
-        else barra.style.background = "#cc0000"; 
+        const barra = document.getElementById("barra-tempo"), p = (tempoAtual / TEMPO_MAXIMO) * 100;
+        barra.style.width = p + "%"; barra.style.background = p > 50 ? "#25D366" : p > 20 ? "#ffcc00" : "#cc0000"; 
     }
 
     const frasesAcerto = ["🔥 Mandou bem! Próxima ➡️", "⚽ Golaço! Avançar ➡️", "🎯 Na mosca! Próxima ➡️", "🧠 É o Craque! Próxima ➡️", "⚡ Voando! Próxima ➡️"];
@@ -606,136 +587,70 @@
 
     function sortearPergunta() {
         if (bancoDePerguntas.length === 0) return;
-        
         document.getElementById("btn-proxima").style.display = "none";
-        
-        const index = Math.floor(Math.random() * bancoDePerguntas.length);
-        perguntaAtual = bancoDePerguntas[index];
+        perguntaAtual = bancoDePerguntas[Math.floor(Math.random() * bancoDePerguntas.length)];
         
         const animArea = document.getElementById("quiz-anim-area");
-        animArea.classList.remove("fade-in");
-        void animArea.offsetWidth; 
-        animArea.classList.add("fade-in");
-        
+        animArea.classList.remove("fade-in"); void animArea.offsetWidth; animArea.classList.add("fade-in");
         document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta;
         
-        const divBotoes = document.getElementById("quiz-botoes");
-        divBotoes.innerHTML = ""; 
-        
+        const divBotoes = document.getElementById("quiz-botoes"); divBotoes.innerHTML = ""; 
         perguntaAtual.opcoes.forEach((opcao, i) => {
-            const numOpcao = i + 1;
-            const btn = document.createElement("button");
-            btn.className = "quiz-btn";
-            btn.innerText = opcao;
-            btn.onclick = () => verificarResposta(btn, numOpcao);
-            divBotoes.appendChild(btn);
+            const btn = document.createElement("button"); btn.className = "quiz-btn"; btn.innerText = opcao;
+            btn.onclick = () => verificarResposta(btn, i + 1); divBotoes.appendChild(btn);
         });
 
         iniciarTimer(); 
     }
 
     function abrirModalConquista(marca) {
-        let nivel = ""; let icone = "";
-        
+        let nivel = "", icone = "";
         if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]);
+        const btnShare = document.getElementById("modal-btn-share"); btnShare.classList.remove("modal-btn-premio");
 
-        const btnShare = document.getElementById("modal-btn-share");
-        btnShare.classList.remove("modal-btn-premio");
+        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; } else if (marca === 10) { nivel = "GÊNIO ALVINEGRO!"; icone = "🧠"; } else if (marca === 15) { nivel = "NÍVEL SÓCRATES!"; icone = "👑"; } else if (marca === 20) { nivel = "DEUS DA FIEL!"; icone = "⚡"; } else { nivel = "LENDA VIVA!"; icone = "🏆"; }
 
-        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; }
-        else if (marca === 10) { nivel = "GÊNIO ALVINEGRO!"; icone = "🧠"; }
-        else if (marca === 15) { nivel = "NÍVEL SÓCRATES!"; icone = "👑"; }
-        else if (marca === 20) { nivel = "DEUS DA FIEL!"; icone = "⚡"; }
-        else { nivel = "LENDA VIVA!"; icone = "🏆"; }
-
-        document.getElementById("modal-icone").innerText = icone;
-        document.getElementById("modal-titulo").innerText = nivel;
+        document.getElementById("modal-icone").innerText = icone; document.getElementById("modal-titulo").innerText = nivel;
 
         if (marca >= 30 && marca % 30 === 0) {
             document.getElementById("modal-mensagem").innerHTML = `Você alcançou a marca épica de <b>${marca} acertos seguidos!</b> Tire um print desta tela e mande no WhatsApp da Mini Mundo para resgatar sua recompensa exclusiva num novo Chaveiro!`;
-            
-            const linkZapDesconto = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Corinthians%21%20Quero%20meu%20desconto%21`;
-            btnShare.href = linkZapDesconto;
-            btnShare.innerText = "🎁 Resgatar Minha Recompensa";
-            btnShare.classList.add("modal-btn-premio"); 
-
+            btnShare.href = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Corinthians%21%20Quero%20meu%20desconto%21`;
+            btnShare.innerText = "🎁 Resgatar Minha Recompensa"; btnShare.classList.add("modal-btn-premio"); 
         } else {
             document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Timão.`;
-            const textoZoeira = `${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Corinthians direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
-            const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
-            btnShare.href = linkZap;
+            btnShare.href = `https://wa.me/?text=${encodeURIComponent(`${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Corinthians direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`)}`;
             btnShare.innerText = "📱 Compartilhar e Zoar";
         }
-
         document.getElementById("modal-conquista").style.display = "flex";
     }
 
-    function fecharModal() {
-        document.getElementById("modal-conquista").style.display = "none";
-        sortearPergunta(); 
-    }
+    function fecharModal() { document.getElementById("modal-conquista").style.display = "none"; sortearPergunta(); }
 
     function verificarResposta(botaoClicado, numEscolhido) {
         clearInterval(timerQuiz); 
-
-        const botoes = document.querySelectorAll(".quiz-btn");
-        botoes.forEach(b => b.onclick = null); 
-        
-        const elementoChama = document.getElementById("q-chama");
-        const btnProxima = document.getElementById("btn-proxima");
+        const botoes = document.querySelectorAll(".quiz-btn"); botoes.forEach(b => b.onclick = null); 
+        const elementoChama = document.getElementById("q-chama"), btnProxima = document.getElementById("btn-proxima");
         btnProxima.className = "btn-proxima";
         
         if (numEscolhido === perguntaAtual.correta) {
             if (botaoClicado) botaoClicado.classList.add("correct");
-            
             if ("vibrate" in navigator) navigator.vibrate(50);
-
-            acertos++;
-            ofensiva++;
-            elementoChama.classList.add("chama-ativa"); 
+            acertos++; ofensiva++; elementoChama.classList.add("chama-ativa"); 
+            btnProxima.classList.add("acertou"); btnProxima.innerText = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
             
-            btnProxima.classList.add("acertou");
-            const fraseSorteada = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
-            btnProxima.innerText = fraseSorteada;
-            
-            if (ofensiva > recorde) {
-                recorde = ofensiva;
-                localStorage.setItem("quiz_recorde_corinthians", recorde);
-                document.getElementById("q-recorde").innerText = recorde;
-            }
-            
-            if (ofensiva > 0 && ofensiva % 5 === 0) {
-                abrirModalConquista(ofensiva);
-            } else {
-                btnProxima.style.display = "block"; 
-            }
-
+            if (ofensiva > recorde) { recorde = ofensiva; localStorage.setItem("quiz_recorde_corinthians", recorde); document.getElementById("q-recorde").innerText = recorde; }
+            if (ofensiva > 0 && ofensiva % 5 === 0) abrirModalConquista(ofensiva); else btnProxima.style.display = "block"; 
         } else {
             if (botaoClicado) botaoClicado.classList.add("wrong");
             botoes[perguntaAtual.correta - 1].classList.add("correct"); 
-            
             if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
-
-            erros++;
-            ofensiva = 0;
-            elementoChama.classList.remove("chama-ativa");
+            erros++; ofensiva = 0; elementoChama.classList.remove("chama-ativa"); btnProxima.classList.add("errou");
             
-            btnProxima.classList.add("errou");
-            
-            if (!botaoClicado) { 
-                btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️";
-                if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
-            } else {
-                const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
-                btnProxima.innerText = fraseSorteada;
-            }
-            
+            if (!botaoClicado) { btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️"; if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]); } 
+            else { btnProxima.innerText = frasesErro[Math.floor(Math.random() * frasesErro.length)]; }
             btnProxima.style.display = "block";
         }
-        
-        document.getElementById("q-acertos").innerText = acertos;
-        document.getElementById("q-erros").innerText = erros;
-        document.getElementById("q-chama").innerText = ofensiva;
+        document.getElementById("q-acertos").innerText = acertos; document.getElementById("q-erros").innerText = erros; document.getElementById("q-chama").innerText = ofensiva;
     }
 </script>
 
