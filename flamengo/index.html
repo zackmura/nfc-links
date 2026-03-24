@@ -89,7 +89,7 @@
         .dynamic-button:active { transform: scale(0.95); }
         .youtube-button { background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2); }
         
-        /* === 🏆 DESIGN DO QUIZ GAMIFICADO (Com Animações Premium) === */
+        /* === 🏆 DESIGN DO QUIZ GAMIFICADO === */
         .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); }
         
         .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 20px; text-align: center; border: 1px solid #444; }
@@ -227,7 +227,6 @@
 </div>
 
 <script>
-    // ⚠️ LINK DA SUA API DO FLAMENGO
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec"; 
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
@@ -518,7 +517,7 @@
         if (bancoDePerguntas.length === 0) return;
         
         document.getElementById("btn-proxima").style.display = "none";
-        document.getElementById("btn-share").style.display = "none";
+        document.getElementById("btn-share").style.display = "none"; // Some ao mudar de pergunta
         
         const index = Math.floor(Math.random() * bancoDePerguntas.length);
         perguntaAtual = bancoDePerguntas[index];
@@ -559,8 +558,6 @@
             elementoChama.classList.add("chama-ativa"); 
             
             btnProxima.classList.add("acertou");
-            
-            // Sorteia frase de acerto
             const fraseSorteada = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
             btnProxima.innerText = fraseSorteada;
             
@@ -570,12 +567,21 @@
                 document.getElementById("q-recorde").innerText = recorde;
             }
             
-            if (ofensiva >= 5) {
-                const textoZoeira = `🔥 Acertei ${ofensiva} perguntas seguidas no Quiz do Flamengo no meu Chaveiro Inteligente da Mini Mundo! Duvido você saber mais que eu: https://www.instagram.com/minimundo3d.oficial`;
+            // 🔴 LÓGICA DE MÚLTIPLOS DE 5 PARA O COMPARTILHAMENTO
+            if (ofensiva > 0 && ofensiva % 5 === 0) {
+                let nivel = "";
+                if (ofensiva === 5) nivel = "Tô afiado!";
+                else if (ofensiva === 10) nivel = "Sou o gênio da Nação!";
+                else if (ofensiva === 15) nivel = "Nível Zico!";
+                else nivel = "Hacker Rubro-Negro!";
+
+                const textoZoeira = `🔥 ${nivel} Acabei de acertar ${ofensiva} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
                 const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
                 const btnShare = document.getElementById("btn-share");
+                
                 btnShare.href = linkZap;
-                btnShare.style.display = "block";
+                btnShare.innerText = `📱 Compartilhar ${ofensiva} Acertos!`;
+                btnShare.style.display = "block"; // Só aparece na marca de 5, 10, 15...
             }
 
         } else {
@@ -586,8 +592,6 @@
             elementoChama.classList.remove("chama-ativa");
             
             btnProxima.classList.add("errou");
-            
-            // Sorteia frase de erro
             const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
             btnProxima.innerText = fraseSorteada;
         }
