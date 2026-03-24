@@ -105,31 +105,38 @@
         .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; }
         .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; animation: tremer 0.4s; }
         
-        .btn-proxima { 
-            margin-top: 15px; 
-            color: #ffffff; 
-            border: none; 
-            padding: 14px 15px; 
-            border-radius: 10px; 
-            width: 100%; 
-            cursor: pointer; 
-            font-weight: 900; 
-            font-size: 1.05rem;
-            display: none; 
-            text-transform: uppercase; 
-            box-shadow: 0 5px 0 rgba(0,0,0,0.3);
-            transition: transform 0.1s, box-shadow 0.1s;
-        }
+        .btn-proxima { margin-top: 15px; color: #ffffff; border: none; padding: 14px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 900; font-size: 1.05rem; display: none; text-transform: uppercase; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s;}
         .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
         .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
         .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
         
-        .btn-share-quiz { margin-top: 15px; background: #25D366; color: #fff; border: none; padding: 12px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 800; display: none; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; box-sizing: border-box; transition: transform 0.1s, box-shadow 0.1s;}
-        .btn-share-quiz:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
-
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+
+        /* === 🌟 MODAL DE CONQUISTA (MARCOS) === */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
+        .achievement-modal { background: #111; border: 2px solid #c90000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: white; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 40px rgba(201,0,0,0.5); position: relative;}
+        .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);}
+        .modal-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; color: #ffcc00;}
+        .modal-text { font-size: 0.95rem; color: #ccc; margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
+        
+        .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px;}
+        .modal-btn-share:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
+        
+        .modal-btn-close { background: transparent; color: #888; border: none; font-size: 0.85rem; text-decoration: underline; cursor: pointer; padding: 10px; width: 100%; font-weight: 600;}
+        
+        /* Efeito de Confetes Simples CSS */
+        .confetti-wrap { position: absolute; top: -20px; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1;}
+        .confetti { position: absolute; width: 10px; height: 10px; background: #f00; animation: fall 3s linear infinite; }
+        .confetti:nth-child(2) { left: 20%; background: #0f0; animation-delay: 0.5s; }
+        .confetti:nth-child(3) { left: 40%; background: #ff0; animation-delay: 1s; }
+        .confetti:nth-child(4) { left: 60%; background: #00f; animation-delay: 0.2s; }
+        .confetti:nth-child(5) { left: 80%; background: #f0f; animation-delay: 0.8s; }
+        
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulseIcon { 0% { transform: scale(1) translateY(0); } 100% { transform: scale(1.1) translateY(-5px); } }
+        @keyframes fall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1;} 100% { transform: translateY(200px) rotate(360deg); opacity: 0;} }
     </style>
 </head>
 <body>
@@ -187,7 +194,6 @@
         </div>
         
         <button id="btn-proxima" class="btn-proxima" onclick="sortearPergunta()">Próxima Pergunta ➡️</button>
-        <a id="btn-share" class="btn-share-quiz" target="_blank" href="#">📱 Desafiar um Amigo</a>
     </div>
 
     <div class="section-title">Galeria de Troféus</div>
@@ -223,6 +229,20 @@
             <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="social-btn insta">📸 Instagram</a>
             <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20do%20meu%20time%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20produtos%20da%20Mini%20Mundo." target="_blank" class="social-btn zap">💬 WhatsApp</a>
         </div>
+    </div>
+</div>
+
+<div id="modal-conquista" class="modal-overlay">
+    <div class="achievement-modal">
+        <div class="confetti-wrap">
+            <div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div>
+        </div>
+        <span class="modal-icon" id="modal-icone">🔥</span>
+        <h2 class="modal-title" id="modal-titulo">NOVO RECORDE!</h2>
+        <p class="modal-text" id="modal-mensagem">Você atingiu a marca de 5 acertos seguidos. Mostre para seus amigos quem é que manda!</p>
+        
+        <a id="modal-btn-share" class="modal-btn-share" target="_blank" href="#">📱 Compartilhar e Zoar</a>
+        <button class="modal-btn-close" onclick="fecharModal()">Continuar Jogando ➡️</button>
     </div>
 </div>
 
@@ -517,7 +537,6 @@
         if (bancoDePerguntas.length === 0) return;
         
         document.getElementById("btn-proxima").style.display = "none";
-        document.getElementById("btn-share").style.display = "none"; // Some ao mudar de pergunta
         
         const index = Math.floor(Math.random() * bancoDePerguntas.length);
         perguntaAtual = bancoDePerguntas[index];
@@ -540,6 +559,30 @@
             btn.onclick = () => verificarResposta(btn, numOpcao);
             divBotoes.appendChild(btn);
         });
+    }
+
+    function abrirModalConquista(marca) {
+        let nivel = "";
+        let icone = "";
+        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; }
+        else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; }
+        else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; }
+        else { nivel = "LENDÁRIO!"; icone = "🏆"; }
+
+        document.getElementById("modal-icone").innerText = icone;
+        document.getElementById("modal-titulo").innerText = nivel;
+        document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`;
+
+        const textoZoeira = `${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
+        const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
+        
+        document.getElementById("modal-btn-share").href = linkZap;
+        document.getElementById("modal-conquista").style.display = "flex";
+    }
+
+    function fecharModal() {
+        document.getElementById("modal-conquista").style.display = "none";
+        sortearPergunta(); // Puxa a próxima pergunta automaticamente ao fechar o modal
     }
 
     function verificarResposta(botaoClicado, numEscolhido) {
@@ -567,21 +610,11 @@
                 document.getElementById("q-recorde").innerText = recorde;
             }
             
-            // 🔴 LÓGICA DE MÚLTIPLOS DE 5 PARA O COMPARTILHAMENTO
+            // 🔴 LÓGICA DO MODAL (Pop-up) PARA MÚLTIPLOS DE 5
             if (ofensiva > 0 && ofensiva % 5 === 0) {
-                let nivel = "";
-                if (ofensiva === 5) nivel = "Tô afiado!";
-                else if (ofensiva === 10) nivel = "Sou o gênio da Nação!";
-                else if (ofensiva === 15) nivel = "Nível Zico!";
-                else nivel = "Hacker Rubro-Negro!";
-
-                const textoZoeira = `🔥 ${nivel} Acabei de acertar ${ofensiva} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
-                const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
-                const btnShare = document.getElementById("btn-share");
-                
-                btnShare.href = linkZap;
-                btnShare.innerText = `📱 Compartilhar ${ofensiva} Acertos!`;
-                btnShare.style.display = "block"; // Só aparece na marca de 5, 10, 15...
+                abrirModalConquista(ofensiva);
+            } else {
+                btnProxima.style.display = "block"; // Só mostra o botão se não abriu o modal
             }
 
         } else {
@@ -594,13 +627,13 @@
             btnProxima.classList.add("errou");
             const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
             btnProxima.innerText = fraseSorteada;
+            
+            btnProxima.style.display = "block";
         }
         
         document.getElementById("q-acertos").innerText = acertos;
         document.getElementById("q-erros").innerText = erros;
         document.getElementById("q-chama").innerText = ofensiva;
-
-        btnProxima.style.display = "block";
     }
 </script>
 
