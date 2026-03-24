@@ -105,7 +105,6 @@
         .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; }
         .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; animation: tremer 0.4s; }
         
-        /* NOVO: Botão de Próxima com "Juice" de Interface */
         .btn-proxima { 
             margin-top: 15px; 
             color: #ffffff; 
@@ -128,7 +127,6 @@
         .btn-share-quiz { margin-top: 15px; background: #25D366; color: #fff; border: none; padding: 12px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 800; display: none; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; box-sizing: border-box; transition: transform 0.1s, box-shadow 0.1s;}
         .btn-share-quiz:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
 
-        /* Animação de entrada suave para as perguntas */
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
@@ -499,7 +497,23 @@
     }
     window.onload = carregarDoMeuServidor;
 
-    // === MOTOR DO QUIZ GAMIFICADO (COM ANIMAÇÕES) ===
+    // === MÁQUINAS DE FRASES DINÂMICAS ===
+    const frasesAcerto = [
+        "🔥 Mandou bem! Próxima ➡️",
+        "⚽ Golaço! Avançar ➡️",
+        "🎯 Na mosca! Próxima ➡️",
+        "🧠 É o Craque! Próxima ➡️",
+        "⚡ Voando! Próxima ➡️"
+    ];
+
+    const frasesErro = [
+        "❌ Ops! Tentar Outra ➡️",
+        "🚫 Passou perto! Tentar Outra ➡️",
+        "🥅 Na trave! Tentar Outra ➡️",
+        "📺 VAR anulou! Tentar Outra ➡️",
+        "😅 Essa foi quase! Próxima ➡️"
+    ];
+
     function sortearPergunta() {
         if (bancoDePerguntas.length === 0) return;
         
@@ -509,10 +523,9 @@
         const index = Math.floor(Math.random() * bancoDePerguntas.length);
         perguntaAtual = bancoDePerguntas[index];
         
-        // Efeito de transição na área da pergunta
         const animArea = document.getElementById("quiz-anim-area");
         animArea.classList.remove("fade-in");
-        void animArea.offsetWidth; // Força o reflow do navegador
+        void animArea.offsetWidth; 
         animArea.classList.add("fade-in");
         
         document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta;
@@ -537,7 +550,6 @@
         const elementoChama = document.getElementById("q-chama");
         const btnProxima = document.getElementById("btn-proxima");
         
-        // Reseta as classes do botão antes de aplicar as novas
         btnProxima.className = "btn-proxima";
         
         if (numEscolhido === perguntaAtual.correta) {
@@ -547,7 +559,10 @@
             elementoChama.classList.add("chama-ativa"); 
             
             btnProxima.classList.add("acertou");
-            btnProxima.innerText = "🔥 Mandou Bem! Próxima ➡️";
+            
+            // Sorteia frase de acerto
+            const fraseSorteada = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
+            btnProxima.innerText = fraseSorteada;
             
             if (ofensiva > recorde) {
                 recorde = ofensiva;
@@ -555,7 +570,7 @@
                 document.getElementById("q-recorde").innerText = recorde;
             }
             
-            if (ofensiva >= 3) {
+            if (ofensiva >= 5) {
                 const textoZoeira = `🔥 Acertei ${ofensiva} perguntas seguidas no Quiz do Flamengo no meu Chaveiro Inteligente da Mini Mundo! Duvido você saber mais que eu: https://www.instagram.com/minimundo3d.oficial`;
                 const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
                 const btnShare = document.getElementById("btn-share");
@@ -571,7 +586,10 @@
             elementoChama.classList.remove("chama-ativa");
             
             btnProxima.classList.add("errou");
-            btnProxima.innerText = "❌ Ops! Tentar Outra ➡️";
+            
+            // Sorteia frase de erro
+            const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
+            btnProxima.innerText = fraseSorteada;
         }
         
         document.getElementById("q-acertos").innerText = acertos;
