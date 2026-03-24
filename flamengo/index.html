@@ -75,24 +75,9 @@
         .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
         .trophy-icon { font-size: 1.1rem; }
 
-        .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
-        .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
-        .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
-        
-        .social-links { display: flex; gap: 10px; margin-top: 15px; width: 100%; justify-content: center;}
-        .social-btn { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: white; display: flex; align-items: center; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
-        .social-btn:active { transform: scale(0.95); }
-        .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .zap { background: #25D366; }
-
-        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
-        .dynamic-button:active { transform: scale(0.95); }
-        .youtube-button { background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2); }
-        
         /* === 🏆 DESIGN DO QUIZ GAMIFICADO === */
         .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); position: relative;}
         
-        /* Banner de Promoção Oculto */
         .promo-banner { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);}
         
         .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #444; }
@@ -101,7 +86,6 @@
         .stat-box small { display: block; font-size: 0.6rem; color: #aaaaaa; font-weight: 700; text-transform: uppercase; margin-top: 4px;}
         .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.6); }
 
-        /* Barra de Tempo (Timer) */
         .timer-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);}
         .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
 
@@ -116,6 +100,43 @@
         .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
         .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
         .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
+
+        /* === 🛒 NOVA SESSÃO: VITRINE MINI MUNDO === */
+        .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;}
+        .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .minimundo-title-box { text-align: left; }
+        .minimundo-title { color: #4E342E; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
+        .minimundo-subtitle { color: #8D6E63; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
+        
+        .carrossel-produtos { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
+        .carrossel-produtos::-webkit-scrollbar { height: 6px; }
+        .carrossel-produtos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .carrossel-produtos::-webkit-scrollbar-thumb { background: #8D6E63; border-radius: 10px; }
+
+        .produto-card { min-width: 170px; max-width: 170px; background: #fafafa; border: 1px solid #efebe9; border-radius: 12px; padding: 12px; text-align: left; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column;}
+        .produto-img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #ffffff;}
+        .produto-tag { font-size: 0.6rem; background: #D7CCC8; color: #4E342E; padding: 4px 6px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .produto-nome { font-size: 0.85rem; font-weight: 800; color: #3E2723; margin: 0 0 5px; line-height: 1.2;}
+        .produto-desc { font-size: 0.65rem; color: #795548; margin: 0 0 10px; line-height: 1.3; flex-grow: 1;}
+        .produto-preco { font-size: 1.1rem; font-weight: 900; color: #2E7D32; margin-bottom: 12px;}
+        .btn-comprar { background: #25D366; color: white; text-align: center; display: block; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 0.8rem; transition: transform 0.2s; box-shadow: 0 4px 0 #1b9b4a;}
+        .btn-comprar:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a;}
+
+        /* RODAPÉ GERAL */
+        .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
+        .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
+        .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
+        
+        .social-links { display: flex; gap: 10px; margin-top: 15px; width: 100%; justify-content: center;}
+        .social-btn { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: white; display: flex; align-items: center; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .social-btn:active { transform: scale(0.95); }
+        .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .zap { background: #25D366; }
+
+        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
+        .dynamic-button:active { transform: scale(0.95); }
+        .youtube-button { background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2); }
         
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -232,6 +253,19 @@
         </div>
     </div>
 
+    <div id="secao-minimundo" class="minimundo-section">
+        <div class="minimundo-header">
+            <img src="logo.jpg" alt="Mini Mundo Logo" onerror="this.style.display='none'">
+            <div class="minimundo-title-box">
+                <h3 class="minimundo-title">LOJA MINI MUNDO 3D</h3>
+                <p class="minimundo-subtitle">Conheça nossos produtos exclusivos</p>
+            </div>
+        </div>
+        <div id="vitrine-produtos" class="carrossel-produtos">
+            <p style="text-align: center; width: 100%; color: #8D6E63; font-size: 0.8rem; font-style: italic;">Carregando vitrine...</p>
+        </div>
+    </div>
+
     <div class="brand-footer">
         Desenvolvido com tecnologia de
         <img src="logo.jpg" alt="Logo Mini Mundo" onerror="this.style.display='none'">
@@ -259,7 +293,11 @@
 </div>
 
 <script>
+    // API DE FUTEBOL (FLAMENGO)
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec"; 
+    // API DO CATÁLOGO (ANALYTICS)
+    const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
+    
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
     // === VARIÁVEIS DE GAMIFICAÇÃO E TIMER ===
@@ -404,6 +442,9 @@
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
+        // Inicia o carregamento da Vitrine e do Futebol ao mesmo tempo!
+        carregarVitrine();
+
         const resDiv = document.getElementById("resultados");
         const classDiv = document.getElementById("classificacao");
         const ageDiv = document.getElementById("agenda");
@@ -483,6 +524,41 @@
             ageDiv.innerHTML = "";
             newsDiv.innerHTML = "";
             statusUpdate.innerText = "Offline";
+        }
+    }
+
+    // === NOVA FUNÇÃO PARA CARREGAR A VITRINE ===
+    async function carregarVitrine() {
+        try {
+            const res = await fetch(API_CATALOGO);
+            const dados = await res.json();
+            const divVitrine = document.getElementById("vitrine-produtos");
+            
+            if(dados.sucesso && dados.vitrine && dados.vitrine.length > 0) {
+                let html = "";
+                dados.vitrine.forEach(p => {
+                    // Prepara a mensagem do WhatsApp
+                    const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto da vitrine: *${p.nome}*. Como faço para pedir?`);
+                    const linkZap = `https://wa.me/5511992279009?text=${textoZap}`;
+                    
+                    html += `
+                    <div class="produto-card">
+                        <img src="${p.foto}" alt="${p.nome}" class="produto-img" onerror="this.src='logo.jpg'">
+                        <div><span class="produto-tag">${p.categoria}</span></div>
+                        <h4 class="produto-nome">${p.nome}</h4>
+                        <p class="produto-desc">${p.descricao}</p>
+                        <div class="produto-preco">${p.preco}</div>
+                        <a href="${linkZap}" target="_blank" class="btn-comprar">🛒 EU QUERO</a>
+                    </div>`;
+                });
+                divVitrine.innerHTML = html;
+                document.getElementById("secao-minimundo").style.display = "block"; // Mostra a sessão inteira se tiver produto
+            } else {
+                divVitrine.innerHTML = "<p style='width:100%; text-align:center; color:#8D6E63; font-size:0.8rem;'>Vitrine em atualização...</p>";
+            }
+        } catch(e) {
+            console.error("Erro ao carregar catálogo Mini Mundo:", e);
+            document.getElementById("vitrine-produtos").innerHTML = "<p style='width:100%; text-align:center; color:#8D6E63; font-size:0.8rem;'>Não foi possível carregar a vitrine no momento.</p>";
         }
     }
 
