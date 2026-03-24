@@ -25,16 +25,7 @@
         }
         
         /* === TEMA FLAMENGO === */
-        .header { 
-            background: linear-gradient(135deg, #c90000 0%, #000000 100%); 
-            color: white; 
-            padding: 25px 15px 20px; 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            border-bottom: 5px solid #000000; 
-        }
+        .header { background: linear-gradient(135deg, #c90000 0%, #000000 100%); color: white; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #000000; }
         .header img { width: 75px; height: 75px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));}
         .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;}
         .header p { margin: 4px 0 0; font-size: 0.75rem; color: #ffcccc; font-weight: 600;}
@@ -125,7 +116,7 @@
         .btn-iniciar-quiz { background: linear-gradient(135deg, #c90000 0%, #8b0000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #5e0000; transition: all 0.2s; box-sizing: border-box;}
         .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #5e0000; }
 
-        /* === 🛒 VITRINE MINI MUNDO === */
+        /* === 🛒 VITRINE MINI MUNDO (CARROSSEL MINIMALISTA) === */
         .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;}
         .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
@@ -563,7 +554,10 @@
         return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
     }
     
-    // === NOVA FUNÇÃO PARA INICIAR O QUIZ ===
+    // 🔥 A CHAVE DE IGNIÇÃO DO APLICATIVO
+    document.addEventListener("DOMContentLoaded", carregarDoMeuServidor);
+
+    // === INICIAR O QUIZ (NOVO) ===
     function iniciarQuiz() {
         document.getElementById("tela-inicio-quiz").style.display = "none";
         document.getElementById("timer-container").style.display = "block";
