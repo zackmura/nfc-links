@@ -215,9 +215,9 @@
             <div class="input-group" style="margin-bottom: 5px;">
                 <label for="dificuldade">Dificuldade:</label>
                 <select id="dificuldade">
-                    <option value="fáceis (nível amador)">🟢 Fácil</option>
-                    <option value="médias (nível torcedor frequente)" selected>🟡 Médio</option>
-                    <option value="muito difíceis e obscuras (nível hardcore)">🔴 Hardcore (Difícil)</option>
+                    <option value="fáceis (nível torcedor comum)">🟢 Fácil</option>
+                    <option value="médias (nível fã fanático)" selected>🟡 Médio</option>
+                    <option value="difíceis e obscuras (nível historiador)">🔴 Hardcore (Difícil)</option>
                 </select>
             </div>
         </div>
@@ -305,27 +305,32 @@
         }
     }
 
-    // Função que faz o time-out (para não sobrecarregar a IA)
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     async function chamarIA(timeNome, qtd, apiKey, tema, dificuldade) {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
         
-        let instrucaoTema = tema ? `O tema PRINCIPAL E OBRIGATÓRIO destas perguntas deve ser sobre: "${tema}". Se afaste de perguntas genéricas.` : `Varie bem os temas (jogadores históricos, títulos, campanhas, curiosidades).`;
+        let instrucaoTema = tema ? `O tema PRINCIPAL E OBRIGATÓRIO destas perguntas é: "${tema}".` : `Varie os temas (títulos, ídolos, placares, estádio, mascote).`;
 
-        const prompt = `Atue como um especialista fanático em futebol e na história do ${timeNome}. 
-Gere ${qtd} perguntas ${dificuldade} de múltipla escolha.
+        // PROMPT REVISADO E BLINDADO PARA EVITAR "PROVAS DE FACULDADE"
+        const prompt = `Atue como um criador de Quiz rápido e dinâmico sobre futebol. 
+Gere ${qtd} perguntas sobre a história do ${timeNome} (Nível de dificuldade: ${dificuldade}).
 ${instrucaoTema}
 
-Regras ESTRITAS de formatação (Siga exatamente assim para cada pergunta, com uma linha em branco separando os blocos):
-Pergunta: [Escreva a pergunta]
-A) [Opção 1]
-B) [Opção 2]
-C) [Opção 3]
-D) [Opção 4]
+REGRAS ABSOLUTAS PARA AS PERGUNTAS E RESPOSTAS (SE NÃO SEGUIR, O SISTEMA QUEBRA):
+1. FATOS HISTÓRICOS APENAS: Proibido perguntas de opinião, especulação financeira, táticas modernas, "o que você acha", ou cenários futuros. Use apenas dados concretos de futebol (jogadores, anos, gols, adversários, títulos, estádios).
+2. TAMANHO DA PERGUNTA: Curta, direta ao ponto e sem enrolação (máximo de 15 palavras por pergunta).
+3. TAMANHO DAS OPÇÕES: Muito curtas (de 1 a 4 palavras no máximo). As opções devem ser apenas nomes de pessoas, nomes de times, números ou anos.
+
+Regras ESTRITAS de formatação (Siga exatamente assim, com uma linha em branco separando os blocos):
+Pergunta: [Escreva a pergunta curta]
+A) [Opção curta 1]
+B) [Opção curta 2]
+C) [Opção curta 3]
+D) [Opção curta 4]
 Correta: [Apenas o número 1, 2, 3 ou 4]
 
-NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue apenas o texto puro pedido acima.`;
+NÃO escreva introdução, NÃO escreva conclusão, entregue APENAS o texto puro pedido acima.`;
 
         const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
@@ -379,7 +384,6 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         return await resposta.json();
     }
 
-    // Função central que processa UM time específico
     async function processarTimeUnico(timeNome, timeUrl, qtd, apiKey, tema, dificuldade) {
         addLog(`>> PROCESSANDO: ${timeNome.toUpperCase()}`, "warn");
         addLog(`Criando ${qtd} perguntas (Nível: ${dificuldade})...`, "info");
@@ -404,7 +408,6 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         }
     }
 
-    // Função chamada pelos botões
     async function iniciarAutomacao(modoGlobal) {
         const apiKey = document.getElementById("api-key").value.trim();
         if(!apiKey) return addLog("ERRO: Chave da IA não informada!", "error");
@@ -416,7 +419,6 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         const btnUnico = document.getElementById("btn-iniciar");
         const btnGlobal = document.getElementById("btn-global");
 
-        // Trava os botões
         btnUnico.disabled = true;
         btnGlobal.disabled = true;
         
@@ -449,7 +451,6 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
                         addLog(`❌ ERRO NO ${timeNome.toUpperCase()}: ${e.message}`, "error");
                     }
                     
-                    // Pequena pausa entre os times para não engasgar a IA
                     if (i < options.length - 1) {
                         addLog("Aguardando 3 segundos para o próximo time...", "info");
                         await delay(3000); 
@@ -473,7 +474,6 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         } catch (erro) {
             addLog(`FALHA GERAL: ${erro.message}`, "error");
         } finally {
-            // Destrava os botões
             btnUnico.disabled = false;
             btnGlobal.disabled = false;
             btnUnico.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Gerar Apenas para o Time Selecionado`;
