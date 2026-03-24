@@ -89,10 +89,9 @@
         .dynamic-button:active { transform: scale(0.95); }
         .youtube-button { background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2); }
         
-        /* === 🏆 DESIGN DO QUIZ GAMIFICADO === */
+        /* === 🏆 DESIGN DO QUIZ GAMIFICADO (Com Animações Premium) === */
         .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); }
         
-        /* Painel de Estatísticas do Quiz */
         .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 20px; text-align: center; border: 1px solid #444; }
         .stat-box { flex: 1; color: #ffffff; font-weight: 900; font-size: 1.1rem; border-right: 1px solid #444; }
         .stat-box:last-child { border-right: none; }
@@ -101,18 +100,37 @@
 
         .quiz-question { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; text-align: center; line-height: 1.3; }
         .quiz-options { display: flex; flex-direction: column; gap: 10px; }
-        .quiz-btn { background: #2a2a2a; color: #f0f0f0; border: 1px solid #c90000; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; text-align: left; }
+        .quiz-btn { background: #2a2a2a; color: #f0f0f0; border: 1px solid #c90000; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: left; }
         .quiz-btn:active { transform: scale(0.98); }
         .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; }
         .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; animation: tremer 0.4s; }
         
-        .btn-proxima { margin-top: 15px; background: transparent; color: #cccccc; border: 1px solid #555555; padding: 10px 15px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; display: none; text-transform: uppercase; }
-        .btn-proxima:hover { background: #222; color: #fff; border-color: #fff; }
+        /* NOVO: Botão de Próxima com "Juice" de Interface */
+        .btn-proxima { 
+            margin-top: 15px; 
+            color: #ffffff; 
+            border: none; 
+            padding: 14px 15px; 
+            border-radius: 10px; 
+            width: 100%; 
+            cursor: pointer; 
+            font-weight: 900; 
+            font-size: 1.05rem;
+            display: none; 
+            text-transform: uppercase; 
+            box-shadow: 0 5px 0 rgba(0,0,0,0.3);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
+        .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
+        .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
         
-        /* Botão de Viralização (Zuar Amigo) */
-        .btn-share-quiz { margin-top: 10px; background: #25D366; color: #fff; border: none; padding: 10px 15px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 800; display: none; text-align: center; text-decoration: none; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); text-transform: uppercase; font-size: 0.85rem;}
-        .btn-share-quiz:active { transform: scale(0.95); }
+        .btn-share-quiz { margin-top: 15px; background: #25D366; color: #fff; border: none; padding: 12px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 800; display: none; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; box-sizing: border-box; transition: transform 0.1s, box-shadow 0.1s;}
+        .btn-share-quiz:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
 
+        /* Animação de entrada suave para as perguntas */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
     </style>
 </head>
@@ -165,8 +183,10 @@
             <div class="stat-box"><span id="q-recorde" style="color: #ffd700;">0</span><small>Recorde 🏆</small></div>
         </div>
 
-        <p id="quiz-pergunta" class="quiz-question">Carregando desafio...</p>
-        <div id="quiz-botoes" class="quiz-options"></div>
+        <div id="quiz-anim-area">
+            <p id="quiz-pergunta" class="quiz-question">Carregando desafio...</p>
+            <div id="quiz-botoes" class="quiz-options"></div>
+        </div>
         
         <button id="btn-proxima" class="btn-proxima" onclick="sortearPergunta()">Próxima Pergunta ➡️</button>
         <a id="btn-share" class="btn-share-quiz" target="_blank" href="#">📱 Desafiar um Amigo</a>
@@ -219,7 +239,6 @@
     let acertos = 0;
     let erros = 0;
     let ofensiva = 0;
-    // Puxa o recorde salvo no celular do cliente (se não tiver, é 0)
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
     let radarInterval = null; 
 
@@ -368,7 +387,6 @@
                 bancoDePerguntas = dados.quiz;
                 document.getElementById("quiz-box").style.display = "block";
                 
-                // Exibe o recorde inicial salvo
                 document.getElementById("q-recorde").innerText = recorde;
                 sortearPergunta();
             }
@@ -481,7 +499,7 @@
     }
     window.onload = carregarDoMeuServidor;
 
-    // === MOTOR DO QUIZ GAMIFICADO ===
+    // === MOTOR DO QUIZ GAMIFICADO (COM ANIMAÇÕES) ===
     function sortearPergunta() {
         if (bancoDePerguntas.length === 0) return;
         
@@ -490,6 +508,13 @@
         
         const index = Math.floor(Math.random() * bancoDePerguntas.length);
         perguntaAtual = bancoDePerguntas[index];
+        
+        // Efeito de transição na área da pergunta
+        const animArea = document.getElementById("quiz-anim-area");
+        animArea.classList.remove("fade-in");
+        void animArea.offsetWidth; // Força o reflow do navegador
+        animArea.classList.add("fade-in");
+        
         document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta;
         
         const divBotoes = document.getElementById("quiz-botoes");
@@ -507,24 +532,29 @@
 
     function verificarResposta(botaoClicado, numEscolhido) {
         const botoes = document.querySelectorAll(".quiz-btn");
-        botoes.forEach(b => b.onclick = null); // Bloqueia novos cliques
+        botoes.forEach(b => b.onclick = null); 
         
         const elementoChama = document.getElementById("q-chama");
+        const btnProxima = document.getElementById("btn-proxima");
+        
+        // Reseta as classes do botão antes de aplicar as novas
+        btnProxima.className = "btn-proxima";
         
         if (numEscolhido === perguntaAtual.correta) {
             botaoClicado.classList.add("correct");
             acertos++;
             ofensiva++;
-            elementoChama.classList.add("chama-ativa"); // Efeito de fogo
+            elementoChama.classList.add("chama-ativa"); 
             
-            // Bateu o recorde?
+            btnProxima.classList.add("acertou");
+            btnProxima.innerText = "🔥 Mandou Bem! Próxima ➡️";
+            
             if (ofensiva > recorde) {
                 recorde = ofensiva;
                 localStorage.setItem("quiz_recorde_flamengo", recorde);
                 document.getElementById("q-recorde").innerText = recorde;
             }
             
-            // Se acertou 3 seguidas, mostra o botão do WhatsApp!
             if (ofensiva >= 3) {
                 const textoZoeira = `🔥 Acertei ${ofensiva} perguntas seguidas no Quiz do Flamengo no meu Chaveiro Inteligente da Mini Mundo! Duvido você saber mais que eu: https://www.instagram.com/minimundo3d.oficial`;
                 const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
@@ -539,15 +569,16 @@
             erros++;
             ofensiva = 0;
             elementoChama.classList.remove("chama-ativa");
+            
+            btnProxima.classList.add("errou");
+            btnProxima.innerText = "❌ Ops! Tentar Outra ➡️";
         }
         
-        // Atualiza o painel visual
         document.getElementById("q-acertos").innerText = acertos;
         document.getElementById("q-erros").innerText = erros;
         document.getElementById("q-chama").innerText = ofensiva;
 
-        // Libera botão para a próxima
-        document.getElementById("btn-proxima").style.display = "block";
+        btnProxima.style.display = "block";
     }
 </script>
 
