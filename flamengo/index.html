@@ -90,13 +90,20 @@
         .youtube-button { background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2); }
         
         /* === 🏆 DESIGN DO QUIZ GAMIFICADO === */
-        .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); }
+        .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); position: relative;}
         
-        .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 20px; text-align: center; border: 1px solid #444; }
+        /* Banner de Promoção Oculto */
+        .promo-banner { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);}
+        
+        .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #444; }
         .stat-box { flex: 1; color: #ffffff; font-weight: 900; font-size: 1.1rem; border-right: 1px solid #444; }
         .stat-box:last-child { border-right: none; }
         .stat-box small { display: block; font-size: 0.6rem; color: #aaaaaa; font-weight: 700; text-transform: uppercase; margin-top: 4px;}
         .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.6); }
+
+        /* Barra de Tempo (Timer) */
+        .timer-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);}
+        .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
 
         .quiz-question { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; text-align: center; line-height: 1.3; }
         .quiz-options { display: flex; flex-direction: column; gap: 10px; }
@@ -113,8 +120,9 @@
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
+        @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* === 🌟 MODAL DE CONQUISTA (MARCOS) === */
+        /* === 🌟 MODAL DE CONQUISTA === */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
         .achievement-modal { background: #111; border: 2px solid #c90000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: white; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 40px rgba(201,0,0,0.5); position: relative;}
         .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);}
@@ -181,12 +189,16 @@
     <div class="section-title">🏆 Desafio do Torcedor</div>
     <div class="quiz-container" id="quiz-box" style="display: none;">
         
+        <div class="promo-banner">🎁 Atinja 30 acertos seguidos e ganhe Prêmios Reais!</div>
+
         <div class="quiz-stats">
             <div class="stat-box"><span id="q-acertos" style="color: #198754;">0</span><small>Acertos</small></div>
             <div class="stat-box"><span id="q-erros" style="color: #dc3545;">0</span><small>Erros</small></div>
             <div class="stat-box"><span id="q-chama">0</span><small>Ofensiva 🔥</small></div>
             <div class="stat-box"><span id="q-recorde" style="color: #ffd700;">0</span><small>Recorde 🏆</small></div>
         </div>
+
+        <div class="timer-container"><div class="timer-bar" id="barra-tempo"></div></div>
 
         <div id="quiz-anim-area">
             <p id="quiz-pergunta" class="quiz-question">Carregando desafio...</p>
@@ -250,7 +262,7 @@
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec"; 
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
-    // === VARIÁVEIS DE GAMIFICAÇÃO ===
+    // === VARIÁVEIS DE GAMIFICAÇÃO E TIMER ===
     let bancoDePerguntas = [];
     let perguntaAtual = null;
     let acertos = 0;
@@ -258,6 +270,11 @@
     let ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
     let radarInterval = null; 
+    
+    // Configurações do Timer
+    const TEMPO_MAXIMO = 15; // 15 Segundos para responder
+    let tempoAtual = TEMPO_MAXIMO;
+    let timerQuiz = null;
 
     function verificarPasseLivre() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -516,6 +533,33 @@
     }
     window.onload = carregarDoMeuServidor;
 
+    // === GESTÃO DO TIMER E JOGO ===
+    function iniciarTimer() {
+        clearInterval(timerQuiz);
+        tempoAtual = TEMPO_MAXIMO;
+        atualizarBarraVisual();
+        
+        timerQuiz = setInterval(() => {
+            tempoAtual--;
+            atualizarBarraVisual();
+            
+            if (tempoAtual <= 0) {
+                clearInterval(timerQuiz);
+                verificarResposta(null, -1); // Envia nulo para simular que o tempo esgotou
+            }
+        }, 1000);
+    }
+
+    function atualizarBarraVisual() {
+        const barra = document.getElementById("barra-tempo");
+        const porcentagem = (tempoAtual / TEMPO_MAXIMO) * 100;
+        barra.style.width = porcentagem + "%";
+        
+        if (porcentagem > 50) barra.style.background = "#25D366"; // Verde
+        else if (porcentagem > 20) barra.style.background = "#ffcc00"; // Amarelo
+        else barra.style.background = "#ff3333"; // Vermelho
+    }
+
     const frasesAcerto = ["🔥 Mandou bem! Próxima ➡️", "⚽ Golaço! Avançar ➡️", "🎯 Na mosca! Próxima ➡️", "🧠 É o Craque! Próxima ➡️", "⚡ Voando! Próxima ➡️"];
     const frasesErro = ["❌ Ops! Tentar Outra ➡️", "🚫 Passou perto! Tentar Outra ➡️", "🥅 Na trave! Tentar Outra ➡️", "📺 VAR anulou! Tentar Outra ➡️", "😅 Essa foi quase! Próxima ➡️"];
 
@@ -545,34 +589,35 @@
             btn.onclick = () => verificarResposta(btn, numOpcao);
             divBotoes.appendChild(btn);
         });
+
+        iniciarTimer(); // Dispara o relógio quando a pergunta aparece
     }
 
     function abrirModalConquista(marca) {
         let nivel = ""; let icone = "";
         
-        // Efeito Sonoro no Modal (Vibração Festiva)
         if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]);
 
         const btnShare = document.getElementById("modal-btn-share");
-        btnShare.classList.remove("modal-btn-premio"); // Reseta a classe do botão
+        btnShare.classList.remove("modal-btn-premio");
 
         if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; }
         else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; }
         else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; }
-        else { nivel = "LENDÁRIO!"; icone = "🏆"; }
+        else if (marca === 20) { nivel = "DEUS DO FUTEBOL!"; icone = "⚡"; }
+        else { nivel = "LENDA VIVA!"; icone = "🏆"; }
 
         document.getElementById("modal-icone").innerText = icone;
         document.getElementById("modal-titulo").innerText = nivel;
 
-        // O GRANDE PRÊMIO NA MARCA DE 15!
-        if (marca === 15) {
-            document.getElementById("modal-mensagem").innerHTML = `Você é uma lenda! Tire um print desta tela e mande no WhatsApp da Mini Mundo para ganhar <b>R$5 de Desconto</b> em um novo Chaveiro Inteligente para presentear um amigo!`;
+        // O GRANDE PRÊMIO NA MARCA DE 30!
+        if (marca >= 30 && marca % 30 === 0) {
+            document.getElementById("modal-mensagem").innerHTML = `Você alcançou a marca épica de <b>${marca} acertos seguidos!</b> Tire um print desta tela e mande no WhatsApp da Mini Mundo para resgatar sua recompensa exclusiva num novo Chaveiro!`;
             
-            // Link direto para o SEU WhatsApp cobrando o desconto
-            const linkZapDesconto = `https://wa.me/5511992279009?text=Zerei%20o%20jogo%20do%20Flamengo%21%20Quero%20meu%20desconto%20num%20chaveiro%20novo%21`;
+            const linkZapDesconto = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Flamengo%21%20Quero%20meu%20desconto%21`;
             btnShare.href = linkZapDesconto;
-            btnShare.innerText = "🎁 Resgatar Meu Desconto";
-            btnShare.classList.add("modal-btn-premio"); // Fica dourado!
+            btnShare.innerText = "🎁 Resgatar Minha Recompensa";
+            btnShare.classList.add("modal-btn-premio"); 
 
         } else {
             document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`;
@@ -591,6 +636,8 @@
     }
 
     function verificarResposta(botaoClicado, numEscolhido) {
+        clearInterval(timerQuiz); // Pausa o relógio
+
         const botoes = document.querySelectorAll(".quiz-btn");
         botoes.forEach(b => b.onclick = null); 
         
@@ -599,9 +646,8 @@
         btnProxima.className = "btn-proxima";
         
         if (numEscolhido === perguntaAtual.correta) {
-            botaoClicado.classList.add("correct");
+            if (botaoClicado) botaoClicado.classList.add("correct");
             
-            // Vibração curta de acerto
             if ("vibrate" in navigator) navigator.vibrate(50);
 
             acertos++;
@@ -625,10 +671,10 @@
             }
 
         } else {
-            botaoClicado.classList.add("wrong");
-            botoes[perguntaAtual.correta - 1].classList.add("correct");
+            // Identifica o erro ou o estouro de tempo
+            if (botaoClicado) botaoClicado.classList.add("wrong");
+            botoes[perguntaAtual.correta - 1].classList.add("correct"); // Pinta a certa de verde
             
-            // Vibração dupla de erro
             if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
 
             erros++;
@@ -636,8 +682,14 @@
             elementoChama.classList.remove("chama-ativa");
             
             btnProxima.classList.add("errou");
-            const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
-            btnProxima.innerText = fraseSorteada;
+            
+            if (!botaoClicado) { // Caiu aqui porque o tempo acabou
+                btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️";
+                if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
+            } else {
+                const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
+                btnProxima.innerText = fraseSorteada;
+            }
             
             btnProxima.style.display = "block";
         }
