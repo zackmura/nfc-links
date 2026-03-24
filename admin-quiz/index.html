@@ -217,6 +217,7 @@
 
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    // === ATUALIZAÇÃO: ADICIONADO SISTEMA DE "TEIMOSIA" (RETRY) ===
     async function chamarIA(timeNome, qtd, apiKey, tema, dificuldade) {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
         
@@ -243,10 +244,25 @@ NÃO escreva introdução, entregue APENAS o texto puro.`;
 
         const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
-        const resposta = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (!resposta.ok) throw new Error(`Acesso negado (${resposta.status}).`);
-        const dados = await resposta.json();
-        return dados.candidates[0].content.parts[0].text;
+        // O Robô vai tentar até 3 vezes se der erro 429
+        for (let tentativa = 1; tentativa <= 3; tentativa++) {
+            const resposta = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            
+            if (resposta.ok) {
+                const dados = await resposta.json();
+                return dados.candidates[0].content.parts[0].text;
+            }
+
+            // Se for erro 429 e ainda não for a última tentativa
+            if (resposta.status === 429 && tentativa < 3) {
+                addLog(`⏳ Limite da IA atingido no ${timeNome.toUpperCase()}. Aguardando 5s para tentar de novo...`, "warn");
+                await delay(5000);
+                continue; // Volta pro início do loop (tenta de novo)
+            }
+
+            // Se for outro erro ou já tentou 3 vezes, joga a toalha.
+            throw new Error(`Acesso negado (${resposta.status}).`);
+        }
     }
 
     function extrairPerguntas(textoIA) {
@@ -278,14 +294,13 @@ NÃO escreva introdução, entregue APENAS o texto puro.`;
         return perguntas;
     }
 
-    // === LÓGICA DE RECICLAGEM ADICIONADA AQUI ===
     async function enviarParaPlanilha(urlPlanilha, perguntas, modoReciclagem) {
         const resposta = await fetch(urlPlanilha, {
             method: "POST",
             body: JSON.stringify({ 
                 acao: "salvar_quiz", 
                 perguntas: perguntas,
-                substituir: modoReciclagem // Envia a ordem pro Google Apps Script
+                substituir: modoReciclagem 
             })
         });
         return await resposta.json();
@@ -361,8 +376,9 @@ NÃO escreva introdução, entregue APENAS o texto puro.`;
                     }
                     
                     if (i < options.length - 1) {
-                        addLog("Aguardando 3 segundos para não sobrecarregar a IA...", "info");
-                        await delay(3000); 
+                        // === ATUALIZAÇÃO: Aumentado o intervalo para a IA respirar ===
+                        addLog("Aguardando 6 segundos para não sobrecarregar a IA...", "info");
+                        await delay(6000); 
                     }
                 }
                 addLog(`--- LOTE GLOBAL FINALIZADO ---`, "success");
