@@ -41,7 +41,6 @@
         .match-card:last-child { border-bottom: none; }
         .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
         .match-row { display: flex; width: 100%; align-items: center; }
-        
         .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
         .team-col img { width: 30px; height: 30px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
@@ -77,31 +76,26 @@
 
         /* === 🏆 DESIGN DO QUIZ GAMIFICADO === */
         .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); position: relative;}
-        
         .promo-banner { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);}
-        
         .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #444; }
         .stat-box { flex: 1; color: #ffffff; font-weight: 900; font-size: 1.1rem; border-right: 1px solid #444; }
         .stat-box:last-child { border-right: none; }
         .stat-box small { display: block; font-size: 0.6rem; color: #aaaaaa; font-weight: 700; text-transform: uppercase; margin-top: 4px;}
         .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.6); }
-
         .timer-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);}
         .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
-
         .quiz-question { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; text-align: center; line-height: 1.3; }
         .quiz-options { display: flex; flex-direction: column; gap: 10px; }
         .quiz-btn { background: #2a2a2a; color: #f0f0f0; border: 1px solid #c90000; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: left; }
         .quiz-btn:active { transform: scale(0.98); }
         .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; }
         .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; animation: tremer 0.4s; }
-        
         .btn-proxima { margin-top: 15px; color: #ffffff; border: none; padding: 14px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 900; font-size: 1.05rem; display: none; text-transform: uppercase; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s;}
         .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
         .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
         .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
 
-        /* === 🛒 NOVA SESSÃO: VITRINE MINI MUNDO === */
+        /* === 🛒 VITRINE MINI MUNDO (CARROSSEL MINIMALISTA) === */
         .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;}
         .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
@@ -109,19 +103,42 @@
         .minimundo-title { color: #4E342E; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
         .minimundo-subtitle { color: #8D6E63; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
         
-        .carrossel-produtos { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
-        .carrossel-produtos::-webkit-scrollbar { height: 6px; }
+        .carrossel-produtos { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
+        .carrossel-produtos::-webkit-scrollbar { height: 4px; }
         .carrossel-produtos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .carrossel-produtos::-webkit-scrollbar-thumb { background: #8D6E63; border-radius: 10px; }
 
-        .produto-card { min-width: 170px; max-width: 170px; background: #fafafa; border: 1px solid #efebe9; border-radius: 12px; padding: 12px; text-align: left; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column;}
-        .produto-img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; background: #ffffff;}
-        .produto-tag { font-size: 0.6rem; background: #D7CCC8; color: #4E342E; padding: 4px 6px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;}
-        .produto-nome { font-size: 0.85rem; font-weight: 800; color: #3E2723; margin: 0 0 5px; line-height: 1.2;}
-        .produto-desc { font-size: 0.65rem; color: #795548; margin: 0 0 10px; line-height: 1.3; flex-grow: 1;}
-        .produto-preco { font-size: 1.1rem; font-weight: 900; color: #2E7D32; margin-bottom: 12px;}
-        .btn-comprar { background: #25D366; color: white; text-align: center; display: block; padding: 10px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 0.8rem; transition: transform 0.2s; box-shadow: 0 4px 0 #1b9b4a;}
-        .btn-comprar:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a;}
+        /* Card Compacto para Vitrine */
+        .produto-card-mini { min-width: 140px; max-width: 140px; background: #ffffff; border: 1px solid #efebe9; border-radius: 12px; text-align: left; scroll-snap-align: start; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s;}
+        .produto-card-mini:active { transform: scale(0.96); }
+        .produto-img-mini { width: 100%; height: 130px; object-fit: cover; background: #fafafa; border-bottom: 1px solid #f5f5f5;}
+        .produto-info-mini { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
+        .produto-tag-mini { font-size: 0.55rem; background: #efebe9; color: #5D4037; padding: 3px 6px; border-radius: 4px; font-weight: 800; align-self: flex-start; margin-bottom: 6px; text-transform: uppercase;}
+        .produto-nome-mini { font-size: 0.8rem; font-weight: 800; color: #3E2723; margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+        .produto-preco-mini { font-size: 0.95rem; font-weight: 900; color: #2E7D32; margin-top: auto;}
+
+        /* === 🛍️ MODAL DE PRODUTO COMPLETO === */
+        .modal-produto-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-produto-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;}
+        
+        .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #333; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+        
+        .galeria-produto { width: 100%; background: #f8f9fa; }
+        .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
+        .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: #fff; border-bottom: 1px solid #eee;}
+        .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s;}
+        .miniatura.ativa { border-color: #5D4037; opacity: 1; }
+        
+        .info-produto-completa { padding: 20px 20px 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
+        .tag-modal { font-size: 0.65rem; background: #efebe9; color: #5D4037; padding: 4px 8px; border-radius: 4px; font-weight: 800; align-self: flex-start; text-transform: uppercase;}
+        .titulo-modal { font-size: 1.3rem; font-weight: 900; color: #222; margin: 0; line-height: 1.2;}
+        .preco-modal { font-size: 1.5rem; font-weight: 900; color: #2E7D32; margin: 0;}
+        .desc-modal { font-size: 0.85rem; color: #555; line-height: 1.5; margin: 5px 0 15px; white-space: pre-wrap;}
+        
+        .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); transition: transform 0.1s, box-shadow 0.1s;}
+        .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a, 0 2px 5px rgba(37,211,102,0.3); }
+
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         /* RODAPÉ GERAL */
         .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
@@ -143,19 +160,16 @@
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
         @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* === 🌟 MODAL DE CONQUISTA === */
+        /* Modal Conquista */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
         .achievement-modal { background: #111; border: 2px solid #c90000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: white; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 40px rgba(201,0,0,0.5); position: relative;}
         .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);}
         .modal-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; color: #ffcc00;}
         .modal-text { font-size: 0.95rem; color: #ccc; margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
-        
         .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px;}
         .modal-btn-share:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
         .modal-btn-premio { background: #f09433 !important; box-shadow: 0 5px 0 #c2701e !important; }
-        
         .modal-btn-close { background: transparent; color: #888; border: none; font-size: 0.85rem; text-decoration: underline; cursor: pointer; padding: 10px; width: 100%; font-weight: 600;}
-        
         .confetti-wrap { position: absolute; top: -20px; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1;}
         .confetti { position: absolute; width: 10px; height: 10px; background: #f00; animation: fall 3s linear infinite; }
         .confetti:nth-child(2) { left: 20%; background: #0f0; animation-delay: 0.5s; }
@@ -278,6 +292,29 @@
     </div>
 </div>
 
+<div id="modal-produto" class="modal-produto-overlay">
+    <div class="modal-produto-content">
+        <button class="btn-fechar-modal" onclick="fecharModalProduto()">×</button>
+        
+        <div class="galeria-produto">
+            <img id="modal-foto-principal" src="" alt="Produto" class="foto-principal">
+            <div id="modal-miniaturas" class="miniaturas-container">
+                </div>
+        </div>
+
+        <div class="info-produto-completa">
+            <span id="modal-tag" class="tag-modal">Categoria</span>
+            <h3 id="modal-titulo-prod" class="titulo-modal">Nome do Produto</h3>
+            <h2 id="modal-preco" class="preco-modal">R$ 00,00</h2>
+            <p id="modal-desc" class="desc-modal">Descrição do produto vai aqui...</p>
+            
+            <a id="modal-btn-zap" href="#" target="_blank" class="btn-comprar-zap">
+                🛒 COMPRAR PELO WHATSAPP
+            </a>
+        </div>
+    </div>
+</div>
+
 <div id="modal-conquista" class="modal-overlay">
     <div class="achievement-modal">
         <div class="confetti-wrap">
@@ -300,19 +337,15 @@
     
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
-    // === VARIÁVEIS DE GAMIFICAÇÃO E TIMER ===
+    // === VARIÁVEIS GLOBAIS ===
     let bancoDePerguntas = [];
     let perguntaAtual = null;
-    let acertos = 0;
-    let erros = 0;
-    let ofensiva = 0;
+    let acertos = 0, erros = 0, ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
     let radarInterval = null; 
-    
-    // Configurações do Timer
-    const TEMPO_MAXIMO = 15; // 15 Segundos para responder
-    let tempoAtual = TEMPO_MAXIMO;
-    let timerQuiz = null;
+    const TEMPO_MAXIMO = 15; 
+    let tempoAtual = TEMPO_MAXIMO, timerQuiz = null;
+    let catalogoGlobal = []; // Guarda os produtos na memória para o Modal
 
     function verificarPasseLivre() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -342,16 +375,10 @@
     function traduzirCampeonato(nomeOuSlug) {
         if (!nomeOuSlug) return "Campeonato";
         const s = nomeOuSlug.toLowerCase();
-        if (s.includes("paulista")) return "Paulistão";
-        if (s.includes("carioca")) return "Cariocão";
-        if (s.includes("bra.1") || s.includes("brazilian serie a") || s.includes("brasileirão serie a")) return "Brasileirão Série A";
-        if (s.includes("bra.2") || s.includes("brasileirão serie b")) return "Brasileirão Série B";
-        if (s.includes("libertadores")) return "Libertadores";
-        if (s.includes("copa_do_brasil") || s.includes("copa do brasil")) return "Copa do Brasil";
-        if (s.includes("supercopa")) return "Supercopa do Brasil";
-        if (s.includes("recopa")) return "Recopa Sul-Americana";
+        if (s.includes("paulista")) return "Paulistão"; if (s.includes("carioca")) return "Cariocão";
+        if (s.includes("bra.1") || s.includes("serie a")) return "Brasileirão Série A";
+        if (s.includes("libertadores")) return "Libertadores"; if (s.includes("copa do brasil")) return "Copa do Brasil";
         if (s.includes("sul-americana") || s.includes("sudamericana")) return "Copa Sul-Americana";
-        if (s.includes("mundial") || s.includes("world cup")) return "Mundial de Clubes";
         return nomeOuSlug;
     }
 
@@ -390,17 +417,13 @@
                     const s = teamStats.statistics.find(x => x.name === statName);
                     return s ? s.displayValue : "0";
                 };
-                
                 const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
                 const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
 
                 const estatisticas = [
-                    { label: "Posse de Bola", key: "possession" },
-                    { label: "Finalizações", key: "shotsTotal" },
-                    { label: "No Gol", key: "shotsOnTarget" },
-                    { label: "Escanteios", key: "wonCorners" },
-                    { label: "Faltas", key: "foulsCommitted" },
-                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
+                    { label: "Posse de Bola", key: "possession" }, { label: "Finalizações", key: "shotsTotal" },
+                    { label: "No Gol", key: "shotsOnTarget" }, { label: "Escanteios", key: "wonCorners" },
+                    { label: "Faltas", key: "foulsCommitted" }, { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
                     { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
                 ];
 
@@ -416,33 +439,21 @@
             }
 
             document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header">
-                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
-                </div>
+                <div class="live-header"><span class="live-dot"></span> TEMPO REAL - ${timeInfo}</div>
                 <div class="live-scoreboard">
-                    <div class="live-team">
-                        <img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${home.team.abbreviation || home.team.shortDisplayName}</span>
-                    </div>
+                    <div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation}</span></div>
                     <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
-                    <div class="live-team">
-                        <img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${away.team.abbreviation || away.team.shortDisplayName}</span>
-                    </div>
+                    <div class="live-team"><img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${away.team.abbreviation}</span></div>
                 </div>
-                <div class="live-stats">
-                    ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
-                </div>
+                <div class="live-stats">${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}</div>
             `;
-        } catch (e) {
-            console.error("Erro no radar: ", e);
-        }
+        } catch (e) { console.error("Erro no radar: ", e); }
     }
 
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
-        // Inicia o carregamento da Vitrine e do Futebol ao mesmo tempo!
+        // Dispara o carregamento da Loja em paralelo
         carregarVitrine();
 
         const resDiv = document.getElementById("resultados");
@@ -450,7 +461,6 @@
         const ageDiv = document.getElementById("agenda");
         const newsDiv = document.getElementById("noticias");
         const statusUpdate = document.getElementById("status-update");
-        const tituloClassificacao = document.getElementById("titulo-classificacao");
 
         try {
             const resposta = await fetch(MINHA_API_GOOGLE);
@@ -461,7 +471,6 @@
             if (dados.quiz && dados.quiz.length > 0) {
                 bancoDePerguntas = dados.quiz;
                 document.getElementById("quiz-box").style.display = "block";
-                
                 document.getElementById("q-recorde").innerText = recorde;
                 sortearPergunta();
             }
@@ -475,17 +484,14 @@
 
             classDiv.innerHTML = "";
             if (dados.leagueName && dados.leagueName !== "Classificação") {
-                tituloClassificacao.innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
+                document.getElementById("titulo-classificacao").innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
             }
             
             if (dados.table && dados.table.length > 0) {
                 let tableToRender = dados.table.slice(0, 10);
                 if (!tableToRender.some(t => t.team.toLowerCase().includes('flamengo'))) {
                     const flaData = dados.table.find(t => t.team.toLowerCase().includes('flamengo'));
-                    if (flaData) {
-                        tableToRender.push({ isDivider: true });
-                        tableToRender.push(flaData);
-                    }
+                    if (flaData) { tableToRender.push({ isDivider: true }); tableToRender.push(flaData); }
                 }
                 tableToRender.forEach(t => {
                     if (t.isDivider) {
@@ -509,11 +515,7 @@
             newsDiv.innerHTML = "";
             if (dados.news && dados.news.length > 0) {
                 dados.news.forEach(n => {
-                    newsDiv.innerHTML += `
-                        <a href="${n.link}" target="_blank" class="news-card">
-                            <div class="news-source"><span>📰 ${n.source}</span></div>
-                            <h3 class="news-title">${n.title}</h3>
-                        </a>`;
+                    newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`;
                 });
             } else newsDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhuma notícia no momento.</p>";
 
@@ -521,13 +523,11 @@
             console.error(err);
             resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
             classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#cc0000;'>Erro de conexão.</td></tr>";
-            ageDiv.innerHTML = "";
-            newsDiv.innerHTML = "";
-            statusUpdate.innerText = "Offline";
+            ageDiv.innerHTML = ""; newsDiv.innerHTML = ""; statusUpdate.innerText = "Offline";
         }
     }
 
-    // === NOVA FUNÇÃO PARA CARREGAR A VITRINE ===
+    // === LÓGICA DA VITRINE E MODAL DE PRODUTO ===
     async function carregarVitrine() {
         try {
             const res = await fetch(API_CATALOGO);
@@ -535,24 +535,25 @@
             const divVitrine = document.getElementById("vitrine-produtos");
             
             if(dados.sucesso && dados.vitrine && dados.vitrine.length > 0) {
+                catalogoGlobal = dados.vitrine; // Salva na memória
                 let html = "";
-                dados.vitrine.forEach(p => {
-                    // Prepara a mensagem do WhatsApp
-                    const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto da vitrine: *${p.nome}*. Como faço para pedir?`);
-                    const linkZap = `https://wa.me/5511992279009?text=${textoZap}`;
+                
+                catalogoGlobal.forEach((p, index) => {
+                    // Pega a primeira foto (caso tenha várias separadas por vírgula)
+                    const primeiraFoto = p.foto.split(',')[0].trim();
                     
                     html += `
-                    <div class="produto-card">
-                        <img src="${p.foto}" alt="${p.nome}" class="produto-img" onerror="this.src='logo.jpg'">
-                        <div><span class="produto-tag">${p.categoria}</span></div>
-                        <h4 class="produto-nome">${p.nome}</h4>
-                        <p class="produto-desc">${p.descricao}</p>
-                        <div class="produto-preco">${p.preco}</div>
-                        <a href="${linkZap}" target="_blank" class="btn-comprar">🛒 EU QUERO</a>
+                    <div class="produto-card-mini" onclick="abrirModalProduto(${index})">
+                        <img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'">
+                        <div class="produto-info-mini">
+                            <span class="produto-tag-mini">${p.categoria}</span>
+                            <h4 class="produto-nome-mini">${p.nome}</h4>
+                            <div class="produto-preco-mini">${p.preco}</div>
+                        </div>
                     </div>`;
                 });
                 divVitrine.innerHTML = html;
-                document.getElementById("secao-minimundo").style.display = "block"; // Mostra a sessão inteira se tiver produto
+                document.getElementById("secao-minimundo").style.display = "block";
             } else {
                 divVitrine.innerHTML = "<p style='width:100%; text-align:center; color:#8D6E63; font-size:0.8rem;'>Vitrine em atualização...</p>";
             }
@@ -562,67 +563,92 @@
         }
     }
 
+    function abrirModalProduto(index) {
+        const p = catalogoGlobal[index];
+        if(!p) return;
+
+        // Extrai o array de fotos (separadas por vírgula)
+        const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
+        
+        // Seta a primeira imagem como principal
+        const imgPrincipal = document.getElementById("modal-foto-principal");
+        imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
+
+        // Cria as miniaturas (só mostra se tiver mais de 1 foto)
+        const divMiniaturas = document.getElementById("modal-miniaturas");
+        divMiniaturas.innerHTML = "";
+        
+        if (arrayFotos.length > 1) {
+            arrayFotos.forEach((linkFoto, i) => {
+                const imgMini = document.createElement("img");
+                imgMini.src = linkFoto;
+                imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
+                imgMini.onclick = function() {
+                    // Troca a foto principal
+                    imgPrincipal.src = linkFoto;
+                    // Atualiza a borda visual das miniaturas
+                    document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa"));
+                    imgMini.classList.add("ativa");
+                };
+                divMiniaturas.appendChild(imgMini);
+            });
+            divMiniaturas.style.display = "flex";
+        } else {
+            divMiniaturas.style.display = "none";
+        }
+
+        // Preenche os textos
+        document.getElementById("modal-tag").innerText = p.categoria;
+        document.getElementById("modal-titulo-prod").innerText = p.nome;
+        document.getElementById("modal-preco").innerText = p.preco;
+        document.getElementById("modal-desc").innerText = p.descricao;
+
+        // Configura o link do WhatsApp com mensagem pronta
+        const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
+        document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
+
+        // Abre o modal
+        document.getElementById("modal-produto").style.display = "flex";
+    }
+
+    function fecharModalProduto() {
+        document.getElementById("modal-produto").style.display = "none";
+    }
+
+    // Fecha o modal do produto se clicar no fundo preto
+    document.getElementById("modal-produto").addEventListener('click', function(e) {
+        if (e.target === this) fecharModalProduto();
+    });
+
     function criarCard(e, isFinished) {
         const dataObj = new Date(e.date);
         const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
         const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
-        
         const leagueStr = traduzirCampeonato(e.slug);
-
-        let estadioHtml = "";
-        if (e.stadium) {
-            estadioHtml = `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>`;
-        }
-
-        let botaoYouTube = "";
-        if (isFinished) {
-            const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
-            const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
-            
-            botaoYouTube = `
-                <a href="${linkBusca}" target="_blank" class="youtube-button dynamic-button">
-                    ▶️ Assistir Melhores Momentos
-                </a>
-            `;
-        }
+        const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
+        const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
 
         return `
             <div class="match-card">
                 <div class="league-label">${leagueStr}</div>
                 <div class="match-row">
-                    <div class="team-col home">
-                        ${e.homeTeam}
-                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                    </div>
-                    <div class="score-box">
-                        <span class="score">${infoPlacar}</span>
-                        <span class="date">${dataF}</span>
-                    </div>
-                    <div class="team-col away">
-                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                        ${e.awayTeam}
-                    </div>
+                    <div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div>
+                    <div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div>
+                    <div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div>
                 </div>
                 ${estadioHtml} ${botaoYouTube}
             </div>`;
     }
+    
     window.onload = carregarDoMeuServidor;
 
     // === GESTÃO DO TIMER E JOGO ===
     function iniciarTimer() {
-        clearInterval(timerQuiz);
-        tempoAtual = TEMPO_MAXIMO;
-        atualizarBarraVisual();
-        
+        clearInterval(timerQuiz); tempoAtual = TEMPO_MAXIMO; atualizarBarraVisual();
         timerQuiz = setInterval(() => {
-            tempoAtual--;
-            atualizarBarraVisual();
-            
-            if (tempoAtual <= 0) {
-                clearInterval(timerQuiz);
-                verificarResposta(null, -1); // Envia nulo para simular que o tempo esgotou
-            }
+            tempoAtual--; atualizarBarraVisual();
+            if (tempoAtual <= 0) { clearInterval(timerQuiz); verificarResposta(null, -1); }
         }, 1000);
     }
 
@@ -630,10 +656,9 @@
         const barra = document.getElementById("barra-tempo");
         const porcentagem = (tempoAtual / TEMPO_MAXIMO) * 100;
         barra.style.width = porcentagem + "%";
-        
-        if (porcentagem > 50) barra.style.background = "#25D366"; // Verde
-        else if (porcentagem > 20) barra.style.background = "#ffcc00"; // Amarelo
-        else barra.style.background = "#ff3333"; // Vermelho
+        if (porcentagem > 50) barra.style.background = "#25D366";
+        else if (porcentagem > 20) barra.style.background = "#ffcc00";
+        else barra.style.background = "#ff3333";
     }
 
     const frasesAcerto = ["🔥 Mandou bem! Próxima ➡️", "⚽ Golaço! Avançar ➡️", "🎯 Na mosca! Próxima ➡️", "🧠 É o Craque! Próxima ➡️", "⚡ Voando! Próxima ➡️"];
@@ -641,39 +666,29 @@
 
     function sortearPergunta() {
         if (bancoDePerguntas.length === 0) return;
-        
         document.getElementById("btn-proxima").style.display = "none";
-        
         const index = Math.floor(Math.random() * bancoDePerguntas.length);
         perguntaAtual = bancoDePerguntas[index];
         
         const animArea = document.getElementById("quiz-anim-area");
-        animArea.classList.remove("fade-in");
-        void animArea.offsetWidth; 
-        animArea.classList.add("fade-in");
-        
+        animArea.classList.remove("fade-in"); void animArea.offsetWidth; animArea.classList.add("fade-in");
         document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta;
         
-        const divBotoes = document.getElementById("quiz-botoes");
-        divBotoes.innerHTML = ""; 
-        
+        const divBotoes = document.getElementById("quiz-botoes"); divBotoes.innerHTML = ""; 
         perguntaAtual.opcoes.forEach((opcao, i) => {
             const numOpcao = i + 1;
             const btn = document.createElement("button");
-            btn.className = "quiz-btn";
-            btn.innerText = opcao;
+            btn.className = "quiz-btn"; btn.innerText = opcao;
             btn.onclick = () => verificarResposta(btn, numOpcao);
             divBotoes.appendChild(btn);
         });
 
-        iniciarTimer(); // Dispara o relógio quando a pergunta aparece
+        iniciarTimer();
     }
 
     function abrirModalConquista(marca) {
         let nivel = ""; let icone = "";
-        
         if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]);
-
         const btnShare = document.getElementById("modal-btn-share");
         btnShare.classList.remove("modal-btn-premio");
 
@@ -686,23 +701,18 @@
         document.getElementById("modal-icone").innerText = icone;
         document.getElementById("modal-titulo").innerText = nivel;
 
-        // O GRANDE PRÊMIO NA MARCA DE 30!
         if (marca >= 30 && marca % 30 === 0) {
             document.getElementById("modal-mensagem").innerHTML = `Você alcançou a marca épica de <b>${marca} acertos seguidos!</b> Tire um print desta tela e mande no WhatsApp da Mini Mundo para resgatar sua recompensa exclusiva num novo Chaveiro!`;
-            
             const linkZapDesconto = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Flamengo%21%20Quero%20meu%20desconto%21`;
             btnShare.href = linkZapDesconto;
             btnShare.innerText = "🎁 Resgatar Minha Recompensa";
             btnShare.classList.add("modal-btn-premio"); 
-
         } else {
             document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`;
             const textoZoeira = `${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
-            const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
-            btnShare.href = linkZap;
+            btnShare.href = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
             btnShare.innerText = "📱 Compartilhar e Zoar";
         }
-
         document.getElementById("modal-conquista").style.display = "flex";
     }
 
@@ -712,8 +722,7 @@
     }
 
     function verificarResposta(botaoClicado, numEscolhido) {
-        clearInterval(timerQuiz); // Pausa o relógio
-
+        clearInterval(timerQuiz); 
         const botoes = document.querySelectorAll(".quiz-btn");
         botoes.forEach(b => b.onclick = null); 
         
@@ -723,53 +732,31 @@
         
         if (numEscolhido === perguntaAtual.correta) {
             if (botaoClicado) botaoClicado.classList.add("correct");
-            
             if ("vibrate" in navigator) navigator.vibrate(50);
-
-            acertos++;
-            ofensiva++;
-            elementoChama.classList.add("chama-ativa"); 
-            
+            acertos++; ofensiva++; elementoChama.classList.add("chama-ativa"); 
             btnProxima.classList.add("acertou");
-            const fraseSorteada = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
-            btnProxima.innerText = fraseSorteada;
+            btnProxima.innerText = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
             
             if (ofensiva > recorde) {
                 recorde = ofensiva;
                 localStorage.setItem("quiz_recorde_flamengo", recorde);
                 document.getElementById("q-recorde").innerText = recorde;
             }
-            
-            if (ofensiva > 0 && ofensiva % 5 === 0) {
-                abrirModalConquista(ofensiva);
-            } else {
-                btnProxima.style.display = "block"; 
-            }
-
+            if (ofensiva > 0 && ofensiva % 5 === 0) abrirModalConquista(ofensiva);
+            else btnProxima.style.display = "block"; 
         } else {
-            // Identifica o erro ou o estouro de tempo
             if (botaoClicado) botaoClicado.classList.add("wrong");
-            botoes[perguntaAtual.correta - 1].classList.add("correct"); // Pinta a certa de verde
-            
+            botoes[perguntaAtual.correta - 1].classList.add("correct"); 
             if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
-
-            erros++;
-            ofensiva = 0;
-            elementoChama.classList.remove("chama-ativa");
-            
+            erros++; ofensiva = 0; elementoChama.classList.remove("chama-ativa");
             btnProxima.classList.add("errou");
             
-            if (!botaoClicado) { // Caiu aqui porque o tempo acabou
+            if (!botaoClicado) { 
                 btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️";
                 if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
-            } else {
-                const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
-                btnProxima.innerText = fraseSorteada;
-            }
-            
+            } else { btnProxima.innerText = frasesErro[Math.floor(Math.random() * frasesErro.length)]; }
             btnProxima.style.display = "block";
         }
-        
         document.getElementById("q-acertos").innerText = acertos;
         document.getElementById("q-erros").innerText = erros;
         document.getElementById("q-chama").innerText = ofensiva;
