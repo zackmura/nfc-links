@@ -115,6 +115,13 @@
         .row { display: flex; gap: 15px; }
         .col { flex: 1; }
 
+        /* Estilo dos Badges (Painéis de Informação) */
+        .badges-container { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .badge { font-size: 0.75rem; font-weight: 700; padding: 8px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        .badge-blue { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;}
+        .badge-green { background: #dcfce7; color: #047857; border: 1px solid #a7f3d0;}
+        .badge-spin { animation: spin 1s linear infinite; }
+
         .btn-magic { 
             width: 100%; 
             border: none; 
@@ -178,11 +185,11 @@
         .log-error { color: #ef4444; }
         .log-success { color: #10b981; font-weight: 500;}
 
-        /* Responsividade para Celular */
         @media (max-width: 600px) {
             .admin-card { padding: 25px 20px; }
             .row { flex-direction: column; gap: 0; }
             .input-group { margin-bottom: 15px; }
+            .badges-container { flex-direction: column; }
         }
     </style>
 </head>
@@ -205,9 +212,9 @@
     <div class="section-title">⚙️ 2. Parâmetros do Lote</div>
     <div class="row">
         <div class="col" style="flex: 2;">
-            <div class="input-group">
+            <div class="input-group" style="margin-bottom: 5px;">
                 <label for="time">Time de Destino:</label>
-                <select id="time">
+                <select id="time" onchange="carregarInfoBanco()">
                     <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
                     <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
                     <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
@@ -217,10 +224,19 @@
             </div>
         </div>
         <div class="col">
-            <div class="input-group">
+            <div class="input-group" style="margin-bottom: 5px;">
                 <label for="qtd">Qtd. Perguntas:</label>
                 <input type="number" id="qtd" value="5" min="1" max="15">
             </div>
+        </div>
+    </div>
+    
+    <div class="badges-container">
+        <div class="badge badge-blue" id="badge-total">
+            📊 Total neste time: Carregando...
+        </div>
+        <div class="badge badge-green" id="badge-ultimo">
+            🕒 Último lote gerado: Nenhum registro local
         </div>
     </div>
 
@@ -237,8 +253,13 @@
 
 <script>
     window.onload = () => {
+        // Carrega a chave salva
         const chaveSalva = localStorage.getItem("gemini_api_key");
         if(chaveSalva) document.getElementById("api-key").value = chaveSalva;
+        
+        // Atualiza a interface inicial
+        atualizarBadgeUltimo();
+        carregarInfoBanco(); // Conta as perguntas do time que já vem selecionado (Corinthians)
     };
 
     function salvarChave() {
@@ -252,8 +273,39 @@
         terminal.scrollTop = terminal.scrollHeight; 
     }
 
+    // === LÓGICA DE GERENCIAMENTO DOS DADOS (NOVOS BADGES) ===
+    function atualizarBadgeUltimo() {
+        const ultimoTime = localStorage.getItem("ultimo_time_gerado");
+        const ultimoHorario = localStorage.getItem("ultimo_horario_gerado");
+        const badge = document.getElementById("badge-ultimo");
+        
+        if (ultimoTime && ultimoHorario) {
+            badge.innerHTML = `🕒 Último lote: <b>${ultimoTime}</b> (${ultimoHorario})`;
+        }
+    }
+
+    async function carregarInfoBanco() {
+        const select = document.getElementById("time");
+        const url = select.value;
+        const badgeTotal = document.getElementById("badge-total");
+        
+        // Ícone girando para indicar que está carregando do Google
+        badgeTotal.innerHTML = `<svg class="badge-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Contando perguntas no servidor...`;
+        
+        try {
+            const resposta = await fetch(url);
+            const dados = await resposta.json();
+            
+            // Verifica se a chave quiz existe e pega o tamanho do Array (quantidade de perguntas)
+            const total = (dados.quiz && Array.isArray(dados.quiz)) ? dados.quiz.length : 0;
+            badgeTotal.innerHTML = `📊 Total cadastradas: <b>${total} perguntas</b>`;
+        } catch(err) {
+            badgeTotal.innerHTML = `⚠️ Erro ao verificar o total no banco.`;
+        }
+    }
+    // =======================================================
+
     async function chamarIA(timeNome, qtd, apiKey) {
-        // Atualizado para a versão 2.5 flash
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
         
         const prompt = `Atue como um especialista em futebol e na história dos clubes. Gere ${qtd} perguntas difíceis e criativas de múltipla escolha sobre o ${timeNome}.
@@ -339,7 +391,6 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         btn.disabled = true;
         btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sincronizando...`;
 
-        // Adiciona a keyframes para o icone girar no css via JS rapidinho
         if(!document.getElementById("spin-style")) {
             const style = document.createElement('style');
             style.id = "spin-style";
@@ -371,7 +422,16 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
                 if (resultadoPlanilha.repetidas > 0) {
                      addLog(`${resultadoPlanilha.repetidas} perguntas repetidas foram descartadas.`, "warn");
                 }
-                addLog("O aplicativo já reflete as novas atualizações.", "success");
+                
+                // === SALVA NA MEMÓRIA E ATUALIZA A TELA ===
+                const dataHora = new Date().toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'});
+                localStorage.setItem("ultimo_time_gerado", timeNome);
+                localStorage.setItem("ultimo_horario_gerado", dataHora);
+                
+                atualizarBadgeUltimo();
+                carregarInfoBanco(); // Refaz a contagem na hora para você ver o número subir
+                // ==========================================
+
             } else {
                 throw new Error(resultadoPlanilha.erro);
             }
