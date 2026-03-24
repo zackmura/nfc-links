@@ -115,7 +115,6 @@
         .row { display: flex; gap: 15px; }
         .col { flex: 1; }
 
-        /* Estilo dos Badges (Painéis de Informação) */
         .badges-container { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
         .badge { font-size: 0.75rem; font-weight: 700; padding: 8px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         .badge-blue { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;}
@@ -125,10 +124,10 @@
         .btn-magic { 
             width: 100%; 
             border: none; 
-            padding: 18px; 
+            padding: 16px; 
             border-radius: 14px; 
             font-weight: 800; 
-            font-size: 1.1rem; 
+            font-size: 1rem; 
             cursor: pointer; 
             transition: all 0.3s ease; 
             display: flex; 
@@ -137,30 +136,23 @@
             gap: 10px; 
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); 
             color: white; 
-            margin-top: 30px; 
+            margin-top: 25px; 
             box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .btn-magic:hover { 
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.5);
-        }
+        .btn-magic:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(59, 130, 246, 0.5); }
+        .btn-magic:active { transform: translateY(1px); }
+        .btn-magic:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; color: #94a3b8; transform: none; }
 
-        .btn-magic:active { 
-            transform: translateY(1px); 
+        .btn-global {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            margin-top: 10px;
         }
+        .btn-global:hover { box-shadow: 0 15px 30px rgba(16, 185, 129, 0.5); }
 
-        .btn-magic:disabled { 
-            background: #cbd5e1; 
-            cursor: not-allowed; 
-            box-shadow: none; 
-            color: #94a3b8;
-            transform: none;
-        }
-
-        /* Terminal Estilo Dev */
         .log-container { 
             background: #0f172a; 
             border-radius: 14px; 
@@ -206,20 +198,26 @@
     <div class="input-group">
         <label for="api-key">Chave Privada (Google AI Studio):</label>
         <input type="password" id="api-key" placeholder="AIzaSy..." onchange="salvarChave()">
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; font-weight: 500;">Sua chave fica armazenada com segurança apenas neste navegador.</p>
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; font-weight: 500;">Sua chave fica armazenada neste navegador.</p>
     </div>
 
     <div class="section-title">⚙️ 2. Parâmetros do Lote</div>
     <div class="row">
+        <div class="col">
+            <div class="input-group" style="margin-bottom: 5px;">
+                <label for="tema">Foco Temático (Opcional):</label>
+                <input type="text" id="tema" placeholder="Ex: Libertadores 2012, Finais, etc...">
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col" style="flex: 2;">
             <div class="input-group" style="margin-bottom: 5px;">
-                <label for="time">Time de Destino:</label>
-                <select id="time" onchange="carregarInfoBanco()">
-                    <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
-                    <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
-                    <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
-                    <option value="https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec" data-nome="Santos">🐳 Santos</option>
-                    <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
+                <label for="dificuldade">Dificuldade:</label>
+                <select id="dificuldade">
+                    <option value="fáceis (nível amador)">🟢 Fácil</option>
+                    <option value="médias (nível torcedor frequente)" selected>🟡 Médio</option>
+                    <option value="muito difíceis e obscuras (nível hardcore)">🔴 Hardcore (Difícil)</option>
                 </select>
             </div>
         </div>
@@ -230,19 +228,31 @@
             </div>
         </div>
     </div>
-    
-    <div class="badges-container">
-        <div class="badge badge-blue" id="badge-total">
-            📊 Total neste time: Carregando...
-        </div>
-        <div class="badge badge-green" id="badge-ultimo">
-            🕒 Último lote gerado: Nenhum registro local
-        </div>
+
+    <div class="input-group" style="margin-bottom: 5px; margin-top: 10px;">
+        <label for="time">Selecionar Time Específico:</label>
+        <select id="time" onchange="carregarInfoBanco()">
+            <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
+            <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
+            <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
+            <option value="https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec" data-nome="Santos">🐳 Santos</option>
+            <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
+        </select>
     </div>
 
-    <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        Gerar e Sincronizar
+    <div class="badges-container">
+        <div class="badge badge-blue" id="badge-total">📊 Total neste time: Carregando...</div>
+        <div class="badge badge-green" id="badge-ultimo">🕒 Último lote: Nenhum</div>
+    </div>
+
+    <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao(false)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Gerar Apenas para o Time Selecionado
+    </button>
+    
+    <button id="btn-global" class="btn-magic btn-global" onclick="iniciarAutomacao(true)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        GERAR PARA TODOS OS TIMES (LOTE GLOBAL)
     </button>
 
     <div class="section-title">📟 3. Terminal de Atividade</div>
@@ -253,13 +263,10 @@
 
 <script>
     window.onload = () => {
-        // Carrega a chave salva
         const chaveSalva = localStorage.getItem("gemini_api_key");
         if(chaveSalva) document.getElementById("api-key").value = chaveSalva;
-        
-        // Atualiza a interface inicial
         atualizarBadgeUltimo();
-        carregarInfoBanco(); // Conta as perguntas do time que já vem selecionado (Corinthians)
+        carregarInfoBanco(); 
     };
 
     function salvarChave() {
@@ -273,14 +280,11 @@
         terminal.scrollTop = terminal.scrollHeight; 
     }
 
-    // === LÓGICA DE GERENCIAMENTO DOS DADOS (NOVOS BADGES) ===
     function atualizarBadgeUltimo() {
         const ultimoTime = localStorage.getItem("ultimo_time_gerado");
         const ultimoHorario = localStorage.getItem("ultimo_horario_gerado");
-        const badge = document.getElementById("badge-ultimo");
-        
         if (ultimoTime && ultimoHorario) {
-            badge.innerHTML = `🕒 Último lote: <b>${ultimoTime}</b> (${ultimoHorario})`;
+            document.getElementById("badge-ultimo").innerHTML = `🕒 Último: <b>${ultimoTime}</b> (${ultimoHorario})`;
         }
     }
 
@@ -289,28 +293,31 @@
         const url = select.value;
         const badgeTotal = document.getElementById("badge-total");
         
-        // Ícone girando para indicar que está carregando do Google
-        badgeTotal.innerHTML = `<svg class="badge-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Contando perguntas no servidor...`;
+        badgeTotal.innerHTML = `<svg class="badge-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Contando...`;
         
         try {
             const resposta = await fetch(url);
             const dados = await resposta.json();
-            
-            // Verifica se a chave quiz existe e pega o tamanho do Array (quantidade de perguntas)
             const total = (dados.quiz && Array.isArray(dados.quiz)) ? dados.quiz.length : 0;
             badgeTotal.innerHTML = `📊 Total cadastradas: <b>${total} perguntas</b>`;
         } catch(err) {
-            badgeTotal.innerHTML = `⚠️ Erro ao verificar o total no banco.`;
+            badgeTotal.innerHTML = `⚠️ Erro ao verificar o total.`;
         }
     }
-    // =======================================================
 
-    async function chamarIA(timeNome, qtd, apiKey) {
+    // Função que faz o time-out (para não sobrecarregar a IA)
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    async function chamarIA(timeNome, qtd, apiKey, tema, dificuldade) {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
         
-        const prompt = `Atue como um especialista em futebol e na história dos clubes. Gere ${qtd} perguntas difíceis e criativas de múltipla escolha sobre o ${timeNome}.
-Regras ESTRITAS de formatação (Siga exatamente assim para cada pergunta, com uma linha em branco separando os blocos):
+        let instrucaoTema = tema ? `O tema PRINCIPAL E OBRIGATÓRIO destas perguntas deve ser sobre: "${tema}". Se afaste de perguntas genéricas.` : `Varie bem os temas (jogadores históricos, títulos, campanhas, curiosidades).`;
 
+        const prompt = `Atue como um especialista fanático em futebol e na história do ${timeNome}. 
+Gere ${qtd} perguntas ${dificuldade} de múltipla escolha.
+${instrucaoTema}
+
+Regras ESTRITAS de formatação (Siga exatamente assim para cada pergunta, com uma linha em branco separando os blocos):
 Pergunta: [Escreva a pergunta]
 A) [Opção 1]
 B) [Opção 2]
@@ -320,9 +327,7 @@ Correta: [Apenas o número 1, 2, 3 ou 4]
 
 NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue apenas o texto puro pedido acima.`;
 
-        const payload = {
-            contents: [{ parts: [{ text: prompt }] }]
-        };
+        const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
         const resposta = await fetch(url, {
             method: 'POST',
@@ -330,10 +335,7 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
             body: JSON.stringify(payload)
         });
 
-        if (!resposta.ok) {
-            throw new Error(`Acesso negado pela IA (${resposta.status}). Verifique sua chave.`);
-        }
-
+        if (!resposta.ok) throw new Error(`Acesso negado (${resposta.status}).`);
         const dados = await resposta.json();
         return dados.candidates[0].content.parts[0].text;
     }
@@ -353,7 +355,6 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
                 
                 const linhaCorreta = linhas.find(l => /Correta/i.test(l));
                 let correta = 1;
-                
                 if (linhaCorreta) {
                     const match = linhaCorreta.match(/\d+/);
                     if (match) correta = parseInt(match[0]);
@@ -378,18 +379,48 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         return await resposta.json();
     }
 
-    async function iniciarAutomacao() {
+    // Função central que processa UM time específico
+    async function processarTimeUnico(timeNome, timeUrl, qtd, apiKey, tema, dificuldade) {
+        addLog(`>> PROCESSANDO: ${timeNome.toUpperCase()}`, "warn");
+        addLog(`Criando ${qtd} perguntas (Nível: ${dificuldade})...`, "info");
+        
+        const respostaIA = await chamarIA(timeNome, qtd, apiKey, tema, dificuldade);
+        const perguntasFormatadas = extrairPerguntas(respostaIA);
+        
+        if(perguntasFormatadas.length === 0) throw new Error("A IA gerou um texto fora do padrão.");
+        
+        addLog(`Enviando ${perguntasFormatadas.length} perguntas para a planilha...`, "info");
+        const resultadoPlanilha = await enviarParaPlanilha(timeUrl, perguntasFormatadas);
+
+        if(resultadoPlanilha.sucesso) {
+            addLog(`✅ SUCESSO NO ${timeNome.toUpperCase()}! (+${resultadoPlanilha.adicionadas} adicionadas)`, "success");
+            if (resultadoPlanilha.repetidas > 0) addLog(`⚠️ ${resultadoPlanilha.repetidas} repetidas descartadas.`, "warn");
+            
+            const dataHora = new Date().toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'});
+            localStorage.setItem("ultimo_time_gerado", timeNome);
+            localStorage.setItem("ultimo_horario_gerado", dataHora);
+        } else {
+            throw new Error(resultadoPlanilha.erro);
+        }
+    }
+
+    // Função chamada pelos botões
+    async function iniciarAutomacao(modoGlobal) {
         const apiKey = document.getElementById("api-key").value.trim();
         if(!apiKey) return addLog("ERRO: Chave da IA não informada!", "error");
 
-        const select = document.getElementById("time");
-        const timeUrl = select.value;
-        const timeNome = select.options[select.selectedIndex].getAttribute("data-nome");
         const qtd = document.getElementById("qtd").value;
-        const btn = document.getElementById("btn-iniciar");
+        const tema = document.getElementById("tema").value.trim();
+        const dificuldade = document.getElementById("dificuldade").value;
+        
+        const btnUnico = document.getElementById("btn-iniciar");
+        const btnGlobal = document.getElementById("btn-global");
 
-        btn.disabled = true;
-        btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Sincronizando...`;
+        // Trava os botões
+        btnUnico.disabled = true;
+        btnGlobal.disabled = true;
+        
+        const spinSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
 
         if(!document.getElementById("spin-style")) {
             const style = document.createElement('style');
@@ -399,49 +430,54 @@ NÃO escreva introdução, NÃO escreva conclusão, NÃO use negrito, entregue a
         }
 
         try {
-            addLog(`--- INICIANDO LOTE: ${timeNome.toUpperCase()} ---`, "warn");
-            
-            addLog(`Solicitando ${qtd} perguntas ao motor da IA...`, "info");
-            const respostaIA = await chamarIA(timeNome, qtd, apiKey);
-            addLog("Sucesso. Cérebro artificial respondeu.", "success");
-            
-            addLog("Processando e limpando os dados...", "info");
-            const perguntasFormatadas = extrairPerguntas(respostaIA);
-            
-            if(perguntasFormatadas.length === 0) {
-                throw new Error("A IA gerou um texto fora do padrão. Impossível extrair.");
-            }
-            addLog(`${perguntasFormatadas.length} perguntas validadas.`, "success");
-
-            addLog("Injetando dados na Planilha do Google...", "info");
-            const resultadoPlanilha = await enviarParaPlanilha(timeUrl, perguntasFormatadas);
-
-            if(resultadoPlanilha.sucesso) {
-                addLog(`OPERAÇÃO CONCLUÍDA COM SUCESSO!`, "success");
-                addLog(`Foram adicionadas ${resultadoPlanilha.adicionadas} novas perguntas.`, "info");
-                if (resultadoPlanilha.repetidas > 0) {
-                     addLog(`${resultadoPlanilha.repetidas} perguntas repetidas foram descartadas.`, "warn");
+            if (modoGlobal) {
+                btnGlobal.innerHTML = `${spinSvg} PROCESSANDO TODOS OS TIMES...`;
+                addLog(`--- INICIANDO LOTE GLOBAL (${qtd} perguntas p/ cada) ---`, "warn");
+                if(tema) addLog(`Tema Global: "${tema}"`, "info");
+                
+                const select = document.getElementById("time");
+                const options = Array.from(select.options);
+                
+                for (let i = 0; i < options.length; i++) {
+                    const opt = options[i];
+                    const timeNome = opt.getAttribute("data-nome");
+                    const timeUrl = opt.value;
+                    
+                    try {
+                        await processarTimeUnico(timeNome, timeUrl, qtd, apiKey, tema, dificuldade);
+                    } catch (e) {
+                        addLog(`❌ ERRO NO ${timeNome.toUpperCase()}: ${e.message}`, "error");
+                    }
+                    
+                    // Pequena pausa entre os times para não engasgar a IA
+                    if (i < options.length - 1) {
+                        addLog("Aguardando 3 segundos para o próximo time...", "info");
+                        await delay(3000); 
+                    }
                 }
-                
-                // === SALVA NA MEMÓRIA E ATUALIZA A TELA ===
-                const dataHora = new Date().toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'});
-                localStorage.setItem("ultimo_time_gerado", timeNome);
-                localStorage.setItem("ultimo_horario_gerado", dataHora);
-                
-                atualizarBadgeUltimo();
-                carregarInfoBanco(); // Refaz a contagem na hora para você ver o número subir
-                // ==========================================
+                addLog(`--- LOTE GLOBAL FINALIZADO ---`, "success");
 
             } else {
-                throw new Error(resultadoPlanilha.erro);
+                btnUnico.innerHTML = `${spinSvg} SINCRONIZANDO...`;
+                const select = document.getElementById("time");
+                const timeUrl = select.value;
+                const timeNome = select.options[select.selectedIndex].getAttribute("data-nome");
+                
+                if(tema) addLog(`Tema: "${tema}"`, "info");
+                await processarTimeUnico(timeNome, timeUrl, qtd, apiKey, tema, dificuldade);
             }
 
+            atualizarBadgeUltimo();
+            carregarInfoBanco(); 
+
         } catch (erro) {
-            addLog(`FALHA NA OPERAÇÃO: ${erro.message}`, "error");
+            addLog(`FALHA GERAL: ${erro.message}`, "error");
         } finally {
-            btn.disabled = false;
-            btn.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Gerar e Sincronizar`;
-            addLog("--- FIM DA OPERAÇÃO ---", "warn");
+            // Destrava os botões
+            btnUnico.disabled = false;
+            btnGlobal.disabled = false;
+            btnUnico.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Gerar Apenas para o Time Selecionado`;
+            btnGlobal.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> GERAR PARA TODOS OS TIMES (LOTE GLOBAL)`;
         }
     }
 </script>
