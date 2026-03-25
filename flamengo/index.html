@@ -171,7 +171,7 @@
         .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;}
         .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;}
         
-        /* 🔥 BOTÃO INTELIGENTE DE GPS ATUALIZADO 🔥 */
+        /* 🔥 BOTAO INTELIGENTE DE GPS ATUALIZADO 🔥 */
         .modal-ad-endereco { font-size: 0.85rem; color: #333; margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
         .modal-ad-endereco:active { transform: scale(0.98); }
         .map-hint { margin-left: auto; font-size: 0.75rem; color: #fff; font-weight: 800; text-transform: uppercase; background: #3b82f6; padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(59,130,246,0.3); display: flex; align-items: center; gap: 4px;}
@@ -400,6 +400,19 @@
     let radarInterval = null; const TEMPO_MAXIMO = 15; let tempoAtual = TEMPO_MAXIMO; let timerQuiz = null;
     let catalogoGlobal = []; let anunciosGlobal = [];
 
+    // === FUNÇÃO MÁGICA: EMBELEZAR PREÇO ===
+    function formatarPreco(valorString) {
+        if(!valorString) return "";
+        let v = String(valorString).trim();
+        if(v.toUpperCase().includes("R$")) return v; // Se já tiver R$, não mexe
+        // Se for um número inteiro ou decimal (ex: 50 ou 50.90)
+        if(!isNaN(v.replace(',','.'))) {
+            let num = parseFloat(v.replace(',','.'));
+            return "R$ " + num.toFixed(2).replace('.', ',');
+        }
+        return "R$ " + v;
+    }
+
     function verificarPasseLivre() {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('t');
@@ -594,7 +607,7 @@
         } else { divMiniaturas.style.display = "none"; }
 
         document.getElementById("modal-tag").innerText = p.categoria; document.getElementById("modal-titulo-prod").innerText = p.nome;
-        document.getElementById("modal-preco").innerText = p.preco; document.getElementById("modal-desc").innerText = p.descricao;
+        document.getElementById("modal-preco").innerText = formatarPreco(p.preco); document.getElementById("modal-desc").innerText = p.descricao;
         const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
         document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
         document.getElementById("modal-produto").style.display = "flex";
@@ -602,7 +615,7 @@
     function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
     document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
-    // === REDE DE ANÚNCIOS (COM BOTÃO MAPA INTELIGENTE) ===
+    // === REDE DE ANÚNCIOS (COM BOTÃO MAPA INTELIGENTE E FORMATAÇÃO DE PREÇO) ===
     async function carregarAnuncios() {
         try {
             const res = await fetch(API_ANUNCIOS);
@@ -614,6 +627,10 @@
                 anunciosGlobal = dados.anuncios;
                 let html = "";
                 anunciosGlobal.forEach((ad, index) => {
+                    let precoFormatado = formatarPreco(ad.preco_oferta);
+                    let precoHtml = precoFormatado ? `<div class="ad-preco">${precoFormatado}</div>` : '';
+                    let cupomHtml = ad.cupom ? `<div class="ad-cupom">🎟️ ${ad.cupom}</div>` : '';
+                    
                     html += `
                     <div class="ad-card-mini" onclick="abrirModalAnuncio(${index})">
                         <div class="ad-img-wrapper">
@@ -647,16 +664,22 @@
         document.getElementById("modal-ad-desc").innerText = ad.descricao;
         
         const precoEl = document.getElementById("modal-ad-preco");
-        if(ad.preco_oferta) { precoEl.innerText = ad.preco_oferta; precoEl.style.display = "block"; } else { precoEl.style.display = "none"; }
+        if(ad.preco_oferta) { 
+            precoEl.innerText = formatarPreco(ad.preco_oferta); 
+            precoEl.style.display = "block"; 
+        } else { 
+            precoEl.style.display = "none"; 
+        }
         
         const cupomEl = document.getElementById("modal-ad-cupom");
         if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
         
+        // O Botão de Endereço Inteligente
         const endEl = document.getElementById("modal-ad-endereco");
         const endText = document.getElementById("modal-ad-endereco-text");
         if(ad.endereco) { 
             endText.innerText = ad.endereco; 
-            endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`;
+            endEl.href = `https://www.google.com/maps/search/?api=1&query=$?q=${encodeURIComponent(ad.endereco)}`;
             endEl.style.display = "flex"; 
         } else { 
             endEl.style.display = "none"; 
@@ -664,6 +687,7 @@
         
         document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
         
+        // O Botão de Ligar
         const btnCall = document.getElementById("modal-ad-call");
         if(ad.telefone) { 
             btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; 
