@@ -158,7 +158,7 @@
         .titulo-modal { font-size: 1.3rem; font-weight: 900; color: #222; margin: 0; line-height: 1.2;}
         .preco-modal { font-size: 1.5rem; font-weight: 900; color: #2E7D32; margin: 0;}
         .desc-modal { font-size: 0.85rem; color: #555; line-height: 1.5; margin: 5px 0 15px; white-space: pre-wrap;}
-        .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); text-decoration: none;}
+        .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); transition: transform 0.1s, box-shadow 0.1s; text-decoration: none;}
         .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a;}
 
         /* Modal Anúncio Específicos */
@@ -171,10 +171,10 @@
         .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;}
         .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;}
         
-        /* NOVO: Botão Inteligente de GPS (Endereço) */
-        .modal-ad-endereco { font-size: 0.8rem; color: #333; margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #e9ecef; text-decoration: none; transition: background 0.2s;}
-        .modal-ad-endereco:active { background: #e2e8f0; }
-        .map-hint { margin-left: auto; font-size: 0.7rem; color: #c90000; font-weight: 800; text-transform: uppercase; background: #ffe6e6; padding: 4px 8px; border-radius: 6px;}
+        /* 🔥 BOTÃO INTELIGENTE DE GPS ATUALIZADO 🔥 */
+        .modal-ad-endereco { font-size: 0.85rem; color: #333; margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .modal-ad-endereco:active { transform: scale(0.98); }
+        .map-hint { margin-left: auto; font-size: 0.75rem; color: #fff; font-weight: 800; text-transform: uppercase; background: #3b82f6; padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(59,130,246,0.3); display: flex; align-items: center; gap: 4px;}
 
         .modal-ad-buttons { display: flex; gap: 10px; }
         .btn-ad-zap { flex: 2; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1b9b4a; transition: transform 0.1s;}
@@ -365,7 +365,7 @@
             
             <a id="modal-ad-endereco" href="#" target="_blank" class="modal-ad-endereco" style="display:none;">
                 📍 <span id="modal-ad-endereco-text">Endereço da loja</span>
-                <span class="map-hint">🗺️ Ver no Mapa</span>
+                <span class="map-hint">🗺️ ROTA</span>
             </a>
             
             <div class="modal-ad-buttons">
@@ -395,7 +395,6 @@
     const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
-    // Variáveis Globais
     let bancoDePerguntas = []; let perguntaAtual = null; let acertos = 0; let erros = 0; let ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
     let radarInterval = null; const TEMPO_MAXIMO = 15; let tempoAtual = TEMPO_MAXIMO; let timerQuiz = null;
@@ -603,7 +602,7 @@
     function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
     document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
-    // === REDE DE ANÚNCIOS (MAPA E LIGAÇÃO INTEGRADOS) ===
+    // === REDE DE ANÚNCIOS (COM BOTÃO MAPA INTELIGENTE) ===
     async function carregarAnuncios() {
         try {
             const res = await fetch(API_ANUNCIOS);
@@ -653,12 +652,10 @@
         const cupomEl = document.getElementById("modal-ad-cupom");
         if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
         
-        // O Botão de Endereço Inteligente
         const endEl = document.getElementById("modal-ad-endereco");
         const endText = document.getElementById("modal-ad-endereco-text");
         if(ad.endereco) { 
             endText.innerText = ad.endereco; 
-            // Rota inteligente para abrir o Google Maps direto no app ou navegador
             endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`;
             endEl.style.display = "flex"; 
         } else { 
@@ -667,10 +664,8 @@
         
         document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
         
-        // O Botão de Ligar
         const btnCall = document.getElementById("modal-ad-call");
         if(ad.telefone) { 
-            // Usa o protocolo tel: para abrir o discador do celular
             btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; 
             btnCall.style.display = "flex"; 
         } else { 
