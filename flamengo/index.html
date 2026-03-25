@@ -171,7 +171,6 @@
         .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;}
         .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;}
         
-        /* 🔥 BOTAO DE MAPA AZUL REFEITO 🔥 */
         .modal-ad-endereco { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); transition: transform 0.2s;}
         .modal-ad-endereco:active { transform: scale(0.98); }
         .modal-ad-endereco-icon { background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);}
@@ -527,12 +526,12 @@
         const resDiv = document.getElementById("resultados"), classDiv = document.getElementById("classificacao"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
 
         try {
-            // 🔥 PROTEÇÃO ANTI-TRAVAMENTO (TIMEOUT DE 15 SEGUNDOS) 🔥
+            // 🔥 TRATAMENTO DE TIMEOUT DA ESPN (15 SEGUNDOS) 🔥
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
             const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal });
-            clearTimeout(timeoutId); // Limpa o cronômetro se respondeu rápido
+            clearTimeout(timeoutId);
 
             const dados = await resposta.json();
 
@@ -552,10 +551,6 @@
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
             classDiv.innerHTML = "";
-            if (dados.leagueName && dados.leagueName !== "Classificação") {
-                document.getElementById("titulo-classificacao").innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
-            }
-            
             if (dados.table && dados.table.length > 0) {
                 let tableToRender = dados.table.slice(0, 10);
                 if (!tableToRender.some(t => t.team.toLowerCase().includes('flamengo'))) {
@@ -576,20 +571,18 @@
             if (dados.news && dados.news.length > 0) {
                 dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
             }
-        } catch (err) { 
+        } catch (err) {
             console.error("Erro na API de Futebol:", err); 
+            // 🔥 MENSAGEM AMIGÁVEL PARA O TORCEDOR SE A ESPN TRAVAR 🔥
             let msgErro = "Erro de conexão com o servidor.";
-            
-            // Se o erro foi gerado pelo nosso Relógio-Bomba
             if (err.name === 'AbortError') {
-                msgErro = "A API de futebol da ESPN demorou muito para responder. Tente recarregar a página.";
+                msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!";
             }
-            
-            resDiv.innerHTML = `<div style='padding:20px; color:#cc0000; text-align:center; font-weight:800;'>${msgErro}</div>`;
-            classDiv.innerHTML = `<tr><td colspan='7' style='padding:20px; color:#cc0000; font-weight:800;'>${msgErro}</td></tr>`;
+            resDiv.innerHTML = `<div style='padding:20px; color:#c90000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
+            classDiv.innerHTML = `<tr><td colspan='7' style='padding:20px; color:#c90000; font-weight:800; font-size:0.85rem; line-height:1.4;'>${msgErro}</td></tr>`;
             ageDiv.innerHTML = "";
             newsDiv.innerHTML = "";
-            statusUpdate.innerText = "Offline temporariamente";
+            statusUpdate.innerText = "VAR revisando conexão...";
         }
     }
 
@@ -643,7 +636,7 @@
     function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
     document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
-    // === REDE DE ANÚNCIOS (COM BOTÃO MAPA INTELIGENTE E FORMATAÇÃO DE PREÇO) ===
+    // === REDE DE ANÚNCIOS ===
     async function carregarAnuncios() {
         try {
             const res = await fetch(API_ANUNCIOS);
@@ -702,7 +695,6 @@
         const cupomEl = document.getElementById("modal-ad-cupom");
         if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
         
-        // 🔥 O NOVO Botão de Endereço Inteligente (Abre Google Maps Direto)
         const endEl = document.getElementById("modal-ad-endereco");
         const endText = document.getElementById("modal-ad-endereco-text");
         if(ad.endereco) { 
