@@ -224,38 +224,26 @@
     }
 
     // === ENVIO PARA O SEU SERVIDOR (ONIONSYS) ===
-async function uploadParaOnionSys(fileComprimido) {
-    const formData = new FormData();
-    
-    // 1. MUDE "file" PARA "imagem" (é o nome que definimos no upload.single('imagem') no Node)
-    formData.append("imagem", fileComprimido); 
+    async function uploadParaOnionSys(fileComprimido) {
+        const formData = new FormData();
+        // A maioria das APIs aceita 'file'. Se o seu backend estiver configurado para 'imagem', mude a palavra abaixo.
+        formData.append("file", fileComprimido); 
 
-    const response = await fetch(API_ONIONSYS, {
-        method: "POST",
-        headers: {
-            "Authorization": Bearer ${TOKEN_ONIONSYS},
-            // Se você adicionou o x-tenant-id no middleware, coloque aqui também:
-            "x-tenant-id": "MiniMundo"
-        },
-        body: formData
-    });
+        const response = await fetch(API_ONIONSYS, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${TOKEN_ONIONSYS}`
+            },
+            body: formData
+        });
 
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || Falha no Servidor OnionSys (Erro ${response.status}));
+        if (!response.ok) {
+            throw new Error(`Falha no Servidor OnionSys (Erro ${response.status})`);
+        }
+
+        // Retorna o link final pronto para ser lido pelo App
+        return URL_BASE_IMAGENS + encodeURIComponent(fileComprimido.name);
     }
-
-    // 2. USE A URL QUE VEM DO BACKEND
-    // Como o backend gera um nome novo (ex: foto-17158923.jpg), 
-    // não podemos mais usar o nome original do arquivo.
-    const resultado = await response.json();
-    
-    if (resultado.success) {
-        return resultado.url; // Retorna a URL completa: https://api.onionsys.com.br/arquivos/...
-    } else {
-        throw new Error(resultado.message || "Erro desconhecido no upload");
-    }
-}
 
     async function enviarAnuncio() {
         const empresa = document.getElementById("empresa");
