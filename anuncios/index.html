@@ -77,8 +77,18 @@
             </div>
 
             <div class="input-group">
+                <label for="logo">Logo da Empresa (Foto Redonda)</label>
+                <input type="file" id="logo" accept="image/*">
+            </div>
+
+            <div class="input-group">
                 <label for="descricao">Chamada do Anúncio (Oferta)</label>
                 <input type="text" id="descricao" placeholder="Ex: Ganhe 10% OFF na Pizza de Calabresa hoje!">
+            </div>
+
+            <div class="input-group">
+                <label for="endereco">Endereço (Para GPS)</label>
+                <input type="text" id="endereco" placeholder="Ex: Rua Julio Conceição 776, Bom Retiro">
             </div>
 
             <div class="row">
@@ -103,7 +113,7 @@
             </div>
 
             <div class="input-group">
-                <label for="foto">Foto do Produto ou Banner</label>
+                <label for="foto">Foto do Banner Principal (Retangular)</label>
                 <input type="file" id="foto" accept="image/*">
             </div>
 
@@ -122,28 +132,55 @@
 
 <script>
     // ==========================================
-    // ⚠️ COLOQUE SUAS CHAVES AQUI ANTES DE SUBIR!
+    // CONFIGURAÇÕES DA SUA INFRAESTRUTURA
     // ==========================================
-    const URL_DO_SEU_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec"; // Aquela terminada em /exec
-    const SUA_CHAVE_IMGBB = "a76cc9454f6c230b1b5b48b63ed9012e"; // Sua chave do ImgBB
-    const SEU_WHATSAPP_FINANCEIRO = "5511992279009"; // O seu número da Mini Mundo
+    const URL_DO_SEU_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec"; 
+    
+    // SUA API ONIONSYS
+    const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/vitrine";
+    const URL_BASE_IMAGENS = "https://api.onionsys.com.br/imagens/catalogo/";
+    
+    const SEU_WHATSAPP_FINANCEIRO = "5511992279009"; 
+
+    // Função de Upload para o seu próprio servidor OnionSys
+    async function uploadParaOnionSys(file) {
+        const formData = new FormData();
+        
+        // NOTA: Se a sua API rejeitar, verifique se o nome do campo é "file", "image" ou "imagem".
+        // O padrão web é "file", deixei assim, mas qualquer coisa é só trocar aqui embaixo:
+        formData.append("file", file); 
+
+        const res = await fetch(API_ONIONSYS, {
+            method: "POST",
+            body: formData
+        });
+
+        // Mesmo se a API não retornar o JSON com o link pronto, nós montamos o link 
+        // usando a URL base + o nome do arquivo codificado (para tratar os espaços)
+        const nomeFormatado = encodeURIComponent(file.name);
+        return URL_BASE_IMAGENS + nomeFormatado;
+    }
 
     async function enviarAnuncio() {
         const empresa = document.getElementById("empresa").value.trim();
         const descricao = document.getElementById("descricao").value.trim();
+        const endereco = document.getElementById("endereco").value.trim();
         const preco = document.getElementById("preco").value.trim();
         const cupom = document.getElementById("cupom").value.trim();
         let whatsapp = document.getElementById("whatsapp").value.trim();
+        
+        const inputLogo = document.getElementById("logo");
         const inputFoto = document.getElementById("foto");
+        
         const btn = document.getElementById("btn-enviar");
         const loading = document.getElementById("loading-msg");
 
-        if(!empresa || !descricao || !whatsapp || inputFoto.files.length === 0) {
-            alert("Por favor, preencha a Empresa, Descrição, WhatsApp e anexe uma foto.");
+        // Validação
+        if(!empresa || !descricao || !whatsapp || inputFoto.files.length === 0 || inputLogo.files.length === 0) {
+            alert("Por favor, preencha todos os campos obrigatórios e anexe o Logo e o Banner.");
             return;
         }
 
-        // Limpa o número de WhatsApp (tira traços, parênteses e espaços)
         whatsapp = whatsapp.replace(/\D/g, '');
         if(whatsapp.length < 10) {
             alert("Por favor, informe um número de WhatsApp válido com DDD.");
@@ -152,33 +189,27 @@
         const linkWhatsApp = `https://wa.me/55${whatsapp}`;
 
         btn.disabled = true;
-        btn.innerText = "Aguarde...";
+        btn.innerText = "Enviando arquivos...";
         loading.style.display = "block";
 
         try {
-            // 1. UPLOAD DA FOTO PARA O IMGBB
-            const formData = new FormData();
-            formData.append("image", inputFoto.files[0]);
-            
-            const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${SUA_CHAVE_IMGBB}`, {
-                method: "POST",
-                body: formData
-            });
-            const imgData = await imgRes.json();
-            
-            if(!imgData.success) throw new Error("Falha no upload da foto.");
-            
-            const linkDaFoto = imgData.data.url;
+            // 1. UPLOAD DAS IMAGENS PARA A API ONIONSYS
+            const linkDaLogo = await uploadParaOnionSys(inputLogo.files[0]);
+            const linkDoBanner = await uploadParaOnionSys(inputFoto.files[0]);
 
             // 2. ENVIAR PARA O GOOGLE SHEETS
+            // O payload agora segue a estrutura idêntica do iFood que colocamos no Analytics
             const payloadSheets = {
                 acao: "salvar_anuncio",
                 empresa: empresa,
+                logo: linkDaLogo,
                 descricao: descricao,
                 preco_oferta: preco,
                 cupom: cupom,
+                endereco: endereco,
+                telefone: whatsapp, // Telefone puro para o botão de Ligar
                 link_zap: linkWhatsApp,
-                foto: linkDaFoto
+                foto: linkDoBanner
             };
 
             const respostaSheets = await fetch(URL_DO_SEU_APPS_SCRIPT, {
@@ -189,7 +220,6 @@
             const resultadoPlanilha = await respostaSheets.json();
 
             if (resultadoPlanilha.sucesso) {
-                // Sucesso! Mostra a tela final.
                 document.getElementById("form-screen").style.display = "none";
                 document.getElementById("success-screen").style.display = "block";
             } else {
