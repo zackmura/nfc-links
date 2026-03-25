@@ -7,24 +7,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #f4f6f8; 
-            margin: 0; 
-            padding: 15px 10px; 
-            display: flex; 
-            justify-content: center; 
-        }
-        .widget { 
-            width: 100%; 
-            max-width: 420px; 
-            background: white; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            overflow: hidden; 
-        }
+        body { font-family: 'Inter', sans-serif; background: #f4f6f8; margin: 0; padding: 15px 10px; display: flex; justify-content: center; }
+        .widget { width: 100%; max-width: 420px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
         
-        /* === TEMA FLAMENGO === */
+        /* Tema Flamengo - Rubro-Negro */
         .header { background: linear-gradient(135deg, #c90000 0%, #000000 100%); color: white; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #000000; }
         .header img { width: 75px; height: 75px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));}
         .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;}
@@ -33,7 +19,7 @@
         .music-btn { margin-top: 15px; background: #ffffff; color: #c90000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
         .music-btn:active { transform: scale(0.95); }
 
-        /* === PLACAR AO VIVO === */
+        /* === 🔴 CSS DO PLACAR AO VIVO === */
         .live-container { background: #ffffff; border: 2px solid #c90000; border-radius: 15px; margin: 15px 10px; padding: 15px; box-shadow: 0 5px 20px rgba(201,0,0,0.15); }
         .live-header { text-align: center; font-weight: 900; color: #c90000; font-size: 0.9rem; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; letter-spacing: 1px;}
         .live-dot { width: 10px; height: 10px; background-color: #c90000; border-radius: 50%; animation: blink 1s infinite; }
@@ -48,7 +34,6 @@
         .stat-label { font-size: 0.7rem; font-weight: 800; color: #555; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 900; color: #000; width: 35px; text-align: center; }
 
-        /* === ESTRUTURA GERAL === */
         .section-title { font-size: 0.75rem; color: #333; padding: 15px 15px 8px; background: #f8f9fa; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; display: flex; justify-content: space-between; align-items: center;}
         .cache-info { font-size: 0.6rem; color: #888; text-transform: none; font-weight: 400;}
         
@@ -97,10 +82,8 @@
         .stat-box:last-child { border-right: none; }
         .stat-box small { display: block; font-size: 0.6rem; color: #aaaaaa; font-weight: 700; text-transform: uppercase; margin-top: 4px;}
         .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.6); }
-        
         .timer-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); display: none;}
         .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
-        
         .quiz-question { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; text-align: center; line-height: 1.3; }
         .quiz-options { display: flex; flex-direction: column; gap: 10px; }
         .quiz-btn { background: #2a2a2a; color: #f0f0f0; border: 1px solid #c90000; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: left; }
@@ -112,11 +95,37 @@
         .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
         .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
 
-        /* Botão para iniciar o Quiz */
         .btn-iniciar-quiz { background: linear-gradient(135deg, #c90000 0%, #8b0000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #5e0000; transition: all 0.2s; box-sizing: border-box;}
         .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #5e0000; }
 
-        /* === 🛒 VITRINE MINI MUNDO (CARROSSEL MINIMALISTA) === */
+        /* === 📢 REDE DE ANÚNCIOS (AD NETWORK) === */
+        .ads-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #111; border-bottom: 1px solid #eeeeee; display: none; }
+        .ads-header { text-align: center; margin-bottom: 15px; }
+        .ads-title { color: #c90000; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
+        .ads-subtitle { color: #555; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
+        
+        .ad-carousel { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
+        .ad-carousel::-webkit-scrollbar { height: 4px; }
+        .ad-carousel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .ad-carousel::-webkit-scrollbar-thumb { background: #c90000; border-radius: 10px; }
+        
+        .ad-card { min-width: 220px; max-width: 220px; background: #fff; border: 2px dashed #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column;}
+        .ad-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;}
+        .ad-empresa { font-size: 0.9rem; font-weight: 900; color: #111; margin: 0 0 5px; line-height: 1.2;}
+        .ad-desc { font-size: 0.75rem; color: #444; margin: 0 0 10px; line-height: 1.3; flex-grow: 1;}
+        .ad-preco { font-size: 0.95rem; font-weight: 900; color: #c90000; margin-bottom: 5px;}
+        .ad-cupom { font-size: 0.65rem; background: #fef08a; color: #b45309; padding: 4px 8px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 10px; border: 1px dashed #f59e0b;}
+        
+        .btn-ad { background: #25D366; color: white; text-align: center; display: block; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 0.8rem; box-shadow: 0 4px 0 #1b9b4a; box-sizing: border-box; transition: transform 0.2s;}
+        .btn-ad:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a;}
+        
+        .anuncie-aqui-banner { background: linear-gradient(135deg, #111 0%, #333 100%); color: #fff; padding: 20px; border-radius: 12px; text-align: center; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        .anuncie-title { font-size: 1.1rem; font-weight: 900; margin: 0 0 5px; color: #ffd700;}
+        .anuncie-desc { font-size: 0.8rem; color: #ccc; margin: 0 0 15px; line-height: 1.4;}
+        .btn-anuncie { background: #ffd700; color: #000; text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #b8860b; transition: transform 0.2s;}
+        .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #b8860b;}
+
+        /* === 🛒 VITRINE MINI MUNDO (CARROSSEL) === */
         .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;}
         .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
@@ -140,32 +149,26 @@
         /* === 🛍️ MODAL DE PRODUTO DETALHADO === */
         .modal-produto-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
         .modal-produto-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;}
-        
         .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #333; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
-        
         .galeria-produto { width: 100%; background: #f8f9fa; }
         .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
         .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: #fff; border-bottom: 1px solid #eee;}
         .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s;}
         .miniatura.ativa { border-color: #5D4037; opacity: 1; }
-        
         .info-produto-completa { padding: 20px 20px 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
         .tag-modal { font-size: 0.65rem; background: #efebe9; color: #5D4037; padding: 4px 8px; border-radius: 4px; font-weight: 800; align-self: flex-start; text-transform: uppercase;}
         .titulo-modal { font-size: 1.3rem; font-weight: 900; color: #222; margin: 0; line-height: 1.2;}
         .preco-modal { font-size: 1.5rem; font-weight: 900; color: #2E7D32; margin: 0;}
         .desc-modal { font-size: 0.85rem; color: #555; line-height: 1.5; margin: 5px 0 15px; white-space: pre-wrap;}
-        
-        /* CORREÇÃO DO BOTÃO VAZANDO A TELA: box-sizing adicionado */
         .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); transition: transform 0.1s, box-shadow 0.1s; text-decoration: none;}
         .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a, 0 2px 5px rgba(37,211,102,0.3); }
 
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* === RODAPÉ === */
+        /* === RODAPÉ GERAL === */
         .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
         .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
         .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
-        
         .social-links { display: flex; gap: 10px; margin-top: 15px; width: 100%; justify-content: center;}
         .social-btn { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: white; display: flex; align-items: center; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
         .social-btn:active { transform: scale(0.95); }
@@ -306,6 +309,23 @@
         </div>
     </div>
 
+    <div id="secao-anuncios" class="ads-section">
+        <div class="ads-header">
+            <h3 class="ads-title">Parceiros do Mengão</h3>
+            <p class="ads-subtitle">Aproveite as ofertas exclusivas para a Nação</p>
+        </div>
+        
+        <div id="carrossel-anuncios" class="ad-carousel">
+            <p style="text-align: center; width: 100%; color: #888; font-size: 0.8rem;">Procurando ofertas...</p>
+        </div>
+
+        <div class="anuncie-aqui-banner">
+            <h4 class="anuncie-title">🚀 Sua marca vista por milhares!</h4>
+            <p class="anuncie-desc">Anuncie seu negócio ou serviço diretamente no Chaveiro Inteligente da torcida.</p>
+            <a href="anunciar.html" class="btn-anuncie">Anunciar Agora</a>
+        </div>
+    </div>
+
     <div class="brand-footer">
         Desenvolvido com tecnologia de
         <img src="logo.jpg" alt="Logo Mini Mundo" onerror="this.style.display='none'">
@@ -348,6 +368,7 @@
         <span class="modal-icon" id="modal-icone">🔥</span>
         <h2 class="modal-title" id="modal-titulo">NOVO RECORDE!</h2>
         <p class="modal-text" id="modal-mensagem">Você atingiu a marca impressionante!</p>
+        
         <a id="modal-btn-share" class="modal-btn-share" target="_blank" href="#">📱 Compartilhar e Zoar</a>
         <button class="modal-btn-close" onclick="fecharModal()">Continuar Jogando ➡️</button>
     </div>
@@ -356,15 +377,22 @@
 <script>
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec"; 
     const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
+    // 📢 NOVA ROTA PARA BUSCAR OS ANÚNCIOS
+    const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
+    
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
+    // === VARIÁVEIS DE GAMIFICAÇÃO E TIMER ===
     let bancoDePerguntas = [];
     let perguntaAtual = null;
-    let acertos = 0, erros = 0, ofensiva = 0;
+    let acertos = 0;
+    let erros = 0;
+    let ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
     let radarInterval = null; 
     const TEMPO_MAXIMO = 15; 
-    let tempoAtual = TEMPO_MAXIMO, timerQuiz = null;
+    let tempoAtual = TEMPO_MAXIMO;
+    let timerQuiz = null;
     let catalogoGlobal = [];
 
     function verificarPasseLivre() {
@@ -373,60 +401,138 @@
         const agora = new Date().getTime();
         
         if (!token || (agora - parseInt(token)) > 120000) {
-            document.body.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f0f2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;"><img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);"><h2 style="color:#c90000; margin-bottom:10px;">Acesso Expirado</h2><p style="color:#444; font-size:0.95rem; line-height:1.5;">Para sua segurança e exclusividade, as estatísticas ao vivo só podem ser acessadas encostando o celular no seu <b>Chaveiro Inteligente</b>.</p></div>`;
+            document.body.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f0f2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;">
+                    <img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color:#c90000; margin-bottom:10px;">Acesso Expirado</h2>
+                    <p style="color:#444; font-size:0.95rem; line-height:1.5;">Para sua segurança e exclusividade, as estatísticas ao vivo só podem ser acessadas encostando o celular no seu <b>Chaveiro Inteligente</b>.</p>
+                </div>
+            `;
             return false; 
         }
         return true; 
     }
 
     function controlarMusica() {
-        const audio = document.getElementById("hino-audio"), btn = document.getElementById("btn-tocar");
-        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
+        const audio = document.getElementById("hino-audio");
+        const btn = document.getElementById("btn-tocar");
+        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } 
+        else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
     }
 
     function traduzirCampeonato(nomeOuSlug) {
         if (!nomeOuSlug) return "Campeonato";
         const s = nomeOuSlug.toLowerCase();
-        if (s.includes("paulista")) return "Paulistão"; if (s.includes("carioca")) return "Cariocão";
-        if (s.includes("bra.1") || s.includes("serie a")) return "Brasileirão Série A";
-        if (s.includes("libertadores")) return "Libertadores"; if (s.includes("copa do brasil")) return "Copa do Brasil";
+        if (s.includes("paulista")) return "Paulistão";
+        if (s.includes("carioca")) return "Cariocão";
+        if (s.includes("bra.1") || s.includes("brazilian serie a") || s.includes("brasileirão serie a")) return "Brasileirão Série A";
+        if (s.includes("bra.2") || s.includes("brasileirão serie b")) return "Brasileirão Série B";
+        if (s.includes("libertadores")) return "Libertadores";
+        if (s.includes("copa_do_brasil") || s.includes("copa do brasil")) return "Copa do Brasil";
+        if (s.includes("supercopa")) return "Supercopa do Brasil";
+        if (s.includes("recopa")) return "Recopa Sul-Americana";
         if (s.includes("sul-americana") || s.includes("sudamericana")) return "Copa Sul-Americana";
+        if (s.includes("mundial") || s.includes("world cup")) return "Mundial de Clubes";
         return nomeOuSlug;
     }
 
     function checarJogoAoVivo(dados) {
-        const jogoAoVivo = [...(dados.past || []), ...(dados.next || [])].find(j => j.status === 'in');
+        const todosJogos = [...(dados.past || []), ...(dados.next || [])];
+        const jogoAoVivo = todosJogos.find(j => j.status === 'in');
+
         if (jogoAoVivo && jogoAoVivo.id) {
             document.getElementById("live-match-container").style.display = "block";
             atualizarRadarESPN(jogoAoVivo.id); 
+            if(radarInterval) clearInterval(radarInterval);
             radarInterval = setInterval(() => { atualizarRadarESPN(jogoAoVivo.id); }, 30000);
-        } else { document.getElementById("live-match-container").style.display = "none"; }
+        } else {
+            document.getElementById("live-match-container").style.display = "none";
+            if(radarInterval) clearInterval(radarInterval);
+        }
     }
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`);
+            const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`;
+            const res = await fetch(url);
             const json = await res.json();
-            const header = json.header.competitions[0], timeInfo = header.status.displayClock ? `${header.status.displayClock}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
-            const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
-            
+            const header = json.header.competitions[0];
+            const tempoStr = header.status.displayClock;
+            const periodo = header.status.period > 1 ? "2ºT" : "1ºT";
+            const timeInfo = tempoStr ? `${tempoStr}' ${periodo}` : "Aguardando Apito";
+            const home = header.competitors.find(c => c.homeAway === 'home');
+            const away = header.competitors.find(c => c.homeAway === 'away');
+            const boxscore = json.boxscore?.teams || [];
+            let statsHTML = '';
+
+            if (boxscore.length === 2) {
+                const getStat = (teamStats, statName) => {
+                    if (!teamStats.statistics) return "0";
+                    const s = teamStats.statistics.find(x => x.name === statName);
+                    return s ? s.displayValue : "0";
+                };
+                
+                const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
+                const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
+
+                const estatisticas = [
+                    { label: "Posse de Bola", key: "possession" },
+                    { label: "Finalizações", key: "shotsTotal" },
+                    { label: "No Gol", key: "shotsOnTarget" },
+                    { label: "Escanteios", key: "wonCorners" },
+                    { label: "Faltas", key: "foulsCommitted" },
+                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
+                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
+                ];
+
+                statsHTML = estatisticas.map(stat => {
+                    const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
+                    return `
+                    <div class="stat-row">
+                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
+                        <span class="stat-label">${stat.label}</span>
+                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
+                    </div>
+                `}).join('');
+            }
+
             document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header"><span class="live-dot"></span> TEMPO REAL - ${timeInfo}</div>
+                <div class="live-header">
+                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
+                </div>
                 <div class="live-scoreboard">
-                    <div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation}</span></div>
+                    <div class="live-team">
+                        <img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'">
+                        <span>${home.team.abbreviation || home.team.shortDisplayName}</span>
+                    </div>
                     <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
-                    <div class="live-team"><img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${away.team.abbreviation}</span></div>
+                    <div class="live-team">
+                        <img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'">
+                        <span>${away.team.abbreviation || away.team.shortDisplayName}</span>
+                    </div>
+                </div>
+                <div class="live-stats">
+                    ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
                 </div>
             `;
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error("Erro no radar: ", e);
+        }
     }
 
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
+        // Dispara o carregamento das vitrines em paralelo
         carregarVitrine();
+        carregarAnuncios(); // <== A CHADA PARA PUXAR OS ANÚNCIOS
 
-        const resDiv = document.getElementById("resultados"), classDiv = document.getElementById("classificacao"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias");
+        const resDiv = document.getElementById("resultados");
+        const classDiv = document.getElementById("classificacao");
+        const ageDiv = document.getElementById("agenda");
+        const newsDiv = document.getElementById("noticias");
+        const statusUpdate = document.getElementById("status-update");
+        const tituloClassificacao = document.getElementById("titulo-classificacao");
 
         try {
             const resposta = await fetch(MINHA_API_GOOGLE);
@@ -437,45 +543,72 @@
             if (dados.quiz && dados.quiz.length > 0) {
                 bancoDePerguntas = dados.quiz;
                 document.getElementById("quiz-box").style.display = "block";
+                
                 document.getElementById("q-recorde").innerText = recorde;
             }
 
             const d = new Date(dados.lastUpdate);
-            document.getElementById("status-update").innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
+            statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
             resDiv.innerHTML = "";
-            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center;'>Sem dados recentes.</p>";
+            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
+            else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
             classDiv.innerHTML = "";
             if (dados.leagueName && dados.leagueName !== "Classificação") {
-                document.getElementById("titulo-classificacao").innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
+                tituloClassificacao.innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
             }
             
             if (dados.table && dados.table.length > 0) {
                 let tableToRender = dados.table.slice(0, 10);
                 if (!tableToRender.some(t => t.team.toLowerCase().includes('flamengo'))) {
                     const flaData = dados.table.find(t => t.team.toLowerCase().includes('flamengo'));
-                    if (flaData) { tableToRender.push({ isDivider: true }); tableToRender.push(flaData); }
+                    if (flaData) {
+                        tableToRender.push({ isDivider: true });
+                        tableToRender.push(flaData);
+                    }
                 }
                 tableToRender.forEach(t => {
-                    if (t.isDivider) { classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`; return; }
+                    if (t.isDivider) {
+                        classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`;
+                        return;
+                    }
                     const bgClass = t.team.toLowerCase().includes('flamengo') ? 'highlight-team' : '';
-                    classDiv.innerHTML += `<tr class="${bgClass}"><td style="color:#777;">${t.rank}</td><td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td><td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td></tr>`;
+                    classDiv.innerHTML += `
+                        <tr class="${bgClass}">
+                            <td style="color:#777;">${t.rank}</td>
+                            <td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td>
+                            <td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td>
+                        </tr>`;
                 });
             } else classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível.</td></tr>";
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
+            else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado.</p>";
 
             newsDiv.innerHTML = "";
             if (dados.news && dados.news.length > 0) {
-                dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
-            }
+                dados.news.forEach(n => {
+                    newsDiv.innerHTML += `
+                        <a href="${n.link}" target="_blank" class="news-card">
+                            <div class="news-source"><span>📰 ${n.source}</span></div>
+                            <h3 class="news-title">${n.title}</h3>
+                        </a>`;
+                });
+            } else newsDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhuma notícia no momento.</p>";
+
         } catch (err) {
-            console.error(err); resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
+            console.error(err);
+            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
+            classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#cc0000;'>Erro de conexão.</td></tr>";
+            ageDiv.innerHTML = "";
+            newsDiv.innerHTML = "";
+            statusUpdate.innerText = "Offline";
         }
     }
 
+    // === FUNÇÃO PARA CARREGAR A VITRINE DA MINI MUNDO ===
     async function carregarVitrine() {
         try {
             const res = await fetch(API_CATALOGO);
@@ -483,11 +616,12 @@
             const divVitrine = document.getElementById("vitrine-produtos");
             
             if(dados.sucesso && dados.vitrine && dados.vitrine.length > 0) {
-                catalogoGlobal = dados.vitrine; 
+                catalogoGlobal = dados.vitrine; // Salva na memória
                 let html = "";
                 
                 catalogoGlobal.forEach((p, index) => {
                     const primeiraFoto = p.foto.split(',')[0].trim();
+                    
                     html += `
                     <div class="produto-card-mini" onclick="abrirModalProduto(${index})">
                         <img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'">
@@ -499,19 +633,65 @@
                     </div>`;
                 });
                 divVitrine.innerHTML = html;
-                document.getElementById("secao-minimundo").style.display = "block";
+                document.getElementById("secao-minimundo").style.display = "block"; 
+            } else {
+                divVitrine.innerHTML = "<p style='width:100%; text-align:center; color:#8D6E63; font-size:0.8rem;'>Vitrine em atualização...</p>";
             }
-        } catch(e) { console.error("Erro catálogo:", e); }
+        } catch(e) {
+            console.error("Erro ao carregar catálogo Mini Mundo:", e);
+            document.getElementById("vitrine-produtos").innerHTML = "<p style='width:100%; text-align:center; color:#8D6E63; font-size:0.8rem;'>Não foi possível carregar a vitrine no momento.</p>";
+        }
+    }
+
+    // === 📢 FUNÇÃO PARA CARREGAR OS ANÚNCIOS DA REDE ===
+    async function carregarAnuncios() {
+        try {
+            const res = await fetch(API_ANUNCIOS);
+            const dados = await res.json();
+            const divCarrossel = document.getElementById("carrossel-anuncios");
+            
+            // Sempre exibe a sessão porque tem o botão de "Anunciar Aqui"
+            document.getElementById("secao-anuncios").style.display = "block";
+
+            if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) {
+                let html = "";
+                dados.anuncios.forEach(ad => {
+                    let precoHtml = ad.preco_oferta ? `<div class="ad-preco">${ad.preco_oferta}</div>` : '';
+                    let cupomHtml = ad.cupom ? `<div class="ad-cupom">🎟️ ${ad.cupom}</div>` : '';
+                    
+                    html += `
+                    <div class="ad-card">
+                        <img src="${ad.foto}" alt="${ad.empresa}" class="ad-img" onerror="this.src='logo.jpg'">
+                        <h4 class="ad-empresa">${ad.empresa}</h4>
+                        <p class="ad-desc">${ad.descricao}</p>
+                        ${precoHtml}
+                        ${cupomHtml}
+                        <a href="${ad.link_zap}" target="_blank" class="btn-ad">💬 APROVEITAR OFERTA</a>
+                    </div>`;
+                });
+                divCarrossel.innerHTML = html;
+            } else {
+                // Se não tiver nenhum anúncio ativo, esconde o carrossel, mas deixa o banner de cadastrar
+                divCarrossel.style.display = "none";
+            }
+        } catch(e) {
+            console.error("Erro ao carregar anúncios:", e);
+            document.getElementById("carrossel-anuncios").style.display = "none";
+        }
     }
 
     function abrirModalProduto(index) {
         const p = catalogoGlobal[index];
         if(!p) return;
 
+        // Extrai o array de fotos (separadas por vírgula)
         const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
+        
+        // Seta a primeira imagem como principal
         const imgPrincipal = document.getElementById("modal-foto-principal");
         imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
 
+        // Cria as miniaturas (só mostra se tiver mais de 1 foto)
         const divMiniaturas = document.getElementById("modal-miniaturas");
         divMiniaturas.innerHTML = "";
         
@@ -521,43 +701,92 @@
                 imgMini.src = linkFoto;
                 imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
                 imgMini.onclick = function() {
+                    // Troca a foto principal
                     imgPrincipal.src = linkFoto;
+                    // Atualiza a borda visual das miniaturas
                     document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa"));
                     imgMini.classList.add("ativa");
                 };
                 divMiniaturas.appendChild(imgMini);
             });
             divMiniaturas.style.display = "flex";
-        } else { divMiniaturas.style.display = "none"; }
+        } else {
+            divMiniaturas.style.display = "none";
+        }
 
+        // Preenche os textos
         document.getElementById("modal-tag").innerText = p.categoria;
         document.getElementById("modal-titulo-prod").innerText = p.nome;
         document.getElementById("modal-preco").innerText = p.preco;
         document.getElementById("modal-desc").innerText = p.descricao;
 
+        // Configura o link do WhatsApp com mensagem pronta
         const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
         document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
 
+        // Abre o modal
         document.getElementById("modal-produto").style.display = "flex";
     }
 
-    function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
-    document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
+    function fecharModalProduto() {
+        document.getElementById("modal-produto").style.display = "none";
+    }
+
+    // Fecha o modal do produto se clicar no fundo preto
+    document.getElementById("modal-produto").addEventListener('click', function(e) {
+        if (e.target === this) fecharModalProduto();
+    });
 
     function criarCard(e, isFinished) {
-        const dataObj = new Date(e.date), dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}), horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        const dataObj = new Date(e.date);
+        const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+        const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
+        
         const leagueStr = traduzirCampeonato(e.slug);
-        const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
-        const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
 
-        return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
+        let estadioHtml = "";
+        if (e.stadium) {
+            estadioHtml = `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>`;
+        }
+
+        let botaoYouTube = "";
+        if (isFinished) {
+            const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
+            const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
+            
+            botaoYouTube = `
+                <a href="${linkBusca}" target="_blank" class="youtube-button dynamic-button">
+                    ▶️ Assistir Melhores Momentos
+                </a>
+            `;
+        }
+
+        return `
+            <div class="match-card">
+                <div class="league-label">${leagueStr}</div>
+                <div class="match-row">
+                    <div class="team-col home">
+                        ${e.homeTeam}
+                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                    </div>
+                    <div class="score-box">
+                        <span class="score">${infoPlacar}</span>
+                        <span class="date">${dataF}</span>
+                    </div>
+                    <div class="team-col away">
+                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
+                        ${e.awayTeam}
+                    </div>
+                </div>
+                ${estadioHtml} ${botaoYouTube}
+            </div>`;
     }
     
     // 🔥 A CHAVE DE IGNIÇÃO DO APLICATIVO
     document.addEventListener("DOMContentLoaded", carregarDoMeuServidor);
 
-    // === INICIAR O QUIZ (NOVO) ===
+    // === GESTÃO DO TIMER E JOGO ===
     function iniciarQuiz() {
         document.getElementById("tela-inicio-quiz").style.display = "none";
         document.getElementById("timer-container").style.display = "block";
@@ -566,16 +795,29 @@
     }
 
     function iniciarTimer() {
-        clearInterval(timerQuiz); tempoAtual = TEMPO_MAXIMO; atualizarBarraVisual();
+        clearInterval(timerQuiz);
+        tempoAtual = TEMPO_MAXIMO;
+        atualizarBarraVisual();
+        
         timerQuiz = setInterval(() => {
-            tempoAtual--; atualizarBarraVisual();
-            if (tempoAtual <= 0) { clearInterval(timerQuiz); verificarResposta(null, -1); }
+            tempoAtual--;
+            atualizarBarraVisual();
+            
+            if (tempoAtual <= 0) {
+                clearInterval(timerQuiz);
+                verificarResposta(null, -1); // Envia nulo para simular que o tempo esgotou
+            }
         }, 1000);
     }
 
     function atualizarBarraVisual() {
-        const barra = document.getElementById("barra-tempo"), p = (tempoAtual / TEMPO_MAXIMO) * 100;
-        barra.style.width = p + "%"; barra.style.background = p > 50 ? "#25D366" : p > 20 ? "#ffcc00" : "#cc0000"; 
+        const barra = document.getElementById("barra-tempo");
+        const porcentagem = (tempoAtual / TEMPO_MAXIMO) * 100;
+        barra.style.width = porcentagem + "%";
+        
+        if (porcentagem > 50) barra.style.background = "#25D366"; // Verde
+        else if (porcentagem > 20) barra.style.background = "#ffcc00"; // Amarelo
+        else barra.style.background = "#ff3333"; // Vermelho
     }
 
     const frasesAcerto = ["🔥 Mandou bem! Próxima ➡️", "⚽ Golaço! Avançar ➡️", "🎯 Na mosca! Próxima ➡️", "🧠 É o Craque! Próxima ➡️", "⚡ Voando! Próxima ➡️"];
@@ -583,70 +825,138 @@
 
     function sortearPergunta() {
         if (bancoDePerguntas.length === 0) return;
+        
         document.getElementById("btn-proxima").style.display = "none";
-        perguntaAtual = bancoDePerguntas[Math.floor(Math.random() * bancoDePerguntas.length)];
+        
+        const index = Math.floor(Math.random() * bancoDePerguntas.length);
+        perguntaAtual = bancoDePerguntas[index];
         
         const animArea = document.getElementById("quiz-anim-area");
-        animArea.classList.remove("fade-in"); void animArea.offsetWidth; animArea.classList.add("fade-in");
+        animArea.classList.remove("fade-in");
+        void animArea.offsetWidth; 
+        animArea.classList.add("fade-in");
+        
         document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta;
         
-        const divBotoes = document.getElementById("quiz-botoes"); divBotoes.innerHTML = ""; 
+        const divBotoes = document.getElementById("quiz-botoes");
+        divBotoes.innerHTML = ""; 
+        
         perguntaAtual.opcoes.forEach((opcao, i) => {
-            const btn = document.createElement("button"); btn.className = "quiz-btn"; btn.innerText = opcao;
-            btn.onclick = () => verificarResposta(btn, i + 1); divBotoes.appendChild(btn);
+            const numOpcao = i + 1;
+            const btn = document.createElement("button");
+            btn.className = "quiz-btn";
+            btn.innerText = opcao;
+            btn.onclick = () => verificarResposta(btn, numOpcao);
+            divBotoes.appendChild(btn);
         });
 
-        iniciarTimer(); 
+        iniciarTimer(); // Dispara o relógio quando a pergunta aparece
     }
 
     function abrirModalConquista(marca) {
-        let nivel = "", icone = "";
+        let nivel = ""; let icone = "";
+        
         if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]);
-        const btnShare = document.getElementById("modal-btn-share"); btnShare.classList.remove("modal-btn-premio");
 
-        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; } else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; } else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; } else if (marca === 20) { nivel = "DEUS DO FUTEBOL!"; icone = "⚡"; } else { nivel = "LENDA VIVA!"; icone = "🏆"; }
+        const btnShare = document.getElementById("modal-btn-share");
+        btnShare.classList.remove("modal-btn-premio");
 
-        document.getElementById("modal-icone").innerText = icone; document.getElementById("modal-titulo").innerText = nivel;
+        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; }
+        else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; }
+        else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; }
+        else if (marca === 20) { nivel = "DEUS DO FUTEBOL!"; icone = "⚡"; }
+        else { nivel = "LENDA VIVA!"; icone = "🏆"; }
 
+        document.getElementById("modal-icone").innerText = icone;
+        document.getElementById("modal-titulo").innerText = nivel;
+
+        // O GRANDE PRÊMIO NA MARCA DE 30!
         if (marca >= 30 && marca % 30 === 0) {
             document.getElementById("modal-mensagem").innerHTML = `Você alcançou a marca épica de <b>${marca} acertos seguidos!</b> Tire um print desta tela e mande no WhatsApp da Mini Mundo para resgatar sua recompensa exclusiva num novo Chaveiro!`;
-            btnShare.href = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Flamengo%21%20Quero%20meu%20desconto%21`;
-            btnShare.innerText = "🎁 Resgatar Minha Recompensa"; btnShare.classList.add("modal-btn-premio"); 
+            
+            const linkZapDesconto = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Flamengo%21%20Quero%20meu%20desconto%21`;
+            btnShare.href = linkZapDesconto;
+            btnShare.innerText = "🎁 Resgatar Minha Recompensa";
+            btnShare.classList.add("modal-btn-premio"); 
+
         } else {
             document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`;
-            btnShare.href = `https://wa.me/?text=${encodeURIComponent(`${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`)}`;
+            const textoZoeira = `${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
+            const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
+            btnShare.href = linkZap;
             btnShare.innerText = "📱 Compartilhar e Zoar";
         }
+
         document.getElementById("modal-conquista").style.display = "flex";
     }
 
-    function fecharModal() { document.getElementById("modal-conquista").style.display = "none"; sortearPergunta(); }
+    function fecharModal() {
+        document.getElementById("modal-conquista").style.display = "none";
+        sortearPergunta(); 
+    }
 
     function verificarResposta(botaoClicado, numEscolhido) {
-        clearInterval(timerQuiz); 
-        const botoes = document.querySelectorAll(".quiz-btn"); botoes.forEach(b => b.onclick = null); 
-        const elementoChama = document.getElementById("q-chama"), btnProxima = document.getElementById("btn-proxima");
+        clearInterval(timerQuiz); // Pausa o relógio
+
+        const botoes = document.querySelectorAll(".quiz-btn");
+        botoes.forEach(b => b.onclick = null); 
+        
+        const elementoChama = document.getElementById("q-chama");
+        const btnProxima = document.getElementById("btn-proxima");
         btnProxima.className = "btn-proxima";
         
         if (numEscolhido === perguntaAtual.correta) {
             if (botaoClicado) botaoClicado.classList.add("correct");
+            
             if ("vibrate" in navigator) navigator.vibrate(50);
-            acertos++; ofensiva++; elementoChama.classList.add("chama-ativa"); 
-            btnProxima.classList.add("acertou"); btnProxima.innerText = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
+
+            acertos++;
+            ofensiva++;
+            elementoChama.classList.add("chama-ativa"); 
             
-            if (ofensiva > recorde) { recorde = ofensiva; localStorage.setItem("quiz_recorde_flamengo", recorde); document.getElementById("q-recorde").innerText = recorde; }
-            if (ofensiva > 0 && ofensiva % 5 === 0) abrirModalConquista(ofensiva); else btnProxima.style.display = "block"; 
+            btnProxima.classList.add("acertou");
+            const fraseSorteada = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
+            btnProxima.innerText = fraseSorteada;
+            
+            if (ofensiva > recorde) {
+                recorde = ofensiva;
+                localStorage.setItem("quiz_recorde_flamengo", recorde);
+                document.getElementById("q-recorde").innerText = recorde;
+            }
+            
+            if (ofensiva > 0 && ofensiva % 5 === 0) {
+                abrirModalConquista(ofensiva);
+            } else {
+                btnProxima.style.display = "block"; 
+            }
+
         } else {
+            // Identifica o erro ou o estouro de tempo
             if (botaoClicado) botaoClicado.classList.add("wrong");
-            botoes[perguntaAtual.correta - 1].classList.add("correct"); 
-            if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
-            erros++; ofensiva = 0; elementoChama.classList.remove("chama-ativa"); btnProxima.classList.add("errou");
+            botoes[perguntaAtual.correta - 1].classList.add("correct"); // Pinta a certa de verde
             
-            if (!botaoClicado) { btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️"; if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]); } 
-            else { btnProxima.innerText = frasesErro[Math.floor(Math.random() * frasesErro.length)]; }
+            if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
+
+            erros++;
+            ofensiva = 0;
+            elementoChama.classList.remove("chama-ativa");
+            
+            btnProxima.classList.add("errou");
+            
+            if (!botaoClicado) { // Caiu aqui porque o tempo acabou
+                btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️";
+                if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
+            } else {
+                const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
+                btnProxima.innerText = fraseSorteada;
+            }
+            
             btnProxima.style.display = "block";
         }
-        document.getElementById("q-acertos").innerText = acertos; document.getElementById("q-erros").innerText = erros; document.getElementById("q-chama").innerText = ofensiva;
+        
+        document.getElementById("q-acertos").innerText = acertos;
+        document.getElementById("q-erros").innerText = erros;
+        document.getElementById("q-chama").innerText = ofensiva;
     }
 </script>
 
