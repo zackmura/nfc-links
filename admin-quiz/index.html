@@ -155,16 +155,16 @@
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA fará o upload das fotos, criará uma *copy* de vendas persuasiva e categorizará o produto.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA agora tem <strong style="color: var(--primary);">Visão Computacional</strong>! Ela vai analisar a sua foto, entender o que é o produto, criar a copy perfeita baseada na imagem e criar a categoria ideal.</p>
         
         <div class="input-group">
             <label for="prod-nome">Nome do Produto:</label>
-            <input type="text" id="prod-nome" placeholder="Ex: Chaveiro Inteligente Taça Libertadores">
+            <input type="text" id="prod-nome" placeholder="Ex: Placa Profissões Personalizada">
         </div>
         
         <div class="input-group">
             <label for="prod-preco">Preço de Venda:</label>
-            <input type="text" id="prod-preco" placeholder="Ex: R$ 35,00">
+            <input type="text" id="prod-preco" placeholder="Ex: R$ 60,00">
         </div>
 
         <div class="input-group">
@@ -189,7 +189,7 @@
     </div>
 
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado e pronto para operar.</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Visão Computacional ativada.</span></div>
     </div>
 </div>
 
@@ -232,8 +232,16 @@
         terminal.scrollTop = terminal.scrollHeight; 
     }
 
+    // Função para converter a imagem em Base64 para a IA conseguir "enxergar"
+    const fileToBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = error => reject(error);
+    });
+
     // ==========================================
-    // LÓGICA DO CATÁLOGO DE PRODUTOS (ATUALIZADA)
+    // LÓGICA DO CATÁLOGO DE PRODUTOS (COM VISÃO COMPUTACIONAL)
     // ==========================================
     async function cadastrarProdutoIA() {
         const apiKey = document.getElementById("api-key").value.trim();
@@ -248,12 +256,17 @@
         if(!nome || !preco || files.length === 0) return addLog("ERRO: Preencha Nome, Preço e anexe pelo menos uma foto.", "error");
 
         btn.disabled = true;
-        btn.innerText = "⏳ Processando Uploads e Inteligência...";
+        btn.innerText = "⏳ Processando Visão Computacional...";
 
         try {
             addLog(`>> INICIANDO CADASTRO: ${nome}`, "warn");
             
-            // 1. FAZENDO UPLOAD DAS FOTOS PARA O IMGBB
+            // 1. EXTRAI A IMAGEM EM BASE64 PARA MOSTRAR PARA A IA
+            addLog(`Enviando imagem para a "visão" da IA...`, "info");
+            const primeiraFotoBase64 = await fileToBase64(files[0]);
+            const mimeType = files[0].type;
+
+            // 2. FAZENDO UPLOAD DAS FOTOS PARA O IMGBB (EM PARALELO)
             addLog(`Fazendo upload de ${files.length} foto(s) para a nuvem...`, "info");
             let linksDasFotos = [];
 
@@ -275,29 +288,36 @@
                 }
             }
 
-            // AQUI ESTÁ A CORREÇÃO: Usando apenas vírgula sem espaço para não quebrar a galeria
             const fotosString = linksDasFotos.join(",");
 
-            // 2. PEDINDO DESCRIÇÃO E CATEGORIA PARA A IA (GEMINI) - PROMPT SUPER COPYWRITER
-            addLog(`Acionando a IA para criar a *copy* de vendas matadora...`, "info");
+            // 3. PEDINDO DESCRIÇÃO COM BASE NA IMAGEM (MULTIMODALIDADE)
+            addLog(`IA analisando a imagem para criar a copy perfeita...`, "info");
 
             const urlGemini = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
             
-            const prompt = `Atue como um Copywriter Sênior de Elite focado em e-commerce. Vou te dar o nome de um produto físico focado em presentes e colecionáveis da marca "Mini Mundo 3D".
-Sua missão é escrever uma descrição curta e extremamente persuasiva (máximo de 3 a 4 frases curtas). 
-Use gatilhos mentais (Exclusividade, Desejo, Novidade, ou Emoção). Mostre o valor do produto e faça o cliente sentir que PRECISA comprar agora mesmo para presentear alguém ou a si mesmo!
-Em seguida, classifique o produto em UMA destas categorias: Geek, Futebol, Decoração, Exclusivo, ou Geral.
+            const prompt = `Você é um Copywriter de elite de e-commerce. Analise a IMAGEM em anexo e o título do produto de impressão 3D da marca 'Mini Mundo 3D'.
+Título do Produto: ${nome}
 
-Produto: ${nome}
+Missão:
+1. Crie uma descrição magnética e realista baseada **exatamente no que você VÊ na imagem** (máximo 3 frases curtas). Use gatilhos mentais (Exclusividade, Desejo ou Presente perfeito). Não encha linguiça, vá direto ao ponto que vende.
+2. Crie uma Categoria curta (1 ou 2 palavras no máximo) que defina este produto especificamente (Ex: Profissões, Colecionável, Decoração Geek, Pets, Acessórios, Placas, etc). Use o bom senso baseado na imagem.
 
 Responda EXATAMENTE neste formato (apenas texto puro, sem asteriscos ou negrito):
-Descricao: [Sua copy matadora aqui]
-Categoria: [Nome da categoria]`;
+Descricao: [Sua copy baseada na imagem]
+Categoria: [Sua categoria inventada]`;
 
-            const payloadIA = { contents: [{ parts: [{ text: prompt }] }] };
+            const payloadIA = { 
+                contents: [{ 
+                    parts: [
+                        { text: prompt },
+                        { inlineData: { mimeType: mimeType, data: primeiraFotoBase64 } }
+                    ] 
+                }] 
+            };
+            
             const respostaIA = await fetch(urlGemini, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payloadIA) });
             
-            if (!respostaIA.ok) throw new Error("Falha ao comunicar com a IA (Verifique a chave do Gemini).");
+            if (!respostaIA.ok) throw new Error("Falha ao comunicar com a IA.");
             
             const dadosIA = await respostaIA.json();
             const textoIA = dadosIA.candidates[0].content.parts[0].text;
@@ -311,10 +331,10 @@ Categoria: [Nome da categoria]`;
                 if (linha.toLowerCase().startsWith('categoria:')) catGerada = linha.substring(10).trim();
             });
 
-            addLog(`Copy gerada com gatilhos mentais! Categoria: [${catGerada}]`, "success");
-            addLog(`Enviando dados para a planilha do Analytics...`, "info");
+            addLog(`Copy e Categoria geradas visualmente! [${catGerada}]`, "success");
+            addLog(`Enviando dados finais para o Analytics...`, "info");
 
-            // 3. SALVANDO NA PLANILHA GOOGLE
+            // 4. SALVANDO NA PLANILHA GOOGLE
             const payloadSheets = {
                 acao: "salvar_produto",
                 nome: nome,
@@ -333,7 +353,6 @@ Categoria: [Nome da categoria]`;
 
             if (resultadoPlanilha.sucesso) {
                 addLog(`✅ PRODUTO CADASTRADO COM SUCESSO!`, "success");
-                // Limpa os campos
                 document.getElementById("prod-nome").value = "";
                 document.getElementById("prod-preco").value = "";
                 inputFotos.value = "";
@@ -351,7 +370,7 @@ Categoria: [Nome da categoria]`;
 
 
     // ==========================================
-    // LÓGICA DO QUIZ (MANTIDA INTACTA)
+    // LÓGICA DO QUIZ
     // ==========================================
     function atualizarBadgeUltimo() {
         const ultimoTime = localStorage.getItem("ultimo_time_gerado");
