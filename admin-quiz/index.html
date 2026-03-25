@@ -155,7 +155,7 @@
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA agora tem <strong style="color: var(--primary);">Visão Computacional</strong>! Ela vai analisar a sua foto, entender o que é o produto, criar a copy perfeita baseada na imagem e criar a categoria ideal.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA agora analisa o Título, o Preço e a Foto de exemplo para criar a descrição de vendas perfeita para produtos personalizáveis.</p>
         
         <div class="input-group">
             <label for="prod-nome">Nome do Produto:</label>
@@ -168,9 +168,9 @@
         </div>
 
         <div class="input-group">
-            <label for="prod-fotos">Anexar Fotos do Produto:</label>
+            <label for="prod-fotos">Anexar Fotos do Produto (Exemplos):</label>
             <input type="file" id="prod-fotos" accept="image/*" multiple>
-            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 6px;">Dica: Segure CTRL no PC ou aperte e segure no celular para selecionar várias fotos de uma vez.</p>
+            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 6px;">Dica: A primeira foto será enviada para a IA entender o acabamento visual do produto.</p>
         </div>
 
         <button id="btn-salvar-produto" class="btn-magic btn-loja" onclick="cadastrarProdutoIA()">✨ Enviar Fotos e Cadastrar Produto</button>
@@ -184,17 +184,15 @@
         <div class="input-group" style="margin-top: 25px;">
             <label for="imgbb-key">📸 Chave de Upload (API ImgBB):</label>
             <input type="password" id="imgbb-key" placeholder="Cole a chave do ImgBB aqui..." onchange="salvarChaves()">
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Crie uma chave grátis acessando: <a href="https://api.imgbb.com/" target="_blank" style="color: var(--primary); font-weight: bold;">api.imgbb.com</a></p>
         </div>
     </div>
 
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Visão Computacional ativada.</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Visão Computacional ativada e ajustada para vendas.</span></div>
     </div>
 </div>
 
 <script>
-    // URL FIXA DA SUA PLANILHA DE ANALYTICS (ONDE FICA O CATÁLOGO)
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 
     window.onload = () => {
@@ -232,7 +230,6 @@
         terminal.scrollTop = terminal.scrollHeight; 
     }
 
-    // Função para converter a imagem em Base64 para a IA conseguir "enxergar"
     const fileToBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -241,7 +238,7 @@
     });
 
     // ==========================================
-    // LÓGICA DO CATÁLOGO DE PRODUTOS (COM VISÃO COMPUTACIONAL)
+    // LÓGICA DO CATÁLOGO DE PRODUTOS (COM COPYWRITING AVANÇADO)
     // ==========================================
     async function cadastrarProdutoIA() {
         const apiKey = document.getElementById("api-key").value.trim();
@@ -256,17 +253,17 @@
         if(!nome || !preco || files.length === 0) return addLog("ERRO: Preencha Nome, Preço e anexe pelo menos uma foto.", "error");
 
         btn.disabled = true;
-        btn.innerText = "⏳ Processando Visão Computacional...";
+        btn.innerText = "⏳ Processando Uploads e Copy...";
 
         try {
             addLog(`>> INICIANDO CADASTRO: ${nome}`, "warn");
             
-            // 1. EXTRAI A IMAGEM EM BASE64 PARA MOSTRAR PARA A IA
+            // 1. EXTRAI A IMAGEM EM BASE64
             addLog(`Enviando imagem para a "visão" da IA...`, "info");
             const primeiraFotoBase64 = await fileToBase64(files[0]);
             const mimeType = files[0].type;
 
-            // 2. FAZENDO UPLOAD DAS FOTOS PARA O IMGBB (EM PARALELO)
+            // 2. FAZENDO UPLOAD DAS FOTOS PARA O IMGBB
             addLog(`Fazendo upload de ${files.length} foto(s) para a nuvem...`, "info");
             let linksDasFotos = [];
 
@@ -290,21 +287,27 @@
 
             const fotosString = linksDasFotos.join(",");
 
-            // 3. PEDINDO DESCRIÇÃO COM BASE NA IMAGEM (MULTIMODALIDADE)
-            addLog(`IA analisando a imagem para criar a copy perfeita...`, "info");
+            // 3. O PROMPT DE COPYWRITER SÊNIOR (ATUALIZADO)
+            addLog(`IA criando a copy valorizando a personalização...`, "info");
 
             const urlGemini = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
             
-            const prompt = `Você é um Copywriter de elite de e-commerce. Analise a IMAGEM em anexo e o título do produto de impressão 3D da marca 'Mini Mundo 3D'.
+            const prompt = `Atue como um Copywriter Sênior de Elite da 'Mini Mundo 3D', uma marca de impressão 3D focada em produtos inovadores, fora da caixa e 100% personalizáveis.
+
+Vou te passar o Título, o Preço e uma Imagem de exemplo do produto.
+ATENÇÃO: A imagem anexada é apenas UM EXEMPLO visual do acabamento (pode mostrar um time, uma profissão ou uma cor específica), mas o produto final é TOTALMENTE PERSONALIZÁVEL ao gosto do cliente.
+
 Título do Produto: ${nome}
+Preço: ${preco}
 
-Missão:
-1. Crie uma descrição magnética e realista baseada **exatamente no que você VÊ na imagem** (máximo 3 frases curtas). Use gatilhos mentais (Exclusividade, Desejo ou Presente perfeito). Não encha linguiça, vá direto ao ponto que vende.
-2. Crie uma Categoria curta (1 ou 2 palavras no máximo) que defina este produto especificamente (Ex: Profissões, Colecionável, Decoração Geek, Pets, Acessórios, Placas, etc). Use o bom senso baseado na imagem.
+Sua Missão:
+1. Crie uma descrição magnética focada na ideia principal do produto (baseada no Título) e não apenas no detalhe da foto.
+2. Mostre que é uma peça de alta qualidade em Impressão 3D, exclusiva, e a opção perfeita para presentear ou colecionar. Máximo de 3 frases curtas com forte apelo emocional.
+3. Crie uma Categoria curta (1 ou 2 palavras) ideal para o catálogo (Ex: Placas, Decoração, Interativo, Colecionável, Acessórios).
 
-Responda EXATAMENTE neste formato (apenas texto puro, sem asteriscos ou negrito):
-Descricao: [Sua copy baseada na imagem]
-Categoria: [Sua categoria inventada]`;
+Responda EXATAMENTE neste formato (apenas texto puro, sem formatação markdown):
+Descricao: [Sua copy genial e genérica sobre o poder do produto]
+Categoria: [Sua categoria]`;
 
             const payloadIA = { 
                 contents: [{ 
@@ -322,7 +325,7 @@ Categoria: [Sua categoria inventada]`;
             const dadosIA = await respostaIA.json();
             const textoIA = dadosIA.candidates[0].content.parts[0].text;
 
-            let descGerada = "Produto exclusivo Mini Mundo.";
+            let descGerada = "Produto exclusivo Mini Mundo 3D.";
             let catGerada = "Geral";
             
             const linhas = textoIA.split('\n');
@@ -331,10 +334,10 @@ Categoria: [Sua categoria inventada]`;
                 if (linha.toLowerCase().startsWith('categoria:')) catGerada = linha.substring(10).trim();
             });
 
-            addLog(`Copy e Categoria geradas visualmente! [${catGerada}]`, "success");
-            addLog(`Enviando dados finais para o Analytics...`, "info");
+            addLog(`Copy magnética gerada! Categoria: [${catGerada}]`, "success");
+            addLog(`Enviando dados finais para a Vitrine...`, "info");
 
-            // 4. SALVANDO NA PLANILHA GOOGLE
+            // 4. SALVANDO NA PLANILHA
             const payloadSheets = {
                 acao: "salvar_produto",
                 nome: nome,
@@ -352,7 +355,7 @@ Categoria: [Sua categoria inventada]`;
             const resultadoPlanilha = await respostaSheets.json();
 
             if (resultadoPlanilha.sucesso) {
-                addLog(`✅ PRODUTO CADASTRADO COM SUCESSO!`, "success");
+                addLog(`✅ PRODUTO CADASTRADO COM SUCESSO! A vitrine já está atualizada.`, "success");
                 document.getElementById("prod-nome").value = "";
                 document.getElementById("prod-preco").value = "";
                 inputFotos.value = "";
@@ -368,9 +371,8 @@ Categoria: [Sua categoria inventada]`;
         }
     }
 
-
     // ==========================================
-    // LÓGICA DO QUIZ
+    // LÓGICA DO QUIZ (MANTIDA)
     // ==========================================
     function atualizarBadgeUltimo() {
         const ultimoTime = localStorage.getItem("ultimo_time_gerado");
@@ -402,9 +404,9 @@ Gere ${qtd} perguntas sobre a história do ${timeNome} (Nível de dificuldade: $
 ${instrucaoTema}
 
 REGRAS ABSOLUTAS PARA AS PERGUNTAS E RESPOSTAS:
-1. FATOS HISTÓRICOS APENAS: Proibido perguntas de opinião, especulação financeira, ou "o que você acha". Use apenas dados concretos.
+1. FATOS HISTÓRICOS APENAS: Proibido perguntas de opinião. Use apenas dados concretos.
 2. TAMANHO DA PERGUNTA: Curta, direta ao ponto (máximo de 15 palavras por pergunta).
-3. TAMANHO DAS OPÇÕES: Muito curtas (de 1 a 4 palavras no máximo). As opções devem ser apenas nomes de pessoas, times, números ou anos.
+3. TAMANHO DAS OPÇÕES: Muito curtas (de 1 a 4 palavras no máximo).
 
 Regras ESTRITAS de formatação:
 Pergunta: [Escreva a pergunta curta]
@@ -425,7 +427,7 @@ NÃO escreva introdução, entregue APENAS o texto puro.`;
                 return dados.candidates[0].content.parts[0].text;
             }
             if (resposta.status === 429 && tentativa < 3) {
-                addLog(`⏳ Limite da IA atingido no ${timeNome.toUpperCase()}. Aguardando 5s para tentar de novo...`, "warn");
+                addLog(`⏳ Limite da IA atingido. Aguardando 5s para tentar de novo...`, "warn");
                 await delay(5000);
                 continue; 
             }
