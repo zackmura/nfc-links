@@ -10,7 +10,7 @@
         body { font-family: 'Inter', sans-serif; background: #f4f6f8; margin: 0; padding: 15px 10px; display: flex; justify-content: center; }
         .widget { width: 100%; max-width: 420px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
         
-        /* Tema Flamengo - Rubro-Negro */
+        /* Tema Flamengo */
         .header { background: linear-gradient(135deg, #c90000 0%, #000000 100%); color: white; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #000000; }
         .header img { width: 75px; height: 75px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));}
         .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;}
@@ -19,7 +19,7 @@
         .music-btn { margin-top: 15px; background: #ffffff; color: #c90000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
         .music-btn:active { transform: scale(0.95); }
 
-        /* === 🔴 CSS DO PLACAR AO VIVO === */
+        /* Placar ao Vivo & Estrutura */
         .live-container { background: #ffffff; border: 2px solid #c90000; border-radius: 15px; margin: 15px 10px; padding: 15px; box-shadow: 0 5px 20px rgba(201,0,0,0.15); }
         .live-header { text-align: center; font-weight: 900; color: #c90000; font-size: 0.9rem; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; letter-spacing: 1px;}
         .live-dot { width: 10px; height: 10px; background-color: #c90000; border-radius: 50%; animation: blink 1s infinite; }
@@ -74,7 +74,7 @@
         .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
         .trophy-icon { font-size: 1.1rem; }
 
-        /* === 🏆 QUIZ GAMIFICADO === */
+        /* Quiz Gamificado */
         .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); position: relative;}
         .promo-banner { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);}
         .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #444; }
@@ -94,50 +94,20 @@
         .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
         .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
         .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
-
         .btn-iniciar-quiz { background: linear-gradient(135deg, #c90000 0%, #8b0000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #5e0000; transition: all 0.2s; box-sizing: border-box;}
         .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #5e0000; }
 
-        /* === 📢 REDE DE ANÚNCIOS (AD NETWORK) === */
-        .ads-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #111; border-bottom: 1px solid #eeeeee; display: none; }
-        .ads-header { text-align: center; margin-bottom: 15px; }
-        .ads-title { color: #c90000; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
-        .ads-subtitle { color: #555; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
-        
-        .ad-carousel { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
-        .ad-carousel::-webkit-scrollbar { height: 4px; }
-        .ad-carousel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .ad-carousel::-webkit-scrollbar-thumb { background: #c90000; border-radius: 10px; }
-        
-        .ad-card { min-width: 220px; max-width: 220px; background: #fff; border: 2px dashed #e2e8f0; border-radius: 12px; padding: 12px; text-align: center; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column;}
-        .ad-img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;}
-        .ad-empresa { font-size: 0.9rem; font-weight: 900; color: #111; margin: 0 0 5px; line-height: 1.2;}
-        .ad-desc { font-size: 0.75rem; color: #444; margin: 0 0 10px; line-height: 1.3; flex-grow: 1;}
-        .ad-preco { font-size: 0.95rem; font-weight: 900; color: #c90000; margin-bottom: 5px;}
-        .ad-cupom { font-size: 0.65rem; background: #fef08a; color: #b45309; padding: 4px 8px; border-radius: 4px; font-weight: 800; display: inline-block; margin-bottom: 10px; border: 1px dashed #f59e0b;}
-        
-        .btn-ad { background: #25D366; color: white; text-align: center; display: block; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 800; font-size: 0.8rem; box-shadow: 0 4px 0 #1b9b4a; box-sizing: border-box; transition: transform 0.2s;}
-        .btn-ad:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a;}
-        
-        .anuncie-aqui-banner { background: linear-gradient(135deg, #111 0%, #333 100%); color: #fff; padding: 20px; border-radius: 12px; text-align: center; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
-        .anuncie-title { font-size: 1.1rem; font-weight: 900; margin: 0 0 5px; color: #ffd700;}
-        .anuncie-desc { font-size: 0.8rem; color: #ccc; margin: 0 0 15px; line-height: 1.4;}
-        .btn-anuncie { background: #ffd700; color: #000; text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #b8860b; transition: transform 0.2s;}
-        .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #b8860b;}
-
-        /* === 🛒 VITRINE MINI MUNDO (CARROSSEL) === */
+        /* === 🛒 VITRINE MINI MUNDO === */
         .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;}
         .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
         .minimundo-title-box { text-align: left; }
         .minimundo-title { color: #4E342E; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
         .minimundo-subtitle { color: #8D6E63; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
-        
         .carrossel-produtos { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
         .carrossel-produtos::-webkit-scrollbar { height: 4px; }
         .carrossel-produtos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .carrossel-produtos::-webkit-scrollbar-thumb { background: #8D6E63; border-radius: 10px; }
-
         .produto-card-mini { min-width: 140px; max-width: 140px; background: #ffffff; border: 1px solid #efebe9; border-radius: 12px; text-align: left; scroll-snap-align: start; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s;}
         .produto-card-mini:active { transform: scale(0.96); }
         .produto-img-mini { width: 100%; height: 130px; object-fit: cover; background: #fafafa; border-bottom: 1px solid #f5f5f5;}
@@ -146,26 +116,71 @@
         .produto-nome-mini { font-size: 0.8rem; font-weight: 800; color: #3E2723; margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
         .produto-preco-mini { font-size: 0.95rem; font-weight: 900; color: #2E7D32; margin-top: auto;}
 
-        /* === 🛍️ MODAL DE PRODUTO DETALHADO === */
-        .modal-produto-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
-        .modal-produto-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;}
+        /* === 📢 REDE DE ANÚNCIOS (NOVO MINI CARD E MODAL) === */
+        .ads-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #111; border-bottom: 1px solid #eeeeee; display: none; }
+        .ads-header { text-align: center; margin-bottom: 15px; }
+        .ads-title { color: #c90000; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
+        .ads-subtitle { color: #555; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
+        .ad-carousel { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
+        .ad-carousel::-webkit-scrollbar { height: 4px; }
+        .ad-carousel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .ad-carousel::-webkit-scrollbar-thumb { background: #c90000; border-radius: 10px; }
+        
+        /* O Mini Card Estilo iFood */
+        .ad-card-mini { min-width: 160px; max-width: 160px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; overflow: hidden;}
+        .ad-card-mini:active { transform: scale(0.96); }
+        .ad-img-wrapper { position: relative; height: 90px; width: 100%; background: #eee;}
+        .ad-banner-mini { width: 100%; height: 100%; object-fit: cover; }
+        .ad-logo-mini { position: absolute; bottom: -15px; left: 10px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .ad-info-mini { padding: 22px 10px 10px; display: flex; flex-direction: column; flex-grow: 1; }
+        .ad-empresa-mini { font-size: 0.85rem; font-weight: 900; color: #111; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .ad-desc-mini { font-size: 0.65rem; color: #555; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;}
+        .ad-btn-ver { font-size: 0.7rem; font-weight: 800; color: #c90000; margin-top: auto; text-transform: uppercase;}
+
+        .anuncie-aqui-banner { background: linear-gradient(135deg, #111 0%, #333 100%); color: #fff; padding: 20px; border-radius: 12px; text-align: center; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        .anuncie-title { font-size: 1.1rem; font-weight: 900; margin: 0 0 5px; color: #ffd700;}
+        .anuncie-desc { font-size: 0.8rem; color: #ccc; margin: 0 0 15px; line-height: 1.4;}
+        .btn-anuncie { background: #ffd700; color: #000; text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #b8860b; transition: transform 0.2s;}
+        .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #b8860b;}
+
+        /* MODAIS GERAIS (Produto e Anúncio) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;}
         .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #333; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+        
+        /* Modal Loja Específicos */
         .galeria-produto { width: 100%; background: #f8f9fa; }
         .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
         .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: #fff; border-bottom: 1px solid #eee;}
         .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s;}
         .miniatura.ativa { border-color: #5D4037; opacity: 1; }
-        .info-produto-completa { padding: 20px 20px 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
+        .info-completa { padding: 20px 20px 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
         .tag-modal { font-size: 0.65rem; background: #efebe9; color: #5D4037; padding: 4px 8px; border-radius: 4px; font-weight: 800; align-self: flex-start; text-transform: uppercase;}
         .titulo-modal { font-size: 1.3rem; font-weight: 900; color: #222; margin: 0; line-height: 1.2;}
         .preco-modal { font-size: 1.5rem; font-weight: 900; color: #2E7D32; margin: 0;}
         .desc-modal { font-size: 0.85rem; color: #555; line-height: 1.5; margin: 5px 0 15px; white-space: pre-wrap;}
-        .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); transition: transform 0.1s, box-shadow 0.1s; text-decoration: none;}
-        .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a, 0 2px 5px rgba(37,211,102,0.3); }
+        .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); text-decoration: none;}
+        .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a;}
+
+        /* Modal Anúncio Específicos */
+        .modal-ad-header-imgs { position: relative; height: 180px; width: 100%; background: #f0f0f0; }
+        .modal-ad-banner { width: 100%; height: 100%; object-fit: cover; }
+        .modal-ad-logo { position: absolute; bottom: -30px; left: 20px; width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
+        .modal-ad-body { padding: 40px 20px 30px; overflow-y: auto; }
+        .modal-ad-empresa { font-size: 1.4rem; font-weight: 900; color: #111; margin: 0 0 8px;}
+        .modal-ad-desc { font-size: 0.9rem; color: #444; line-height: 1.5; margin: 0 0 15px;}
+        .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;}
+        .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;}
+        .modal-ad-endereco { font-size: 0.8rem; color: #666; margin-bottom: 20px; font-weight: 600; display: flex; align-items: flex-start; gap: 6px; background: #f8f9fa; padding: 10px; border-radius: 8px;}
+        .modal-ad-buttons { display: flex; gap: 10px; }
+        .btn-ad-zap { flex: 2; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1b9b4a; transition: transform 0.1s;}
+        .btn-ad-zap:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a; }
+        .btn-ad-call { flex: 1; background: #f1f5f9; color: #333; border: 1px solid #cbd5e1; padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px;}
+        .btn-ad-call:active { background: #e2e8f0; }
 
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* === RODAPÉ GERAL === */
+        /* Rodapé */
         .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
         .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
         .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
@@ -174,18 +189,16 @@
         .social-btn:active { transform: scale(0.95); }
         .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
         .zap { background: #25D366; }
-
-        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
-        .dynamic-button:active { transform: scale(0.95); }
-        .youtube-button { background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2); }
+        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s; background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2);}
+        .youtube-button:active { transform: scale(0.95); }
         
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
         @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* === MODAL CONQUISTA === */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
+        /* Modal Conquista */
+        .modal-conquista-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
         .achievement-modal { background: #111; border: 2px solid #c90000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: white; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 40px rgba(201,0,0,0.5); position: relative;}
         .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);}
         .modal-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; color: #ffcc00;}
@@ -247,53 +260,32 @@
 
     <div class="section-title">🏆 Desafio do Torcedor</div>
     <div class="quiz-container" id="quiz-box" style="display: none;">
-        
         <div class="promo-banner">🎁 Atinja 30 acertos seguidos e ganhe Prêmios Reais!</div>
-
         <div class="quiz-stats">
             <div class="stat-box"><span id="q-acertos" style="color: #198754;">0</span><small>Acertos</small></div>
             <div class="stat-box"><span id="q-erros" style="color: #dc3545;">0</span><small>Erros</small></div>
             <div class="stat-box"><span id="q-chama">0</span><small>Ofensiva 🔥</small></div>
             <div class="stat-box"><span id="q-recorde" style="color: #ffd700;">0</span><small>Recorde 🏆</small></div>
         </div>
-
         <div class="timer-container" id="timer-container"><div class="timer-bar" id="barra-tempo"></div></div>
-
         <div id="tela-inicio-quiz" style="text-align: center; padding: 15px 0;">
             <p style="color: #ccc; font-size: 0.95rem; margin-bottom: 20px; font-weight: 600;">Mostre que você entende tudo do Mengão e concorra a prêmios!</p>
             <button class="btn-iniciar-quiz" onclick="iniciarQuiz()">▶️ INICIAR DESAFIO</button>
         </div>
-
         <div id="quiz-anim-area" style="display: none;">
             <p id="quiz-pergunta" class="quiz-question">Carregando desafio...</p>
             <div id="quiz-botoes" class="quiz-options"></div>
         </div>
-        
         <button id="btn-proxima" class="btn-proxima" onclick="sortearPergunta()">Próxima Pergunta ➡️</button>
     </div>
 
     <div class="section-title">Galeria de Troféus</div>
     <div class="trophy-cabinet">
-        <div class="trophy-item">
-            <span class="trophy-name"><span class="trophy-icon">🌎</span> Mundial de Clubes</span>
-            <span class="trophy-years">1981</span>
-        </div>
-        <div class="trophy-item">
-            <span class="trophy-name"><span class="trophy-icon">🏆</span> Libertadores</span>
-            <span class="trophy-years">1981, 2019, 2022</span>
-        </div>
-        <div class="trophy-item">
-            <span class="trophy-name"><span class="trophy-icon">⭐</span> Brasileirão</span>
-            <span class="trophy-years">8 Títulos (Último: 2020)</span>
-        </div>
-        <div class="trophy-item">
-            <span class="trophy-name"><span class="trophy-icon">🏆</span> Copa do Brasil</span>
-            <span class="trophy-years">1990, 2006, 2013, 2022</span>
-        </div>
-        <div class="trophy-item">
-            <span class="trophy-name"><span class="trophy-icon">🥇</span> Cariocão</span>
-            <span class="trophy-years">37 Títulos (Maior Campeão)</span>
-        </div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🌎</span> Mundial de Clubes</span><span class="trophy-years">1981</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🏆</span> Libertadores</span><span class="trophy-years">1981, 2019, 2022</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">⭐</span> Brasileirão</span><span class="trophy-years">8 Títulos (Último: 2020)</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🏆</span> Copa do Brasil</span><span class="trophy-years">1990, 2006, 2013, 2022</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🥇</span> Cariocão</span><span class="trophy-years">37 Títulos (Maior Campeão)</span></div>
     </div>
 
     <div id="secao-minimundo" class="minimundo-section">
@@ -330,7 +322,6 @@
         Desenvolvido com tecnologia de
         <img src="logo.jpg" alt="Logo Mini Mundo" onerror="this.style.display='none'">
         <span>MINI MUNDO IMPRESSÃO 3D & DESIGN</span>
-        
         <div class="social-links">
             <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="social-btn insta">📸 Instagram</a>
             <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20do%20meu%20time%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20produtos%20da%20Mini%20Mundo." target="_blank" class="social-btn zap">💬 WhatsApp</a>
@@ -338,29 +329,46 @@
     </div>
 </div>
 
-<div id="modal-produto" class="modal-produto-overlay">
-    <div class="modal-produto-content">
+<div id="modal-produto" class="modal-overlay">
+    <div class="modal-content">
         <button class="btn-fechar-modal" onclick="fecharModalProduto()">×</button>
-        
         <div class="galeria-produto">
             <img id="modal-foto-principal" src="" alt="Produto" class="foto-principal">
             <div id="modal-miniaturas" class="miniaturas-container"></div>
         </div>
-
-        <div class="info-produto-completa">
+        <div class="info-completa">
             <span id="modal-tag" class="tag-modal">Categoria</span>
             <h3 id="modal-titulo-prod" class="titulo-modal">Nome do Produto</h3>
             <h2 id="modal-preco" class="preco-modal">R$ 00,00</h2>
             <p id="modal-desc" class="desc-modal">Descrição do produto vai aqui...</p>
-            
-            <a id="modal-btn-zap" href="#" target="_blank" class="btn-comprar-zap">
-                🛒 COMPRAR PELO WHATSAPP
-            </a>
+            <a id="modal-btn-zap" href="#" target="_blank" class="btn-comprar-zap">🛒 COMPRAR PELO WHATSAPP</a>
         </div>
     </div>
 </div>
 
-<div id="modal-conquista" class="modal-overlay">
+<div id="modal-anuncio" class="modal-overlay">
+    <div class="modal-content">
+        <button class="btn-fechar-modal" onclick="fecharModalAnuncio()">×</button>
+        <div class="modal-ad-header-imgs">
+            <img id="modal-ad-banner" src="" alt="Banner" class="modal-ad-banner">
+            <img id="modal-ad-logo" src="" alt="Logo" class="modal-ad-logo">
+        </div>
+        <div class="modal-ad-body">
+            <h3 id="modal-ad-empresa" class="modal-ad-empresa">Nome da Empresa</h3>
+            <p id="modal-ad-desc" class="modal-ad-desc">Descrição completa da oferta...</p>
+            <h2 id="modal-ad-preco" class="modal-ad-preco" style="display:none;">R$ 00,00</h2>
+            <div id="modal-ad-cupom" class="modal-ad-cupom" style="display:none;">🎟️ Cupom</div>
+            <div id="modal-ad-endereco" class="modal-ad-endereco" style="display:none;">📍 Endereço da loja</div>
+            
+            <div class="modal-ad-buttons">
+                <a id="modal-ad-zap" href="#" target="_blank" class="btn-ad-zap">💬 WhatsApp</a>
+                <a id="modal-ad-call" href="#" class="btn-ad-call" style="display:none;">📞 Ligar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-conquista" class="modal-conquista-overlay">
     <div class="achievement-modal">
         <div class="confetti-wrap">
             <div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div>
@@ -368,78 +376,49 @@
         <span class="modal-icon" id="modal-icone">🔥</span>
         <h2 class="modal-title" id="modal-titulo">NOVO RECORDE!</h2>
         <p class="modal-text" id="modal-mensagem">Você atingiu a marca impressionante!</p>
-        
         <a id="modal-btn-share" class="modal-btn-share" target="_blank" href="#">📱 Compartilhar e Zoar</a>
-        <button class="modal-btn-close" onclick="fecharModal()">Continuar Jogando ➡️</button>
+        <button class="modal-btn-close" onclick="fecharModalQuiz()">Continuar Jogando ➡️</button>
     </div>
 </div>
 
 <script>
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec"; 
     const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
-    // 📢 NOVA ROTA PARA BUSCAR OS ANÚNCIOS
     const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
-    
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
 
-    // === VARIÁVEIS DE GAMIFICAÇÃO E TIMER ===
-    let bancoDePerguntas = [];
-    let perguntaAtual = null;
-    let acertos = 0;
-    let erros = 0;
-    let ofensiva = 0;
+    // Variáveis Globais
+    let bancoDePerguntas = []; let perguntaAtual = null; let acertos = 0; let erros = 0; let ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
-    let radarInterval = null; 
-    const TEMPO_MAXIMO = 15; 
-    let tempoAtual = TEMPO_MAXIMO;
-    let timerQuiz = null;
-    let catalogoGlobal = [];
+    let radarInterval = null; const TEMPO_MAXIMO = 15; let tempoAtual = TEMPO_MAXIMO; let timerQuiz = null;
+    let catalogoGlobal = []; let anunciosGlobal = [];
 
     function verificarPasseLivre() {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('t');
         const agora = new Date().getTime();
-        
         if (!token || (agora - parseInt(token)) > 120000) {
-            document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f0f2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;">
-                    <img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-                    <h2 style="color:#c90000; margin-bottom:10px;">Acesso Expirado</h2>
-                    <p style="color:#444; font-size:0.95rem; line-height:1.5;">Para sua segurança e exclusividade, as estatísticas ao vivo só podem ser acessadas encostando o celular no seu <b>Chaveiro Inteligente</b>.</p>
-                </div>
-            `;
+            document.body.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f0f2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;"><img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);"><h2 style="color:#c90000; margin-bottom:10px;">Acesso Expirado</h2><p style="color:#444; font-size:0.95rem; line-height:1.5;">Para sua segurança, acesse encostando o celular no <b>Chaveiro Inteligente</b>.</p></div>`;
             return false; 
         }
         return true; 
     }
 
     function controlarMusica() {
-        const audio = document.getElementById("hino-audio");
-        const btn = document.getElementById("btn-tocar");
-        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } 
-        else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
+        const audio = document.getElementById("hino-audio"); const btn = document.getElementById("btn-tocar");
+        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
     }
 
     function traduzirCampeonato(nomeOuSlug) {
-        if (!nomeOuSlug) return "Campeonato";
-        const s = nomeOuSlug.toLowerCase();
-        if (s.includes("paulista")) return "Paulistão";
-        if (s.includes("carioca")) return "Cariocão";
-        if (s.includes("bra.1") || s.includes("brazilian serie a") || s.includes("brasileirão serie a")) return "Brasileirão Série A";
-        if (s.includes("bra.2") || s.includes("brasileirão serie b")) return "Brasileirão Série B";
-        if (s.includes("libertadores")) return "Libertadores";
-        if (s.includes("copa_do_brasil") || s.includes("copa do brasil")) return "Copa do Brasil";
-        if (s.includes("supercopa")) return "Supercopa do Brasil";
-        if (s.includes("recopa")) return "Recopa Sul-Americana";
-        if (s.includes("sul-americana") || s.includes("sudamericana")) return "Copa Sul-Americana";
-        if (s.includes("mundial") || s.includes("world cup")) return "Mundial de Clubes";
+        if (!nomeOuSlug) return "Campeonato"; const s = nomeOuSlug.toLowerCase();
+        if (s.includes("paulista")) return "Paulistão"; if (s.includes("carioca")) return "Cariocão";
+        if (s.includes("bra.1") || s.includes("serie a")) return "Brasileirão Série A";
+        if (s.includes("libertadores")) return "Libertadores"; if (s.includes("copa do brasil")) return "Copa do Brasil";
         return nomeOuSlug;
     }
 
     function checarJogoAoVivo(dados) {
-        const todosJogos = [...(dados.past || []), ...(dados.next || [])];
-        const jogoAoVivo = todosJogos.find(j => j.status === 'in');
-
+        const jogoAoVivo = [...(dados.past || []), ...(dados.next || [])].find(j => j.status === 'in');
         if (jogoAoVivo && jogoAoVivo.id) {
             document.getElementById("live-match-container").style.display = "block";
             atualizarRadarESPN(jogoAoVivo.id); 
@@ -453,86 +432,29 @@
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`;
-            const res = await fetch(url);
+            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`);
             const json = await res.json();
-            const header = json.header.competitions[0];
-            const tempoStr = header.status.displayClock;
-            const periodo = header.status.period > 1 ? "2ºT" : "1ºT";
-            const timeInfo = tempoStr ? `${tempoStr}' ${periodo}` : "Aguardando Apito";
-            const home = header.competitors.find(c => c.homeAway === 'home');
-            const away = header.competitors.find(c => c.homeAway === 'away');
-            const boxscore = json.boxscore?.teams || [];
-            let statsHTML = '';
-
-            if (boxscore.length === 2) {
-                const getStat = (teamStats, statName) => {
-                    if (!teamStats.statistics) return "0";
-                    const s = teamStats.statistics.find(x => x.name === statName);
-                    return s ? s.displayValue : "0";
-                };
-                
-                const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
-                const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
-
-                const estatisticas = [
-                    { label: "Posse de Bola", key: "possession" },
-                    { label: "Finalizações", key: "shotsTotal" },
-                    { label: "No Gol", key: "shotsOnTarget" },
-                    { label: "Escanteios", key: "wonCorners" },
-                    { label: "Faltas", key: "foulsCommitted" },
-                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
-                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
-                ];
-
-                statsHTML = estatisticas.map(stat => {
-                    const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
-                    return `
-                    <div class="stat-row">
-                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
-                        <span class="stat-label">${stat.label}</span>
-                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
-                    </div>
-                `}).join('');
-            }
-
+            const header = json.header.competitions[0], timeInfo = header.status.displayClock ? `${header.status.displayClock}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
+            const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
+            
             document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header">
-                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
-                </div>
+                <div class="live-header"><span class="live-dot"></span> TEMPO REAL - ${timeInfo}</div>
                 <div class="live-scoreboard">
-                    <div class="live-team">
-                        <img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${home.team.abbreviation || home.team.shortDisplayName}</span>
-                    </div>
+                    <div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation}</span></div>
                     <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
-                    <div class="live-team">
-                        <img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${away.team.abbreviation || away.team.shortDisplayName}</span>
-                    </div>
-                </div>
-                <div class="live-stats">
-                    ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
+                    <div class="live-team"><img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${away.team.abbreviation}</span></div>
                 </div>
             `;
-        } catch (e) {
-            console.error("Erro no radar: ", e);
-        }
+        } catch (e) { console.error("Erro no radar: ", e); }
     }
 
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
-        // Dispara o carregamento das vitrines em paralelo
         carregarVitrine();
-        carregarAnuncios(); // <== A CHADA PARA PUXAR OS ANÚNCIOS
+        carregarAnuncios();
 
-        const resDiv = document.getElementById("resultados");
-        const classDiv = document.getElementById("classificacao");
-        const ageDiv = document.getElementById("agenda");
-        const newsDiv = document.getElementById("noticias");
-        const statusUpdate = document.getElementById("status-update");
-        const tituloClassificacao = document.getElementById("titulo-classificacao");
+        const resDiv = document.getElementById("resultados"), classDiv = document.getElementById("classificacao"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
 
         try {
             const resposta = await fetch(MINHA_API_GOOGLE);
@@ -543,7 +465,6 @@
             if (dados.quiz && dados.quiz.length > 0) {
                 bancoDePerguntas = dados.quiz;
                 document.getElementById("quiz-box").style.display = "block";
-                
                 document.getElementById("q-recorde").innerText = recorde;
             }
 
@@ -555,409 +476,154 @@
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
             classDiv.innerHTML = "";
-            if (dados.leagueName && dados.leagueName !== "Classificação") {
-                tituloClassificacao.innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
-            }
-            
             if (dados.table && dados.table.length > 0) {
                 let tableToRender = dados.table.slice(0, 10);
                 if (!tableToRender.some(t => t.team.toLowerCase().includes('flamengo'))) {
                     const flaData = dados.table.find(t => t.team.toLowerCase().includes('flamengo'));
-                    if (flaData) {
-                        tableToRender.push({ isDivider: true });
-                        tableToRender.push(flaData);
-                    }
+                    if (flaData) { tableToRender.push({ isDivider: true }); tableToRender.push(flaData); }
                 }
                 tableToRender.forEach(t => {
-                    if (t.isDivider) {
-                        classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`;
-                        return;
-                    }
+                    if (t.isDivider) { classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`; return; }
                     const bgClass = t.team.toLowerCase().includes('flamengo') ? 'highlight-team' : '';
-                    classDiv.innerHTML += `
-                        <tr class="${bgClass}">
-                            <td style="color:#777;">${t.rank}</td>
-                            <td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td>
-                            <td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td>
-                        </tr>`;
+                    classDiv.innerHTML += `<tr class="${bgClass}"><td style="color:#777;">${t.rank}</td><td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td><td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td></tr>`;
                 });
             } else classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível.</td></tr>";
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
-            else ageDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhum jogo agendado.</p>";
 
             newsDiv.innerHTML = "";
             if (dados.news && dados.news.length > 0) {
-                dados.news.forEach(n => {
-                    newsDiv.innerHTML += `
-                        <a href="${n.link}" target="_blank" class="news-card">
-                            <div class="news-source"><span>📰 ${n.source}</span></div>
-                            <h3 class="news-title">${n.title}</h3>
-                        </a>`;
-                });
-            } else newsDiv.innerHTML = "<p style='padding:20px; text-align:center; color:#999; font-size: 0.85rem;'>Nenhuma notícia no momento.</p>";
-
-        } catch (err) {
-            console.error(err);
-            resDiv.innerHTML = "<div style='padding:20px; color:#cc0000; text-align:center;'>Erro de conexão.</div>";
-            classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#cc0000;'>Erro de conexão.</td></tr>";
-            ageDiv.innerHTML = "";
-            newsDiv.innerHTML = "";
-            statusUpdate.innerText = "Offline";
-        }
+                dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
+            }
+        } catch (err) { console.error(err); }
     }
 
-    // === FUNÇÃO PARA CARREGAR A VITRINE DA MINI MUNDO ===
+    function criarCard(e, isFinished) {
+        const dataObj = new Date(e.date); const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}); const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
+        const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
+        const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
+
+        return `<div class="match-card"><div class="league-label">${traduzirCampeonato(e.slug)}</div><div class="match-row"><div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
+    }
+
+    // === LOJA MINI MUNDO ===
     async function carregarVitrine() {
         try {
-            const res = await fetch(API_CATALOGO);
-            const dados = await res.json();
+            const res = await fetch(API_CATALOGO); const dados = await res.json();
             const divVitrine = document.getElementById("vitrine-produtos");
             
             if(dados.sucesso && dados.vitrine && dados.vitrine.length > 0) {
-                catalogoGlobal = dados.vitrine; // Salva na memória
-                let html = "";
-                
+                catalogoGlobal = dados.vitrine; let html = "";
                 catalogoGlobal.forEach((p, index) => {
                     const primeiraFoto = p.foto.split(',')[0].trim();
-                    
-                    html += `
-                    <div class="produto-card-mini" onclick="abrirModalProduto(${index})">
-                        <img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'">
-                        <div class="produto-info-mini">
-                            <span class="produto-tag-mini">${p.categoria}</span>
-                            <h4 class="produto-nome-mini">${p.nome}</h4>
-                            <div class="produto-preco-mini">${p.preco}</div>
-                        </div>
-                    </div>`;
+                    html += `<div class="produto-card-mini" onclick="abrirModalProduto(${index})"><img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'"><div class="produto-info-mini"><span class="produto-tag-mini">${p.categoria}</span><h4 class="produto-nome-mini">${p.nome}</h4><div class="produto-preco-mini">${p.preco}</div></div></div>`;
                 });
-                divVitrine.innerHTML = html;
-                document.getElementById("secao-minimundo").style.display = "block"; 
-            } else {
-                divVitrine.innerHTML = "<p style='width:100%; text-align:center; color:#8D6E63; font-size:0.8rem;'>Vitrine em atualização...</p>";
+                divVitrine.innerHTML = html; document.getElementById("secao-minimundo").style.display = "block"; 
             }
-        } catch(e) {
-            console.error("Erro ao carregar catálogo Mini Mundo:", e);
-            document.getElementById("vitrine-produtos").innerHTML = "<p style='width:100%; text-align:center; color:#8D6E63; font-size:0.8rem;'>Não foi possível carregar a vitrine no momento.</p>";
-        }
+        } catch(e) { console.error(e); }
     }
 
-    // === 📢 FUNÇÃO PARA CARREGAR OS ANÚNCIOS DA REDE ===
+    function abrirModalProduto(index) {
+        const p = catalogoGlobal[index]; if(!p) return;
+        const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
+        const imgPrincipal = document.getElementById("modal-foto-principal"); imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
+        const divMiniaturas = document.getElementById("modal-miniaturas"); divMiniaturas.innerHTML = "";
+        
+        if (arrayFotos.length > 1) {
+            arrayFotos.forEach((linkFoto, i) => {
+                const imgMini = document.createElement("img"); imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
+                imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); };
+                divMiniaturas.appendChild(imgMini);
+            });
+            divMiniaturas.style.display = "flex";
+        } else { divMiniaturas.style.display = "none"; }
+
+        document.getElementById("modal-tag").innerText = p.categoria; document.getElementById("modal-titulo-prod").innerText = p.nome;
+        document.getElementById("modal-preco").innerText = p.preco; document.getElementById("modal-desc").innerText = p.descricao;
+        const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
+        document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
+        document.getElementById("modal-produto").style.display = "flex";
+    }
+    function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
+    document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
+
+    // === REDE DE ANÚNCIOS (NOVO SISTEMA IFOOD) ===
     async function carregarAnuncios() {
         try {
             const res = await fetch(API_ANUNCIOS);
             const dados = await res.json();
             const divCarrossel = document.getElementById("carrossel-anuncios");
-            
-            // Sempre exibe a sessão porque tem o botão de "Anunciar Aqui"
             document.getElementById("secao-anuncios").style.display = "block";
 
             if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) {
+                anunciosGlobal = dados.anuncios;
                 let html = "";
-                dados.anuncios.forEach(ad => {
-                    let precoHtml = ad.preco_oferta ? `<div class="ad-preco">${ad.preco_oferta}</div>` : '';
-                    let cupomHtml = ad.cupom ? `<div class="ad-cupom">🎟️ ${ad.cupom}</div>` : '';
-                    
+                anunciosGlobal.forEach((ad, index) => {
                     html += `
-                    <div class="ad-card">
-                        <img src="${ad.foto}" alt="${ad.empresa}" class="ad-img" onerror="this.src='logo.jpg'">
-                        <h4 class="ad-empresa">${ad.empresa}</h4>
-                        <p class="ad-desc">${ad.descricao}</p>
-                        ${precoHtml}
-                        ${cupomHtml}
-                        <a href="${ad.link_zap}" target="_blank" class="btn-ad">💬 APROVEITAR OFERTA</a>
+                    <div class="ad-card-mini" onclick="abrirModalAnuncio(${index})">
+                        <div class="ad-img-wrapper">
+                            <img src="${ad.foto}" class="ad-banner-mini" onerror="this.src='logo.jpg'">
+                            <img src="${ad.logo}" class="ad-logo-mini" onerror="this.src='logo.jpg'">
+                        </div>
+                        <div class="ad-info-mini">
+                            <h4 class="ad-empresa-mini">${ad.empresa}</h4>
+                            <p class="ad-desc-mini">${ad.descricao}</p>
+                            <span class="ad-btn-ver">Ver Oferta</span>
+                        </div>
                     </div>`;
                 });
                 divCarrossel.innerHTML = html;
             } else {
-                // Se não tiver nenhum anúncio ativo, esconde o carrossel, mas deixa o banner de cadastrar
                 divCarrossel.style.display = "none";
             }
         } catch(e) {
-            console.error("Erro ao carregar anúncios:", e);
+            console.error("Erro anúncios:", e);
             document.getElementById("carrossel-anuncios").style.display = "none";
         }
     }
 
-    function abrirModalProduto(index) {
-        const p = catalogoGlobal[index];
-        if(!p) return;
+    function abrirModalAnuncio(index) {
+        const ad = anunciosGlobal[index];
+        if(!ad) return;
 
-        // Extrai o array de fotos (separadas por vírgula)
-        const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
+        document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg';
+        document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg';
+        document.getElementById("modal-ad-empresa").innerText = ad.empresa;
+        document.getElementById("modal-ad-desc").innerText = ad.descricao;
         
-        // Seta a primeira imagem como principal
-        const imgPrincipal = document.getElementById("modal-foto-principal");
-        imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
-
-        // Cria as miniaturas (só mostra se tiver mais de 1 foto)
-        const divMiniaturas = document.getElementById("modal-miniaturas");
-        divMiniaturas.innerHTML = "";
+        const precoEl = document.getElementById("modal-ad-preco");
+        if(ad.preco_oferta) { precoEl.innerText = ad.preco_oferta; precoEl.style.display = "block"; } else { precoEl.style.display = "none"; }
         
-        if (arrayFotos.length > 1) {
-            arrayFotos.forEach((linkFoto, i) => {
-                const imgMini = document.createElement("img");
-                imgMini.src = linkFoto;
-                imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
-                imgMini.onclick = function() {
-                    // Troca a foto principal
-                    imgPrincipal.src = linkFoto;
-                    // Atualiza a borda visual das miniaturas
-                    document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa"));
-                    imgMini.classList.add("ativa");
-                };
-                divMiniaturas.appendChild(imgMini);
-            });
-            divMiniaturas.style.display = "flex";
-        } else {
-            divMiniaturas.style.display = "none";
-        }
+        const cupomEl = document.getElementById("modal-ad-cupom");
+        if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
+        
+        const endEl = document.getElementById("modal-ad-endereco");
+        if(ad.endereco) { endEl.innerHTML = `📍 ${ad.endereco}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; }
+        
+        document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
+        
+        const btnCall = document.getElementById("modal-ad-call");
+        if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; }
 
-        // Preenche os textos
-        document.getElementById("modal-tag").innerText = p.categoria;
-        document.getElementById("modal-titulo-prod").innerText = p.nome;
-        document.getElementById("modal-preco").innerText = p.preco;
-        document.getElementById("modal-desc").innerText = p.descricao;
-
-        // Configura o link do WhatsApp com mensagem pronta
-        const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
-        document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
-
-        // Abre o modal
-        document.getElementById("modal-produto").style.display = "flex";
+        document.getElementById("modal-anuncio").style.display = "flex";
     }
 
-    function fecharModalProduto() {
-        document.getElementById("modal-produto").style.display = "none";
-    }
+    function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
+    document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
 
-    // Fecha o modal do produto se clicar no fundo preto
-    document.getElementById("modal-produto").addEventListener('click', function(e) {
-        if (e.target === this) fecharModalProduto();
-    });
-
-    function criarCard(e, isFinished) {
-        const dataObj = new Date(e.date);
-        const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-        const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-        const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
-        
-        const leagueStr = traduzirCampeonato(e.slug);
-
-        let estadioHtml = "";
-        if (e.stadium) {
-            estadioHtml = `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>`;
-        }
-
-        let botaoYouTube = "";
-        if (isFinished) {
-            const pesquisa = `melhores momentos ${e.homeTeam} x ${e.awayTeam}`;
-            const linkBusca = `https://www.youtube.com/results?search_query=${encodeURIComponent(pesquisa)}`;
-            
-            botaoYouTube = `
-                <a href="${linkBusca}" target="_blank" class="youtube-button dynamic-button">
-                    ▶️ Assistir Melhores Momentos
-                </a>
-            `;
-        }
-
-        return `
-            <div class="match-card">
-                <div class="league-label">${leagueStr}</div>
-                <div class="match-row">
-                    <div class="team-col home">
-                        ${e.homeTeam}
-                        <img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                    </div>
-                    <div class="score-box">
-                        <span class="score">${infoPlacar}</span>
-                        <span class="date">${dataF}</span>
-                    </div>
-                    <div class="team-col away">
-                        <img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">
-                        ${e.awayTeam}
-                    </div>
-                </div>
-                ${estadioHtml} ${botaoYouTube}
-            </div>`;
-    }
-    
-    // 🔥 A CHAVE DE IGNIÇÃO DO APLICATIVO
     document.addEventListener("DOMContentLoaded", carregarDoMeuServidor);
 
-    // === GESTÃO DO TIMER E JOGO ===
-    function iniciarQuiz() {
-        document.getElementById("tela-inicio-quiz").style.display = "none";
-        document.getElementById("timer-container").style.display = "block";
-        document.getElementById("quiz-anim-area").style.display = "block";
-        sortearPergunta();
-    }
-
-    function iniciarTimer() {
-        clearInterval(timerQuiz);
-        tempoAtual = TEMPO_MAXIMO;
-        atualizarBarraVisual();
-        
-        timerQuiz = setInterval(() => {
-            tempoAtual--;
-            atualizarBarraVisual();
-            
-            if (tempoAtual <= 0) {
-                clearInterval(timerQuiz);
-                verificarResposta(null, -1); // Envia nulo para simular que o tempo esgotou
-            }
-        }, 1000);
-    }
-
-    function atualizarBarraVisual() {
-        const barra = document.getElementById("barra-tempo");
-        const porcentagem = (tempoAtual / TEMPO_MAXIMO) * 100;
-        barra.style.width = porcentagem + "%";
-        
-        if (porcentagem > 50) barra.style.background = "#25D366"; // Verde
-        else if (porcentagem > 20) barra.style.background = "#ffcc00"; // Amarelo
-        else barra.style.background = "#ff3333"; // Vermelho
-    }
-
-    const frasesAcerto = ["🔥 Mandou bem! Próxima ➡️", "⚽ Golaço! Avançar ➡️", "🎯 Na mosca! Próxima ➡️", "🧠 É o Craque! Próxima ➡️", "⚡ Voando! Próxima ➡️"];
-    const frasesErro = ["❌ Ops! Tentar Outra ➡️", "🚫 Passou perto! Tentar Outra ➡️", "🥅 Na trave! Tentar Outra ➡️", "📺 VAR anulou! Tentar Outra ➡️", "😅 Essa foi quase! Próxima ➡️"];
-
-    function sortearPergunta() {
-        if (bancoDePerguntas.length === 0) return;
-        
-        document.getElementById("btn-proxima").style.display = "none";
-        
-        const index = Math.floor(Math.random() * bancoDePerguntas.length);
-        perguntaAtual = bancoDePerguntas[index];
-        
-        const animArea = document.getElementById("quiz-anim-area");
-        animArea.classList.remove("fade-in");
-        void animArea.offsetWidth; 
-        animArea.classList.add("fade-in");
-        
-        document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta;
-        
-        const divBotoes = document.getElementById("quiz-botoes");
-        divBotoes.innerHTML = ""; 
-        
-        perguntaAtual.opcoes.forEach((opcao, i) => {
-            const numOpcao = i + 1;
-            const btn = document.createElement("button");
-            btn.className = "quiz-btn";
-            btn.innerText = opcao;
-            btn.onclick = () => verificarResposta(btn, numOpcao);
-            divBotoes.appendChild(btn);
-        });
-
-        iniciarTimer(); // Dispara o relógio quando a pergunta aparece
-    }
-
-    function abrirModalConquista(marca) {
-        let nivel = ""; let icone = "";
-        
-        if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]);
-
-        const btnShare = document.getElementById("modal-btn-share");
-        btnShare.classList.remove("modal-btn-premio");
-
-        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; }
-        else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; }
-        else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; }
-        else if (marca === 20) { nivel = "DEUS DO FUTEBOL!"; icone = "⚡"; }
-        else { nivel = "LENDA VIVA!"; icone = "🏆"; }
-
-        document.getElementById("modal-icone").innerText = icone;
-        document.getElementById("modal-titulo").innerText = nivel;
-
-        // O GRANDE PRÊMIO NA MARCA DE 30!
-        if (marca >= 30 && marca % 30 === 0) {
-            document.getElementById("modal-mensagem").innerHTML = `Você alcançou a marca épica de <b>${marca} acertos seguidos!</b> Tire um print desta tela e mande no WhatsApp da Mini Mundo para resgatar sua recompensa exclusiva num novo Chaveiro!`;
-            
-            const linkZapDesconto = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Flamengo%21%20Quero%20meu%20desconto%21`;
-            btnShare.href = linkZapDesconto;
-            btnShare.innerText = "🎁 Resgatar Minha Recompensa";
-            btnShare.classList.add("modal-btn-premio"); 
-
-        } else {
-            document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`;
-            const textoZoeira = `${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`;
-            const linkZap = `https://wa.me/?text=${encodeURIComponent(textoZoeira)}`;
-            btnShare.href = linkZap;
-            btnShare.innerText = "📱 Compartilhar e Zoar";
-        }
-
-        document.getElementById("modal-conquista").style.display = "flex";
-    }
-
-    function fecharModal() {
-        document.getElementById("modal-conquista").style.display = "none";
-        sortearPergunta(); 
-    }
-
-    function verificarResposta(botaoClicado, numEscolhido) {
-        clearInterval(timerQuiz); // Pausa o relógio
-
-        const botoes = document.querySelectorAll(".quiz-btn");
-        botoes.forEach(b => b.onclick = null); 
-        
-        const elementoChama = document.getElementById("q-chama");
-        const btnProxima = document.getElementById("btn-proxima");
-        btnProxima.className = "btn-proxima";
-        
-        if (numEscolhido === perguntaAtual.correta) {
-            if (botaoClicado) botaoClicado.classList.add("correct");
-            
-            if ("vibrate" in navigator) navigator.vibrate(50);
-
-            acertos++;
-            ofensiva++;
-            elementoChama.classList.add("chama-ativa"); 
-            
-            btnProxima.classList.add("acertou");
-            const fraseSorteada = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)];
-            btnProxima.innerText = fraseSorteada;
-            
-            if (ofensiva > recorde) {
-                recorde = ofensiva;
-                localStorage.setItem("quiz_recorde_flamengo", recorde);
-                document.getElementById("q-recorde").innerText = recorde;
-            }
-            
-            if (ofensiva > 0 && ofensiva % 5 === 0) {
-                abrirModalConquista(ofensiva);
-            } else {
-                btnProxima.style.display = "block"; 
-            }
-
-        } else {
-            // Identifica o erro ou o estouro de tempo
-            if (botaoClicado) botaoClicado.classList.add("wrong");
-            botoes[perguntaAtual.correta - 1].classList.add("correct"); // Pinta a certa de verde
-            
-            if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
-
-            erros++;
-            ofensiva = 0;
-            elementoChama.classList.remove("chama-ativa");
-            
-            btnProxima.classList.add("errou");
-            
-            if (!botaoClicado) { // Caiu aqui porque o tempo acabou
-                btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️";
-                if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]);
-            } else {
-                const fraseSorteada = frasesErro[Math.floor(Math.random() * frasesErro.length)];
-                btnProxima.innerText = fraseSorteada;
-            }
-            
-            btnProxima.style.display = "block";
-        }
-        
-        document.getElementById("q-acertos").innerText = acertos;
-        document.getElementById("q-erros").innerText = erros;
-        document.getElementById("q-chama").innerText = ofensiva;
-    }
+    // === QUIZ ===
+    function iniciarQuiz() { document.getElementById("tela-inicio-quiz").style.display = "none"; document.getElementById("timer-container").style.display = "block"; document.getElementById("quiz-anim-area").style.display = "block"; sortearPergunta(); }
+    function iniciarTimer() { clearInterval(timerQuiz); tempoAtual = TEMPO_MAXIMO; atualizarBarraVisual(); timerQuiz = setInterval(() => { tempoAtual--; atualizarBarraVisual(); if (tempoAtual <= 0) { clearInterval(timerQuiz); verificarResposta(null, -1); } }, 1000); }
+    function atualizarBarraVisual() { const barra = document.getElementById("barra-tempo"), p = (tempoAtual / TEMPO_MAXIMO) * 100; barra.style.width = p + "%"; barra.style.background = p > 50 ? "#25D366" : p > 20 ? "#ffcc00" : "#cc0000"; }
+    const frasesAcerto = ["🔥 Mandou bem! Próxima ➡️", "⚽ Golaço! Avançar ➡️", "🎯 Na mosca! Próxima ➡️", "🧠 É o Craque! Próxima ➡️", "⚡ Voando! Próxima ➡️"]; const frasesErro = ["❌ Ops! Tentar Outra ➡️", "🚫 Passou perto! Tentar Outra ➡️", "🥅 Na trave! Tentar Outra ➡️", "📺 VAR anulou! Tentar Outra ➡️", "😅 Essa foi quase! Próxima ➡️"];
+    function sortearPergunta() { if (bancoDePerguntas.length === 0) return; document.getElementById("btn-proxima").style.display = "none"; perguntaAtual = bancoDePerguntas[Math.floor(Math.random() * bancoDePerguntas.length)]; const animArea = document.getElementById("quiz-anim-area"); animArea.classList.remove("fade-in"); void animArea.offsetWidth; animArea.classList.add("fade-in"); document.getElementById("quiz-pergunta").innerText = perguntaAtual.pergunta; const divBotoes = document.getElementById("quiz-botoes"); divBotoes.innerHTML = ""; perguntaAtual.opcoes.forEach((opcao, i) => { const btn = document.createElement("button"); btn.className = "quiz-btn"; btn.innerText = opcao; btn.onclick = () => verificarResposta(btn, i + 1); divBotoes.appendChild(btn); }); iniciarTimer(); }
+    function abrirModalConquista(marca) { let nivel = "", icone = ""; if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]); const btnShare = document.getElementById("modal-btn-share"); btnShare.classList.remove("modal-btn-premio"); if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; } else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; } else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; } else if (marca === 20) { nivel = "DEUS DO FUTEBOL!"; icone = "⚡"; } else { nivel = "LENDA VIVA!"; icone = "🏆"; } document.getElementById("modal-icone").innerText = icone; document.getElementById("modal-titulo").innerText = nivel; if (marca >= 30 && marca % 30 === 0) { document.getElementById("modal-mensagem").innerHTML = `Você alcançou a marca épica de <b>${marca} acertos seguidos!</b> Tire um print desta tela e mande no WhatsApp da Mini Mundo para resgatar sua recompensa exclusiva num novo Chaveiro!`; btnShare.href = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Flamengo%21%20Quero%20meu%20desconto%21`; btnShare.innerText = "🎁 Resgatar Minha Recompensa"; btnShare.classList.add("modal-btn-premio"); } else { document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`; btnShare.href = `https://wa.me/?text=${encodeURIComponent(`${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`)}`; btnShare.innerText = "📱 Compartilhar e Zoar"; } document.getElementById("modal-conquista").style.display = "flex"; }
+    function fecharModalQuiz() { document.getElementById("modal-conquista").style.display = "none"; sortearPergunta(); }
+    function verificarResposta(botaoClicado, numEscolhido) { clearInterval(timerQuiz); const botoes = document.querySelectorAll(".quiz-btn"); botoes.forEach(b => b.onclick = null); const elementoChama = document.getElementById("q-chama"), btnProxima = document.getElementById("btn-proxima"); btnProxima.className = "btn-proxima"; if (numEscolhido === perguntaAtual.correta) { if (botaoClicado) botaoClicado.classList.add("correct"); if ("vibrate" in navigator) navigator.vibrate(50); acertos++; ofensiva++; elementoChama.classList.add("chama-ativa"); btnProxima.classList.add("acertou"); btnProxima.innerText = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)]; if (ofensiva > recorde) { recorde = ofensiva; localStorage.setItem("quiz_recorde_flamengo", recorde); document.getElementById("q-recorde").innerText = recorde; } if (ofensiva > 0 && ofensiva % 5 === 0) abrirModalConquista(ofensiva); else btnProxima.style.display = "block"; } else { if (botaoClicado) botaoClicado.classList.add("wrong"); botoes[perguntaAtual.correta - 1].classList.add("correct"); if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]); erros++; ofensiva = 0; elementoChama.classList.remove("chama-ativa"); btnProxima.classList.add("errou"); if (!botaoClicado) { btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️"; if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]); } else { btnProxima.innerText = frasesErro[Math.floor(Math.random() * frasesErro.length)]; } btnProxima.style.display = "block"; } document.getElementById("q-acertos").innerText = acertos; document.getElementById("q-erros").innerText = erros; document.getElementById("q-chama").innerText = ofensiva; }
 </script>
 
 </body>
