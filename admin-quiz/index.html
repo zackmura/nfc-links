@@ -44,6 +44,10 @@
         }
         select:focus, input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
         
+        /* Input File Customizado */
+        input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 20px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; }
+        input[type="file"]:hover { border-color: var(--primary); background: #f0fdf4; }
+        
         .row { display: flex; gap: 15px; }
         .col { flex: 1; }
 
@@ -89,14 +93,10 @@
         <p>Inteligência Artificial Mini Mundo</p>
     </div>
 
-    <div class="input-group">
-        <label for="api-key">🔐 Chave Privada (Google AI Studio):</label>
-        <input type="password" id="api-key" placeholder="AIzaSy..." onchange="salvarChave()">
-    </div>
-
     <div class="tabs-container">
         <button class="tab-btn active" onclick="switchTab('quiz')">🎮 Gerador de Quiz</button>
         <button class="tab-btn" onclick="switchTab('loja')">🛒 Catálogo da Loja</button>
+        <button class="tab-btn" onclick="switchTab('config')">⚙️ Credenciais</button>
     </div>
 
     <div id="tab-quiz" class="tab-content active">
@@ -155,7 +155,7 @@
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">A IA vai criar uma descrição de vendas e categorizar o produto automaticamente antes de enviar para sua planilha.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA fará o upload das fotos, criará a descrição de vendas e categorizará o produto automaticamente.</p>
         
         <div class="input-group">
             <label for="prod-nome">Nome do Produto:</label>
@@ -168,16 +168,28 @@
         </div>
 
         <div class="input-group">
-            <label for="prod-fotos">Links das Fotos (ImgBB):</label>
-            <input type="text" id="prod-fotos" placeholder="Cole os links separados por vírgula...">
-            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 6px;">Ex: https://i.ibb.co/foto1.jpg, https://i.ibb.co/foto2.jpg</p>
+            <label for="prod-fotos">Anexar Fotos do Produto:</label>
+            <input type="file" id="prod-fotos" accept="image/*" multiple>
+            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 6px;">Dica: Segure CTRL no PC ou aperte e segure no celular para selecionar várias fotos de uma vez.</p>
         </div>
 
-        <button id="btn-salvar-produto" class="btn-magic btn-loja" onclick="cadastrarProdutoIA()">✨ Gerar Copy e Cadastrar Produto</button>
+        <button id="btn-salvar-produto" class="btn-magic btn-loja" onclick="cadastrarProdutoIA()">✨ Enviar Fotos e Cadastrar Produto</button>
+    </div>
+
+    <div id="tab-config" class="tab-content">
+        <div class="input-group">
+            <label for="api-key">🧠 Chave Privada (Google AI Studio / Gemini):</label>
+            <input type="password" id="api-key" placeholder="AIzaSy..." onchange="salvarChaves()">
+        </div>
+        <div class="input-group" style="margin-top: 25px;">
+            <label for="imgbb-key">📸 Chave de Upload (API ImgBB):</label>
+            <input type="password" id="imgbb-key" placeholder="Cole a chave do ImgBB aqui..." onchange="salvarChaves()">
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Crie uma chave grátis acessando: <a href="https://api.imgbb.com/" target="_blank" style="color: var(--primary); font-weight: bold;">api.imgbb.com</a></p>
+        </div>
     </div>
 
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Interface carregada. Aguardando inicialização.</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado e pronto para operar.</span></div>
     </div>
 </div>
 
@@ -186,13 +198,16 @@
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 
     window.onload = () => {
-        const chaveSalva = localStorage.getItem("gemini_api_key");
-        if(chaveSalva) document.getElementById("api-key").value = chaveSalva;
+        if(localStorage.getItem("gemini_api_key")) document.getElementById("api-key").value = localStorage.getItem("gemini_api_key");
+        if(localStorage.getItem("imgbb_api_key")) document.getElementById("imgbb-key").value = localStorage.getItem("imgbb_api_key");
         atualizarBadgeUltimo();
         carregarInfoBanco(); 
     };
 
-    function salvarChave() { localStorage.setItem("gemini_api_key", document.getElementById("api-key").value); }
+    function salvarChaves() { 
+        localStorage.setItem("gemini_api_key", document.getElementById("api-key").value); 
+        localStorage.setItem("imgbb_api_key", document.getElementById("imgbb-key").value); 
+    }
 
     function switchTab(tabName) {
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -201,9 +216,12 @@
         if(tabName === 'quiz') {
             document.querySelectorAll('.tab-btn')[0].classList.add('active');
             document.getElementById('tab-quiz').classList.add('active');
-        } else {
+        } else if (tabName === 'loja') {
             document.querySelectorAll('.tab-btn')[1].classList.add('active');
             document.getElementById('tab-loja').classList.add('active');
+        } else {
+            document.querySelectorAll('.tab-btn')[2].classList.add('active');
+            document.getElementById('tab-config').classList.add('active');
         }
     }
 
@@ -215,26 +233,54 @@
     }
 
     // ==========================================
-    // LÓGICA DO CATÁLOGO DE PRODUTOS (NOVO)
+    // LÓGICA DO CATÁLOGO DE PRODUTOS (COM UPLOAD AUTOMÁTICO)
     // ==========================================
     async function cadastrarProdutoIA() {
         const apiKey = document.getElementById("api-key").value.trim();
+        const imgbbKey = document.getElementById("imgbb-key").value.trim();
         const nome = document.getElementById("prod-nome").value.trim();
         const preco = document.getElementById("prod-preco").value.trim();
-        const fotos = document.getElementById("prod-fotos").value.trim();
+        const inputFotos = document.getElementById("prod-fotos");
+        const files = inputFotos.files;
         const btn = document.getElementById("btn-salvar-produto");
 
-        if(!apiKey) return addLog("ERRO: Chave da IA não informada!", "error");
-        if(!nome || !preco || !fotos) return addLog("ERRO: Preencha Nome, Preço e Links das fotos.", "error");
+        if(!apiKey || !imgbbKey) return addLog("ERRO: Vá na aba ⚙️ Credenciais e preencha as duas chaves.", "error");
+        if(!nome || !preco || files.length === 0) return addLog("ERRO: Preencha Nome, Preço e anexe pelo menos uma foto.", "error");
 
         btn.disabled = true;
-        btn.innerText = "⏳ Pensando e Salvando...";
+        btn.innerText = "⏳ Processando Uploads e Inteligência...";
 
         try {
             addLog(`>> INICIANDO CADASTRO: ${nome}`, "warn");
-            addLog(`Pedindo para a IA criar a descrição de vendas...`, "info");
+            
+            // 1. FAZENDO UPLOAD DAS FOTOS PARA O IMGBB
+            addLog(`Fazendo upload de ${files.length} foto(s) para a nuvem...`, "info");
+            let linksDasFotos = [];
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            for(let i = 0; i < files.length; i++) {
+                const formData = new FormData();
+                formData.append("image", files[i]);
+                
+                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
+                    method: "POST",
+                    body: formData
+                });
+                const imgData = await imgRes.json();
+                
+                if(imgData.success) {
+                    linksDasFotos.push(imgData.data.url);
+                    addLog(`Foto ${i+1} enviada com sucesso!`, "success");
+                } else {
+                    throw new Error("Falha no upload da foto " + (i+1) + ": " + imgData.error.message);
+                }
+            }
+
+            const fotosString = linksDasFotos.join(", "); // Junta as urls com vírgula
+
+            // 2. PEDINDO DESCRIÇÃO E CATEGORIA PARA A IA (GEMINI)
+            addLog(`Pedindo para a IA criar a *copy* de vendas...`, "info");
+
+            const urlGemini = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
             const prompt = `Atue como um copywriter profissional de e-commerce. Vou te dar o nome de um produto de impressão 3D (Chaveiro, Decoração, etc). 
 Escreva uma descrição curta, magnética e voltada para conversão (máximo 3 frases curtas). 
 Em seguida, classifique esse produto em uma destas categorias exatas: Geek, Futebol, Decoração, Exclusivo, ou Geral.
@@ -246,14 +292,13 @@ Descricao: [Sua descrição aqui]
 Categoria: [Nome da categoria]`;
 
             const payloadIA = { contents: [{ parts: [{ text: prompt }] }] };
-            const respostaIA = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payloadIA) });
+            const respostaIA = await fetch(urlGemini, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payloadIA) });
             
-            if (!respostaIA.ok) throw new Error("Falha ao comunicar com a IA (Verifique a chave).");
+            if (!respostaIA.ok) throw new Error("Falha ao comunicar com a IA (Verifique a chave do Gemini).");
             
             const dadosIA = await respostaIA.json();
             const textoIA = dadosIA.candidates[0].content.parts[0].text;
 
-            // Extrai as respostas da IA
             let descGerada = "Produto exclusivo Mini Mundo.";
             let catGerada = "Geral";
             
@@ -263,16 +308,16 @@ Categoria: [Nome da categoria]`;
                 if (linha.toLowerCase().startsWith('categoria:')) catGerada = linha.substring(10).trim();
             });
 
-            addLog(`Copy gerada! Categoria definida como: [${catGerada}]`, "success");
-            addLog(`Enviando para a planilha do Analytics...`, "info");
+            addLog(`Copy gerada! Categoria: [${catGerada}]`, "success");
+            addLog(`Enviando dados para a planilha do Analytics...`, "info");
 
-            // Monta o pacote para o Google Sheets
+            // 3. SALVANDO NA PLANILHA GOOGLE
             const payloadSheets = {
                 acao: "salvar_produto",
                 nome: nome,
                 descricao: descGerada,
                 preco: preco,
-                foto: fotos,
+                foto: fotosString,
                 categoria: catGerada
             };
 
@@ -288,7 +333,7 @@ Categoria: [Nome da categoria]`;
                 // Limpa os campos
                 document.getElementById("prod-nome").value = "";
                 document.getElementById("prod-preco").value = "";
-                document.getElementById("prod-fotos").value = "";
+                inputFotos.value = "";
             } else {
                 throw new Error("Erro ao salvar na planilha.");
             }
@@ -297,7 +342,7 @@ Categoria: [Nome da categoria]`;
             addLog(`❌ ERRO NO CADASTRO: ${error.message}`, "error");
         } finally {
             btn.disabled = false;
-            btn.innerText = "✨ Gerar Copy e Cadastrar Produto";
+            btn.innerText = "✨ Enviar Fotos e Cadastrar Produto";
         }
     }
 
@@ -418,7 +463,10 @@ NÃO escreva introdução, entregue APENAS o texto puro.`;
 
     async function iniciarAutomacao(modoGlobal) {
         const apiKey = document.getElementById("api-key").value.trim();
-        if(!apiKey) return addLog("ERRO: Chave da IA não informada!", "error");
+        if(!apiKey) {
+            switchTab('config');
+            return addLog("ERRO: Vá na aba Credenciais e informe a Chave do Gemini!", "error");
+        }
 
         const qtd = document.getElementById("qtd").value, tema = document.getElementById("tema").value.trim(), dificuldade = document.getElementById("dificuldade").value, modoReciclagem = document.getElementById("substituir").checked;
         const btnUnico = document.getElementById("btn-iniciar"), btnGlobal = document.getElementById("btn-global");
