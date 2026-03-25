@@ -116,7 +116,7 @@
         .produto-nome-mini { font-size: 0.8rem; font-weight: 800; color: #3E2723; margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
         .produto-preco-mini { font-size: 0.95rem; font-weight: 900; color: #2E7D32; margin-top: auto;}
 
-        /* === 📢 REDE DE ANÚNCIOS (NOVO MINI CARD E MODAL) === */
+        /* === 📢 REDE DE ANÚNCIOS === */
         .ads-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #111; border-bottom: 1px solid #eeeeee; display: none; }
         .ads-header { text-align: center; margin-bottom: 15px; }
         .ads-title { color: #c90000; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
@@ -126,7 +126,6 @@
         .ad-carousel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
         .ad-carousel::-webkit-scrollbar-thumb { background: #c90000; border-radius: 10px; }
         
-        /* O Mini Card Estilo iFood */
         .ad-card-mini { min-width: 160px; max-width: 160px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; overflow: hidden;}
         .ad-card-mini:active { transform: scale(0.96); }
         .ad-img-wrapper { position: relative; height: 90px; width: 100%; background: #eee;}
@@ -143,7 +142,7 @@
         .btn-anuncie { background: #ffd700; color: #000; text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #b8860b; transition: transform 0.2s;}
         .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #b8860b;}
 
-        /* MODAIS GERAIS (Produto e Anúncio) */
+        /* MODAIS GERAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
         .modal-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;}
         .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #333; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
@@ -171,7 +170,12 @@
         .modal-ad-desc { font-size: 0.9rem; color: #444; line-height: 1.5; margin: 0 0 15px;}
         .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;}
         .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;}
-        .modal-ad-endereco { font-size: 0.8rem; color: #666; margin-bottom: 20px; font-weight: 600; display: flex; align-items: flex-start; gap: 6px; background: #f8f9fa; padding: 10px; border-radius: 8px;}
+        
+        /* NOVO: Botão Inteligente de GPS (Endereço) */
+        .modal-ad-endereco { font-size: 0.8rem; color: #333; margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #e9ecef; text-decoration: none; transition: background 0.2s;}
+        .modal-ad-endereco:active { background: #e2e8f0; }
+        .map-hint { margin-left: auto; font-size: 0.7rem; color: #c90000; font-weight: 800; text-transform: uppercase; background: #ffe6e6; padding: 4px 8px; border-radius: 6px;}
+
         .modal-ad-buttons { display: flex; gap: 10px; }
         .btn-ad-zap { flex: 2; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1b9b4a; transition: transform 0.1s;}
         .btn-ad-zap:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a; }
@@ -358,7 +362,11 @@
             <p id="modal-ad-desc" class="modal-ad-desc">Descrição completa da oferta...</p>
             <h2 id="modal-ad-preco" class="modal-ad-preco" style="display:none;">R$ 00,00</h2>
             <div id="modal-ad-cupom" class="modal-ad-cupom" style="display:none;">🎟️ Cupom</div>
-            <div id="modal-ad-endereco" class="modal-ad-endereco" style="display:none;">📍 Endereço da loja</div>
+            
+            <a id="modal-ad-endereco" href="#" target="_blank" class="modal-ad-endereco" style="display:none;">
+                📍 <span id="modal-ad-endereco-text">Endereço da loja</span>
+                <span class="map-hint">🗺️ Ver no Mapa</span>
+            </a>
             
             <div class="modal-ad-buttons">
                 <a id="modal-ad-zap" href="#" target="_blank" class="btn-ad-zap">💬 WhatsApp</a>
@@ -436,16 +444,62 @@
             const json = await res.json();
             const header = json.header.competitions[0], timeInfo = header.status.displayClock ? `${header.status.displayClock}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
             const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
-            
+            const boxscore = json.boxscore?.teams || [];
+            let statsHTML = '';
+
+            if (boxscore.length === 2) {
+                const getStat = (teamStats, statName) => {
+                    if (!teamStats.statistics) return "0";
+                    const s = teamStats.statistics.find(x => x.name === statName);
+                    return s ? s.displayValue : "0";
+                };
+                
+                const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
+                const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
+
+                const estatisticas = [
+                    { label: "Posse de Bola", key: "possession" },
+                    { label: "Finalizações", key: "shotsTotal" },
+                    { label: "No Gol", key: "shotsOnTarget" },
+                    { label: "Escanteios", key: "wonCorners" },
+                    { label: "Faltas", key: "foulsCommitted" },
+                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
+                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
+                ];
+
+                statsHTML = estatisticas.map(stat => {
+                    const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
+                    return `
+                    <div class="stat-row">
+                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
+                        <span class="stat-label">${stat.label}</span>
+                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
+                    </div>
+                `}).join('');
+            }
+
             document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header"><span class="live-dot"></span> TEMPO REAL - ${timeInfo}</div>
+                <div class="live-header">
+                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
+                </div>
                 <div class="live-scoreboard">
-                    <div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation}</span></div>
+                    <div class="live-team">
+                        <img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'">
+                        <span>${home.team.abbreviation || home.team.shortDisplayName}</span>
+                    </div>
                     <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
-                    <div class="live-team"><img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${away.team.abbreviation}</span></div>
+                    <div class="live-team">
+                        <img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'">
+                        <span>${away.team.abbreviation || away.team.shortDisplayName}</span>
+                    </div>
+                </div>
+                <div class="live-stats">
+                    ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
                 </div>
             `;
-        } catch (e) { console.error("Erro no radar: ", e); }
+        } catch (e) {
+            console.error("Erro no radar: ", e);
+        }
     }
 
     async function carregarDoMeuServidor() {
@@ -549,7 +603,7 @@
     function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
     document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
-    // === REDE DE ANÚNCIOS (NOVO SISTEMA IFOOD) ===
+    // === REDE DE ANÚNCIOS (MAPA E LIGAÇÃO INTEGRADOS) ===
     async function carregarAnuncios() {
         try {
             const res = await fetch(API_ANUNCIOS);
@@ -599,13 +653,29 @@
         const cupomEl = document.getElementById("modal-ad-cupom");
         if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
         
+        // O Botão de Endereço Inteligente
         const endEl = document.getElementById("modal-ad-endereco");
-        if(ad.endereco) { endEl.innerHTML = `📍 ${ad.endereco}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; }
+        const endText = document.getElementById("modal-ad-endereco-text");
+        if(ad.endereco) { 
+            endText.innerText = ad.endereco; 
+            // Rota inteligente para abrir o Google Maps direto no app ou navegador
+            endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`;
+            endEl.style.display = "flex"; 
+        } else { 
+            endEl.style.display = "none"; 
+        }
         
         document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
         
+        // O Botão de Ligar
         const btnCall = document.getElementById("modal-ad-call");
-        if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; }
+        if(ad.telefone) { 
+            // Usa o protocolo tel: para abrir o discador do celular
+            btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; 
+            btnCall.style.display = "flex"; 
+        } else { 
+            btnCall.style.display = "none"; 
+        }
 
         document.getElementById("modal-anuncio").style.display = "flex";
     }
