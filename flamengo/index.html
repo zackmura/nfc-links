@@ -171,10 +171,12 @@
         .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;}
         .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;}
         
-        /* 🔥 BOTAO INTELIGENTE DE GPS ATUALIZADO 🔥 */
-        .modal-ad-endereco { font-size: 0.85rem; color: #333; margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; background: #f8f9fa; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; text-decoration: none; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        /* 🔥 BOTAO DE MAPA AZUL REFEITO 🔥 */
+        .modal-ad-endereco { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); transition: transform 0.2s;}
         .modal-ad-endereco:active { transform: scale(0.98); }
-        .map-hint { margin-left: auto; font-size: 0.75rem; color: #fff; font-weight: 800; text-transform: uppercase; background: #3b82f6; padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(59,130,246,0.3); display: flex; align-items: center; gap: 4px;}
+        .modal-ad-endereco-icon { background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);}
+        .modal-ad-endereco-text { font-size: 0.85rem; font-weight: 700; flex-grow: 1; line-height: 1.3;}
+        .map-hint { font-size: 0.70rem; font-weight: 900; color: #3b82f6; text-transform: uppercase; background: white; padding: 6px 10px; border-radius: 8px; border: 1px solid #bfdbfe;}
 
         .modal-ad-buttons { display: flex; gap: 10px; }
         .btn-ad-zap { flex: 2; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1b9b4a; transition: transform 0.1s;}
@@ -364,8 +366,11 @@
             <div id="modal-ad-cupom" class="modal-ad-cupom" style="display:none;">🎟️ Cupom</div>
             
             <a id="modal-ad-endereco" href="#" target="_blank" class="modal-ad-endereco" style="display:none;">
-                📍 <span id="modal-ad-endereco-text">Endereço da loja</span>
-                <span class="map-hint">🗺️ ROTA</span>
+                <div class="modal-ad-endereco-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <span id="modal-ad-endereco-text" class="modal-ad-endereco-text">Endereço da loja</span>
+                <span class="map-hint">VER ROTA</span>
             </a>
             
             <div class="modal-ad-buttons">
@@ -404,8 +409,7 @@
     function formatarPreco(valorString) {
         if(!valorString) return "";
         let v = String(valorString).trim();
-        if(v.toUpperCase().includes("R$")) return v; // Se já tiver R$, não mexe
-        // Se for um número inteiro ou decimal (ex: 50 ou 50.90)
+        if(v.toUpperCase().includes("R$")) return v;
         if(!isNaN(v.replace(',','.'))) {
             let num = parseFloat(v.replace(',','.'));
             return "R$ " + num.toFixed(2).replace('.', ',');
@@ -523,7 +527,13 @@
         const resDiv = document.getElementById("resultados"), classDiv = document.getElementById("classificacao"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
 
         try {
-            const resposta = await fetch(MINHA_API_GOOGLE);
+            // 🔥 PROTEÇÃO ANTI-TRAVAMENTO (TIMEOUT DE 15 SEGUNDOS) 🔥
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+            const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal });
+            clearTimeout(timeoutId); // Limpa o cronômetro se respondeu rápido
+
             const dados = await resposta.json();
 
             checarJogoAoVivo(dados);
@@ -542,6 +552,10 @@
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
             classDiv.innerHTML = "";
+            if (dados.leagueName && dados.leagueName !== "Classificação") {
+                document.getElementById("titulo-classificacao").innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
+            }
+            
             if (dados.table && dados.table.length > 0) {
                 let tableToRender = dados.table.slice(0, 10);
                 if (!tableToRender.some(t => t.team.toLowerCase().includes('flamengo'))) {
@@ -562,7 +576,21 @@
             if (dados.news && dados.news.length > 0) {
                 dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { 
+            console.error("Erro na API de Futebol:", err); 
+            let msgErro = "Erro de conexão com o servidor.";
+            
+            // Se o erro foi gerado pelo nosso Relógio-Bomba
+            if (err.name === 'AbortError') {
+                msgErro = "A API de futebol da ESPN demorou muito para responder. Tente recarregar a página.";
+            }
+            
+            resDiv.innerHTML = `<div style='padding:20px; color:#cc0000; text-align:center; font-weight:800;'>${msgErro}</div>`;
+            classDiv.innerHTML = `<tr><td colspan='7' style='padding:20px; color:#cc0000; font-weight:800;'>${msgErro}</td></tr>`;
+            ageDiv.innerHTML = "";
+            newsDiv.innerHTML = "";
+            statusUpdate.innerText = "Offline temporariamente";
+        }
     }
 
     function criarCard(e, isFinished) {
@@ -584,7 +612,7 @@
                 catalogoGlobal = dados.vitrine; let html = "";
                 catalogoGlobal.forEach((p, index) => {
                     const primeiraFoto = p.foto.split(',')[0].trim();
-                    html += `<div class="produto-card-mini" onclick="abrirModalProduto(${index})"><img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'"><div class="produto-info-mini"><span class="produto-tag-mini">${p.categoria}</span><h4 class="produto-nome-mini">${p.nome}</h4><div class="produto-preco-mini">${p.preco}</div></div></div>`;
+                    html += `<div class="produto-card-mini" onclick="abrirModalProduto(${index})"><img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'"><div class="produto-info-mini"><span class="produto-tag-mini">${p.categoria}</span><h4 class="produto-nome-mini">${p.nome}</h4><div class="produto-preco-mini">${formatarPreco(p.preco)}</div></div></div>`;
                 });
                 divVitrine.innerHTML = html; document.getElementById("secao-minimundo").style.display = "block"; 
             }
@@ -674,12 +702,12 @@
         const cupomEl = document.getElementById("modal-ad-cupom");
         if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
         
-        // O Botão de Endereço Inteligente
+        // 🔥 O NOVO Botão de Endereço Inteligente (Abre Google Maps Direto)
         const endEl = document.getElementById("modal-ad-endereco");
         const endText = document.getElementById("modal-ad-endereco-text");
         if(ad.endereco) { 
             endText.innerText = ad.endereco; 
-            endEl.href = `https://www.google.com/maps/search/?api=1&query=$?q=${encodeURIComponent(ad.endereco)}`;
+            endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`;
             endEl.style.display = "flex"; 
         } else { 
             endEl.style.display = "none"; 
@@ -687,7 +715,6 @@
         
         document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
         
-        // O Botão de Ligar
         const btnCall = document.getElementById("modal-ad-call");
         if(ad.telefone) { 
             btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; 
