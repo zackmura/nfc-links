@@ -128,7 +128,7 @@
             </div>
 
             <button id="btn-enviar" class="btn-submit" onclick="enviarAnuncio()">🚀 Enviar para Aprovação</button>
-            <div id="loading-msg" class="loading-text">Comprimindo imagens e enviando para o servidor...</div>
+            <div id="loading-msg" class="loading-text">Processando imagens e comunicando com o servidor...</div>
         </div>
     </div>
 
@@ -142,10 +142,15 @@
 
 <script>
     // ==========================================
-    // AS CHAVES JÁ ESTÃO AQUI!
+    // CONFIGURAÇÕES DA SUA INFRAESTRUTURA ONIONSYS
     // ==========================================
     const URL_DO_SEU_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec"; 
-    const SUA_CHAVE_IMGBB = "a76cc9454f6c230b1b5b48b63ed9012e"; 
+    
+    // API ONIONSYS
+    const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/anuncios";
+    const URL_BASE_IMAGENS = "https://api.onionsys.com.br/api/imagens/anuncios/";
+    const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
+    
     const SEU_WHATSAPP_FINANCEIRO = "5511992279009"; 
 
     // === SISTEMA DE MÁSCARAS ===
@@ -171,7 +176,7 @@
     function removerErro(input) { input.classList.remove("input-error"); }
     document.querySelectorAll('input').forEach(i => i.addEventListener('input', () => removerErro(i)));
 
-    // === FUNÇÃO DE COMPRESSÃO DE IMAGEM NATIVA ===
+    // === COMPRESSÃO NATIVA E NOMEAÇÃO SEGURA ===
     function comprimirImagem(file, maxWidth, maxHeight, quality) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -201,8 +206,12 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
+                    // Cria um nome limpo e seguro para não dar conflito no seu servidor
+                    const nomeLimpo = file.name.replace(/[^a-zA-Z0-9.]/g, '_').toLowerCase();
+                    const nomeUnico = Date.now() + "_" + nomeLimpo;
+
                     canvas.toBlob(blob => {
-                        resolve(new File([blob], file.name, {
+                        resolve(new File([blob], nomeUnico, {
                             type: 'image/jpeg',
                             lastModified: Date.now()
                         }));
@@ -212,6 +221,28 @@
             };
             reader.onerror = error => reject(error);
         });
+    }
+
+    // === ENVIO PARA O SEU SERVIDOR (ONIONSYS) ===
+    async function uploadParaOnionSys(fileComprimido) {
+        const formData = new FormData();
+        // A maioria das APIs aceita 'file'. Se o seu backend estiver configurado para 'imagem', mude a palavra abaixo.
+        formData.append("file", fileComprimido); 
+
+        const response = await fetch(API_ONIONSYS, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${TOKEN_ONIONSYS}`
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Falha no Servidor OnionSys (Erro ${response.status})`);
+        }
+
+        // Retorna o link final pronto para ser lido pelo App
+        return URL_BASE_IMAGENS + encodeURIComponent(fileComprimido.name);
     }
 
     async function enviarAnuncio() {
@@ -258,25 +289,13 @@
         loading.style.display = "block";
 
         try {
-            // Comprime as imagens antes do Upload
+            // 1. Comprime as imagens gerando Nomes Únicos
             const logoComprimida = await comprimirImagem(inputLogo.files[0], 400, 400, 0.8);
             const bannerComprimido = await comprimirImagem(inputFoto.files[0], 800, 800, 0.8);
 
-            // 1. UPLOAD DA LOGO COMPRIMIDA
-            const formLogo = new FormData();
-            formLogo.append("image", logoComprimida);
-            const resLogo = await fetch(`https://api.imgbb.com/1/upload?key=${SUA_CHAVE_IMGBB}`, { method: "POST", body: formLogo });
-            const dataLogo = await resLogo.json();
-            if(!dataLogo.success) throw new Error("Falha no upload da Logo.");
-            const linkDaLogo = dataLogo.data.url;
-
-            // 2. UPLOAD DO BANNER COMPRIMIDO
-            const formBanner = new FormData();
-            formBanner.append("image", bannerComprimido);
-            const resBanner = await fetch(`https://api.imgbb.com/1/upload?key=${SUA_CHAVE_IMGBB}`, { method: "POST", body: formBanner });
-            const dataBanner = await resBanner.json();
-            if(!dataBanner.success) throw new Error("Falha no upload do Banner.");
-            const linkDoBanner = dataBanner.data.url;
+            // 2. Upload para a API ONIONSYS
+            const linkDaLogo = await uploadParaOnionSys(logoComprimida);
+            const linkDoBanner = await uploadParaOnionSys(bannerComprimido);
 
             // 3. ENVIAR PARA O GOOGLE SHEETS
             const payloadSheets = {
@@ -303,7 +322,7 @@
                 document.getElementById("form-screen").style.display = "none";
                 document.getElementById("success-screen").style.display = "block";
             } else {
-                throw new Error("Erro ao salvar no banco de dados.");
+                throw new Error("Erro ao salvar no Analytics.");
             }
 
         } catch (error) {
