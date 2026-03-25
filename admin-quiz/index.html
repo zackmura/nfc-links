@@ -155,7 +155,7 @@
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA fará o upload das fotos, criará a descrição de vendas e categorizará o produto automaticamente.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA fará o upload das fotos, criará uma *copy* de vendas persuasiva e categorizará o produto.</p>
         
         <div class="input-group">
             <label for="prod-nome">Nome do Produto:</label>
@@ -233,7 +233,7 @@
     }
 
     // ==========================================
-    // LÓGICA DO CATÁLOGO DE PRODUTOS (COM UPLOAD AUTOMÁTICO)
+    // LÓGICA DO CATÁLOGO DE PRODUTOS (ATUALIZADA)
     // ==========================================
     async function cadastrarProdutoIA() {
         const apiKey = document.getElementById("api-key").value.trim();
@@ -275,20 +275,23 @@
                 }
             }
 
-            const fotosString = linksDasFotos.join(", "); // Junta as urls com vírgula
+            // AQUI ESTÁ A CORREÇÃO: Usando apenas vírgula sem espaço para não quebrar a galeria
+            const fotosString = linksDasFotos.join(",");
 
-            // 2. PEDINDO DESCRIÇÃO E CATEGORIA PARA A IA (GEMINI)
-            addLog(`Pedindo para a IA criar a *copy* de vendas...`, "info");
+            // 2. PEDINDO DESCRIÇÃO E CATEGORIA PARA A IA (GEMINI) - PROMPT SUPER COPYWRITER
+            addLog(`Acionando a IA para criar a *copy* de vendas matadora...`, "info");
 
             const urlGemini = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const prompt = `Atue como um copywriter profissional de e-commerce. Vou te dar o nome de um produto de impressão 3D (Chaveiro, Decoração, etc). 
-Escreva uma descrição curta, magnética e voltada para conversão (máximo 3 frases curtas). 
-Em seguida, classifique esse produto em uma destas categorias exatas: Geek, Futebol, Decoração, Exclusivo, ou Geral.
+            
+            const prompt = `Atue como um Copywriter Sênior de Elite focado em e-commerce. Vou te dar o nome de um produto físico focado em presentes e colecionáveis da marca "Mini Mundo 3D".
+Sua missão é escrever uma descrição curta e extremamente persuasiva (máximo de 3 a 4 frases curtas). 
+Use gatilhos mentais (Exclusividade, Desejo, Novidade, ou Emoção). Mostre o valor do produto e faça o cliente sentir que PRECISA comprar agora mesmo para presentear alguém ou a si mesmo!
+Em seguida, classifique o produto em UMA destas categorias: Geek, Futebol, Decoração, Exclusivo, ou Geral.
 
 Produto: ${nome}
 
-Responda EXATAMENTE neste formato (sem asteriscos ou formatação markdown, apenas o texto):
-Descricao: [Sua descrição aqui]
+Responda EXATAMENTE neste formato (apenas texto puro, sem asteriscos ou negrito):
+Descricao: [Sua copy matadora aqui]
 Categoria: [Nome da categoria]`;
 
             const payloadIA = { contents: [{ parts: [{ text: prompt }] }] };
@@ -308,7 +311,7 @@ Categoria: [Nome da categoria]`;
                 if (linha.toLowerCase().startsWith('categoria:')) catGerada = linha.substring(10).trim();
             });
 
-            addLog(`Copy gerada! Categoria: [${catGerada}]`, "success");
+            addLog(`Copy gerada com gatilhos mentais! Categoria: [${catGerada}]`, "success");
             addLog(`Enviando dados para a planilha do Analytics...`, "info");
 
             // 3. SALVANDO NA PLANILHA GOOGLE
