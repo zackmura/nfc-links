@@ -9,7 +9,9 @@
     <meta name="theme-color" content="#d97706">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="logo.png"> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="apple-touch-icon" href="logo.png">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Fira+Code:wght@400;500&display=swap');
         
@@ -135,12 +137,12 @@
         .modal-box { background: #fff; width: 92%; max-width: 450px; border-radius: 20px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto;}
         .btn-fechar-modal { position: absolute; top: 12px; right: 12px; background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.1rem; font-weight: bold; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;}
         .modal-title { font-size: 1.1rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 15px;}
-        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-        /* Helpers p/ edição de fotos nos modais */
+        
         .foto-atual-box { background: #f8fafc; padding: 10px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;}
         .foto-atual-box img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px;}
         .foto-atual-box span { font-size: 0.75rem; color: #64748b; font-weight: 600;}
+
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* MOBILE FIXES */
         @media (max-width: 600px) { 
@@ -256,12 +258,22 @@
 
         <div id="tab-quiz" class="tab-content">
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">Gerador Automático de Quiz via IA.</p>
+            
             <div class="row">
-                <div class="col"><div class="input-group"><label>Dificuldade:</label><select id="dificuldade"><option value="fáceis (nível torcedor comum)">🟢 Fácil</option><option value="médias (nível fã fanático)" selected>🟡 Médio</option><option value="difíceis e obscuras (nível historiador)">🔴 Hardcore (Difícil)</option></select></div></div>
-                <div class="col"><div class="input-group"><label>Qtd. Perguntas:</label><input type="number" id="qtd" value="10" min="1" max="30"></div></div>
+                <div class="col">
+                    <div class="input-group" style="margin-bottom: 5px;">
+                        <label for="tema">Foco Temático (Opcional):</label>
+                        <input type="text" id="tema" placeholder="Ex: Libertadores, Ídolos, Finais...">
+                    </div>
+                </div>
             </div>
-            <div class="input-group"><label>Time:</label>
-                <select id="time">
+            
+            <div class="row">
+                <div class="col"><div class="input-group" style="margin-bottom: 5px;"><label>Dificuldade:</label><select id="dificuldade"><option value="fáceis (nível torcedor comum)">🟢 Fácil</option><option value="médias (nível fã fanático)" selected>🟡 Médio</option><option value="difíceis e obscuras (nível historiador)">🔴 Hardcore (Difícil)</option></select></div></div>
+                <div class="col"><div class="input-group" style="margin-bottom: 5px;"><label>Qtd. Perguntas:</label><input type="number" id="qtd" value="10" min="1" max="30"></div></div>
+            </div>
+            <div class="input-group" style="margin-bottom: 5px; margin-top: 10px;"><label>Time:</label>
+                <select id="time" onchange="carregarInfoBanco()">
                     <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
                     <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
                     <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
@@ -269,6 +281,18 @@
                     <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
                 </select>
             </div>
+            <div class="badges-container">
+                <div class="badge badge-blue" id="badge-total">📊 Total neste time: Carregando...</div>
+                <div class="badge badge-green" id="badge-ultimo">🕒 Último lote: Nenhum</div>
+            </div>
+            
+            <div class="box-perigo">
+                <label style="color: #e11d48; margin-bottom: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 800;">
+                    <input type="checkbox" id="substituir" style="width: 18px; height: 18px; margin: 0;">
+                    ⚠️ MODO RECICLAGEM: APAGAR banco antigo e substituir
+                </label>
+            </div>
+            
             <button id="btn-iniciar" class="btn-magic" style="padding: 12px; font-size: 0.9rem;" onclick="iniciarAutomacao(false)">Gerar para o Time</button>
             <button id="btn-global" class="btn-magic btn-global" style="padding: 12px; font-size: 0.9rem;" onclick="iniciarAutomacao(true)">GERAR TODOS (GLOBAL)</button>
         </div>
@@ -391,7 +415,7 @@
     };
 
     let dadosTotaisAcessos = [], graficoInstancia = null, catalogoAdminArray = [], anunciosAdminArray = [];
-    let quantidadeAnunciosPendentes = -1;
+    let quantidadeAnunciosPendentes = -1; 
 
     // Formatador de Dinheiro
     function formatarPreco(valorString) {
@@ -420,7 +444,7 @@
         
         const hoje = new Date(); document.getElementById('filtro-mes').value = String(hoje.getMonth() + 1).padStart(2, '0'); document.getElementById('filtro-ano').value = String(hoje.getFullYear());
 
-        carregarAnalytics(); carregarCatalogoAdmin(); carregarAnunciosAdmin(true);
+        carregarAnalytics(); carregarCatalogoAdmin(); carregarAnunciosAdmin(true); atualizarBadgeUltimo(); carregarInfoBanco();
         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { document.getElementById("btn-notifica").style.display = "inline-flex"; }
         setInterval(() => { carregarAnunciosAdmin(true); }, 120000); 
     }
@@ -455,7 +479,7 @@
     function addLog(mensagem, tipo = 'info') { const terminal = document.getElementById("terminal"); terminal.innerHTML += `<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${mensagem}</span></div>`; terminal.scrollTop = terminal.scrollHeight; }
 
     // ==========================================
-    // 📈 MÓDULO ANALYTICS (INTACTO)
+    // 📈 MÓDULO ANALYTICS
     // ==========================================
     function limparDatasManuais() { document.getElementById('data-inicio').value = ""; document.getElementById('data-fim').value = ""; }
     function limparFiltrosRapidos() { document.getElementById('filtro-mes').value = "todos"; document.getElementById('filtro-ano').value = "todos"; }
@@ -498,12 +522,14 @@
         for (const dia in contagemDias) { if (contagemDias[dia] > maxAcessosDia) { maxAcessosDia = contagemDias[dia]; melhorDia = dia; } }
         let dataLegivel = ""; if(melhorDia) { const arrD = melhorDia.split('-'); if(arrD.length === 3) dataLegivel = `${arrD[2]}/${arrD[1]}`; }
         document.getElementById('dash-pico').innerText = `Pico: ${maxAcessosDia} toques (${dataLegivel})`;
+
         const arrayRanking = Object.keys(contagemTimes).map(t => { return { nome: t, acessos: contagemTimes[t] }; });
         arrayRanking.sort((a, b) => b.acessos - a.acessos);
         const campeao = arrayRanking[0], infoCampeao = TIMES_INFO[campeao.nome.toLowerCase()] || { cor: "var(--brand-dark)", logo: "" };
         document.getElementById('nome-campeao').innerText = campeao.nome; const imgCampeaoEl = document.getElementById('img-campeao');
         if(infoCampeao.logo) { imgCampeaoEl.src = infoCampeao.logo; imgCampeaoEl.style.display = "block"; } else { imgCampeaoEl.style.display = "none"; }
         document.getElementById('dash-campeao').className = "valor " + (infoCampeao.classText || "");
+
         let htmlRanking = "", labelsGrafico = [], dataGrafico = [], coresGrafico = []; const maxAcessosTime = arrayRanking[0].acessos;
         arrayRanking.forEach((item) => {
             labelsGrafico.push(item.nome); dataGrafico.push(item.acessos); let infoTime = TIMES_INFO[item.nome.toLowerCase()] || { cor: "var(--primary)", logo: "" }; coresGrafico.push(infoTime.cor);
@@ -518,7 +544,7 @@
     }
 
     // ==========================================
-    // UPLOAD E IA (MOTOR GERAL DE IMAGENS)
+    // UPLOAD GERAL DE IMAGENS
     // ==========================================
     const fileToBase64 = (file) => new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result.split(',')[1]); reader.onerror = error => reject(error); });
     function comprimirImagem(file, maxWidth, maxHeight, quality) {
@@ -540,9 +566,7 @@
     async function fazerUploadInteligente(fileComprimido, imgbbKey, isAnuncio = false) {
         try {
             const formData = new FormData(); formData.append("imagem", fileComprimido); 
-            // Usa a rota certa dependendo se é produto ou anuncio
             const endpoint = isAnuncio ? API_ONIONSYS_ADS : API_ONIONSYS;
-            
             const response = await fetch(endpoint, { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id": "MiniMundo" }, body: formData });
             const txt = await response.text();
             if (response.ok) {
@@ -570,10 +594,8 @@
             const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=anuncios_admin"); const resultado = await resposta.json();
             if(resultado.sucesso) {
                 anunciosAdminArray = resultado.anuncios.slice().reverse();
-                dispararAlertaSeHouverNovos(resultado.anuncios); // Array original
-                if(!silencioso || document.getElementById('lista-anuncios-admin').innerHTML === "") {
-                    renderListaAnuncios(anunciosAdminArray);
-                }
+                dispararAlertaSeHouverNovos(resultado.anuncios); 
+                if(!silencioso || document.getElementById('lista-anuncios-admin').innerHTML === "") { renderListaAnuncios(anunciosAdminArray); }
             }
         } catch(e) { if(!silencioso) addLog(`Erro ao carregar anúncios: ${e.message}`, "error"); } finally { document.getElementById('loading-anuncios').style.display = 'none'; }
     }
@@ -603,26 +625,19 @@
 
     function abrirModalEditarAnuncio(linha) {
         const ad = anunciosAdminArray.find(a => a.linha === linha); if(!ad) return;
-        
         document.getElementById('edit-ad-linha').value = ad.linha; 
         document.getElementById('edit-ad-empresa').value = ad.empresa; 
         document.getElementById('edit-ad-status').value = ad.status; 
         document.getElementById('edit-ad-vencimento').value = ad.vencimento; 
         document.getElementById('edit-ad-valor').value = formatarPreco(ad.valor_negociado);
-        
         document.getElementById('edit-ad-desc').value = ad.descricao || "";
         document.getElementById('edit-ad-cupom').value = ad.cupom || "";
 
-        // Guarda as fotos antigas caso ele não mande novas
         document.getElementById('edit-ad-foto-antiga').value = ad.foto || "";
         document.getElementById('edit-ad-logo-antiga').value = ad.logo || "";
-
         document.getElementById('edit-ad-logo-preview').src = ad.logo || "logo.png";
         document.getElementById('edit-ad-banner-preview').src = ad.foto || "logo.png";
-
-        // Limpa os inputs de arquivo
-        document.getElementById('edit-ad-logo-nova').value = "";
-        document.getElementById('edit-ad-banner-novo').value = "";
+        document.getElementById('edit-ad-logo-nova').value = ""; document.getElementById('edit-ad-banner-novo').value = "";
 
         document.getElementById('modal-editar-anuncio').style.display = 'flex';
     }
@@ -631,40 +646,18 @@
 
     async function salvarEdicaoAnuncio() {
         const btn = document.getElementById('btn-salvar-edicao-ad'); btn.disabled = true; btn.innerText = "⏳ Atualizando Imagens/Dados...";
-        
         try {
             const imgbbKey = document.getElementById("imgbb-key").value.trim();
-            
-            // 1. Lida com Uploads se existirem
             let linkLogoFinal = document.getElementById('edit-ad-logo-antiga').value;
             let linkBannerFinal = document.getElementById('edit-ad-foto-antiga').value;
 
             const inputLogo = document.getElementById('edit-ad-logo-nova');
-            if(inputLogo.files.length > 0) {
-                addLog("Comprimindo nova logo...", "info");
-                const logoComp = await comprimirImagem(inputLogo.files[0], 400, 400, 0.8);
-                linkLogoFinal = await fazerUploadInteligente(logoComp, imgbbKey, true);
-            }
+            if(inputLogo.files.length > 0) { addLog("Comprimindo nova logo...", "info"); const logoComp = await comprimirImagem(inputLogo.files[0], 400, 400, 0.8); linkLogoFinal = await fazerUploadInteligente(logoComp, imgbbKey, true); }
 
             const inputBanner = document.getElementById('edit-ad-banner-novo');
-            if(inputBanner.files.length > 0) {
-                addLog("Comprimindo novo banner...", "info");
-                const bannerComp = await comprimirImagem(inputBanner.files[0], 800, 800, 0.8);
-                linkBannerFinal = await fazerUploadInteligente(bannerComp, imgbbKey, true);
-            }
+            if(inputBanner.files.length > 0) { addLog("Comprimindo novo banner...", "info"); const bannerComp = await comprimirImagem(inputBanner.files[0], 800, 800, 0.8); linkBannerFinal = await fazerUploadInteligente(bannerComp, imgbbKey, true); }
 
-            // 2. Salva no Google Sheets
-            const payload = { 
-                acao: "atualizar_anuncio", 
-                linha: document.getElementById('edit-ad-linha').value, 
-                status: document.getElementById('edit-ad-status').value, 
-                vencimento: document.getElementById('edit-ad-vencimento').value, 
-                valor_negociado: document.getElementById('edit-ad-valor').value,
-                descricao: document.getElementById('edit-ad-desc').value,
-                cupom: document.getElementById('edit-ad-cupom').value,
-                logo: linkLogoFinal,
-                foto: linkBannerFinal
-            };
+            const payload = { acao: "atualizar_anuncio", linha: document.getElementById('edit-ad-linha').value, status: document.getElementById('edit-ad-status').value, vencimento: document.getElementById('edit-ad-vencimento').value, valor_negociado: document.getElementById('edit-ad-valor').value, descricao: document.getElementById('edit-ad-desc').value, cupom: document.getElementById('edit-ad-cupom').value, logo: linkLogoFinal, foto: linkBannerFinal };
             
             const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
             if(result.sucesso) { addLog(`✅ Anúncio atualizado com sucesso!`, "success"); fecharModalEditarAnuncio(); carregarAnunciosAdmin(); } else throw new Error("Erro na planilha.");
@@ -701,54 +694,28 @@
 
     function abrirModalEditarProduto(linha) {
         const produto = catalogoAdminArray.find(p => p.linha === linha); if(!produto) return;
-        
-        document.getElementById('edit-prod-linha').value = produto.linha; 
-        document.getElementById('edit-prod-nome').value = produto.nome; 
-        document.getElementById('edit-prod-preco').value = formatarPreco(produto.preco); 
-        document.getElementById('edit-prod-categoria').value = produto.categoria; 
-        document.getElementById('edit-prod-desc').value = produto.descricao; 
-        document.getElementById('edit-prod-status').value = produto.ativo ? "true" : "false";
-
-        // Salva e Mostra a foto antiga
-        document.getElementById('edit-prod-foto-antiga').value = produto.foto || "";
-        document.getElementById('edit-prod-img-preview').src = (produto.foto && produto.foto.split(',')[0]) ? produto.foto.split(',')[0] : "logo.png";
-        
-        document.getElementById('edit-prod-fotos-novas').value = ""; // Limpa o file input
-
+        document.getElementById('edit-prod-linha').value = produto.linha; document.getElementById('edit-prod-nome').value = produto.nome; document.getElementById('edit-prod-preco').value = formatarPreco(produto.preco); document.getElementById('edit-prod-categoria').value = produto.categoria; document.getElementById('edit-prod-desc').value = produto.descricao; document.getElementById('edit-prod-status').value = produto.ativo ? "true" : "false";
+        document.getElementById('edit-prod-foto-antiga').value = produto.foto || ""; document.getElementById('edit-prod-img-preview').src = (produto.foto && produto.foto.split(',')[0]) ? produto.foto.split(',')[0] : "logo.png";
+        document.getElementById('edit-prod-fotos-novas').value = ""; 
         document.getElementById('modal-editar-produto').style.display = 'flex';
     }
-    
     function fecharModalEditarProduto() { document.getElementById('modal-editar-produto').style.display = 'none'; }
 
     async function salvarEdicaoProduto() {
         const btn = document.getElementById('btn-salvar-edicao-prod'); btn.disabled = true; btn.innerText = "⏳ Atualizando Dados/Imagens...";
-        
         try {
             const imgbbKey = document.getElementById("imgbb-key").value.trim();
-            let linkFinalFotos = document.getElementById('edit-prod-foto-antiga').value; // Mantém a antiga por padrão
-
+            let linkFinalFotos = document.getElementById('edit-prod-foto-antiga').value; 
             const inputFotos = document.getElementById('edit-prod-fotos-novas');
             if(inputFotos.files.length > 0) {
                 let novosLinks = [];
                 for(let i = 0; i < inputFotos.files.length; i++) {
-                    addLog(`Comprimindo nova foto ${i+1}...`, "info");
-                    const fotoComp = await comprimirImagem(inputFotos.files[i], 1000, 1000, 0.8);
-                    novosLinks.push(await fazerUploadInteligente(fotoComp, imgbbKey, false));
+                    addLog(`Comprimindo nova foto ${i+1}...`, "info"); const fotoComp = await comprimirImagem(inputFotos.files[i], 1000, 1000, 0.8); novosLinks.push(await fazerUploadInteligente(fotoComp, imgbbKey, false));
                 }
-                linkFinalFotos = novosLinks.join(","); // Substitui pelas novas
+                linkFinalFotos = novosLinks.join(","); 
             }
 
-            const payload = { 
-                acao: "atualizar_produto", 
-                linha: document.getElementById('edit-prod-linha').value, 
-                nome: document.getElementById('edit-prod-nome').value, 
-                preco: document.getElementById('edit-prod-preco').value, 
-                categoria: document.getElementById('edit-prod-categoria').value, 
-                descricao: document.getElementById('edit-prod-desc').value, 
-                ativo: document.getElementById('edit-prod-status').value === "true",
-                foto: linkFinalFotos
-            };
-            
+            const payload = { acao: "atualizar_produto", linha: document.getElementById('edit-prod-linha').value, nome: document.getElementById('edit-prod-nome').value, preco: document.getElementById('edit-prod-preco').value, categoria: document.getElementById('edit-prod-categoria').value, descricao: document.getElementById('edit-prod-desc').value, ativo: document.getElementById('edit-prod-status').value === "true", foto: linkFinalFotos };
             const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
             if(result.sucesso) { addLog(`✅ Produto atualizado!`, "success"); fecharModalEditarProduto(); carregarCatalogoAdmin(); document.getElementById('busca-catalogo').value = ""; } else throw new Error("Erro na planilha.");
         } catch(e) { alert("Erro ao salvar: " + e.message); addLog(`❌ Erro no produto: ${e.message}`, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar"; }
