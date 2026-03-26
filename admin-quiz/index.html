@@ -189,7 +189,7 @@
     </div>
 
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Motor de Redundância e Proteção ativados.</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Atualizado para leitura de Arrays (OnionSys API).</span></div>
     </div>
 </div>
 
@@ -199,6 +199,7 @@
     // ==========================================
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
     
+    // Rota de Catálogo
     const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/catalogo";
     const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
 
@@ -245,7 +246,7 @@
     });
 
     // ==========================================
-    // COMPRESSOR DE IMAGENS 2.0 (BLINDADO CONTRA ERROS)
+    // COMPRESSOR DE IMAGENS 2.0 (BLINDADO)
     // ==========================================
     function comprimirImagem(file, maxWidth, maxHeight, quality) {
         return new Promise((resolve, reject) => {
@@ -287,7 +288,6 @@
                     }, 'image/jpeg', quality);
                 };
                 
-                // SE O NAVEGADOR NÃO CONSEGUIR LER A IMAGEM, AVISA EM VEZ DE DAR "UNDEFINED"
                 img.onerror = () => reject(new Error(`A imagem "${file.name}" está corrompida ou o formato não é suportado pelo seu navegador.`));
             };
             
@@ -296,7 +296,7 @@
     }
 
     // ==========================================
-    // UPLOAD INTELIGENTE E EXTRATOR DE URL
+    // UPLOAD INTELIGENTE E EXTRATOR DE URL (ATUALIZADO PARA A SUA API)
     // ==========================================
     async function fazerUploadInteligente(fileComprimido, imgbbKey) {
         try {
@@ -318,13 +318,22 @@
                 try {
                     const resultado = JSON.parse(textoResposta);
                     
-                    // CAÇADOR DE LINKS: Procura a URL de todas as formas possíveis que sua API pode ter enviado
-                    const urlExtraida = resultado.url || resultado.link || resultado.URL || (resultado.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${resultado.filename}` : null);
+                    // 🔥 O NOVO CAÇADOR DE LINKS (LÊ ARRAYS!) 🔥
+                    let urlExtraida = null;
+                    
+                    // Se o seu backend mandou no formato "arquivos": [{url: "..."}]
+                    if (resultado.arquivos && resultado.arquivos.length > 0) {
+                        urlExtraida = resultado.arquivos[0].url;
+                    } 
+                    // Fallback caso a sua API mude e volte a mandar "url" direto na raiz
+                    else {
+                        urlExtraida = resultado.url || resultado.link || resultado.URL || (resultado.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${resultado.filename}` : null);
+                    }
                     
                     if (urlExtraida) {
                         return urlExtraida;
                     } else {
-                        addLog(`⚠️ O servidor respondeu sucesso, mas não achei a URL: ${textoResposta}`, "warn");
+                        addLog(`⚠️ O servidor respondeu sucesso, mas não achei a URL na array: ${textoResposta}`, "warn");
                         throw new Error("A URL veio em branco na resposta da OnionSys.");
                     }
                 } catch(e) {
@@ -385,7 +394,7 @@
                 const linkGerado = await fazerUploadInteligente(fotoComprimida, imgbbKey);
                 
                 linksDasFotos.push(linkGerado);
-                addLog(`Foto ${i+1} enviada: ${linkGerado}`, "success");
+                addLog(`Foto ${i+1} salva: ${linkGerado}`, "success");
             }
 
             const fotosString = linksDasFotos.join(",");
