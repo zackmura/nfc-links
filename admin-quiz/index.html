@@ -71,7 +71,7 @@
         .log-container::-webkit-scrollbar { width: 8px; }
         .log-container::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px;}
         .log-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
-        .log-line { margin: 6px 0; border-bottom: 1px dashed #1e293b; padding-bottom: 6px;}
+        .log-line { margin: 6px 0; border-bottom: 1px dashed #1e293b; padding-bottom: 6px; word-wrap: break-word;}
         .log-time { color: #64748b; margin-right: 10px; font-size: 0.75rem;}
         .log-info { color: #38bdf8; }
         .log-warn { color: #f59e0b; }
@@ -154,7 +154,7 @@
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA analisa a primeira foto anexada. O sistema usa <b>Upload Inteligente</b> (tenta OnionSys sem limite de tempo e, se falhar, usa ImgBB automaticamente).</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA analisa a primeira foto anexada. O sistema usa <b>Upload Inteligente</b> (tenta OnionSys e, se falhar, pula pro ImgBB).</p>
         
         <div class="input-group">
             <label for="prod-nome">Nome do Produto:</label>
@@ -184,12 +184,12 @@
         <div class="input-group" style="margin-top: 25px;">
             <label for="imgbb-key">📸 Chave de Backup (API ImgBB):</label>
             <input type="password" id="imgbb-key" placeholder="Cole a chave do ImgBB aqui..." onchange="salvarChaves()">
-            <p style="font-size: 0.70rem; color: var(--text-muted); margin-top: 6px;">Usada automaticamente como Plano B se a OnionSys não responder.</p>
+            <p style="font-size: 0.70rem; color: var(--text-muted); margin-top: 6px;">Usada automaticamente como Plano B se a OnionSys falhar.</p>
         </div>
     </div>
 
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Upload Redundante Ativado.</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Motor de Redundância e Proteção ativados.</span></div>
     </div>
 </div>
 
@@ -244,14 +244,22 @@
         reader.onerror = error => reject(error);
     });
 
-    // Função de compressão nativa
+    // ==========================================
+    // COMPRESSOR DE IMAGENS 2.0 (BLINDADO CONTRA ERROS)
+    // ==========================================
     function comprimirImagem(file, maxWidth, maxHeight, quality) {
         return new Promise((resolve, reject) => {
+            if (!file.type.match(/image.*/)) {
+                return reject(new Error(`O arquivo "${file.name}" não é uma imagem suportada.`));
+            }
+            
             const reader = new FileReader();
             reader.readAsDataURL(file);
+            
             reader.onload = event => {
                 const img = new Image();
                 img.src = event.target.result;
+                
                 img.onload = () => {
                     let width = img.width;
                     let height = img.height;
@@ -271,22 +279,30 @@
                     const nomeUnico = Date.now() + "_" + nomeLimpo;
 
                     canvas.toBlob(blob => {
-                        resolve(new File([blob], nomeUnico, { type: 'image/jpeg', lastModified: Date.now() }));
+                        if(blob) {
+                            resolve(new File([blob], nomeUnico, { type: 'image/jpeg', lastModified: Date.now() }));
+                        } else {
+                            reject(new Error("Falha ao gerar o arquivo comprimido."));
+                        }
                     }, 'image/jpeg', quality);
                 };
-                img.onerror = error => reject(error);
+                
+                // SE O NAVEGADOR NÃO CONSEGUIR LER A IMAGEM, AVISA EM VEZ DE DAR "UNDEFINED"
+                img.onerror = () => reject(new Error(`A imagem "${file.name}" está corrompida ou o formato não é suportado pelo seu navegador.`));
             };
-            reader.onerror = error => reject(error);
+            
+            reader.onerror = () => reject(new Error("Erro ao tentar ler o arquivo do seu computador."));
         });
     }
 
-    // === UPLOAD INTELIGENTE (SEM LIMITE DE TEMPO) ===
+    // ==========================================
+    // UPLOAD INTELIGENTE E EXTRATOR DE URL
+    // ==========================================
     async function fazerUploadInteligente(fileComprimido, imgbbKey) {
         try {
             const formData = new FormData();
-            formData.append("imagem", fileComprimido); 
+            formData.append("imagem", fileComprimido); // Mantive "imagem" pro seu backend Node
 
-            // REMOVIDO o AbortController. Vamos deixar o servidor da OnionSys terminar o upload no tempo dele!
             const response = await fetch(API_ONIONSYS, {
                 method: "POST",
                 headers: {
@@ -296,39 +312,42 @@
                 body: formData
             });
 
-            // Lemos como texto primeiro para evitar quebrar caso não seja JSON
             const textoResposta = await response.text();
-
+            
             if (response.ok) {
                 try {
                     const resultado = JSON.parse(textoResposta);
-                    if (resultado.success && resultado.url) {
-                        return resultado.url; // Puxa o link exato do seu backend
+                    
+                    // CAÇADOR DE LINKS: Procura a URL de todas as formas possíveis que sua API pode ter enviado
+                    const urlExtraida = resultado.url || resultado.link || resultado.URL || (resultado.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${resultado.filename}` : null);
+                    
+                    if (urlExtraida) {
+                        return urlExtraida;
+                    } else {
+                        addLog(`⚠️ O servidor respondeu sucesso, mas não achei a URL: ${textoResposta}`, "warn");
+                        throw new Error("A URL veio em branco na resposta da OnionSys.");
                     }
-                } catch (e) {
-                    throw new Error("O servidor respondeu, mas o formato não era JSON.");
+                } catch(e) {
+                    addLog(`⚠️ Resposta da OnionSys não é JSON válido: ${textoResposta.substring(0,50)}...`, "warn");
+                    throw new Error("Formato de resposta inválido.");
                 }
+            } else {
+                throw new Error(`Status ${response.status}: ${textoResposta.substring(0,30)}`);
             }
-            throw new Error(`Falha no Servidor (Status: ${response.status})`);
-        } 
-        catch (err) {
-            addLog(`⚠️ OnionSys falhou: ${err.message}. Acionando ImgBB...`, "warn");
             
-            if(!imgbbKey) {
-                throw new Error("Chave do ImgBB não configurada para o Backup.");
-            }
+        } catch (err) {
+            addLog(`⚠️ Falha na OnionSys (${err.message}). Redirecionando para ImgBB...`, "error");
+            
+            if(!imgbbKey) throw new Error("Chave do ImgBB não está preenchida nas Credenciais.");
             
             // FALLBACK IMGBB
             const formImgBB = new FormData();
             formImgBB.append("image", fileComprimido);
-            
             const resImgBB = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formImgBB });
             const dataImgBB = await resImgBB.json();
             
-            if(!dataImgBB.success) {
-                throw new Error(`Falha geral: ImgBB também recusou (${dataImgBB.error.message}).`);
-            }
-            return dataImgBB.data.url;
+            if(dataImgBB.success) return dataImgBB.data.url;
+            throw new Error(`ImgBB também falhou: ${dataImgBB.error?.message || 'Erro Desconhecido'}`);
         }
     }
 
@@ -358,17 +377,15 @@
             const mimeType = files[0].type;
 
             // 2. FAZENDO UPLOAD INTELIGENTE
-            addLog(`Enviando ${files.length} foto(s). Aguarde o servidor responder...`, "info");
+            addLog(`Processando ${files.length} foto(s)...`, "info");
             let linksDasFotos = [];
 
             for(let i = 0; i < files.length; i++) {
                 const fotoComprimida = await comprimirImagem(files[i], 1000, 1000, 0.8);
-                
-                // O Motor Inteligente resolve onde salvar e retorna o Link
                 const linkGerado = await fazerUploadInteligente(fotoComprimida, imgbbKey);
                 
                 linksDasFotos.push(linkGerado);
-                addLog(`Foto ${i+1} salva: ${linkGerado.substring(0, 30)}...`, "success");
+                addLog(`Foto ${i+1} enviada: ${linkGerado}`, "success");
             }
 
             const fotosString = linksDasFotos.join(",");
@@ -450,7 +467,8 @@ Categoria: [Sua categoria]`;
             }
 
         } catch (error) {
-            addLog(`❌ ERRO: ${error.message}`, "error");
+            // MOSTRA O ERRO EXATO NO TERMINAL
+            addLog(`❌ ERRO: ${error.message || "Erro desconhecido na execução."}`, "error");
         } finally {
             btn.disabled = false;
             btn.innerText = "✨ Enviar Fotos e Cadastrar Produto";
