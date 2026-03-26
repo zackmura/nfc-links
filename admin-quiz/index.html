@@ -155,7 +155,7 @@
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA agora analisa o Título, o Preço e a Foto de exemplo para criar a descrição de vendas perfeita para produtos personalizáveis.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA analisa a primeira foto anexada para criar a descrição de vendas perfeita.</p>
         
         <div class="input-group">
             <label for="prod-nome">Nome do Produto:</label>
@@ -167,10 +167,18 @@
             <input type="text" id="prod-preco" placeholder="Ex: R$ 60,00">
         </div>
 
+        <div class="input-group" style="background: #f0fdf4; padding: 15px; border-radius: 12px; border: 1px solid #bbf7d0;">
+            <label for="upload-dest" style="color: #166534;">Onde salvar as imagens?</label>
+            <select id="upload-dest" style="background: #fff; border-color: #86efac;">
+                <option value="onionsys">Servidor Próprio (OnionSys API)</option>
+                <option value="imgbb">Nuvem Pública de Backup (ImgBB API)</option>
+            </select>
+        </div>
+
         <div class="input-group">
-            <label for="prod-fotos">Anexar Fotos do Produto (Exemplos):</label>
+            <label for="prod-fotos">Anexar Fotos do Produto:</label>
             <input type="file" id="prod-fotos" accept="image/*" multiple>
-            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 6px;">Dica: A primeira foto será enviada para a IA entender o acabamento visual do produto.</p>
+            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 6px;">Dica: Segure CTRL no PC ou aperte e segure no celular para selecionar várias fotos de uma vez.</p>
         </div>
 
         <button id="btn-salvar-produto" class="btn-magic btn-loja" onclick="cadastrarProdutoIA()">✨ Enviar Fotos e Cadastrar Produto</button>
@@ -180,20 +188,28 @@
         <div class="input-group">
             <label for="api-key">🧠 Chave Privada (Google AI Studio / Gemini):</label>
             <input type="password" id="api-key" placeholder="AIzaSy..." onchange="salvarChaves()">
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Obrigatória para a IA escrever a cópia de vendas e gerar o Quiz.</p>
         </div>
         <div class="input-group" style="margin-top: 25px;">
-            <label for="imgbb-key">📸 Chave de Upload (API ImgBB):</label>
+            <label for="imgbb-key">📸 Chave de Backup (API ImgBB):</label>
             <input type="password" id="imgbb-key" placeholder="Cole a chave do ImgBB aqui..." onchange="salvarChaves()">
+            <p style="font-size: 0.70rem; color: var(--text-muted); margin-top: 6px;">Só será usada se você selecionar "Nuvem Pública" na aba do Catálogo.</p>
         </div>
     </div>
 
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Visão Computacional ativada e ajustada para vendas.</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Pronto para operar.</span></div>
     </div>
 </div>
 
 <script>
+    // ==========================================
+    // CONFIGURAÇÕES GERAIS E DA API ONIONSYS
+    // ==========================================
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
+    
+    const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/catalogo";
+    const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
 
     window.onload = () => {
         if(localStorage.getItem("gemini_api_key")) document.getElementById("api-key").value = localStorage.getItem("gemini_api_key");
@@ -237,8 +253,72 @@
         reader.onerror = error => reject(error);
     });
 
+    // Função de compressão nativa
+    function comprimirImagem(file, maxWidth, maxHeight, quality) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = event => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) { height = Math.round(height * maxWidth / width); width = maxWidth; }
+                    } else {
+                        if (height > maxHeight) { width = Math.round(width * maxHeight / height); height = maxHeight; }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const nomeLimpo = file.name.replace(/[^a-zA-Z0-9.]/g, '_').toLowerCase();
+                    const nomeUnico = Date.now() + "_" + nomeLimpo;
+
+                    canvas.toBlob(blob => {
+                        resolve(new File([blob], nomeUnico, { type: 'image/jpeg', lastModified: Date.now() }));
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = error => reject(error);
+            };
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    // Upload OnionSys
+    async function uploadParaOnionSys(fileComprimido) {
+        const formData = new FormData();
+        formData.append("imagem", fileComprimido); 
+
+        const response = await fetch(API_ONIONSYS, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${TOKEN_ONIONSYS}`,
+                "x-tenant-id": "MiniMundo"
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Falha OnionSys (${response.status})`);
+        }
+
+        const resultado = await response.json();
+        if (resultado.success) {
+            return resultado.url; 
+        } else {
+            throw new Error(resultado.message || "Erro desconhecido no upload");
+        }
+    }
+
+
     // ==========================================
-    // LÓGICA DO CATÁLOGO DE PRODUTOS (COM COPYWRITING AVANÇADO)
+    // LÓGICA DE CADASTRO DO CATÁLOGO (COM FALLBACK)
     // ==========================================
     async function cadastrarProdutoIA() {
         const apiKey = document.getElementById("api-key").value.trim();
@@ -246,10 +326,12 @@
         const nome = document.getElementById("prod-nome").value.trim();
         const preco = document.getElementById("prod-preco").value.trim();
         const inputFotos = document.getElementById("prod-fotos");
+        const uploadDest = document.getElementById("upload-dest").value; // Pega a escolha do usuário
         const files = inputFotos.files;
         const btn = document.getElementById("btn-salvar-produto");
 
-        if(!apiKey || !imgbbKey) return addLog("ERRO: Vá na aba ⚙️ Credenciais e preencha as duas chaves.", "error");
+        if(!apiKey) return addLog("ERRO: Preencha a Chave do Gemini na aba de Credenciais.", "error");
+        if(uploadDest === "imgbb" && !imgbbKey) return addLog("ERRO: Para usar o ImgBB, preencha a chave na aba Credenciais.", "error");
         if(!nome || !preco || files.length === 0) return addLog("ERRO: Preencha Nome, Preço e anexe pelo menos uma foto.", "error");
 
         btn.disabled = true;
@@ -258,55 +340,61 @@
         try {
             addLog(`>> INICIANDO CADASTRO: ${nome}`, "warn");
             
-            // 1. EXTRAI A IMAGEM EM BASE64
-            addLog(`Enviando imagem para a "visão" da IA...`, "info");
+            addLog(`Enviando a imagem 1 para a "visão" da IA...`, "info");
             const primeiraFotoBase64 = await fileToBase64(files[0]);
             const mimeType = files[0].type;
 
-            // 2. FAZENDO UPLOAD DAS FOTOS PARA O IMGBB
-            addLog(`Fazendo upload de ${files.length} foto(s) para a nuvem...`, "info");
+            // UPLOAD DAS FOTOS (COM LÓGICA DE ESCOLHA)
             let linksDasFotos = [];
+            
+            if(uploadDest === "onionsys") {
+                addLog(`Comprimindo e enviando ${files.length} foto(s) para a OnionSys...`, "info");
+            } else {
+                addLog(`Comprimindo e enviando ${files.length} foto(s) para o Backup (ImgBB)...`, "warn");
+            }
 
             for(let i = 0; i < files.length; i++) {
-                const formData = new FormData();
-                formData.append("image", files[i]);
-                
-                const imgRes = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, {
-                    method: "POST",
-                    body: formData
-                });
-                const imgData = await imgRes.json();
-                
-                if(imgData.success) {
-                    linksDasFotos.push(imgData.data.url);
-                    addLog(`Foto ${i+1} enviada com sucesso!`, "success");
+                const fotoComprimida = await comprimirImagem(files[i], 1000, 1000, 0.8);
+                let linkGerado = "";
+
+                if (uploadDest === "onionsys") {
+                    linkGerado = await uploadParaOnionSys(fotoComprimida);
                 } else {
-                    throw new Error("Falha no upload da foto " + (i+1) + ": " + imgData.error.message);
+                    // Fallback para ImgBB
+                    const formImgBB = new FormData();
+                    formImgBB.append("image", fotoComprimida);
+                    const resImgBB = await fetch(`https://api.imgbb.com/1/upload?key=${imgbbKey}`, { method: "POST", body: formImgBB });
+                    const dataImgBB = await resImgBB.json();
+                    if(!dataImgBB.success) throw new Error("Falha no upload para ImgBB: " + dataImgBB.error.message);
+                    linkGerado = dataImgBB.data.url;
                 }
+                
+                linksDasFotos.push(linkGerado);
+                addLog(`Foto ${i+1} salva com sucesso!`, "success");
             }
 
             const fotosString = linksDasFotos.join(",");
 
-            // 3. O PROMPT DE COPYWRITER SÊNIOR (ATUALIZADO)
-            addLog(`IA criando a copy valorizando a personalização...`, "info");
+            // IA CRIA COPY
+            addLog(`IA criando a copy de vendas...`, "info");
 
             const urlGemini = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
             
-            const prompt = `Atue como um Copywriter Sênior de Elite da 'Mini Mundo 3D', uma marca de impressão 3D focada em produtos inovadores, fora da caixa e 100% personalizáveis.
+            const prompt = `Atue como um Copywriter Sênior de Elite da 'Mini Mundo 3D', uma marca de impressão 3D focada em produtos inovadores e 100% personalizáveis.
 
 Vou te passar o Título, o Preço e uma Imagem de exemplo do produto.
-ATENÇÃO: A imagem anexada é apenas UM EXEMPLO visual do acabamento (pode mostrar um time, uma profissão ou uma cor específica), mas o produto final é TOTALMENTE PERSONALIZÁVEL ao gosto do cliente.
+ATENÇÃO: A imagem anexada é apenas UM EXEMPLO, o produto final é TOTALMENTE PERSONALIZÁVEL.
 
 Título do Produto: ${nome}
 Preço: ${preco}
 
 Sua Missão:
-1. Crie uma descrição magnética focada na ideia principal do produto (baseada no Título) e não apenas no detalhe da foto.
-2. Mostre que é uma peça de alta qualidade em Impressão 3D, exclusiva, e a opção perfeita para presentear ou colecionar. Máximo de 3 frases curtas com forte apelo emocional.
-3. Crie uma Categoria curta (1 ou 2 palavras) ideal para o catálogo (Ex: Placas, Decoração, Interativo, Colecionável, Acessórios).
+1. Crie uma descrição magnética focada na ideia principal do produto.
+2. Mostre que é uma peça em Impressão 3D de alta qualidade e uma opção perfeita para presente. Máximo de 3 frases curtas.
+3. Crie uma Categoria curta (1 ou 2 palavras). Ex: Placas, Decoração, Geek, Colecionável.
 
-Responda EXATAMENTE neste formato (apenas texto puro, sem formatação markdown):
-Descricao: [Sua copy genial e genérica sobre o poder do produto]
+Responda EXATAMENTE neste formato:
+Descricao: [Sua copy genial]
 Categoria: [Sua categoria]`;
 
             const payloadIA = { 
@@ -320,7 +408,7 @@ Categoria: [Sua categoria]`;
             
             const respostaIA = await fetch(urlGemini, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payloadIA) });
             
-            if (!respostaIA.ok) throw new Error("Falha ao comunicar com a IA.");
+            if (!respostaIA.ok) throw new Error("Falha ao comunicar com a IA do Gemini.");
             
             const dadosIA = await respostaIA.json();
             const textoIA = dadosIA.candidates[0].content.parts[0].text;
@@ -334,10 +422,10 @@ Categoria: [Sua categoria]`;
                 if (linha.toLowerCase().startsWith('categoria:')) catGerada = linha.substring(10).trim();
             });
 
-            addLog(`Copy magnética gerada! Categoria: [${catGerada}]`, "success");
-            addLog(`Enviando dados finais para a Vitrine...`, "info");
+            addLog(`Copy gerada! Categoria: [${catGerada}]`, "success");
+            addLog(`Enviando dados finais para o Analytics...`, "info");
 
-            // 4. SALVANDO NA PLANILHA
+            // SALVANDO NA PLANILHA GOOGLE
             const payloadSheets = {
                 acao: "salvar_produto",
                 nome: nome,
@@ -360,7 +448,7 @@ Categoria: [Sua categoria]`;
                 document.getElementById("prod-preco").value = "";
                 inputFotos.value = "";
             } else {
-                throw new Error("Erro ao salvar na planilha.");
+                throw new Error("Erro ao salvar na planilha Analytics.");
             }
 
         } catch (error) {
@@ -372,7 +460,7 @@ Categoria: [Sua categoria]`;
     }
 
     // ==========================================
-    // LÓGICA DO QUIZ (MANTIDA)
+    // LÓGICA DO QUIZ (INTACTA)
     // ==========================================
     function atualizarBadgeUltimo() {
         const ultimoTime = localStorage.getItem("ultimo_time_gerado");
