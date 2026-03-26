@@ -6,14 +6,14 @@
     <title>Mini Mundo | Central de Automação</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Fira+Code:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Fira+Code:wght@400;500&display=swap');
         
         :root {
             --primary: #3b82f6;
             --primary-hover: #2563eb;
             --bg-color: #f1f5f9;
             --card-bg: #ffffff;
-            --text-main: #1e293b;
+            --text-main: #0f172a;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
             --tab-active: #3b82f6;
@@ -41,12 +41,12 @@
         .input-group { margin-bottom: 18px; }
         label { font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 8px; font-size: 0.85rem; }
 
-        select, input[type="text"], input[type="number"], input[type="password"] { 
+        select, input[type="text"], input[type="number"], input[type="password"], input[type="date"] { 
             width: 100%; padding: 14px 16px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--text-main); box-sizing: border-box; background: #f8fafc; transition: all 0.3s ease;
         }
         select:focus, input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
         
-        input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 20px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; }
+        input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 20px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; width: 100%; box-sizing: border-box;}
         input[type="file"]:hover { border-color: var(--primary); background: #f0fdf4; }
         
         .row { display: flex; gap: 15px; }
@@ -81,23 +81,38 @@
 
         .box-perigo { background: #fff1f2; padding: 15px; border-radius: 12px; border: 2px dashed #fda4af; margin-top: 15px; }
 
-        /* === 📈 DASHBOARD ANALYTICS === */
-        .dash-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;}
-        .dash-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02);}
-        .dash-card h3 { margin: 0 0 5px; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
-        .dash-card .valor { font-size: 2.5rem; font-weight: 900; color: var(--text-main); line-height: 1;}
-        .dash-card .verde { color: #10b981; }
+        /* === 📈 DASHBOARD ANALYTICS PRO === */
+        .filtros-box { background: #e0f2fe; border: 1px solid #bfdbfe; padding: 15px; border-radius: 16px; margin-bottom: 20px;}
+        .filtros-box label { color: #1e3a8a; }
+        .btn-filtro { background: #3b82f6; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s;}
+        .btn-filtro:active { transform: scale(0.95); }
+
+        .dash-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;}
+        .dash-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03);}
+        .dash-card h3 { margin: 0 0 5px; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+        .dash-card .valor { font-size: 2.2rem; font-weight: 900; color: var(--text-main); line-height: 1;}
+        .dash-card .sub-valor { font-size: 0.7rem; color: #94a3b8; margin-top: 5px; display: block; font-weight: 600;}
         
-        .ranking-list { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px; margin-bottom: 20px;}
-        .ranking-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-weight: 700; font-size: 0.9rem;}
+        /* Cores Dinâmicas dos Times no Card */
+        .txt-corinthians { color: #000000 !important; }
+        .txt-palmeiras { color: #006400 !important; }
+        .txt-santos { color: #555555 !important; }
+        .txt-saopaulo { color: #cc0000 !important; }
+
+        .ranking-list { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 10px 15px; margin-bottom: 20px;}
+        .ranking-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9;}
         .ranking-item:last-child { border-bottom: none; }
-        .ranking-nome { display: flex; align-items: center; gap: 8px;}
-        .ranking-nome span { display: flex; justify-content: center; align-items: center; width: 24px; height: 24px; background: #e2e8f0; border-radius: 50%; font-size: 0.7rem; color: #64748b;}
-        .ranking-valor { background: #eff6ff; color: #3b82f6; padding: 4px 10px; border-radius: 10px;}
+        .ranking-nome { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 0.95rem; width: 130px; white-space: nowrap; overflow: hidden;}
+        .ranking-nome img { width: 32px; height: 32px; object-fit: contain;}
         
+        .progresso-bg { flex-grow: 1; height: 8px; background: #f1f5f9; border-radius: 4px; margin: 0 15px; overflow: hidden; position: relative;}
+        .progresso-bar { height: 100%; border-radius: 4px; }
+        
+        .ranking-valor { font-weight: 900; font-size: 1.1rem; width: 40px; text-align: right;}
+
         .chart-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 15px; width: 100%; box-sizing: border-box;}
 
-        @media (max-width: 600px) { .admin-card { padding: 25px 20px; } .row { flex-direction: column; gap: 0; } .input-group { margin-bottom: 15px; } .dash-cards { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .admin-card { padding: 25px 20px; } .row { flex-direction: column; gap: 0; } .input-group { margin-bottom: 15px; } .dash-cards { grid-template-columns: 1fr; } .progresso-bg { display: none; } }
     </style>
 </head>
 <body>
@@ -106,7 +121,7 @@
     <div class="brand-header">
         <img src="logo.jpg" alt="Mini Mundo 3D" onerror="this.style.display='none'">
         <h1>Central de Automação</h1>
-        <p>Inteligência Artificial & Analytics</p>
+        <p>Inteligência Artificial & Analytics BI</p>
     </div>
 
     <div class="tabs-container">
@@ -117,28 +132,47 @@
     </div>
 
     <div id="tab-analytics" class="tab-content active">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Resumo de acessos aos chaveiros via NFC.</p>
-            <button class="btn-magic btn-analise" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.8rem; border-radius: 8px;" onclick="carregarAnalytics()">🔄 Atualizar</button>
+        
+        <div class="filtros-box">
+            <div class="row">
+                <div class="col">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Data Inicial:</label>
+                        <input type="date" id="data-inicio">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Data Final:</label>
+                        <input type="date" id="data-fim">
+                    </div>
+                </div>
+            </div>
+            <button class="btn-filtro" style="margin-top: 15px;" onclick="aplicarFiltros()">🔍 Filtrar Resultados</button>
         </div>
 
         <div id="loading-analytics" style="text-align: center; padding: 40px; color: var(--primary); font-weight: 800; display: none;">
-            ⏳ Buscando dados da Planilha...
+            ⏳ Processando dados...
         </div>
 
         <div id="painel-dashboard" style="display: none;">
             <div class="dash-cards">
                 <div class="dash-card">
-                    <h3>Toques NFC (Total)</h3>
-                    <div class="valor verde" id="dash-total">0</div>
+                    <h3>Total de Acessos</h3>
+                    <div class="valor" id="dash-total" style="color: #3b82f6;">0</div>
+                    <span class="sub-valor" id="dash-media">Média: 0/dia</span>
                 </div>
                 <div class="dash-card">
                     <h3>Maior Audiência</h3>
-                    <div class="valor" id="dash-campeao" style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; height: 100%; line-height: 1.2;">-</div>
+                    <div class="valor" id="dash-campeao" style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
+                        <img id="img-campeao" src="" style="width: 35px; height: 35px; display: none;">
+                        <span id="nome-campeao">-</span>
+                    </div>
+                    <span class="sub-valor" id="dash-pico">Pico: Nenhum</span>
                 </div>
             </div>
 
-            <div class="section-title">📊 Acessos por Time</div>
+            <div class="section-title">📊 Ranking por Clube</div>
             <div class="ranking-list" id="lista-ranking">
                 </div>
 
@@ -201,7 +235,7 @@
             </label>
         </div>
 
-        <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao(false)">Gerar Apenas para o Time Selecionado</button>
+        <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao(false)">Gerar Apenas para o Time</button>
         <button id="btn-global" class="btn-magic btn-global" onclick="iniciarAutomacao(true)">GERAR PARA TODOS OS TIMES (LOTE GLOBAL)</button>
     </div>
 
@@ -212,16 +246,13 @@
             <label for="prod-nome">Nome do Produto:</label>
             <input type="text" id="prod-nome" placeholder="Ex: Placa Profissões Personalizada">
         </div>
-        
         <div class="input-group">
             <label for="prod-preco">Preço de Venda:</label>
             <input type="text" id="prod-preco" placeholder="Ex: R$ 60,00">
         </div>
-
         <div class="input-group">
             <label for="prod-fotos">Anexar Fotos do Produto (Exemplos):</label>
             <input type="file" id="prod-fotos" accept="image/*" multiple>
-            <p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 6px;">Dica: Segure CTRL no PC ou aperte e segure no celular para selecionar várias fotos de uma vez.</p>
         </div>
 
         <button id="btn-salvar-produto" class="btn-magic btn-loja" onclick="cadastrarProdutoIA()">✨ Enviar Fotos e Cadastrar Produto</button>
@@ -229,19 +260,17 @@
 
     <div id="tab-config" class="tab-content">
         <div class="input-group">
-            <label for="api-key">🧠 Chave Privada (Google AI Studio / Gemini):</label>
-            <input type="password" id="api-key" placeholder="AIzaSy..." onchange="salvarChaves()">
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Obrigatória para a IA escrever a cópia de vendas e gerar o Quiz.</p>
+            <label for="api-key">🧠 Chave Privada (Gemini):</label>
+            <input type="password" id="api-key" onchange="salvarChaves()">
         </div>
         <div class="input-group" style="margin-top: 25px;">
-            <label for="imgbb-key">📸 Chave de Backup (API ImgBB):</label>
-            <input type="password" id="imgbb-key" placeholder="Cole a chave do ImgBB aqui..." onchange="salvarChaves()">
-            <p style="font-size: 0.70rem; color: var(--text-muted); margin-top: 6px;">Usada automaticamente como Plano B se a OnionSys falhar.</p>
+            <label for="imgbb-key">📸 Chave de Backup (ImgBB):</label>
+            <input type="password" id="imgbb-key" onchange="salvarChaves()">
         </div>
     </div>
 
     <div class="log-container" id="terminal">
-        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. Atualizado com Módulo Analytics.</span></div>
+        <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel carregado. BI de Clubes Ativado.</span></div>
     </div>
 </div>
 
@@ -253,15 +282,32 @@
     const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/catalogo";
     const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
 
-    let graficoInstancia = null; // Variável para controlar o gráfico
+    // === BANCO DE DADOS DOS TIMES (CORES E LOGOS OFICIAIS) ===
+    const TIMES_INFO = {
+        "corinthians": { cor: "#000000", bg: "#f1f5f9", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/874.png", classText: "txt-corinthians" },
+        "palmeiras": { cor: "#006400", bg: "#e8f5e9", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2029.png", classText: "txt-palmeiras" },
+        "santos": { cor: "#555555", bg: "#f8f9fa", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2674.png", classText: "txt-santos" },
+        "são paulo": { cor: "#cc0000", bg: "#ffe6e6", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2026.png", classText: "txt-saopaulo" },
+        "sao paulo": { cor: "#cc0000", bg: "#ffe6e6", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2026.png", classText: "txt-saopaulo" },
+        "flamengo": { cor: "#c90000", bg: "#ffe6e6", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/819.png", classText: "txt-saopaulo" }
+    };
+
+    let dadosTotaisAcessos = []; 
+    let graficoInstancia = null; 
 
     window.onload = () => {
         if(localStorage.getItem("gemini_api_key")) document.getElementById("api-key").value = localStorage.getItem("gemini_api_key");
         if(localStorage.getItem("imgbb_api_key")) document.getElementById("imgbb-key").value = localStorage.getItem("imgbb_api_key");
         
-        // Inicia na aba Analytics e carrega os dados
-        carregarAnalytics();
+        // Configura datas padrão (últimos 30 dias)
+        const hoje = new Date();
+        const trintaDiasAtras = new Date();
+        trintaDiasAtras.setDate(hoje.getDate() - 30);
         
+        document.getElementById('data-fim').valueAsDate = hoje;
+        document.getElementById('data-inicio').valueAsDate = trintaDiasAtras;
+
+        carregarDadosIniciais();
         atualizarBadgeUltimo();
         carregarInfoBanco(); 
     };
@@ -278,8 +324,7 @@
         if(tabName === 'analytics') {
             document.querySelectorAll('.tab-btn')[0].classList.add('active');
             document.getElementById('tab-analytics').classList.add('active');
-        }
-        else if(tabName === 'quiz') {
+        } else if(tabName === 'quiz') {
             document.querySelectorAll('.tab-btn')[1].classList.add('active');
             document.getElementById('tab-quiz').classList.add('active');
         } else if (tabName === 'loja') {
@@ -299,133 +344,181 @@
     }
 
     // ==========================================
-    // 📈 MÓDULO ANALYTICS
+    // 📈 MÓDULO ANALYTICS PRO (COM FILTROS E CORES)
     // ==========================================
-    async function carregarAnalytics() {
-        const loading = document.getElementById('loading-analytics');
-        const painel = document.getElementById('painel-dashboard');
-        
-        loading.style.display = 'block';
-        painel.style.display = 'none';
-        addLog("Buscando dados na aba Acessos do Google Sheets...", "info");
+    
+    async function carregarDadosIniciais() {
+        document.getElementById('loading-analytics').style.display = 'block';
+        document.getElementById('painel-dashboard').style.display = 'none';
 
         try {
-            // Usa o parâmetro ?acao=analytics que criamos no Google Script
             const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics");
             const resultado = await resposta.json();
 
             if(resultado.sucesso) {
-                processarDadosAnalytics(resultado.dados);
-                loading.style.display = 'none';
-                painel.style.display = 'block';
-                addLog("Dashboard atualizado com sucesso!", "success");
+                dadosTotaisAcessos = resultado.dados;
+                aplicarFiltros(); // Aplica filtro na primeira carga
             } else {
-                throw new Error(resultado.erro || "Erro desconhecido ao ler a planilha.");
+                throw new Error(resultado.erro || "Erro na planilha.");
             }
         } catch(e) {
-            loading.style.display = 'none';
-            alert("Erro ao carregar Analytics. Verifique se o Google Script foi atualizado e implantado corretamente.\n\nErro: " + e.message);
+            document.getElementById('loading-analytics').style.display = 'none';
             addLog(`❌ Erro no Analytics: ${e.message}`, "error");
         }
     }
 
-    function processarDadosAnalytics(dadosArray) {
+    function aplicarFiltros() {
+        document.getElementById('loading-analytics').style.display = 'none';
+        
+        const dataInicioStr = document.getElementById('data-inicio').value;
+        const dataFimStr = document.getElementById('data-fim').value;
+        
+        const dataInicio = new Date(dataInicioStr);
+        const dataFim = new Date(dataFimStr);
+        dataFim.setHours(23, 59, 59);
+
+        const dadosFiltrados = dadosTotaisAcessos.filter(item => {
+            if(!item.data) return false;
+            // O AppScript está retornando YYYY-MM-DD
+            const dataToque = new Date(item.data);
+            return dataToque >= dataInicio && dataToque <= dataFim;
+        });
+
+        processarDashboard(dadosFiltrados, dataInicio, dataFim);
+        document.getElementById('painel-dashboard').style.display = 'block';
+    }
+
+    function processarDashboard(dadosArray, dataInicio, dataFim) {
         document.getElementById('dash-total').innerText = dadosArray.length;
 
-        // Se não tiver dados ainda
+        // Calcula média
+        const diasDiff = Math.max(1, Math.ceil((dataFim - dataInicio) / (1000 * 60 * 60 * 24)));
+        const media = (dadosArray.length / diasDiff).toFixed(1);
+        document.getElementById('dash-media').innerText = `Média: ${media} acessos/dia`;
+
         if(dadosArray.length === 0) {
-            document.getElementById('lista-ranking').innerHTML = "<p style='text-align:center; color:#999;'>Nenhum acesso registrado ainda.</p>";
-            document.getElementById('dash-campeao').innerText = "-";
+            document.getElementById('lista-ranking').innerHTML = "<p style='text-align:center; color:#999;'>Nenhum acesso no período.</p>";
+            document.getElementById('nome-campeao').innerText = "-";
+            document.getElementById('img-campeao').style.display = "none";
+            document.getElementById('dash-campeao').className = "valor";
+            document.getElementById('dash-pico').innerText = `Pico: Nenhum`;
+            if(graficoInstancia) graficoInstancia.destroy();
             return;
         }
 
-        // Conta as repetições de cada time
         const contagemTimes = {};
+        const contagemDias = {};
+
         dadosArray.forEach(linha => {
-            // A planilha manda um objeto com a chave "time"
             let nomeTime = String(linha.time).trim();
-            if(nomeTime) {
-                contagemTimes[nomeTime] = (contagemTimes[nomeTime] || 0) + 1;
-            }
+            let dia = linha.data;
+
+            if(nomeTime) contagemTimes[nomeTime] = (contagemTimes[nomeTime] || 0) + 1;
+            if(dia) contagemDias[dia] = (contagemDias[dia] || 0) + 1;
         });
 
-        // Transforma o objeto em um array para podermos ordenar
+        // Acha o pico
+        let melhorDia = ""; let maxAcessosDia = 0;
+        for (const dia in contagemDias) {
+            if (contagemDias[dia] > maxAcessosDia) { maxAcessosDia = contagemDias[dia]; melhorDia = dia; }
+        }
+        
+        let dataLegivel = "";
+        if(melhorDia) {
+            const arrD = melhorDia.split('-');
+            if(arrD.length === 3) dataLegivel = `${arrD[2]}/${arrD[1]}`;
+        }
+        document.getElementById('dash-pico').innerText = `Pico: ${maxAcessosDia} toques (${dataLegivel})`;
+
         const arrayRanking = Object.keys(contagemTimes).map(time => {
             return { nome: time, acessos: contagemTimes[time] };
         });
-
-        // Ordena do maior pro menor
         arrayRanking.sort((a, b) => b.acessos - a.acessos);
+        
+        // Seta o Campeão
+        const campeao = arrayRanking[0];
+        const nomePadrãoCampeão = campeao.nome.toLowerCase();
+        const infoCampeao = TIMES_INFO[nomePadrãoCampeão] || { cor: "#333", logo: "" };
 
-        // Preenche o campeão lá em cima
-        document.getElementById('dash-campeao').innerText = arrayRanking[0].nome;
+        const imgCampeaoEl = document.getElementById('img-campeao');
+        const nomeCampeaoEl = document.getElementById('nome-campeao');
+        
+        nomeCampeaoEl.innerText = campeao.nome;
+        if(infoCampeao.logo) { imgCampeaoEl.src = infoCampeao.logo; imgCampeaoEl.style.display = "block"; } 
+        else { imgCampeaoEl.style.display = "none"; }
+        
+        document.getElementById('dash-campeao').className = "valor " + (infoCampeao.classText || "");
 
-        // Monta a lista visual de ranking
+        // Monta Ranking Visual e Gráfico
         let htmlRanking = "";
         let labelsGrafico = [];
         let dataGrafico = [];
+        let coresGrafico = [];
+
+        const maxAcessosTime = arrayRanking[0].acessos;
 
         arrayRanking.forEach((item, index) => {
-            // Prepara os dados pro gráfico
             labelsGrafico.push(item.nome);
             dataGrafico.push(item.acessos);
 
-            let corPolo = "#e2e8f0"; let icon = "";
-            if(index === 0) { corPolo = "#fef08a"; icon = "🥇"; } // Ouro
-            else if(index === 1) { corPolo = "#e2e8f0"; icon = "🥈"; } // Prata
-            else if(index === 2) { corPolo = "#fed7aa"; icon = "🥉"; } // Bronze
+            let nomePadrao = item.nome.toLowerCase();
+            let infoTime = TIMES_INFO[nomePadrao] || { cor: "#3b82f6", bg: "#eff6ff", logo: "https://via.placeholder.com/32" };
+            coresGrafico.push(infoTime.cor);
+
+            let percentual = Math.round((item.acessos / maxAcessosTime) * 100);
 
             htmlRanking += `
             <div class="ranking-item">
                 <div class="ranking-nome">
-                    <span style="background: ${corPolo};">${icon || (index+1)}</span>
-                    ${item.nome}
+                    <img src="${infoTime.logo}" onerror="this.style.display='none'">
+                    <span class="${infoTime.classText || ''}">${item.nome}</span>
                 </div>
-                <div class="ranking-valor">${item.acessos} toques</div>
+                <div class="progresso-bg">
+                    <div class="progresso-bar" style="width: ${percentual}%; background-color: ${infoTime.cor};"></div>
+                </div>
+                <div class="ranking-valor" style="color: ${infoTime.cor};">${item.acessos}</div>
             </div>`;
         });
 
         document.getElementById('lista-ranking').innerHTML = htmlRanking;
-
-        // Renderiza o Gráfico de Barras com a biblioteca Chart.js
-        renderizarGrafico(labelsGrafico, dataGrafico);
+        renderizarGrafico(labelsGrafico, dataGrafico, coresGrafico);
     }
 
-    function renderizarGrafico(labels, dados) {
+    function renderizarGrafico(labels, dados, cores) {
         const ctx = document.getElementById('graficoAcessos').getContext('2d');
-        
-        // Destroi o gráfico antigo se o usuário apertar "Atualizar" de novo
-        if(graficoInstancia) {
-            graficoInstancia.destroy();
-        }
+        if(graficoInstancia) graficoInstancia.destroy();
 
         graficoInstancia = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Toques no Chaveiro',
                     data: dados,
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 6,
-                    borderWidth: 0
+                    backgroundColor: cores,
+                    borderRadius: 8,
+                    borderWidth: 0,
+                    barPercentage: 0.6
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
                 plugins: {
-                    legend: { display: false } // Esconde a legenda que não precisa
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        titleFont: { size: 14, family: 'Inter' },
+                        bodyFont: { size: 16, weight: 'bold', family: 'Inter' },
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: { label: function(context) { return context.parsed.y + ' toques NFC'; } }
+                    }
                 },
                 scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 1 } // Força a pular de 1 em 1 pra não ter "1.5 acessos"
-                    },
-                    x: {
-                        grid: { display: false } // Fica mais limpo
-                    }
-                }
+                    y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+                    x: { grid: { display: false } }
+                },
+                animation: { duration: 800, easing: 'easeOutQuart' }
             }
         });
     }
@@ -529,7 +622,7 @@
     }
 
     // ==========================================
-    // LÓGICA DO QUIZ (INTACTA)
+    // LÓGICA DO QUIZ
     // ==========================================
     function atualizarBadgeUltimo() {
         const ultimoTime = localStorage.getItem("ultimo_time_gerado");
