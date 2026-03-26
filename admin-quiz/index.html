@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Fira+Code:wght@400;500&display=swap');
         
         :root {
-            var(--primary): #d97706; 
+            /* PALETA MINI MUNDO */
             --primary: #d97706; 
             --primary-hover: #b45309;
             --brand-dark: #4E342E; 
@@ -57,6 +57,11 @@
         .row { display: flex; gap: 15px; }
         .col { flex: 1; }
 
+        .badges-container { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+        .badge { font-size: 0.75rem; font-weight: 700; padding: 8px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        .badge-blue { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;}
+        .badge-green { background: #dcfce7; color: #047857; border: 1px solid #a7f3d0;}
+
         /* === BOTOES === */
         .btn-magic { width: 100%; border: none; padding: 16px; border-radius: 14px; font-weight: 900; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; margin-top: 20px; box-shadow: 0 10px 25px rgba(217, 119, 6, 0.3); text-transform: uppercase; letter-spacing: 1px; }
         .btn-magic:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(217, 119, 6, 0.4); }
@@ -101,9 +106,11 @@
         .ranking-item:last-child { border-bottom: none; }
         .ranking-nome { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 1rem; width: 140px; white-space: nowrap;}
         .ranking-nome img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));}
+        
         .progresso-bg { flex-grow: 1; height: 10px; background: #f5f5f4; border-radius: 5px; margin: 0 20px; overflow: hidden; position: relative;}
         .progresso-bar { height: 100%; border-radius: 5px; transition: width 1s ease-in-out;}
         .ranking-valor { font-weight: 900; font-size: 1.2rem; width: 50px; text-align: right;}
+
         .chart-box { background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; width: 100%; box-sizing: border-box; box-shadow: 0 8px 20px rgba(78, 52, 46, 0.04);}
 
         /* === 🛒 GERENCIAMENTO DE PRODUTOS === */
@@ -117,6 +124,18 @@
         .btn-editar { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s;}
         .btn-editar:hover { background: #e2e8f0; }
         .btn-editar:active { transform: scale(0.95); }
+
+        /* 🔥 SCROLLBOX INTELIGENTE PARA A LISTA DE PRODUTOS 🔥 */
+        .catalogo-scroll-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-top: 15px;
+        }
+        .catalogo-scroll-container::-webkit-scrollbar { width: 8px; }
+        .catalogo-scroll-container::-webkit-scrollbar-track { background: #f5f5f4; border-radius: 10px; }
+        .catalogo-scroll-container::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+        .catalogo-scroll-container::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
 
         /* Modal Editar Produto */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
@@ -277,7 +296,7 @@
             </div>
             <div class="input-group">
                 <label for="prod-preco">Preço de Venda:</label>
-                <input type="text" id="prod-preco" placeholder="Ex: R$ 60,00">
+                <input type="text" id="prod-preco" class="mask-money" placeholder="Ex: R$ 60,00">
             </div>
             <div class="input-group">
                 <label for="prod-fotos">Anexar Fotos (Exemplos):</label>
@@ -293,7 +312,8 @@
         </div>
         
         <div id="loading-catalogo" style="text-align: center; padding: 30px; color: var(--primary); font-weight: 800; display: none;">⏳ Buscando catálogo completo...</div>
-        <div id="lista-produtos-admin">
+        
+        <div id="lista-produtos-admin" class="catalogo-scroll-container">
             </div>
     </div>
 
@@ -328,7 +348,7 @@
             <div class="col">
                 <div class="input-group">
                     <label>Preço:</label>
-                    <input type="text" id="edit-preco">
+                    <input type="text" id="edit-preco" class="mask-money">
                 </div>
             </div>
             <div class="col">
@@ -372,6 +392,31 @@
     let graficoInstancia = null; 
     let catalogoAdminArray = [];
 
+    // === FORMATADOR DE MOEDA GLOBAL ===
+    function formatarPreco(valorString) {
+        if(!valorString) return "";
+        let v = String(valorString).trim();
+        if(v.toUpperCase().includes("R$")) return v;
+        if(!isNaN(v.replace(',','.'))) {
+            let num = parseFloat(v.replace(',','.'));
+            return "R$ " + num.toFixed(2).replace('.', ',');
+        }
+        return "R$ " + v;
+    }
+
+    // === MÁSCARA DE DINHEIRO NOS INPUTS (DIGITAÇÃO) ===
+    document.addEventListener('input', function (e) {
+        if (e.target && e.target.classList.contains('mask-money')) {
+            let valor = e.target.value.replace(/\D/g, '');
+            if(valor === "") { e.target.value = ""; return; }
+            valor = (parseInt(valor) / 100).toFixed(2) + '';
+            valor = valor.replace(".", ",");
+            valor = valor.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+            valor = valor.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            e.target.value = "R$ " + valor;
+        }
+    });
+
     window.onload = () => {
         if(localStorage.getItem("gemini_api_key")) document.getElementById("api-key").value = localStorage.getItem("gemini_api_key");
         if(localStorage.getItem("imgbb_api_key")) document.getElementById("imgbb-key").value = localStorage.getItem("imgbb_api_key");
@@ -383,7 +428,7 @@
         carregarAnalytics(); 
         atualizarBadgeUltimo();
         carregarInfoBanco(); 
-        carregarCatalogoAdmin(); // Carrega os produtos também
+        carregarCatalogoAdmin(); 
     };
 
     function salvarChaves() { 
@@ -540,7 +585,7 @@
     }
 
     // ==========================================
-    // 🛒 GERENCIAMENTO DE CATÁLOGO (NOVO)
+    // 🛒 GERENCIAMENTO DE CATÁLOGO (COM SCROLL)
     // ==========================================
     async function carregarCatalogoAdmin() {
         const loading = document.getElementById('loading-catalogo');
@@ -557,18 +602,18 @@
                     listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum produto cadastrado.</p>";
                 } else {
                     let html = "";
-                    // Mostra do mais novo pro mais velho (inverte a array)
                     catalogoAdminArray.slice().reverse().forEach((p) => {
                         const fotoPrincipal = p.foto.split(',')[0].trim() || 'logo.jpg';
                         const statusBadge = p.ativo ? `<span class="tag-ativo">Ativo na Loja</span>` : `<span class="tag-inativo">Inativo (Oculto)</span>`;
-                        // Manda a linha original pra função editar
+                        const precoFormatado = formatarPreco(p.preco); // Usa a função global para mostrar bonito na lista
+                        
                         html += `
                         <div class="produto-list-item">
                             <img src="${fotoPrincipal}" class="prod-list-img" onerror="this.src='logo.jpg'">
                             <div class="prod-list-info">
                                 <h4 class="prod-list-nome">${p.nome}</h4>
                                 <div class="prod-list-detalhes">
-                                    <span style="color: var(--primary); font-weight: 800;">${p.preco}</span> • ${p.categoria} 
+                                    <span style="color: var(--primary); font-weight: 800;">${precoFormatado}</span> • ${p.categoria} 
                                 </div>
                                 <div style="margin-top: 8px;">${statusBadge}</div>
                             </div>
@@ -587,13 +632,12 @@
     }
 
     function abrirModalEditar(linha) {
-        // Acha o produto pela linha
         const produto = catalogoAdminArray.find(p => p.linha === linha);
         if(!produto) return;
 
         document.getElementById('edit-linha').value = produto.linha;
         document.getElementById('edit-nome').value = produto.nome;
-        document.getElementById('edit-preco').value = produto.preco;
+        document.getElementById('edit-preco').value = formatarPreco(produto.preco); // Já vem formatado para a tela de edição
         document.getElementById('edit-categoria').value = produto.categoria;
         document.getElementById('edit-desc').value = produto.descricao;
         document.getElementById('edit-status').value = produto.ativo ? "true" : "false";
@@ -638,9 +682,8 @@
         }
     }
 
-
     // ==========================================
-    // COMPRESSOR E UPLOAD (CRIAR NOVO PRODUTO)
+    // UPLOAD (CRIAR NOVO PRODUTO)
     // ==========================================
     const fileToBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader(); reader.readAsDataURL(file);
