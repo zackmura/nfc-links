@@ -7,7 +7,368 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
         
+        :root <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anuncie Conosco | Mini Mundo 3D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+        
         :root {
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .ad-card { background: var(--card-bg); width: 100%; max-width: 500px; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); box-sizing: border-box; text-align: center; position: relative; overflow: hidden;}
+        
+        .ad-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: linear-gradient(90deg, #10b981, #3b82f6); }
+
+        .brand-header img { width: 120px; height: auto; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);}
+        .brand-header h1 { margin: 0; color: var(--text-main); font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px; text-transform: uppercase;}
+        .brand-header p { margin: 8px 0 25px; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; font-weight: 500; }
+        
+        .form-container { text-align: left; }
+        .input-group { margin-bottom: 20px; }
+        label { font-weight: 700; color: var(--text-main); display: block; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;}
+
+        input[type="text"], input[type="tel"] { width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--text-main); box-sizing: border-box; background: #f8fafc; transition: all 0.3s ease; }
+        input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); }
+        
+        input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 25px 15px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; border-radius: 12px; width: 100%; box-sizing: border-box;}
+        input[type="file"]:hover { border-color: var(--primary); background: #f0fdf4; }
+
+        .row { display: flex; gap: 15px; }
+        .col { flex: 1; }
+
+        .btn-submit { width: 100%; border: none; padding: 18px; border-radius: 14px; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-top: 10px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(16, 185, 129, 0.5); }
+        .btn-submit:active { transform: translateY(1px); }
+        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; color: #94a3b8; transform: none; }
+
+        /* TELA DE SUCESSO OCULTA */
+        #success-screen { display: none; text-align: center; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .icon-success { font-size: 5rem; margin-bottom: 10px; display: block; animation: float 2s infinite ease-in-out;}
+        #success-screen h2 { color: var(--text-main); font-weight: 900; font-size: 1.8rem; margin: 0 0 10px;}
+        #success-screen p { color: var(--text-muted); font-size: 1rem; line-height: 1.5; margin-bottom: 25px;}
+        .btn-zap { background: #25D366; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4); }
+        .btn-zap:hover { box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5); }
+
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        
+        .loading-text { font-size: 0.85rem; color: var(--primary); font-weight: 700; margin-top: 15px; display: none; animation: pulse 1s infinite;}
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        
+        .input-error { border-color: #ef4444 !important; background: #fef2f2 !important; }
+    </style>
+</head>
+<body>
+
+<div class="ad-card">
+    <div id="form-screen">
+        <div class="brand-header">
+            <img src="logo.jpg" alt="Mini Mundo 3D" onerror="this.style.display='none'">
+            <h1>Anuncie na Nossa Rede</h1>
+            <p>Coloque sua marca no bolso de milhares de torcedores através do Super App Chaveiro Inteligente.</p>
+        </div>
+
+        <div class="form-container">
+            <div class="input-group">
+                <label for="empresa">Nome da sua Empresa/Marca *</label>
+                <input type="text" id="empresa" placeholder="Ex: Pizzaria do Zé">
+            </div>
+
+            <div class="input-group">
+                <label for="logo">Logo da Empresa (Foto Redonda) *</label>
+                <input type="file" id="logo" accept="image/*">
+            </div>
+
+            <div class="input-group">
+                <label for="descricao">Chamada do Anúncio (Oferta) *</label>
+                <input type="text" id="descricao" placeholder="Ex: Ganhe 10% OFF na Pizza de Calabresa hoje!" maxlength="60">
+            </div>
+
+            <div class="input-group">
+                <label for="endereco">Endereço Físico (Para GPS) *</label>
+                <input type="text" id="endereco" placeholder="Ex: Rua Julio Conceição 776, Bom Retiro">
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="input-group">
+                        <label for="preco">Preço (Opcional)</label>
+                        <input type="text" id="preco" class="mask-money" placeholder="R$ 0,00">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <label for="cupom">Cupom (Opcional)</label>
+                        <input type="text" id="cupom" placeholder="Ex: TIMAO10" style="text-transform: uppercase;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="input-group">
+                        <label for="whatsapp">WhatsApp (Mensagens) *</label>
+                        <input type="tel" id="whatsapp" class="mask-phone" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <label for="telefone">Telefone (Ligações) *</label>
+                        <input type="tel" id="telefone" class="mask-phone" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="foto">Foto do Banner Principal (Retangular) *</label>
+                <input type="file" id="foto" accept="image/*">
+            </div>
+
+            <button id="btn-enviar" class="btn-submit" onclick="enviarAnuncio()">🚀 Enviar para Aprovação</button>
+            <div id="loading-msg" class="loading-text">Processando imagens e enviando dados...</div>
+        </div>
+    </div>
+
+    <div id="success-screen">
+        <span class="icon-success">🎉</span>
+        <h2>Anúncio Recebido!</h2>
+        <p>Os dados da sua campanha foram enviados com sucesso. Para colocar seu anúncio no ar imediatamente, clique no botão abaixo para falar com o nosso financeiro.</p>
+        <button class="btn-submit btn-zap" onclick="abrirWhatsAppFinanceiro()">💬 Falar no WhatsApp e Ativar</button>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // CONFIGURAÇÕES (ONIONSYS + IMGBB COMO FALLBACK)
+    // ==========================================
+    const URL_DO_SEU_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec"; 
+    
+    // BACKEND PRIMÁRIO: OnionSys
+    const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/anuncios";
+    const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
+    
+    // BACKEND SECUNDÁRIO (FALLBACK): ImgBB
+    const SUA_CHAVE_IMGBB = "a76cc9454f6c230b1b5b48b63ed9012e"; 
+
+    const SEU_WHATSAPP_FINANCEIRO = "5511992279009"; 
+
+    // === SISTEMA DE MÁSCARAS ===
+    document.querySelectorAll('.mask-phone').forEach(input => {
+        input.addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    });
+
+    document.querySelectorAll('.mask-money').forEach(input => {
+        input.addEventListener('input', function (e) {
+            let valor = e.target.value.replace(/\D/g, '');
+            if(valor === "") { e.target.value = ""; return; }
+            valor = (parseInt(valor) / 100).toFixed(2) + '';
+            valor = valor.replace(".", ",");
+            valor = valor.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
+            valor = valor.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            e.target.value = "R$ " + valor;
+        });
+    });
+
+    function removerErro(input) { input.classList.remove("input-error"); }
+    document.querySelectorAll('input').forEach(i => i.addEventListener('input', () => removerErro(i)));
+
+    // === COMPRESSÃO NATIVA ===
+    function comprimirImagem(file, maxWidth, maxHeight, quality) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = event => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) { height = Math.round(height * maxWidth / width); width = maxWidth; }
+                    } else {
+                        if (height > maxHeight) { width = Math.round(width * maxHeight / height); height = maxHeight; }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const nomeLimpo = file.name.replace(/[^a-zA-Z0-9.]/g, '_').toLowerCase();
+                    const nomeUnico = Date.now() + "_" + nomeLimpo;
+
+                    canvas.toBlob(blob => {
+                        resolve(new File([blob], nomeUnico, { type: 'image/jpeg', lastModified: Date.now() }));
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = error => reject(error);
+            };
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    // === FUNÇÃO DE UPLOAD INTELIGENTE (TENTA ONIONSYS, SE FALHAR VAI PRO IMGBB) ===
+    async function fazerUploadInteligente(fileComprimido) {
+        // TENTATIVA 1: ONIONSYS
+        try {
+            console.log("Tentando upload na OnionSys...");
+            const formData = new FormData();
+            formData.append("imagem", fileComprimido); 
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 Segundos de tolerância
+
+            const response = await fetch(API_ONIONSYS, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${TOKEN_ONIONSYS}`,
+                    "x-tenant-id": "MiniMundo"
+                },
+                body: formData,
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                const resultado = await response.json();
+                if (resultado.success) {
+                    console.log("✅ Sucesso na OnionSys!");
+                    return resultado.url;
+                }
+            }
+            throw new Error("OnionSys retornou erro ou não foi possível ler a URL.");
+        } 
+        // TENTATIVA 2: IMGBB (FALLBACK)
+        catch (err) {
+            console.warn(`⚠️ Falha na OnionSys (${err.message}). Acionando Fallback ImgBB...`);
+            const formImgBB = new FormData();
+            formImgBB.append("image", fileComprimido);
+            
+            const resImgBB = await fetch(`https://api.imgbb.com/1/upload?key=${SUA_CHAVE_IMGBB}`, { method: "POST", body: formImgBB });
+            const dataImgBB = await resImgBB.json();
+            
+            if(!dataImgBB.success) {
+                throw new Error("Falha geral: Servidor primário e Backup (ImgBB) indisponíveis.");
+            }
+            console.log("✅ Sucesso no ImgBB (Fallback)!");
+            return dataImgBB.data.url;
+        }
+    }
+
+    async function enviarAnuncio() {
+        const empresa = document.getElementById("empresa");
+        const descricao = document.getElementById("descricao");
+        const endereco = document.getElementById("endereco");
+        const preco = document.getElementById("preco");
+        const cupom = document.getElementById("cupom");
+        const whatsapp = document.getElementById("whatsapp");
+        const telefone = document.getElementById("telefone");
+        const inputLogo = document.getElementById("logo");
+        const inputFoto = document.getElementById("foto");
+        
+        let temErro = false;
+
+        const camposObrigatorios = [empresa, descricao, endereco, whatsapp, telefone];
+        camposObrigatorios.forEach(campo => {
+            if(!campo.value.trim()) { campo.classList.add("input-error"); temErro = true; }
+        });
+
+        if(inputLogo.files.length === 0) { inputLogo.classList.add("input-error"); temErro = true; }
+        if(inputFoto.files.length === 0) { inputFoto.classList.add("input-error"); temErro = true; }
+
+        if(temErro) {
+            alert("Por favor, preencha todos os campos obrigatórios (*).");
+            return;
+        }
+
+        const zapLimpo = whatsapp.value.replace(/\D/g, '');
+        const telLimpo = telefone.value.replace(/\D/g, '');
+
+        if(zapLimpo.length < 10 || telLimpo.length < 10) {
+            alert("Verifique os números de telefone. Eles precisam ter DDD.");
+            return;
+        }
+
+        const linkWhatsApp = `https://wa.me/55${zapLimpo}`;
+
+        const btn = document.getElementById("btn-enviar");
+        const loading = document.getElementById("loading-msg");
+
+        btn.disabled = true;
+        btn.innerText = "Aguarde...";
+        loading.style.display = "block";
+
+        try {
+            // 1. Comprime as imagens
+            const logoComprimida = await comprimirImagem(inputLogo.files[0], 400, 400, 0.8);
+            const bannerComprimido = await comprimirImagem(inputFoto.files[0], 800, 800, 0.8);
+
+            // 2. Dispara o Upload Inteligente (Tenta Onion, se falhar vai pro ImgBB)
+            const linkDaLogo = await fazerUploadInteligente(logoComprimida);
+            const linkDoBanner = await fazerUploadInteligente(bannerComprimido);
+
+            // 3. Salva no Analytics
+            const payloadSheets = {
+                acao: "salvar_anuncio",
+                empresa: empresa.value.trim(),
+                logo: linkDaLogo,
+                descricao: descricao.value.trim(),
+                preco_oferta: preco.value.trim(),
+                cupom: cupom.value.trim().toUpperCase(),
+                endereco: endereco.value.trim(),
+                telefone: telLimpo,
+                link_zap: linkWhatsApp,
+                foto: linkDoBanner
+            };
+
+            const respostaSheets = await fetch(URL_DO_SEU_APPS_SCRIPT, {
+                method: "POST",
+                body: JSON.stringify(payloadSheets)
+            });
+
+            const resultadoPlanilha = await respostaSheets.json();
+
+            if (resultadoPlanilha.sucesso) {
+                document.getElementById("form-screen").style.display = "none";
+                document.getElementById("success-screen").style.display = "block";
+            } else {
+                throw new Error("Erro ao salvar no banco de dados.");
+            }
+
+        } catch (error) {
+            alert(`Ocorreu um erro: ${error.message}`);
+            btn.disabled = false;
+            btn.innerText = "🚀 Enviar para Aprovação";
+            loading.style.display = "none";
+        }
+    }
+
+    function abrirWhatsAppFinanceiro() {
+        const nomeEmpresa = document.getElementById("empresa").value.trim();
+        const msg = encodeURIComponent(`Olá, equipe Mini Mundo! Acabei de enviar os dados do anúncio da minha empresa (${nomeEmpresa}) pelo portal. Gostaria de realizar o pagamento para ativar a campanha.`);
+        window.open(`https://wa.me/${SEU_WHATSAPP_FINANCEIRO}?text=${msg}`, "_blank");
+    }
+</script>
+
+</body>
+</html>{
             --primary: #10b981;
             --primary-hover: #059669;
             --bg-color: #f8fafc;
