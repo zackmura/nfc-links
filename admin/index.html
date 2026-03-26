@@ -9,9 +9,7 @@
     <meta name="theme-color" content="#d97706">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="logo.jpg">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="apple-touch-icon" href="logo.png"> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Fira+Code:wght@400;500&display=swap');
         
@@ -40,7 +38,6 @@
         .login-input { width: 100%; padding: 16px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1.1rem; text-align: center; margin-bottom: 20px; box-sizing: border-box; font-weight: 700; letter-spacing: 2px;}
         .login-input:focus { border-color: var(--primary); outline: none; background: #fffbeb;}
         
-        /* Oculta o sistema principal inicialmente */
         #app-core { display: none; width: 100%; max-width: 700px; }
 
         .admin-card { background: var(--card-bg); width: 100%; padding: 35px; border-radius: 24px; box-shadow: 0 20px 40px rgba(78, 52, 46, 0.08); box-sizing: border-box; }
@@ -52,7 +49,7 @@
         .brand-header p { margin: 5px 0 0; color: var(--brand-light); font-size: 0.9rem; font-weight: 600; }
         .btn-logout { position: absolute; top: 0; right: 0; background: #fee2e2; color: #991b1b; border: none; padding: 8px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer;}
         
-        /* === BOTÃO MENU MOBILE (INVISÍVEL NO DESKTOP) === */
+        /* === BOTÃO MENU MOBILE === */
         .mobile-menu-btn { display: none; background: var(--brand-bg); color: var(--brand-dark); border: 2px solid var(--border-color); padding: 12px 20px; border-radius: 12px; font-weight: 800; width: 100%; margin-bottom: 15px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;}
         .mobile-menu-btn:active { background: #e7e5e4; }
 
@@ -70,7 +67,8 @@
         select, input[type="text"], input[type="number"], input[type="password"], input[type="date"], textarea { width: 100%; padding: 12px 14px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text-main); box-sizing: border-box; background: #fafaf9; transition: all 0.3s ease; font-weight: 500;}
         textarea { resize: vertical; min-height: 80px; }
         select:focus, input:focus, textarea:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15); }
-        input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 15px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; width: 100%; box-sizing: border-box;}
+        
+        input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 15px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; width: 100%; box-sizing: border-box; font-size: 0.8rem;}
         
         .search-bar { background: #fff; border: 2px solid var(--primary); box-shadow: 0 4px 15px rgba(217, 119, 6, 0.1); margin-bottom: 15px; padding: 12px 16px; font-weight: 700;}
         .row { display: flex; gap: 15px; } .col { flex: 1; }
@@ -127,7 +125,6 @@
         .btn-editar { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 8px 12px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; cursor: pointer; flex-shrink: 0;}
         .btn-zap-lista { background: #25D366; color: white; padding: 8px; border-radius: 8px; text-decoration: none; margin-right: 8px; display: inline-flex; flex-shrink: 0;}
 
-        /* 🔥 SCROLLBOX INTELIGENTE 🔥 */
         .scroll-container { max-height: 450px; overflow-y: auto; padding-right: 5px; margin-top: 10px; }
         .scroll-container::-webkit-scrollbar { width: 6px; }
         .scroll-container::-webkit-scrollbar-track { background: transparent; }
@@ -139,6 +136,11 @@
         .btn-fechar-modal { position: absolute; top: 12px; right: 12px; background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1.1rem; font-weight: bold; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;}
         .modal-title { font-size: 1.1rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 15px;}
         @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        /* Helpers p/ edição de fotos nos modais */
+        .foto-atual-box { background: #f8fafc; padding: 10px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;}
+        .foto-atual-box img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px;}
+        .foto-atual-box span { font-size: 0.75rem; color: #64748b; font-weight: 600;}
 
         /* MOBILE FIXES */
         @media (max-width: 600px) { 
@@ -159,7 +161,7 @@
 
 <div id="login-screen">
     <div class="login-box">
-        <img src="logo.jpg" alt="Mini Mundo 3D" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Mini Mundo 3D" onerror="this.src='logo.jpg'; this.onerror=null;">
         <h2>Acesso Restrito</h2>
         <p>Área exclusiva da Diretoria</p>
         <input type="password" id="input-senha" class="login-input" placeholder="••••••••" onkeyup="verificarEnter(event)">
@@ -170,7 +172,7 @@
 <div id="app-core">
     <div class="admin-card">
         <div class="brand-header">
-            <img src="logo.jpg" alt="Mini Mundo 3D" onerror="this.style.display='none'">
+            <img src="logo.png" alt="Mini Mundo 3D" onerror="this.src='logo.jpg'; this.onerror=null;">
             <h1>Central de Automação</h1>
             <p>Inteligência Artificial & CRM</p>
             <button class="btn-logout" onclick="fazerLogout()">Sair</button>
@@ -231,6 +233,9 @@
                     <button class="btn-magic btn-analise" style="width: auto; padding: 6px 12px; margin: 0; font-size: 0.75rem; border-radius: 8px;" onclick="carregarAnunciosAdmin()">🔄 Atualizar</button>
                 </div>
             </div>
+            
+            <input type="text" id="busca-anuncios" class="search-bar" placeholder="🔍 Buscar por empresa, status ou cupom..." onkeyup="filtrarAnuncios()">
+            
             <div id="loading-anuncios" style="text-align: center; padding: 20px; color: var(--primary); font-weight: 800; display: none;">⏳ Buscando...</div>
             <div id="lista-anuncios-admin" class="scroll-container"></div>
         </div>
@@ -284,16 +289,23 @@
         <button class="btn-fechar-modal" onclick="fecharModalEditarProduto()">×</button>
         <h3 class="modal-title">✏️ Editar Produto</h3>
         <input type="hidden" id="edit-prod-linha">
+        <input type="hidden" id="edit-prod-foto-antiga">
+        
+        <div class="foto-atual-box">
+            <img id="edit-prod-img-preview" src="">
+            <span>Deixe o campo abaixo vazio para manter as fotos atuais.</span>
+        </div>
+        
+        <div class="input-group"><label>Substituir Fotos (Opcional):</label><input type="file" id="edit-prod-fotos-novas" accept="image/*" multiple></div>
+        
         <div class="input-group"><label>Nome:</label><input type="text" id="edit-prod-nome"></div>
         <div class="row">
             <div class="col"><div class="input-group"><label>Preço:</label><input type="text" id="edit-prod-preco" class="mask-money"></div></div>
             <div class="col"><div class="input-group"><label>Categoria:</label><input type="text" id="edit-prod-categoria"></div></div>
         </div>
         <div class="input-group"><label>Descrição:</label><textarea id="edit-prod-desc"></textarea></div>
-        <div class="input-group">
-            <label>Status na Vitrine:</label>
-            <select id="edit-prod-status"><option value="true">🟢 ATIVO (Aparece no site)</option><option value="false">🔴 INATIVO (Oculto)</option></select>
-        </div>
+        <div class="input-group"><label>Status na Vitrine:</label><select id="edit-prod-status"><option value="true">🟢 ATIVO</option><option value="false">🔴 INATIVO</option></select></div>
+        
         <button id="btn-salvar-edicao-prod" class="btn-magic btn-global" style="padding: 12px; font-size: 0.9rem;" onclick="salvarEdicaoProduto()">💾 Salvar</button>
     </div>
 </div>
@@ -301,34 +313,43 @@
 <div id="modal-editar-anuncio" class="modal-overlay">
     <div class="modal-box">
         <button class="btn-fechar-modal" onclick="fecharModalEditarAnuncio()">×</button>
-        <h3 class="modal-title">💼 Gerenciar Anúncio</h3>
+        <h3 class="modal-title">💼 Editar Anúncio (CRM)</h3>
         <input type="hidden" id="edit-ad-linha">
+        <input type="hidden" id="edit-ad-foto-antiga">
+        <input type="hidden" id="edit-ad-logo-antiga">
+        
+        <div class="foto-atual-box">
+            <img id="edit-ad-logo-preview" src="" style="border-radius: 50%;">
+            <img id="edit-ad-banner-preview" src="" style="width: 60px;">
+            <span>Campos de arquivo vazios mantêm as imagens atuais.</span>
+        </div>
+        
         <div class="input-group"><label>Empresa:</label><input type="text" id="edit-ad-empresa" disabled style="background: #f1f5f9; color: #94a3b8;"></div>
         
         <div class="row">
             <div class="col">
-                <div class="input-group">
-                    <label>Status:</label>
+                <div class="input-group"><label>Status:</label>
                     <select id="edit-ad-status">
                         <option value="ATIVO">🟢 ATIVA (No ar)</option>
-                        <option value="PENDENTE">🟡 PENDENTE (Pausada)</option>
+                        <option value="PENDENTE">🟡 PENDENTE</option>
                         <option value="CANCELADO">🔴 CANCELADA</option>
                     </select>
                 </div>
             </div>
-            <div class="col">
-                <div class="input-group">
-                    <label>Vencimento:</label>
-                    <input type="date" id="edit-ad-vencimento">
-                </div>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>Valor Contrato:</label>
-            <input type="text" id="edit-ad-valor" class="mask-money" placeholder="Ex: R$ 150,00">
+            <div class="col"><div class="input-group"><label>Vencimento:</label><input type="date" id="edit-ad-vencimento"></div></div>
         </div>
         
-        <button id="btn-salvar-edicao-ad" class="btn-magic btn-global" style="padding: 12px; font-size: 0.9rem;" onclick="salvarEdicaoAnuncio()">💾 Salvar Contrato</button>
+        <div class="input-group"><label>Substituir Logo (Opcional):</label><input type="file" id="edit-ad-logo-nova" accept="image/*"></div>
+        <div class="input-group"><label>Substituir Banner (Opcional):</label><input type="file" id="edit-ad-banner-novo" accept="image/*"></div>
+        
+        <div class="input-group"><label>Chamada (Descrição):</label><input type="text" id="edit-ad-desc" maxlength="60"></div>
+        
+        <div class="row">
+            <div class="col"><div class="input-group"><label>Cupom:</label><input type="text" id="edit-ad-cupom" style="text-transform: uppercase;"></div></div>
+            <div class="col"><div class="input-group"><label>Valor Contrato:</label><input type="text" id="edit-ad-valor" class="mask-money"></div></div>
+        </div>
+        
+        <button id="btn-salvar-edicao-ad" class="btn-magic btn-global" style="padding: 12px; font-size: 0.9rem;" onclick="salvarEdicaoAnuncio()">💾 Salvar Alterações</button>
     </div>
 </div>
 
@@ -350,17 +371,14 @@
     }
 
     function verificarEnter(e) { if(e.key === "Enter") tentarLogin(); }
-
-    function fazerLogout() {
-        localStorage.removeItem("admin_auth");
-        location.reload();
-    }
+    function fazerLogout() { localStorage.removeItem("admin_auth"); location.reload(); }
 
     // ==========================================
     // SISTEMA CORE (INICIALIZAÇÃO)
     // ==========================================
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
     const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/catalogo";
+    const API_ONIONSYS_ADS = "https://api.onionsys.com.br/api/registrar/anuncios";
     const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
 
     const TIMES_INFO = {
@@ -373,75 +391,9 @@
     };
 
     let dadosTotaisAcessos = [], graficoInstancia = null, catalogoAdminArray = [], anunciosAdminArray = [];
-    let quantidadeAnunciosPendentes = -1; // Usado para as notificações Web
+    let quantidadeAnunciosPendentes = -1;
 
-    window.onload = () => {
-        if(localStorage.getItem("admin_auth") === "true") {
-            iniciarApp();
-        }
-    };
-
-    function iniciarApp() {
-        document.getElementById("login-screen").style.display = "none";
-        document.getElementById("app-core").style.display = "block";
-
-        if(localStorage.getItem("gemini_api_key")) document.getElementById("api-key").value = localStorage.getItem("gemini_api_key");
-        if(localStorage.getItem("imgbb_api_key")) document.getElementById("imgbb-key").value = localStorage.getItem("imgbb_api_key");
-        
-        const hoje = new Date();
-        document.getElementById('filtro-mes').value = String(hoje.getMonth() + 1).padStart(2, '0');
-        document.getElementById('filtro-ano').value = String(hoje.getFullYear());
-
-        carregarAnalytics(); carregarCatalogoAdmin(); carregarAnunciosAdmin(true);
-        
-        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-            document.getElementById("btn-notifica").style.display = "inline-flex";
-        }
-        
-        // Polling de Anúncios a cada 2 minutos
-        setInterval(() => { carregarAnunciosAdmin(true); }, 120000); 
-    }
-
-    // === NOTIFICAÇÕES WEB (BLINDADO CONTRA ERRO MOBILE) ===
-    function ativarNotificacoesBrowser() {
-        if ("Notification" in window) {
-            Notification.requestPermission().then(permission => {
-                if(permission === "granted") {
-                    document.getElementById("btn-notifica").style.display = "none";
-                    try { new Notification("Mini Mundo 3D", { body: "Alertas ativados!", icon: "logo.jpg" }); } catch(e){}
-                }
-            });
-        }
-    }
-
-    function dispararAlertaSeHouverNovos(novosAnuncios) {
-        let pendentesAtuais = novosAnuncios.filter(a => a.status === "PENDENTE").length;
-        
-        // Define o estado inicial invisível
-        if (quantidadeAnunciosPendentes === -1) {
-            quantidadeAnunciosPendentes = pendentesAtuais;
-            return;
-        }
-        
-        if(pendentesAtuais > quantidadeAnunciosPendentes) {
-            let empresaNova = novosAnuncios[novosAnuncios.length - 1].empresa; 
-            addLog(`🔔 NOVO ALERTA: Solicitação de ${empresaNova}`, "warn");
-            
-            try {
-                if ("Notification" in window && Notification.permission === "granted") {
-                    new Notification("🚀 Novo Anunciante!", { body: `A empresa ${empresaNova} enviou uma solicitação. Aprove no painel.`, icon: "logo.jpg" });
-                }
-            } catch (erroMobile) {
-                console.log("Notificação nativa ignorada no mobile.");
-            }
-
-            try { if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]); } catch(e){}
-        }
-        quantidadeAnunciosPendentes = pendentesAtuais;
-    }
-
-
-    // === FORMATADOR DE MOEDA GERAL ===
+    // Formatador de Dinheiro
     function formatarPreco(valorString) {
         if(!valorString) return "";
         let v = String(valorString).trim(); if(v.toUpperCase().includes("R$")) return v;
@@ -459,12 +411,39 @@
         }
     });
 
+    window.onload = () => { if(localStorage.getItem("admin_auth") === "true") { iniciarApp(); } };
+
+    function iniciarApp() {
+        document.getElementById("login-screen").style.display = "none"; document.getElementById("app-core").style.display = "block";
+        if(localStorage.getItem("gemini_api_key")) document.getElementById("api-key").value = localStorage.getItem("gemini_api_key");
+        if(localStorage.getItem("imgbb_api_key")) document.getElementById("imgbb-key").value = localStorage.getItem("imgbb_api_key");
+        
+        const hoje = new Date(); document.getElementById('filtro-mes').value = String(hoje.getMonth() + 1).padStart(2, '0'); document.getElementById('filtro-ano').value = String(hoje.getFullYear());
+
+        carregarAnalytics(); carregarCatalogoAdmin(); carregarAnunciosAdmin(true);
+        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { document.getElementById("btn-notifica").style.display = "inline-flex"; }
+        setInterval(() => { carregarAnunciosAdmin(true); }, 120000); 
+    }
+
+    function ativarNotificacoesBrowser() {
+        if ("Notification" in window) { Notification.requestPermission().then(permission => { if(permission === "granted") { document.getElementById("btn-notifica").style.display = "none"; try { new Notification("Mini Mundo 3D", { body: "Alertas ativados!", icon: "logo.png" }); } catch(e){} } }); }
+    }
+
+    function dispararAlertaSeHouverNovos(novosAnuncios) {
+        let pendentesAtuais = novosAnuncios.filter(a => a.status === "PENDENTE").length;
+        if (quantidadeAnunciosPendentes === -1) { quantidadeAnunciosPendentes = pendentesAtuais; return; }
+        if(pendentesAtuais > quantidadeAnunciosPendentes) {
+            let empresaNova = novosAnuncios[novosAnuncios.length - 1].empresa; addLog(`🔔 NOVO ALERTA: Solicitação de ${empresaNova}`, "warn");
+            try { if ("Notification" in window && Notification.permission === "granted") { new Notification("🚀 Novo Anunciante!", { body: `A empresa ${empresaNova} enviou uma solicitação. Aprove no painel.`, icon: "logo.png" }); } } catch (e) {}
+            try { if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]); } catch(e){}
+        }
+        quantidadeAnunciosPendentes = pendentesAtuais;
+    }
+
     function salvarChaves() { localStorage.setItem("gemini_api_key", document.getElementById("api-key").value); localStorage.setItem("imgbb_api_key", document.getElementById("imgbb-key").value); }
     function toggleMenuMobile() { document.getElementById('menu-abas').classList.toggle('menu-aberto'); }
-
     function switchTab(tabName) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         if(tabName === 'analytics') { document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('tab-analytics').classList.add('active'); }
         else if (tabName === 'anuncios') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('tab-anuncios').classList.add('active'); }
         else if (tabName === 'loja') { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('tab-loja').classList.add('active'); }
@@ -476,7 +455,7 @@
     function addLog(mensagem, tipo = 'info') { const terminal = document.getElementById("terminal"); terminal.innerHTML += `<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${mensagem}</span></div>`; terminal.scrollTop = terminal.scrollHeight; }
 
     // ==========================================
-    // 📈 MÓDULO ANALYTICS
+    // 📈 MÓDULO ANALYTICS (INTACTO)
     // ==========================================
     function limparDatasManuais() { document.getElementById('data-inicio').value = ""; document.getElementById('data-fim').value = ""; }
     function limparFiltrosRapidos() { document.getElementById('filtro-mes').value = "todos"; document.getElementById('filtro-ano').value = "todos"; }
@@ -484,17 +463,12 @@
     async function carregarAnalytics(forcar = false) {
         if(dadosTotaisAcessos.length > 0 && !forcar) return;
         document.getElementById('loading-analytics').style.display = 'block'; document.getElementById('painel-dashboard').style.display = 'none';
-        try {
-            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics"); const resultado = await resposta.json();
-            if(resultado.sucesso) { dadosTotaisAcessos = resultado.dados; aplicarFiltros(); } 
-            else throw new Error(resultado.erro);
-        } catch(e) { document.getElementById('loading-analytics').style.display = 'none'; addLog(`❌ Erro Analytics: ${e.message}`, "error"); }
+        try { const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics"); const resultado = await resposta.json(); if(resultado.sucesso) { dadosTotaisAcessos = resultado.dados; aplicarFiltros(); } else throw new Error(resultado.erro); } catch(e) { document.getElementById('loading-analytics').style.display = 'none'; addLog(`❌ Erro Analytics: ${e.message}`, "error"); }
     }
 
     function aplicarFiltros() {
         document.getElementById('loading-analytics').style.display = 'none';
         const mesSelect = document.getElementById('filtro-mes').value, anoSelect = document.getElementById('filtro-ano').value, timeSelect = document.getElementById('filtro-time').value.toLowerCase(), dtIniInput = document.getElementById('data-inicio').value, dtFimInput = document.getElementById('data-fim').value;
-
         const dadosFiltrados = dadosTotaisAcessos.filter(item => {
             if(!item.data || !item.time) return false;
             if(timeSelect !== "todos") { let nomeTimeReal = item.time.toLowerCase(); if(timeSelect === "são paulo" && (nomeTimeReal === "sao paulo" || nomeTimeReal === "são paulo")) { } else if(nomeTimeReal !== timeSelect) return false; }
@@ -514,30 +488,22 @@
         document.getElementById('dash-total').innerText = dadosArray.length;
         if(dadosArray.length === 0) {
             document.getElementById('dash-media').innerText = `Média: 0 acessos/dia`; document.getElementById('lista-ranking').innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum acesso no período.</p>";
-            document.getElementById('nome-campeao').innerText = "-"; document.getElementById('img-campeao').style.display = "none";
-            document.getElementById('dash-campeao').className = "valor"; document.getElementById('dash-pico').innerText = `Pico: Nenhum`;
+            document.getElementById('nome-campeao').innerText = "-"; document.getElementById('img-campeao').style.display = "none"; document.getElementById('dash-campeao').className = "valor"; document.getElementById('dash-pico').innerText = `Pico: Nenhum`;
             if(graficoInstancia) graficoInstancia.destroy(); return;
         }
-
         const contagemTimes = {}, contagemDias = {};
         dadosArray.forEach(linha => { let nomeTime = String(linha.time).trim(), dia = linha.data; if(nomeTime) contagemTimes[nomeTime] = (contagemTimes[nomeTime] || 0) + 1; if(dia) contagemDias[dia] = (contagemDias[dia] || 0) + 1; });
-
-        const totalDiasComAcesso = Object.keys(contagemDias).length;
-        document.getElementById('dash-media').innerText = `Média: ${totalDiasComAcesso > 0 ? (dadosArray.length / totalDiasComAcesso).toFixed(1) : 0} acessos/dia com uso`;
-
+        const totalDiasComAcesso = Object.keys(contagemDias).length; document.getElementById('dash-media').innerText = `Média: ${totalDiasComAcesso > 0 ? (dadosArray.length / totalDiasComAcesso).toFixed(1) : 0} acessos/dia com uso`;
         let melhorDia = "", maxAcessosDia = 0;
         for (const dia in contagemDias) { if (contagemDias[dia] > maxAcessosDia) { maxAcessosDia = contagemDias[dia]; melhorDia = dia; } }
         let dataLegivel = ""; if(melhorDia) { const arrD = melhorDia.split('-'); if(arrD.length === 3) dataLegivel = `${arrD[2]}/${arrD[1]}`; }
         document.getElementById('dash-pico').innerText = `Pico: ${maxAcessosDia} toques (${dataLegivel})`;
-
         const arrayRanking = Object.keys(contagemTimes).map(t => { return { nome: t, acessos: contagemTimes[t] }; });
         arrayRanking.sort((a, b) => b.acessos - a.acessos);
-        
         const campeao = arrayRanking[0], infoCampeao = TIMES_INFO[campeao.nome.toLowerCase()] || { cor: "var(--brand-dark)", logo: "" };
         document.getElementById('nome-campeao').innerText = campeao.nome; const imgCampeaoEl = document.getElementById('img-campeao');
         if(infoCampeao.logo) { imgCampeaoEl.src = infoCampeao.logo; imgCampeaoEl.style.display = "block"; } else { imgCampeaoEl.style.display = "none"; }
         document.getElementById('dash-campeao').className = "valor " + (infoCampeao.classText || "");
-
         let htmlRanking = "", labelsGrafico = [], dataGrafico = [], coresGrafico = []; const maxAcessosTime = arrayRanking[0].acessos;
         arrayRanking.forEach((item) => {
             labelsGrafico.push(item.nome); dataGrafico.push(item.acessos); let infoTime = TIMES_INFO[item.nome.toLowerCase()] || { cor: "var(--primary)", logo: "" }; coresGrafico.push(infoTime.cor);
@@ -552,98 +518,7 @@
     }
 
     // ==========================================
-    // 📢 CRM DE ANÚNCIOS
-    // ==========================================
-    async function carregarAnunciosAdmin(silencioso = false) {
-        if(!silencioso) { document.getElementById('loading-anuncios').style.display = 'block'; document.getElementById('lista-anuncios-admin').innerHTML = ''; }
-        try {
-            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=anuncios_admin"); const resultado = await resposta.json();
-            if(resultado.sucesso) {
-                anunciosAdminArray = resultado.anuncios;
-                dispararAlertaSeHouverNovos(anunciosAdminArray);
-
-                if(!silencioso || document.getElementById('lista-anuncios-admin').innerHTML === "") {
-                    if(anunciosAdminArray.length === 0) document.getElementById('lista-anuncios-admin').innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum anúncio registrado.</p>";
-                    else {
-                        let html = "";
-                        anunciosAdminArray.slice().reverse().forEach((ad) => {
-                            let statusBadge = "";
-                            if(ad.status === "ATIVO") statusBadge = `<span class="tag-ativo">Ativo</span>`;
-                            else if(ad.status === "CANCELADO") statusBadge = `<span class="tag-inativo">Cancelado</span>`;
-                            else statusBadge = `<span class="tag-pendente">Pendente</span>`;
-                            let venciTexto = ad.vencimento ? `Vence em: ${ad.vencimento.split('-').reverse().join('/')}` : "Sem vencimento";
-                            html += `<div class="list-item"><div class="list-info"><h4 class="list-nome">${ad.empresa}</h4><div class="list-detalhes"><span style="color: var(--primary); font-weight: 800;">${formatarPreco(ad.valor_negociado) || "R$ 0,00"}</span> • ${venciTexto} </div><div style="margin-top: 8px;">${statusBadge}</div></div><a href="${ad.zap_link}" target="_blank" class="btn-zap-lista">💬</a><button class="btn-editar" onclick="abrirModalEditarAnuncio(${ad.linha})">✏️</button></div>`;
-                        });
-                        document.getElementById('lista-anuncios-admin').innerHTML = html;
-                    }
-                }
-            }
-        } catch(e) { if(!silencioso) addLog(`Erro ao carregar anúncios: ${e.message}`, "error"); } finally { document.getElementById('loading-anuncios').style.display = 'none'; }
-    }
-
-    function abrirModalEditarAnuncio(linha) {
-        const ad = anunciosAdminArray.find(a => a.linha === linha); if(!ad) return;
-        document.getElementById('edit-ad-linha').value = ad.linha; document.getElementById('edit-ad-empresa').value = ad.empresa; document.getElementById('edit-ad-status').value = ad.status; document.getElementById('edit-ad-vencimento').value = ad.vencimento; document.getElementById('edit-ad-valor').value = formatarPreco(ad.valor_negociado);
-        document.getElementById('modal-editar-anuncio').style.display = 'flex';
-    }
-
-    function fecharModalEditarAnuncio() { document.getElementById('modal-editar-anuncio').style.display = 'none'; }
-
-    async function salvarEdicaoAnuncio() {
-        const btn = document.getElementById('btn-salvar-edicao-ad'); btn.disabled = true; btn.innerText = "⏳ Salvando...";
-        const payload = { acao: "atualizar_anuncio", linha: document.getElementById('edit-ad-linha').value, status: document.getElementById('edit-ad-status').value, vencimento: document.getElementById('edit-ad-vencimento').value, valor_negociado: document.getElementById('edit-ad-valor').value };
-        try {
-            const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
-            if(result.sucesso) { addLog(`✅ Anúncio atualizado!`, "success"); fecharModalEditarAnuncio(); carregarAnunciosAdmin(); } else throw new Error("Erro na planilha.");
-        } catch(e) { alert("Erro ao salvar: " + e.message); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Contrato"; }
-    }
-
-    // ==========================================
-    // 🛒 GERENCIAMENTO DE CATÁLOGO E BUSCA
-    // ==========================================
-    async function carregarCatalogoAdmin() {
-        document.getElementById('loading-catalogo').style.display = 'block'; document.getElementById('lista-produtos-admin').innerHTML = '';
-        try {
-            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=catalogo_admin"); const resultado = await resposta.json();
-            if(resultado.sucesso) { catalogoAdminArray = resultado.produtos.slice().reverse(); renderListaCatalogo(catalogoAdminArray); }
-        } catch(e) { addLog(`Erro catálogo: ${e.message}`, "error"); } finally { document.getElementById('loading-catalogo').style.display = 'none'; }
-    }
-
-    function renderListaCatalogo(arrayProdutos) {
-        const listaEl = document.getElementById('lista-produtos-admin');
-        if(arrayProdutos.length === 0) { listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum produto encontrado.</p>"; return; }
-        let html = "";
-        arrayProdutos.forEach((p) => {
-            const fotoPrincipal = p.foto.split(',')[0].trim() || 'logo.jpg', statusBadge = p.ativo ? `<span class="tag-ativo">Ativo na Loja</span>` : `<span class="tag-inativo">Inativo (Oculto)</span>`;
-            html += `<div class="list-item"><img src="${fotoPrincipal}" class="list-img" onerror="this.src='logo.jpg'"><div class="list-info"><h4 class="list-nome">${p.nome}</h4><div class="list-detalhes"><span style="color: var(--primary); font-weight: 800;">${formatarPreco(p.preco)}</span> • ${p.categoria} </div><div style="margin-top: 8px;">${statusBadge}</div></div><button class="btn-editar" onclick="abrirModalEditarProduto(${p.linha})">✏️</button></div>`;
-        });
-        listaEl.innerHTML = html;
-    }
-
-    function filtrarCatalogo() {
-        const termoBusca = document.getElementById('busca-catalogo').value.toLowerCase();
-        const produtosFiltrados = catalogoAdminArray.filter(p => { return p.nome.toLowerCase().includes(termoBusca) || p.categoria.toLowerCase().includes(termoBusca) || String(p.preco).toLowerCase().includes(termoBusca); });
-        renderListaCatalogo(produtosFiltrados);
-    }
-
-    function abrirModalEditarProduto(linha) {
-        const produto = catalogoAdminArray.find(p => p.linha === linha); if(!produto) return;
-        document.getElementById('edit-prod-linha').value = produto.linha; document.getElementById('edit-prod-nome').value = produto.nome; document.getElementById('edit-prod-preco').value = formatarPreco(produto.preco); document.getElementById('edit-prod-categoria').value = produto.categoria; document.getElementById('edit-prod-desc').value = produto.descricao; document.getElementById('edit-prod-status').value = produto.ativo ? "true" : "false";
-        document.getElementById('modal-editar-produto').style.display = 'flex';
-    }
-    function fecharModalEditarProduto() { document.getElementById('modal-editar-produto').style.display = 'none'; }
-
-    async function salvarEdicaoProduto() {
-        const btn = document.getElementById('btn-salvar-edicao-prod'); btn.disabled = true; btn.innerText = "⏳ Salvando...";
-        const payload = { acao: "atualizar_produto", linha: document.getElementById('edit-prod-linha').value, nome: document.getElementById('edit-prod-nome').value, preco: document.getElementById('edit-prod-preco').value, categoria: document.getElementById('edit-prod-categoria').value, descricao: document.getElementById('edit-prod-desc').value, ativo: document.getElementById('edit-prod-status').value === "true" };
-        try {
-            const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
-            if(result.sucesso) { addLog(`✅ Produto atualizado!`, "success"); fecharModalEditarProduto(); carregarCatalogoAdmin(); document.getElementById('busca-catalogo').value = ""; } else throw new Error("Erro na planilha.");
-        } catch(e) { alert("Erro ao salvar: " + e.message); } finally { btn.disabled = false; btn.innerText = "💾 Salvar"; }
-    }
-
-    // ==========================================
-    // UPLOAD E IA (CRIAR NOVO PRODUTO)
+    // UPLOAD E IA (MOTOR GERAL DE IMAGENS)
     // ==========================================
     const fileToBase64 = (file) => new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result.split(',')[1]); reader.onerror = error => reject(error); });
     function comprimirImagem(file, maxWidth, maxHeight, quality) {
@@ -662,14 +537,17 @@
         });
     }
 
-    async function fazerUploadInteligente(fileComprimido, imgbbKey) {
+    async function fazerUploadInteligente(fileComprimido, imgbbKey, isAnuncio = false) {
         try {
             const formData = new FormData(); formData.append("imagem", fileComprimido); 
-            const response = await fetch(API_ONIONSYS, { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id": "MiniMundo" }, body: formData });
+            // Usa a rota certa dependendo se é produto ou anuncio
+            const endpoint = isAnuncio ? API_ONIONSYS_ADS : API_ONIONSYS;
+            
+            const response = await fetch(endpoint, { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id": "MiniMundo" }, body: formData });
             const txt = await response.text();
             if (response.ok) {
                 try {
-                    const res = JSON.parse(txt); let url = (res.arquivos && res.arquivos.length > 0) ? res.arquivos[0].url : (res.url || res.link || res.URL || (res.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${res.filename}` : null));
+                    const res = JSON.parse(txt); let url = (res.arquivos && res.arquivos.length > 0) ? res.arquivos[0].url : (res.url || res.link || res.URL || (res.filename ? `https://api.onionsys.com.br/arquivos/${isAnuncio ? 'anuncios' : 'catalogo'}/${res.filename}` : null));
                     if (url) return url; else throw new Error("URL em branco.");
                 } catch(e) { throw new Error("Formato inválido."); }
             } else throw new Error(`Status ${response.status}`);
@@ -682,13 +560,207 @@
         }
     }
 
+
+    // ==========================================
+    // 📢 CRM DE ANÚNCIOS (COM BUSCA E EDIÇÃO TOTAL)
+    // ==========================================
+    async function carregarAnunciosAdmin(silencioso = false) {
+        if(!silencioso) { document.getElementById('loading-anuncios').style.display = 'block'; document.getElementById('lista-anuncios-admin').innerHTML = ''; }
+        try {
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=anuncios_admin"); const resultado = await resposta.json();
+            if(resultado.sucesso) {
+                anunciosAdminArray = resultado.anuncios.slice().reverse();
+                dispararAlertaSeHouverNovos(resultado.anuncios); // Array original
+                if(!silencioso || document.getElementById('lista-anuncios-admin').innerHTML === "") {
+                    renderListaAnuncios(anunciosAdminArray);
+                }
+            }
+        } catch(e) { if(!silencioso) addLog(`Erro ao carregar anúncios: ${e.message}`, "error"); } finally { document.getElementById('loading-anuncios').style.display = 'none'; }
+    }
+
+    function renderListaAnuncios(arrayAds) {
+        const listaEl = document.getElementById('lista-anuncios-admin');
+        if(arrayAds.length === 0) { listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum anúncio encontrado.</p>"; return; }
+        
+        let html = "";
+        arrayAds.forEach((ad) => {
+            let statusBadge = "";
+            if(ad.status === "ATIVO") statusBadge = `<span class="tag-ativo">Ativo</span>`;
+            else if(ad.status === "CANCELADO") statusBadge = `<span class="tag-inativo">Cancelado</span>`;
+            else statusBadge = `<span class="tag-pendente">Pendente</span>`;
+            let venciTexto = ad.vencimento ? `Vence em: ${ad.vencimento.split('-').reverse().join('/')}` : "Sem vencimento";
+            
+            html += `<div class="list-item"><div class="list-info"><h4 class="list-nome">${ad.empresa}</h4><div class="list-detalhes"><span style="color: var(--primary); font-weight: 800;">${formatarPreco(ad.valor_negociado) || "R$ 0,00"}</span> • ${venciTexto} </div><div style="margin-top: 8px;">${statusBadge}</div></div><a href="${ad.zap_link}" target="_blank" class="btn-zap-lista">💬</a><button class="btn-editar" onclick="abrirModalEditarAnuncio(${ad.linha})">✏️</button></div>`;
+        });
+        listaEl.innerHTML = html;
+    }
+
+    function filtrarAnuncios() {
+        const termoBusca = document.getElementById('busca-anuncios').value.toLowerCase();
+        const adsFiltrados = anunciosAdminArray.filter(a => { return a.empresa.toLowerCase().includes(termoBusca) || a.status.toLowerCase().includes(termoBusca) || (a.cupom && a.cupom.toLowerCase().includes(termoBusca)); });
+        renderListaAnuncios(adsFiltrados);
+    }
+
+    function abrirModalEditarAnuncio(linha) {
+        const ad = anunciosAdminArray.find(a => a.linha === linha); if(!ad) return;
+        
+        document.getElementById('edit-ad-linha').value = ad.linha; 
+        document.getElementById('edit-ad-empresa').value = ad.empresa; 
+        document.getElementById('edit-ad-status').value = ad.status; 
+        document.getElementById('edit-ad-vencimento').value = ad.vencimento; 
+        document.getElementById('edit-ad-valor').value = formatarPreco(ad.valor_negociado);
+        
+        document.getElementById('edit-ad-desc').value = ad.descricao || "";
+        document.getElementById('edit-ad-cupom').value = ad.cupom || "";
+
+        // Guarda as fotos antigas caso ele não mande novas
+        document.getElementById('edit-ad-foto-antiga').value = ad.foto || "";
+        document.getElementById('edit-ad-logo-antiga').value = ad.logo || "";
+
+        document.getElementById('edit-ad-logo-preview').src = ad.logo || "logo.png";
+        document.getElementById('edit-ad-banner-preview').src = ad.foto || "logo.png";
+
+        // Limpa os inputs de arquivo
+        document.getElementById('edit-ad-logo-nova').value = "";
+        document.getElementById('edit-ad-banner-novo').value = "";
+
+        document.getElementById('modal-editar-anuncio').style.display = 'flex';
+    }
+
+    function fecharModalEditarAnuncio() { document.getElementById('modal-editar-anuncio').style.display = 'none'; }
+
+    async function salvarEdicaoAnuncio() {
+        const btn = document.getElementById('btn-salvar-edicao-ad'); btn.disabled = true; btn.innerText = "⏳ Atualizando Imagens/Dados...";
+        
+        try {
+            const imgbbKey = document.getElementById("imgbb-key").value.trim();
+            
+            // 1. Lida com Uploads se existirem
+            let linkLogoFinal = document.getElementById('edit-ad-logo-antiga').value;
+            let linkBannerFinal = document.getElementById('edit-ad-foto-antiga').value;
+
+            const inputLogo = document.getElementById('edit-ad-logo-nova');
+            if(inputLogo.files.length > 0) {
+                addLog("Comprimindo nova logo...", "info");
+                const logoComp = await comprimirImagem(inputLogo.files[0], 400, 400, 0.8);
+                linkLogoFinal = await fazerUploadInteligente(logoComp, imgbbKey, true);
+            }
+
+            const inputBanner = document.getElementById('edit-ad-banner-novo');
+            if(inputBanner.files.length > 0) {
+                addLog("Comprimindo novo banner...", "info");
+                const bannerComp = await comprimirImagem(inputBanner.files[0], 800, 800, 0.8);
+                linkBannerFinal = await fazerUploadInteligente(bannerComp, imgbbKey, true);
+            }
+
+            // 2. Salva no Google Sheets
+            const payload = { 
+                acao: "atualizar_anuncio", 
+                linha: document.getElementById('edit-ad-linha').value, 
+                status: document.getElementById('edit-ad-status').value, 
+                vencimento: document.getElementById('edit-ad-vencimento').value, 
+                valor_negociado: document.getElementById('edit-ad-valor').value,
+                descricao: document.getElementById('edit-ad-desc').value,
+                cupom: document.getElementById('edit-ad-cupom').value,
+                logo: linkLogoFinal,
+                foto: linkBannerFinal
+            };
+            
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
+            if(result.sucesso) { addLog(`✅ Anúncio atualizado com sucesso!`, "success"); fecharModalEditarAnuncio(); carregarAnunciosAdmin(); } else throw new Error("Erro na planilha.");
+        } catch(e) { alert("Erro ao salvar: " + e.message); addLog(`❌ Erro no anúncio: ${e.message}`, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Contrato"; }
+    }
+
+    // ==========================================
+    // 🛒 GERENCIAMENTO DE CATÁLOGO (COM BUSCA E EDIÇÃO DE FOTOS)
+    // ==========================================
+    async function carregarCatalogoAdmin() {
+        document.getElementById('loading-catalogo').style.display = 'block'; document.getElementById('lista-produtos-admin').innerHTML = '';
+        try {
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=catalogo_admin"); const resultado = await resposta.json();
+            if(resultado.sucesso) { catalogoAdminArray = resultado.produtos.slice().reverse(); renderListaCatalogo(catalogoAdminArray); }
+        } catch(e) { addLog(`Erro catálogo: ${e.message}`, "error"); } finally { document.getElementById('loading-catalogo').style.display = 'none'; }
+    }
+
+    function renderListaCatalogo(arrayProdutos) {
+        const listaEl = document.getElementById('lista-produtos-admin');
+        if(arrayProdutos.length === 0) { listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum produto encontrado.</p>"; return; }
+        let html = "";
+        arrayProdutos.forEach((p) => {
+            const fotoPrincipal = p.foto.split(',')[0].trim() || 'logo.png', statusBadge = p.ativo ? `<span class="tag-ativo">Ativo na Loja</span>` : `<span class="tag-inativo">Inativo (Oculto)</span>`;
+            html += `<div class="list-item"><img src="${fotoPrincipal}" class="list-img" onerror="this.src='logo.png'"><div class="list-info"><h4 class="list-nome">${p.nome}</h4><div class="list-detalhes"><span style="color: var(--primary); font-weight: 800;">${formatarPreco(p.preco)}</span> • ${p.categoria} </div><div style="margin-top: 8px;">${statusBadge}</div></div><button class="btn-editar" onclick="abrirModalEditarProduto(${p.linha})">✏️</button></div>`;
+        });
+        listaEl.innerHTML = html;
+    }
+
+    function filtrarCatalogo() {
+        const termoBusca = document.getElementById('busca-catalogo').value.toLowerCase();
+        const produtosFiltrados = catalogoAdminArray.filter(p => { return p.nome.toLowerCase().includes(termoBusca) || p.categoria.toLowerCase().includes(termoBusca) || String(p.preco).toLowerCase().includes(termoBusca); });
+        renderListaCatalogo(produtosFiltrados);
+    }
+
+    function abrirModalEditarProduto(linha) {
+        const produto = catalogoAdminArray.find(p => p.linha === linha); if(!produto) return;
+        
+        document.getElementById('edit-prod-linha').value = produto.linha; 
+        document.getElementById('edit-prod-nome').value = produto.nome; 
+        document.getElementById('edit-prod-preco').value = formatarPreco(produto.preco); 
+        document.getElementById('edit-prod-categoria').value = produto.categoria; 
+        document.getElementById('edit-prod-desc').value = produto.descricao; 
+        document.getElementById('edit-prod-status').value = produto.ativo ? "true" : "false";
+
+        // Salva e Mostra a foto antiga
+        document.getElementById('edit-prod-foto-antiga').value = produto.foto || "";
+        document.getElementById('edit-prod-img-preview').src = (produto.foto && produto.foto.split(',')[0]) ? produto.foto.split(',')[0] : "logo.png";
+        
+        document.getElementById('edit-prod-fotos-novas').value = ""; // Limpa o file input
+
+        document.getElementById('modal-editar-produto').style.display = 'flex';
+    }
+    
+    function fecharModalEditarProduto() { document.getElementById('modal-editar-produto').style.display = 'none'; }
+
+    async function salvarEdicaoProduto() {
+        const btn = document.getElementById('btn-salvar-edicao-prod'); btn.disabled = true; btn.innerText = "⏳ Atualizando Dados/Imagens...";
+        
+        try {
+            const imgbbKey = document.getElementById("imgbb-key").value.trim();
+            let linkFinalFotos = document.getElementById('edit-prod-foto-antiga').value; // Mantém a antiga por padrão
+
+            const inputFotos = document.getElementById('edit-prod-fotos-novas');
+            if(inputFotos.files.length > 0) {
+                let novosLinks = [];
+                for(let i = 0; i < inputFotos.files.length; i++) {
+                    addLog(`Comprimindo nova foto ${i+1}...`, "info");
+                    const fotoComp = await comprimirImagem(inputFotos.files[i], 1000, 1000, 0.8);
+                    novosLinks.push(await fazerUploadInteligente(fotoComp, imgbbKey, false));
+                }
+                linkFinalFotos = novosLinks.join(","); // Substitui pelas novas
+            }
+
+            const payload = { 
+                acao: "atualizar_produto", 
+                linha: document.getElementById('edit-prod-linha').value, 
+                nome: document.getElementById('edit-prod-nome').value, 
+                preco: document.getElementById('edit-prod-preco').value, 
+                categoria: document.getElementById('edit-prod-categoria').value, 
+                descricao: document.getElementById('edit-prod-desc').value, 
+                ativo: document.getElementById('edit-prod-status').value === "true",
+                foto: linkFinalFotos
+            };
+            
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
+            if(result.sucesso) { addLog(`✅ Produto atualizado!`, "success"); fecharModalEditarProduto(); carregarCatalogoAdmin(); document.getElementById('busca-catalogo').value = ""; } else throw new Error("Erro na planilha.");
+        } catch(e) { alert("Erro ao salvar: " + e.message); addLog(`❌ Erro no produto: ${e.message}`, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar"; }
+    }
+
     async function cadastrarProdutoIA() {
         const apiKey = document.getElementById("api-key").value.trim(), imgbbKey = document.getElementById("imgbb-key").value.trim(), nome = document.getElementById("prod-nome").value.trim(), preco = document.getElementById("prod-preco").value.trim(), files = document.getElementById("prod-fotos").files, btn = document.getElementById("btn-salvar-produto");
         if(!apiKey || !nome || !preco || files.length === 0) return addLog("ERRO: Preencha todos os campos obrigatórios.", "error");
         btn.disabled = true; btn.innerText = "⏳ Processando...";
         try {
             addLog(`Iniciando: ${nome}`, "warn"); const base64 = await fileToBase64(files[0]); let links = [];
-            for(let i = 0; i < files.length; i++) { const foto = await comprimirImagem(files[i], 1000, 1000, 0.8); links.push(await fazerUploadInteligente(foto, imgbbKey)); addLog(`Foto ${i+1} ok.`, "success"); }
+            for(let i = 0; i < files.length; i++) { const foto = await comprimirImagem(files[i], 1000, 1000, 0.8); links.push(await fazerUploadInteligente(foto, imgbbKey, false)); addLog(`Foto ${i+1} ok.`, "success"); }
             addLog(`IA criando a copy...`, "info");
             const prompt = `Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D (produtos personalizáveis).\n\nTítulo: ${nome}\nPreço: ${preco}\n\nResponda neste formato:\nDescricao: [Sua copy genial em até 3 frases]\nCategoria: [1 ou 2 palavras]`;
             const resIA = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: files[0].type, data: base64 } }] }] }) });
@@ -699,6 +771,72 @@
             const resS = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify({ acao: "salvar_produto", nome: nome, descricao: desc, preco: preco, foto: links.join(","), categoria: cat }) });
             if ((await resS.json()).sucesso) { addLog(`✅ PRODUTO CADASTRADO!`, "success"); document.getElementById("prod-nome").value = ""; document.getElementById("prod-preco").value = ""; document.getElementById("prod-fotos").value = ""; carregarCatalogoAdmin(); } else throw new Error("Erro planilha.");
         } catch (error) { addLog(`❌ ERRO: ${error.message}`, "error"); } finally { btn.disabled = false; btn.innerText = "✨ Enviar Fotos e Cadastrar Produto"; }
+    }
+
+    // ==========================================
+    // LÓGICA DO QUIZ (AUTOMATIZADO)
+    // ==========================================
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    function atualizarBadgeUltimo() {
+        const ultimoTime = localStorage.getItem("ultimo_time_gerado"); const ultimoHorario = localStorage.getItem("ultimo_horario_gerado");
+        if (ultimoTime && ultimoHorario) { document.getElementById("badge-ultimo").innerHTML = `🕒 Último: <b>${ultimoTime}</b> (${ultimoHorario})`; }
+    }
+
+    async function carregarInfoBanco() {
+        const select = document.getElementById("time"), badgeTotal = document.getElementById("badge-total"); badgeTotal.innerHTML = `⏳ Contando...`;
+        try { const resposta = await fetch(select.value); const dados = await resposta.json(); badgeTotal.innerHTML = `📊 Total: <b>${(dados.quiz && Array.isArray(dados.quiz)) ? dados.quiz.length : 0} perguntas</b>`; } catch(err) { badgeTotal.innerHTML = `⚠️ Erro na contagem.`; }
+    }
+
+    async function processarTimeUnico(timeNome, timeUrl, qtd, apiKey, tema, dificuldade, modoReciclagem) {
+        addLog(`>> GERANDO: ${timeNome.toUpperCase()}`, "warn");
+        const prompt = `Gere ${qtd} perguntas sobre a história do ${timeNome} (Dificuldade: ${dificuldade}). ${tema ? `Tema OBRIGATÓRIO: "${tema}".` : `Varie os temas.`}\nREGRAS: Fatos históricos, max 15 palavras/pergunta, max 4 palavras/opção.\nFormato ESTRITO:\nPergunta: [Texto]\nA) [Opc 1]\nB) [Opc 2]\nC) [Opc 3]\nD) [Opc 4]\nCorreta: [1 a 4]\nAPENAS o texto puro.`;
+        let textoIA = null;
+        for (let t = 1; t <= 3; t++) {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+            if (res.ok) { const d = await res.json(); textoIA = d.candidates[0].content.parts[0].text; break; }
+            if (res.status === 429 && t < 3) { await delay(5000); continue; }
+            throw new Error(`IA recusou (${res.status}).`);
+        }
+        
+        const perguntas = [];
+        textoIA.split(/(?:Pergunta|Q):/i).filter(b => b.trim().length > 0).forEach(bloco => {
+            const l = bloco.trim().split('\n').map(x => x.trim()).filter(x => x !== '');
+            if (l.length >= 5) { 
+                let c = 1, lCor = l.find(x => /Correta/i.test(x)); if (lCor) { let m = lCor.match(/\d+/); if (m) c = parseInt(m[0]); }
+                perguntas.push({ pergunta: l[0], opcoes: [l[1].replace(/^[A-D1-4][\)\.-]?\s*/i, ''), l[2].replace(/^[A-D1-4][\)\.-]?\s*/i, ''), l[3].replace(/^[A-D1-4][\)\.-]?\s*/i, ''), l[4].replace(/^[A-D1-4][\)\.-]?\s*/i, '')], correta: c });
+            }
+        });
+        
+        if(perguntas.length === 0) throw new Error("IA gerou texto inválido.");
+        const respostaPlanilha = await fetch(timeUrl, { method: "POST", body: JSON.stringify({ acao: "salvar_quiz", perguntas: perguntas, substituir: modoReciclagem }) });
+        const r = await respostaPlanilha.json();
+        if(r.sucesso) { addLog(`✅ SUCESSO! (+${r.adicionadas})`, "success"); localStorage.setItem("ultimo_time_gerado", timeNome); localStorage.setItem("ultimo_horario_gerado", new Date().toLocaleString('pt-BR')); } 
+        else throw new Error(r.erro);
+    }
+
+    async function iniciarAutomacao(modoGlobal) {
+        const apiKey = document.getElementById("api-key").value.trim();
+        if(!apiKey) { switchTab('config'); return addLog("ERRO: Preencha a Chave Gemini!", "error"); }
+        
+        const qtd = document.getElementById("qtd").value, tema = document.getElementById("tema").value.trim(), dificuldade = document.getElementById("dificuldade").value, modoReciclagem = document.getElementById("substituir").checked;
+        const btnUnico = document.getElementById("btn-iniciar"), btnGlobal = document.getElementById("btn-global");
+        btnUnico.disabled = true; btnGlobal.disabled = true;
+
+        try {
+            if (modoGlobal) {
+                addLog(`--- INICIANDO LOTE GLOBAL ---`, "warn");
+                const opts = Array.from(document.getElementById("time").options);
+                for (let i = 0; i < opts.length; i++) {
+                    try { await processarTimeUnico(opts[i].getAttribute("data-nome"), opts[i].value, qtd, apiKey, tema, dificuldade, modoReciclagem); } catch (e) { addLog(`❌ ERRO ${opts[i].getAttribute("data-nome")}: ${e.message}`, "error"); }
+                    if (i < opts.length - 1) await delay(6000);
+                }
+                addLog(`--- LOTE GLOBAL FINALIZADO ---`, "success");
+            } else {
+                const sel = document.getElementById("time"); await processarTimeUnico(sel.options[sel.selectedIndex].getAttribute("data-nome"), sel.value, qtd, apiKey, tema, dificuldade, modoReciclagem);
+            }
+            atualizarBadgeUltimo(); carregarInfoBanco(); 
+        } catch (erro) { addLog(`FALHA GERAL: ${erro.message}`, "error"); } finally { btnUnico.disabled = false; btnGlobal.disabled = false; }
     }
 </script>
 
