@@ -55,7 +55,6 @@
         .badge { font-size: 0.75rem; font-weight: 700; padding: 8px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
         .badge-blue { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;}
         .badge-green { background: #dcfce7; color: #047857; border: 1px solid #a7f3d0;}
-        .badge-spin { animation: spin 1s linear infinite; }
 
         .btn-magic { width: 100%; border: none; padding: 16px; border-radius: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; margin-top: 20px; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); text-transform: uppercase; letter-spacing: 1px; }
         .btn-magic:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(59, 130, 246, 0.5); }
@@ -155,7 +154,7 @@
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA analisa a primeira foto anexada. O sistema usa <b>Upload Inteligente</b> (tenta OnionSys e, se falhar, usa ImgBB automaticamente).</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA analisa a primeira foto anexada. O sistema usa <b>Upload Inteligente</b> (tenta OnionSys sem limite de tempo e, se falhar, usa ImgBB automaticamente).</p>
         
         <div class="input-group">
             <label for="prod-nome">Nome do Produto:</label>
@@ -245,6 +244,7 @@
         reader.onerror = error => reject(error);
     });
 
+    // Função de compressão nativa
     function comprimirImagem(file, maxWidth, maxHeight, quality) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -280,42 +280,39 @@
         });
     }
 
-    // === UPLOAD INTELIGENTE (TENTA ONIONSYS, PULA PRO IMGBB SE FALHAR) ===
+    // === UPLOAD INTELIGENTE (SEM LIMITE DE TEMPO) ===
     async function fazerUploadInteligente(fileComprimido, imgbbKey) {
         try {
             const formData = new FormData();
             formData.append("imagem", fileComprimido); 
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 Segundos de tolerância
-
+            // REMOVIDO o AbortController. Vamos deixar o servidor da OnionSys terminar o upload no tempo dele!
             const response = await fetch(API_ONIONSYS, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${TOKEN_ONIONSYS}`,
                     "x-tenant-id": "MiniMundo"
                 },
-                body: formData,
-                signal: controller.signal
+                body: formData
             });
 
-            clearTimeout(timeoutId);
+            // Lemos como texto primeiro para evitar quebrar caso não seja JSON
+            const textoResposta = await response.text();
 
             if (response.ok) {
-                const resultado = await response.json();
-                if (resultado.success) {
-                    // BLINDAGEM MÁXIMA: Tenta achar a URL de 4 formas diferentes
-                    const urlFinal = resultado.url || resultado.link || resultado.URL || (resultado.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${resultado.filename}` : null);
-                    
-                    if (urlFinal) {
-                        return urlFinal;
+                try {
+                    const resultado = JSON.parse(textoResposta);
+                    if (resultado.success && resultado.url) {
+                        return resultado.url; // Puxa o link exato do seu backend
                     }
+                } catch (e) {
+                    throw new Error("O servidor respondeu, mas o formato não era JSON.");
                 }
             }
-            throw new Error("O servidor OnionSys respondeu, mas a URL veio em branco.");
+            throw new Error(`Falha no Servidor (Status: ${response.status})`);
         } 
         catch (err) {
-            addLog(`⚠️ OnionSys falhou (${err.message}). Acionando Fallback ImgBB...`, "warn");
+            addLog(`⚠️ OnionSys falhou: ${err.message}. Acionando ImgBB...`, "warn");
             
             if(!imgbbKey) {
                 throw new Error("Chave do ImgBB não configurada para o Backup.");
@@ -361,7 +358,7 @@
             const mimeType = files[0].type;
 
             // 2. FAZENDO UPLOAD INTELIGENTE
-            addLog(`Processando ${files.length} foto(s)...`, "info");
+            addLog(`Enviando ${files.length} foto(s). Aguarde o servidor responder...`, "info");
             let linksDasFotos = [];
 
             for(let i = 0; i < files.length; i++) {
