@@ -9,13 +9,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Fira+Code:wght@400;500&display=swap');
         
         :root {
-            /* NOVA PALETA MINI MUNDO (Terrosos e Quentes) */
-            --primary: #d97706; /* Laranja/Dourado escuro */
+            var(--primary): #d97706; 
+            --primary: #d97706; 
             --primary-hover: #b45309;
-            --brand-dark: #4E342E; /* Marrom Café */
-            --brand-light: #8D6E63; /* Marrom Claro */
+            --brand-dark: #4E342E; 
+            --brand-light: #8D6E63; 
             --brand-bg: #efebe9;
-            --bg-color: #fafaf9; /* Fundo geral mais quente */
+            --bg-color: #fafaf9; 
             --card-bg: #ffffff;
             --text-main: #292524;
             --text-muted: #78716c;
@@ -45,10 +45,11 @@
         .input-group { margin-bottom: 18px; }
         label { font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 8px; font-size: 0.85rem; }
 
-        select, input[type="text"], input[type="number"], input[type="password"], input[type="date"] { 
+        select, input[type="text"], input[type="number"], input[type="password"], input[type="date"], textarea { 
             width: 100%; padding: 14px 16px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; color: var(--text-main); box-sizing: border-box; background: #fafaf9; transition: all 0.3s ease; font-weight: 500;
         }
-        select:focus, input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15); }
+        textarea { resize: vertical; min-height: 80px; }
+        select:focus, input:focus, textarea:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15); }
         
         input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 20px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; width: 100%; box-sizing: border-box;}
         input[type="file"]:hover { border-color: var(--primary); background: #fffbeb; }
@@ -77,7 +78,7 @@
         .log-error { color: #ef4444; }
         .log-success { color: #10b981; font-weight: 500;}
 
-        /* === 📈 DASHBOARD ANALYTICS PRO (VISUAL MINI MUNDO) === */
+        /* === 📈 DASHBOARD ANALYTICS === */
         .filtros-box { background: var(--card-bg); border: 2px solid var(--border-color); padding: 20px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
         .filtros-title { font-size: 0.85rem; font-weight: 800; color: var(--brand-dark); text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 6px;}
         .btn-filtro { background: var(--brand-dark); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;}
@@ -89,7 +90,6 @@
         .dash-card .valor { font-size: 2.8rem; font-weight: 900; color: var(--brand-dark); line-height: 1;}
         .dash-card .sub-valor { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; display: block; font-weight: 600;}
         
-        /* Cores Dinâmicas dos Times no Card */
         .txt-corinthians { color: #000000 !important; }
         .txt-palmeiras { color: #006400 !important; }
         .txt-santos { color: #555555 !important; }
@@ -101,13 +101,29 @@
         .ranking-item:last-child { border-bottom: none; }
         .ranking-nome { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 1rem; width: 140px; white-space: nowrap;}
         .ranking-nome img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));}
-        
         .progresso-bg { flex-grow: 1; height: 10px; background: #f5f5f4; border-radius: 5px; margin: 0 20px; overflow: hidden; position: relative;}
         .progresso-bar { height: 100%; border-radius: 5px; transition: width 1s ease-in-out;}
-        
         .ranking-valor { font-weight: 900; font-size: 1.2rem; width: 50px; text-align: right;}
-
         .chart-box { background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; width: 100%; box-sizing: border-box; box-shadow: 0 8px 20px rgba(78, 52, 46, 0.04);}
+
+        /* === 🛒 GERENCIAMENTO DE PRODUTOS === */
+        .produto-list-item { display: flex; align-items: center; padding: 15px; border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 15px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.02);}
+        .prod-list-img { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; margin-right: 15px; background: #f5f5f4; border: 1px solid #e7e5e4;}
+        .prod-list-info { flex-grow: 1; }
+        .prod-list-nome { font-weight: 800; color: var(--brand-dark); font-size: 1rem; margin: 0 0 5px; }
+        .prod-list-detalhes { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; gap: 10px; align-items: center;}
+        .tag-ativo { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; font-weight: 800;}
+        .tag-inativo { background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; font-weight: 800;}
+        .btn-editar { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s;}
+        .btn-editar:hover { background: #e2e8f0; }
+        .btn-editar:active { transform: scale(0.95); }
+
+        /* Modal Editar Produto */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-box { background: #fff; width: 90%; max-width: 450px; border-radius: 24px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
+        .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #64748b; cursor: pointer;}
+        .modal-title { font-size: 1.2rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 20px;}
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         @media (max-width: 600px) { .admin-card { padding: 25px 15px; } .row { flex-direction: column; gap: 0; } .input-group { margin-bottom: 15px; } .dash-cards { grid-template-columns: 1fr; } .progresso-bg { display: none; } }
     </style>
@@ -129,33 +145,20 @@
     </div>
 
     <div id="tab-analytics" class="tab-content active">
-        
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; font-weight: 600;">Monitoramento de engajamento dos chaveiros NFC.</p>
-            <button class="btn-magic btn-analise" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.8rem; border-radius: 8px;" onclick="carregarAnalytics(true)">🔄 Forçar Atualização</button>
+            <button class="btn-magic btn-analise" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.8rem; border-radius: 8px;" onclick="carregarAnalytics(true)">🔄 Atualizar</button>
         </div>
 
         <div class="filtros-box">
             <div class="filtros-title">⚙️ Filtros de Pesquisa</div>
-            
             <div class="row">
                 <div class="col">
                     <div class="input-group">
                         <label>Mês:</label>
                         <select id="filtro-mes" onchange="limparDatasManuais()">
                             <option value="todos">Todos os Meses</option>
-                            <option value="01">Janeiro</option>
-                            <option value="02">Fevereiro</option>
-                            <option value="03">Março</option>
-                            <option value="04">Abril</option>
-                            <option value="05">Maio</option>
-                            <option value="06">Junho</option>
-                            <option value="07">Julho</option>
-                            <option value="08">Agosto</option>
-                            <option value="09">Setembro</option>
-                            <option value="10">Outubro</option>
-                            <option value="11">Novembro</option>
-                            <option value="12">Dezembro</option>
+                            <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option><option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option><option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
                         </select>
                     </div>
                 </div>
@@ -164,9 +167,7 @@
                         <label>Ano:</label>
                         <select id="filtro-ano" onchange="limparDatasManuais()">
                             <option value="todos">Todos os Anos</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                            <option value="2027">2027</option>
+                            <option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option>
                         </select>
                     </div>
                 </div>
@@ -175,38 +176,22 @@
                         <label>Time Específico:</label>
                         <select id="filtro-time">
                             <option value="todos">Todos os Times</option>
-                            <option value="corinthians">Corinthians</option>
-                            <option value="palmeiras">Palmeiras</option>
-                            <option value="santos">Santos</option>
-                            <option value="são paulo">São Paulo</option>
-                            <option value="flamengo">Flamengo</option>
+                            <option value="corinthians">Corinthians</option><option value="palmeiras">Palmeiras</option><option value="santos">Santos</option><option value="são paulo">São Paulo</option><option value="flamengo">Flamengo</option>
                         </select>
                     </div>
                 </div>
             </div>
-
             <div style="border-top: 1px solid var(--border-color); margin-top: 5px; padding-top: 15px;">
                 <label style="font-size: 0.75rem; text-transform: uppercase;">Ou busque por um período exato:</label>
                 <div class="row">
-                    <div class="col">
-                        <div class="input-group" style="margin-bottom: 0;">
-                            <input type="date" id="data-inicio" onchange="limparFiltrosRapidos()">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="input-group" style="margin-bottom: 0;">
-                            <input type="date" id="data-fim" onchange="limparFiltrosRapidos()">
-                        </div>
-                    </div>
+                    <div class="col"><div class="input-group" style="margin-bottom: 0;"><input type="date" id="data-inicio" onchange="limparFiltrosRapidos()"></div></div>
+                    <div class="col"><div class="input-group" style="margin-bottom: 0;"><input type="date" id="data-fim" onchange="limparFiltrosRapidos()"></div></div>
                 </div>
             </div>
-
             <button class="btn-filtro" onclick="aplicarFiltros()">Aplicar Filtros no Dashboard</button>
         </div>
 
-        <div id="loading-analytics" style="text-align: center; padding: 40px; color: var(--primary); font-weight: 900; font-size: 1.1rem; display: none;">
-            ⏳ Analisando dados no servidor...
-        </div>
+        <div id="loading-analytics" style="text-align: center; padding: 40px; color: var(--primary); font-weight: 900; font-size: 1.1rem; display: none;">⏳ Analisando dados...</div>
 
         <div id="painel-dashboard" style="display: none;">
             <div class="dash-cards">
@@ -224,15 +209,10 @@
                     <span class="sub-valor" id="dash-pico">Pico: Nenhum</span>
                 </div>
             </div>
-
             <div class="section-title">📊 Ranking de Engajamento</div>
-            <div class="ranking-list" id="lista-ranking">
-                </div>
-
+            <div class="ranking-list" id="lista-ranking"></div>
             <div class="section-title">📈 Desempenho Visual</div>
-            <div class="chart-box">
-                <canvas id="graficoAcessos"></canvas>
-            </div>
+            <div class="chart-box"><canvas id="graficoAcessos"></canvas></div>
         </div>
     </div>
 
@@ -264,7 +244,6 @@
                 </div>
             </div>
         </div>
-
         <div class="input-group" style="margin-bottom: 5px; margin-top: 10px;">
             <label for="time">Selecionar Time Específico:</label>
             <select id="time" onchange="carregarInfoBanco()">
@@ -275,28 +254,47 @@
                 <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
             </select>
         </div>
-
+        <div class="badges-container">
+            <div class="badge badge-blue" id="badge-total">📊 Total neste time: Carregando...</div>
+            <div class="badge badge-green" id="badge-ultimo">🕒 Último lote: Nenhum</div>
+        </div>
+        <div class="box-perigo">
+            <label style="color: #e11d48; margin-bottom: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 800;">
+                <input type="checkbox" id="substituir" style="width: 20px; height: 20px; cursor: pointer; margin: 0;">
+                ⚠️ MODO RECICLAGEM: APAGAR banco antigo e substituir
+            </label>
+        </div>
         <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao(false)">Gerar Apenas para o Time</button>
         <button id="btn-global" class="btn-magic btn-global" onclick="iniciarAutomacao(true)">GERAR PARA TODOS OS TIMES (LOTE GLOBAL)</button>
     </div>
 
     <div id="tab-loja" class="tab-content">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">A IA analisa a primeira foto anexada. O sistema usa <b>Upload Inteligente</b> (tenta OnionSys e, se falhar, pula pro ImgBB).</p>
-        
-        <div class="input-group">
-            <label for="prod-nome">Nome do Produto:</label>
-            <input type="text" id="prod-nome" placeholder="Ex: Placa Profissões Personalizada">
-        </div>
-        <div class="input-group">
-            <label for="prod-preco">Preço de Venda:</label>
-            <input type="text" id="prod-preco" placeholder="Ex: R$ 60,00">
-        </div>
-        <div class="input-group">
-            <label for="prod-fotos">Anexar Fotos do Produto (Exemplos):</label>
-            <input type="file" id="prod-fotos" accept="image/*" multiple>
+        <div class="section-title" style="margin-top:0;">➕ Adicionar Produto (Com IA)</div>
+        <div style="background: #fff; padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 30px;">
+            <div class="input-group">
+                <label for="prod-nome">Nome do Produto:</label>
+                <input type="text" id="prod-nome" placeholder="Ex: Placa Profissões Personalizada">
+            </div>
+            <div class="input-group">
+                <label for="prod-preco">Preço de Venda:</label>
+                <input type="text" id="prod-preco" placeholder="Ex: R$ 60,00">
+            </div>
+            <div class="input-group">
+                <label for="prod-fotos">Anexar Fotos (Exemplos):</label>
+                <input type="file" id="prod-fotos" accept="image/*" multiple>
+            </div>
+            <button id="btn-salvar-produto" class="btn-magic" style="margin-top: 10px;" onclick="cadastrarProdutoIA()">✨ Enviar Fotos e Cadastrar</button>
         </div>
 
-        <button id="btn-salvar-produto" class="btn-magic btn-loja" onclick="cadastrarProdutoIA()">✨ Enviar Fotos e Cadastrar Produto</button>
+        <div class="section-title">📋 Produtos Cadastrados</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Gerencie o que aparece na vitrine dos clientes.</p>
+            <button class="btn-magic btn-analise" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.8rem; border-radius: 8px;" onclick="carregarCatalogoAdmin()">🔄 Atualizar Lista</button>
+        </div>
+        
+        <div id="loading-catalogo" style="text-align: center; padding: 30px; color: var(--primary); font-weight: 800; display: none;">⏳ Buscando catálogo completo...</div>
+        <div id="lista-produtos-admin">
+            </div>
     </div>
 
     <div id="tab-config" class="tab-content">
@@ -315,12 +313,52 @@
     </div>
 </div>
 
+<div id="modal-editar-produto" class="modal-overlay">
+    <div class="modal-box">
+        <button class="btn-fechar-modal" onclick="fecharModalEditar()">×</button>
+        <h3 class="modal-title">✏️ Editar Produto</h3>
+        
+        <input type="hidden" id="edit-linha">
+        
+        <div class="input-group">
+            <label>Nome:</label>
+            <input type="text" id="edit-nome">
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group">
+                    <label>Preço:</label>
+                    <input type="text" id="edit-preco">
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    <label>Categoria:</label>
+                    <input type="text" id="edit-categoria">
+                </div>
+            </div>
+        </div>
+        <div class="input-group">
+            <label>Descrição:</label>
+            <textarea id="edit-desc"></textarea>
+        </div>
+        <div class="input-group">
+            <label>Status na Vitrine:</label>
+            <select id="edit-status">
+                <option value="true">🟢 ATIVO (Aparece no site)</option>
+                <option value="false">🔴 INATIVO (Oculto)</option>
+            </select>
+        </div>
+        
+        <button id="btn-salvar-edicao" class="btn-magic btn-global" style="margin-top: 10px;" onclick="salvarEdicaoProduto()">💾 Salvar Alterações</button>
+    </div>
+</div>
+
 <script>
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
     const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/catalogo";
     const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
 
-    // === BANCO DE DADOS DOS TIMES (CORES E LOGOS OFICIAIS) ===
     const TIMES_INFO = {
         "corinthians": { cor: "#000000", bg: "#f1f5f9", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/874.png", classText: "txt-corinthians" },
         "palmeiras": { cor: "#006400", bg: "#e8f5e9", logo: "https://a.espncdn.com/i/teamlogos/soccer/500/2029.png", classText: "txt-palmeiras" },
@@ -332,21 +370,20 @@
 
     let dadosTotaisAcessos = []; 
     let graficoInstancia = null; 
+    let catalogoAdminArray = [];
 
     window.onload = () => {
         if(localStorage.getItem("gemini_api_key")) document.getElementById("api-key").value = localStorage.getItem("gemini_api_key");
         if(localStorage.getItem("imgbb_api_key")) document.getElementById("imgbb-key").value = localStorage.getItem("imgbb_api_key");
         
-        // Configura Mês e Ano Atual nos selects
         const hoje = new Date();
-        const mesAtual = String(hoje.getMonth() + 1).padStart(2, '0');
-        const anoAtual = String(hoje.getFullYear());
-        
-        document.getElementById('filtro-mes').value = mesAtual;
-        document.getElementById('filtro-ano').value = anoAtual;
+        document.getElementById('filtro-mes').value = String(hoje.getMonth() + 1).padStart(2, '0');
+        document.getElementById('filtro-ano').value = String(hoje.getFullYear());
 
-        carregarAnalytics(); // Traz os dados da planilha 1 vez
+        carregarAnalytics(); 
+        atualizarBadgeUltimo();
         carregarInfoBanco(); 
+        carregarCatalogoAdmin(); // Carrega os produtos também
     };
 
     function salvarChaves() { 
@@ -381,84 +418,48 @@
     }
 
     // ==========================================
-    // 📈 MÓDULO ANALYTICS PRO (COM FILTROS AVANÇADOS)
+    // 📈 MÓDULO ANALYTICS
     // ==========================================
-    
-    // Funções para não conflitar Mês/Ano com Data Inicial/Final
-    function limparDatasManuais() {
-        document.getElementById('data-inicio').value = "";
-        document.getElementById('data-fim').value = "";
-    }
-    
-    function limparFiltrosRapidos() {
-        document.getElementById('filtro-mes').value = "todos";
-        document.getElementById('filtro-ano').value = "todos";
-    }
+    function limparDatasManuais() { document.getElementById('data-inicio').value = ""; document.getElementById('data-fim').value = ""; }
+    function limparFiltrosRapidos() { document.getElementById('filtro-mes').value = "todos"; document.getElementById('filtro-ano').value = "todos"; }
 
     async function carregarAnalytics(forcar = false) {
         if(dadosTotaisAcessos.length > 0 && !forcar) return;
-
         document.getElementById('loading-analytics').style.display = 'block';
         document.getElementById('painel-dashboard').style.display = 'none';
-
         try {
             const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics");
             const resultado = await resposta.json();
-
-            if(resultado.sucesso) {
-                dadosTotaisAcessos = resultado.dados;
-                aplicarFiltros(); // Monta a tela com os dados puxados
-            } else {
-                throw new Error(resultado.erro || "Erro na planilha.");
-            }
-        } catch(e) {
-            document.getElementById('loading-analytics').style.display = 'none';
-            addLog(`❌ Erro no Analytics: ${e.message}`, "error");
-        }
+            if(resultado.sucesso) { dadosTotaisAcessos = resultado.dados; aplicarFiltros(); } 
+            else throw new Error(resultado.erro || "Erro na planilha.");
+        } catch(e) { document.getElementById('loading-analytics').style.display = 'none'; addLog(`❌ Erro no Analytics: ${e.message}`, "error"); }
     }
 
     function aplicarFiltros() {
         document.getElementById('loading-analytics').style.display = 'none';
-        
         const mesSelect = document.getElementById('filtro-mes').value;
         const anoSelect = document.getElementById('filtro-ano').value;
         const timeSelect = document.getElementById('filtro-time').value.toLowerCase();
-        
         const dtIniInput = document.getElementById('data-inicio').value;
         const dtFimInput = document.getElementById('data-fim').value;
 
-        // LÓGICA DO MOTOR DE FILTRO
         const dadosFiltrados = dadosTotaisAcessos.filter(item => {
             if(!item.data || !item.time) return false;
-            
-            // 1. Filtra Time
             if(timeSelect !== "todos") {
                 let nomeTimeReal = item.time.toLowerCase();
-                // Arruma acentuação básica
-                if(timeSelect === "são paulo" && (nomeTimeReal === "sao paulo" || nomeTimeReal === "são paulo")) {
-                    // Passa
-                } else if(nomeTimeReal !== timeSelect) {
-                    return false;
-                }
+                if(timeSelect === "são paulo" && (nomeTimeReal === "sao paulo" || nomeTimeReal === "são paulo")) { } 
+                else if(nomeTimeReal !== timeSelect) return false;
             }
-
             const dataToque = new Date(item.data);
-            
-            // 2. Filtra por Mês/Ano (Se não usar calendário exato)
             if(dtIniInput === "" && dtFimInput === "") {
                 if(anoSelect !== "todos" && String(dataToque.getFullYear()) !== anoSelect) return false;
                 if(mesSelect !== "todos" && String(dataToque.getMonth() + 1).padStart(2, '0') !== mesSelect) return false;
                 return true;
             }
-            
-            // 3. Filtra por Calendário Exato (Data Ini / Data Fim)
             if(dtIniInput !== "" && dtFimInput !== "") {
-                const dIni = new Date(dtIniInput);
-                const dFim = new Date(dtFimInput);
-                dFim.setHours(23, 59, 59);
+                const dIni = new Date(dtIniInput), dFim = new Date(dtFimInput); dFim.setHours(23, 59, 59);
                 return dataToque >= dIni && dataToque <= dFim;
             }
-            
             return true;
         });
 
@@ -468,95 +469,57 @@
 
     function processarDashboard(dadosArray) {
         document.getElementById('dash-total').innerText = dadosArray.length;
-
-        // Se não tiver dados no filtro
         if(dadosArray.length === 0) {
             document.getElementById('dash-media').innerText = `Média: 0 acessos/dia`;
-            document.getElementById('lista-ranking').innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum acesso para os filtros selecionados.</p>";
-            document.getElementById('nome-campeao').innerText = "-";
-            document.getElementById('img-campeao').style.display = "none";
-            document.getElementById('dash-campeao').className = "valor";
-            document.getElementById('dash-pico').innerText = `Pico: Nenhum`;
+            document.getElementById('lista-ranking').innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum acesso no período.</p>";
+            document.getElementById('nome-campeao').innerText = "-"; document.getElementById('img-campeao').style.display = "none";
+            document.getElementById('dash-campeao').className = "valor"; document.getElementById('dash-pico').innerText = `Pico: Nenhum`;
             if(graficoInstancia) graficoInstancia.destroy();
             return;
         }
 
-        const contagemTimes = {};
-        const contagemDias = {};
-
-        // Agrupa os dados
+        const contagemTimes = {}, contagemDias = {};
         dadosArray.forEach(linha => {
-            let nomeTime = String(linha.time).trim();
-            let dia = linha.data;
-
+            let nomeTime = String(linha.time).trim(), dia = linha.data;
             if(nomeTime) contagemTimes[nomeTime] = (contagemTimes[nomeTime] || 0) + 1;
             if(dia) contagemDias[dia] = (contagemDias[dia] || 0) + 1;
         });
 
-        // Calcula Dias Únicos para a Média Correta
         const totalDiasComAcesso = Object.keys(contagemDias).length;
         const media = totalDiasComAcesso > 0 ? (dadosArray.length / totalDiasComAcesso).toFixed(1) : 0;
-        document.getElementById('dash-media').innerText = `Média: ${media} acessos/dia de uso`;
+        document.getElementById('dash-media').innerText = `Média: ${media} acessos/dia com uso`;
 
-        // Acha o pico
-        let melhorDia = ""; let maxAcessosDia = 0;
-        for (const dia in contagemDias) {
-            if (contagemDias[dia] > maxAcessosDia) { maxAcessosDia = contagemDias[dia]; melhorDia = dia; }
-        }
-        
-        let dataLegivel = "";
-        if(melhorDia) {
-            const arrD = melhorDia.split('-');
-            if(arrD.length === 3) dataLegivel = `${arrD[2]}/${arrD[1]}`;
-        }
+        let melhorDia = "", maxAcessosDia = 0;
+        for (const dia in contagemDias) { if (contagemDias[dia] > maxAcessosDia) { maxAcessosDia = contagemDias[dia]; melhorDia = dia; } }
+        let dataLegivel = ""; if(melhorDia) { const arrD = melhorDia.split('-'); if(arrD.length === 3) dataLegivel = `${arrD[2]}/${arrD[1]}`; }
         document.getElementById('dash-pico').innerText = `Pico: ${maxAcessosDia} toques (${dataLegivel})`;
 
-        // Ordena o Ranking
-        const arrayRanking = Object.keys(contagemTimes).map(time => {
-            return { nome: time, acessos: contagemTimes[time] };
-        });
+        const arrayRanking = Object.keys(contagemTimes).map(t => { return { nome: t, acessos: contagemTimes[t] }; });
         arrayRanking.sort((a, b) => b.acessos - a.acessos);
         
-        // Campeão do Card
         const campeao = arrayRanking[0];
         const infoCampeao = TIMES_INFO[campeao.nome.toLowerCase()] || { cor: "var(--brand-dark)", logo: "" };
-
         document.getElementById('nome-campeao').innerText = campeao.nome;
         const imgCampeaoEl = document.getElementById('img-campeao');
-        if(infoCampeao.logo) { imgCampeaoEl.src = infoCampeao.logo; imgCampeaoEl.style.display = "block"; } 
-        else { imgCampeaoEl.style.display = "none"; }
+        if(infoCampeao.logo) { imgCampeaoEl.src = infoCampeao.logo; imgCampeaoEl.style.display = "block"; } else { imgCampeaoEl.style.display = "none"; }
         document.getElementById('dash-campeao').className = "valor " + (infoCampeao.classText || "");
 
-        // Monta Tabela e Gráfico
-        let htmlRanking = "";
-        let labelsGrafico = [];
-        let dataGrafico = [];
-        let coresGrafico = [];
-
-        const maxAcessosTime = arrayRanking[0].acessos; // 100% da barra
+        let htmlRanking = "", labelsGrafico = [], dataGrafico = [], coresGrafico = [];
+        const maxAcessosTime = arrayRanking[0].acessos;
 
         arrayRanking.forEach((item) => {
-            labelsGrafico.push(item.nome);
-            dataGrafico.push(item.acessos);
-
+            labelsGrafico.push(item.nome); dataGrafico.push(item.acessos);
             let infoTime = TIMES_INFO[item.nome.toLowerCase()] || { cor: "var(--primary)", logo: "" };
             coresGrafico.push(infoTime.cor);
-
             let percentual = Math.round((item.acessos / maxAcessosTime) * 100);
 
             htmlRanking += `
             <div class="ranking-item">
-                <div class="ranking-nome">
-                    <img src="${infoTime.logo}" onerror="this.style.display='none'">
-                    <span class="${infoTime.classText || ''}">${item.nome}</span>
-                </div>
-                <div class="progresso-bg">
-                    <div class="progresso-bar" style="width: ${percentual}%; background-color: ${infoTime.cor};"></div>
-                </div>
+                <div class="ranking-nome"><img src="${infoTime.logo}" onerror="this.style.display='none'"><span class="${infoTime.classText || ''}">${item.nome}</span></div>
+                <div class="progresso-bg"><div class="progresso-bar" style="width: ${percentual}%; background-color: ${infoTime.cor};"></div></div>
                 <div class="ranking-valor" style="color: ${infoTime.cor};">${item.acessos}</div>
             </div>`;
         });
-
         document.getElementById('lista-ranking').innerHTML = htmlRanking;
         renderizarGrafico(labelsGrafico, dataGrafico, coresGrafico);
     }
@@ -564,44 +527,120 @@
     function renderizarGrafico(labels, dados, cores) {
         const ctx = document.getElementById('graficoAcessos').getContext('2d');
         if(graficoInstancia) graficoInstancia.destroy();
-
         graficoInstancia = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: dados,
-                    backgroundColor: cores,
-                    borderRadius: 8,
-                    borderWidth: 0,
-                    barPercentage: 0.6
-                }]
-            },
+            data: { labels: labels, datasets: [{ data: dados, backgroundColor: cores, borderRadius: 8, borderWidth: 0, barPercentage: 0.6 }] },
             options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#4E342E', // Marrom da Mini Mundo
-                        titleFont: { size: 14, family: 'Inter' },
-                        bodyFont: { size: 16, weight: 'bold', family: 'Inter' },
-                        padding: 12,
-                        displayColors: false,
-                        callbacks: { label: function(context) { return context.parsed.y + ' toques na Nação'; } }
-                    }
-                },
-                scales: {
-                    y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
-                    x: { grid: { display: false } }
-                },
+                responsive: true, maintainAspectRatio: true,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#4E342E', titleFont: { size: 14, family: 'Inter' }, bodyFont: { size: 16, weight: 'bold', family: 'Inter' }, padding: 12, displayColors: false, callbacks: { label: function(context) { return context.parsed.y + ' toques na Nação'; } } } },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }, x: { grid: { display: false } } },
                 animation: { duration: 800, easing: 'easeOutQuart' }
             }
         });
     }
 
     // ==========================================
-    // COMPRESSOR E UPLOAD (CATÁLOGO)
+    // 🛒 GERENCIAMENTO DE CATÁLOGO (NOVO)
+    // ==========================================
+    async function carregarCatalogoAdmin() {
+        const loading = document.getElementById('loading-catalogo');
+        const listaEl = document.getElementById('lista-produtos-admin');
+        loading.style.display = 'block'; listaEl.innerHTML = '';
+        
+        try {
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=catalogo_admin");
+            const resultado = await resposta.json();
+            if(resultado.sucesso) {
+                catalogoAdminArray = resultado.produtos;
+                
+                if(catalogoAdminArray.length === 0) {
+                    listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum produto cadastrado.</p>";
+                } else {
+                    let html = "";
+                    // Mostra do mais novo pro mais velho (inverte a array)
+                    catalogoAdminArray.slice().reverse().forEach((p) => {
+                        const fotoPrincipal = p.foto.split(',')[0].trim() || 'logo.jpg';
+                        const statusBadge = p.ativo ? `<span class="tag-ativo">Ativo na Loja</span>` : `<span class="tag-inativo">Inativo (Oculto)</span>`;
+                        // Manda a linha original pra função editar
+                        html += `
+                        <div class="produto-list-item">
+                            <img src="${fotoPrincipal}" class="prod-list-img" onerror="this.src='logo.jpg'">
+                            <div class="prod-list-info">
+                                <h4 class="prod-list-nome">${p.nome}</h4>
+                                <div class="prod-list-detalhes">
+                                    <span style="color: var(--primary); font-weight: 800;">${p.preco}</span> • ${p.categoria} 
+                                </div>
+                                <div style="margin-top: 8px;">${statusBadge}</div>
+                            </div>
+                            <button class="btn-editar" onclick="abrirModalEditar(${p.linha})">✏️ Editar</button>
+                        </div>`;
+                    });
+                    listaEl.innerHTML = html;
+                }
+            }
+        } catch(e) {
+            addLog(`Erro ao carregar catálogo: ${e.message}`, "error");
+            listaEl.innerHTML = "<p style='text-align:center; color:red;'>Erro ao carregar lista de produtos.</p>";
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    function abrirModalEditar(linha) {
+        // Acha o produto pela linha
+        const produto = catalogoAdminArray.find(p => p.linha === linha);
+        if(!produto) return;
+
+        document.getElementById('edit-linha').value = produto.linha;
+        document.getElementById('edit-nome').value = produto.nome;
+        document.getElementById('edit-preco').value = produto.preco;
+        document.getElementById('edit-categoria').value = produto.categoria;
+        document.getElementById('edit-desc').value = produto.descricao;
+        document.getElementById('edit-status').value = produto.ativo ? "true" : "false";
+
+        document.getElementById('modal-editar-produto').style.display = 'flex';
+    }
+
+    function fecharModalEditar() {
+        document.getElementById('modal-editar-produto').style.display = 'none';
+    }
+
+    async function salvarEdicaoProduto() {
+        const btn = document.getElementById('btn-salvar-edicao');
+        btn.disabled = true; btn.innerText = "⏳ Salvando...";
+
+        const payload = {
+            acao: "atualizar_produto",
+            linha: document.getElementById('edit-linha').value,
+            nome: document.getElementById('edit-nome').value,
+            preco: document.getElementById('edit-preco').value,
+            categoria: document.getElementById('edit-categoria').value,
+            descricao: document.getElementById('edit-desc').value,
+            ativo: document.getElementById('edit-status').value === "true"
+        };
+
+        try {
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) });
+            const result = await resposta.json();
+            
+            if(result.sucesso) {
+                addLog(`✅ Produto atualizado com sucesso!`, "success");
+                fecharModalEditar();
+                carregarCatalogoAdmin(); // Recarrega a lista
+            } else {
+                throw new Error("Erro na planilha.");
+            }
+        } catch(e) {
+            alert("Erro ao salvar: " + e.message);
+            addLog(`❌ Erro ao editar produto: ${e.message}`, "error");
+        } finally {
+            btn.disabled = false; btn.innerText = "💾 Salvar Alterações";
+        }
+    }
+
+
+    // ==========================================
+    // COMPRESSOR E UPLOAD (CRIAR NOVO PRODUTO)
     // ==========================================
     const fileToBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader(); reader.readAsDataURL(file);
@@ -687,6 +726,7 @@
             if ((await resS.json()).sucesso) {
                 addLog(`✅ PRODUTO CADASTRADO!`, "success");
                 document.getElementById("prod-nome").value = ""; document.getElementById("prod-preco").value = ""; document.getElementById("prod-fotos").value = "";
+                carregarCatalogoAdmin(); // Atualiza a lista na hora!
             } else throw new Error("Erro planilha.");
         } catch (error) { addLog(`❌ ERRO: ${error.message}`, "error"); } finally { btn.disabled = false; btn.innerText = "✨ Enviar Fotos e Cadastrar Produto"; }
     }
@@ -695,6 +735,23 @@
     // LÓGICA DO QUIZ
     // ==========================================
     const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    function atualizarBadgeUltimo() {
+        const ultimoTime = localStorage.getItem("ultimo_time_gerado");
+        const ultimoHorario = localStorage.getItem("ultimo_horario_gerado");
+        if (ultimoTime && ultimoHorario) { document.getElementById("badge-ultimo").innerHTML = `🕒 Último: <b>${ultimoTime}</b> (${ultimoHorario})`; }
+    }
+
+    async function carregarInfoBanco() {
+        const select = document.getElementById("time");
+        const badgeTotal = document.getElementById("badge-total");
+        badgeTotal.innerHTML = `⏳ Contando...`;
+        try {
+            const resposta = await fetch(select.value);
+            const dados = await resposta.json();
+            badgeTotal.innerHTML = `📊 Total: <b>${(dados.quiz && Array.isArray(dados.quiz)) ? dados.quiz.length : 0} perguntas</b>`;
+        } catch(err) { badgeTotal.innerHTML = `⚠️ Erro na contagem.`; }
+    }
 
     async function processarTimeUnico(timeNome, timeUrl, qtd, apiKey, tema, dificuldade, modoReciclagem) {
         addLog(`>> GERANDO: ${timeNome.toUpperCase()}`, "warn");
@@ -722,7 +779,10 @@
         const respostaPlanilha = await fetch(timeUrl, { method: "POST", body: JSON.stringify({ acao: "salvar_quiz", perguntas: perguntas, substituir: modoReciclagem }) });
         const r = await respostaPlanilha.json();
         
-        if(r.sucesso) addLog(`✅ SUCESSO! (+${r.adicionadas})`, "success"); else throw new Error(r.erro);
+        if(r.sucesso) {
+            addLog(`✅ SUCESSO! (+${r.adicionadas})`, "success");
+            localStorage.setItem("ultimo_time_gerado", timeNome); localStorage.setItem("ultimo_horario_gerado", new Date().toLocaleString('pt-BR'));
+        } else throw new Error(r.erro);
     }
 
     async function iniciarAutomacao(modoGlobal) {
@@ -746,6 +806,7 @@
                 const sel = document.getElementById("time");
                 await processarTimeUnico(sel.options[sel.selectedIndex].getAttribute("data-nome"), sel.value, qtd, apiKey, tema, dificuldade, modoReciclagem);
             }
+            atualizarBadgeUltimo(); carregarInfoBanco(); 
         } catch (erro) { addLog(`FALHA GERAL: ${erro.message}`, "error"); } 
         finally { btnUnico.disabled = false; btnGlobal.disabled = false; }
     }
