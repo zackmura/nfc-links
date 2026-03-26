@@ -258,7 +258,6 @@
 
         <div id="tab-quiz" class="tab-content">
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;">Gerador Automático de Quiz via IA.</p>
-            
             <div class="row">
                 <div class="col">
                     <div class="input-group" style="margin-bottom: 5px;">
@@ -267,7 +266,6 @@
                     </div>
                 </div>
             </div>
-            
             <div class="row">
                 <div class="col"><div class="input-group" style="margin-bottom: 5px;"><label>Dificuldade:</label><select id="dificuldade"><option value="fáceis (nível torcedor comum)">🟢 Fácil</option><option value="médias (nível fã fanático)" selected>🟡 Médio</option><option value="difíceis e obscuras (nível historiador)">🔴 Hardcore (Difícil)</option></select></div></div>
                 <div class="col"><div class="input-group" style="margin-bottom: 5px;"><label>Qtd. Perguntas:</label><input type="number" id="qtd" value="10" min="1" max="30"></div></div>
@@ -285,14 +283,12 @@
                 <div class="badge badge-blue" id="badge-total">📊 Total neste time: Carregando...</div>
                 <div class="badge badge-green" id="badge-ultimo">🕒 Último lote: Nenhum</div>
             </div>
-            
             <div class="box-perigo">
                 <label style="color: #e11d48; margin-bottom: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 800;">
                     <input type="checkbox" id="substituir" style="width: 18px; height: 18px; margin: 0;">
                     ⚠️ MODO RECICLAGEM: APAGAR banco antigo e substituir
                 </label>
             </div>
-            
             <button id="btn-iniciar" class="btn-magic" style="padding: 12px; font-size: 0.9rem;" onclick="iniciarAutomacao(false)">Gerar para o Time</button>
             <button id="btn-global" class="btn-magic btn-global" style="padding: 12px; font-size: 0.9rem;" onclick="iniciarAutomacao(true)">GERAR TODOS (GLOBAL)</button>
         </div>
@@ -415,7 +411,7 @@
     };
 
     let dadosTotaisAcessos = [], graficoInstancia = null, catalogoAdminArray = [], anunciosAdminArray = [];
-    let quantidadeAnunciosPendentes = -1; 
+    let quantidadeAnunciosPendentes = -1;
 
     // Formatador de Dinheiro
     function formatarPreco(valorString) {
@@ -487,12 +483,17 @@
     async function carregarAnalytics(forcar = false) {
         if(dadosTotaisAcessos.length > 0 && !forcar) return;
         document.getElementById('loading-analytics').style.display = 'block'; document.getElementById('painel-dashboard').style.display = 'none';
-        try { const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics"); const resultado = await resposta.json(); if(resultado.sucesso) { dadosTotaisAcessos = resultado.dados; aplicarFiltros(); } else throw new Error(resultado.erro); } catch(e) { document.getElementById('loading-analytics').style.display = 'none'; addLog(`❌ Erro Analytics: ${e.message}`, "error"); }
+        try {
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics"); const resultado = await resposta.json();
+            if(resultado.sucesso) { dadosTotaisAcessos = resultado.dados; aplicarFiltros(); } 
+            else throw new Error(resultado.erro);
+        } catch(e) { document.getElementById('loading-analytics').style.display = 'none'; addLog(`❌ Erro Analytics: ${e.message}`, "error"); }
     }
 
     function aplicarFiltros() {
         document.getElementById('loading-analytics').style.display = 'none';
         const mesSelect = document.getElementById('filtro-mes').value, anoSelect = document.getElementById('filtro-ano').value, timeSelect = document.getElementById('filtro-time').value.toLowerCase(), dtIniInput = document.getElementById('data-inicio').value, dtFimInput = document.getElementById('data-fim').value;
+
         const dadosFiltrados = dadosTotaisAcessos.filter(item => {
             if(!item.data || !item.time) return false;
             if(timeSelect !== "todos") { let nomeTimeReal = item.time.toLowerCase(); if(timeSelect === "são paulo" && (nomeTimeReal === "sao paulo" || nomeTimeReal === "são paulo")) { } else if(nomeTimeReal !== timeSelect) return false; }
@@ -515,9 +516,13 @@
             document.getElementById('nome-campeao').innerText = "-"; document.getElementById('img-campeao').style.display = "none"; document.getElementById('dash-campeao').className = "valor"; document.getElementById('dash-pico').innerText = `Pico: Nenhum`;
             if(graficoInstancia) graficoInstancia.destroy(); return;
         }
+
         const contagemTimes = {}, contagemDias = {};
         dadosArray.forEach(linha => { let nomeTime = String(linha.time).trim(), dia = linha.data; if(nomeTime) contagemTimes[nomeTime] = (contagemTimes[nomeTime] || 0) + 1; if(dia) contagemDias[dia] = (contagemDias[dia] || 0) + 1; });
-        const totalDiasComAcesso = Object.keys(contagemDias).length; document.getElementById('dash-media').innerText = `Média: ${totalDiasComAcesso > 0 ? (dadosArray.length / totalDiasComAcesso).toFixed(1) : 0} acessos/dia com uso`;
+
+        const totalDiasComAcesso = Object.keys(contagemDias).length;
+        document.getElementById('dash-media').innerText = `Média: ${totalDiasComAcesso > 0 ? (dadosArray.length / totalDiasComAcesso).toFixed(1) : 0} acessos/dia com uso`;
+
         let melhorDia = "", maxAcessosDia = 0;
         for (const dia in contagemDias) { if (contagemDias[dia] > maxAcessosDia) { maxAcessosDia = contagemDias[dia]; melhorDia = dia; } }
         let dataLegivel = ""; if(melhorDia) { const arrD = melhorDia.split('-'); if(arrD.length === 3) dataLegivel = `${arrD[2]}/${arrD[1]}`; }
@@ -525,6 +530,7 @@
 
         const arrayRanking = Object.keys(contagemTimes).map(t => { return { nome: t, acessos: contagemTimes[t] }; });
         arrayRanking.sort((a, b) => b.acessos - a.acessos);
+        
         const campeao = arrayRanking[0], infoCampeao = TIMES_INFO[campeao.nome.toLowerCase()] || { cor: "var(--brand-dark)", logo: "" };
         document.getElementById('nome-campeao').innerText = campeao.nome; const imgCampeaoEl = document.getElementById('img-campeao');
         if(infoCampeao.logo) { imgCampeaoEl.src = infoCampeao.logo; imgCampeaoEl.style.display = "block"; } else { imgCampeaoEl.style.display = "none"; }
@@ -533,14 +539,15 @@
         let htmlRanking = "", labelsGrafico = [], dataGrafico = [], coresGrafico = []; const maxAcessosTime = arrayRanking[0].acessos;
         arrayRanking.forEach((item) => {
             labelsGrafico.push(item.nome); dataGrafico.push(item.acessos); let infoTime = TIMES_INFO[item.nome.toLowerCase()] || { cor: "var(--primary)", logo: "" }; coresGrafico.push(infoTime.cor);
-            htmlRanking += `<div class="ranking-item"><div class="ranking-nome"><img src="${infoTime.logo}" onerror="this.style.display='none'"><span class="${infoTime.classText || ''}">${item.nome}</span></div><div class="progresso-bg"><div class="progresso-bar" style="width: ${Math.round((item.acessos / maxAcessosTime) * 100)}%; background-color: ${infoTime.cor};"></div></div><div class="ranking-valor" style="color: ${infoTime.cor};">${item.acessos}</div></div>`;
+            let percentual = Math.round((item.acessos / maxAcessosTime) * 100);
+            htmlRanking += `<div class="ranking-item"><div class="ranking-nome"><img src="${infoTime.logo}" onerror="this.style.display='none'"><span class="${infoTime.classText || ''}">${item.nome}</span></div><div class="progresso-bg"><div class="progresso-bar" style="width: ${percentual}%; background-color: ${infoTime.cor};"></div></div><div class="ranking-valor" style="color: ${infoTime.cor};">${item.acessos}</div></div>`;
         });
         document.getElementById('lista-ranking').innerHTML = htmlRanking; renderizarGrafico(labelsGrafico, dataGrafico, coresGrafico);
     }
 
     function renderizarGrafico(labels, dados, cores) {
         const ctx = document.getElementById('graficoAcessos').getContext('2d'); if(graficoInstancia) graficoInstancia.destroy();
-        graficoInstancia = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: dados, backgroundColor: cores, borderRadius: 8, borderWidth: 0, barPercentage: 0.6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#4E342E', titleFont: { size: 14, family: 'Inter' }, bodyFont: { size: 16, weight: 'bold', family: 'Inter' }, padding: 12, displayColors: false, callbacks: { label: function(context) { return context.parsed.y + ' toques'; } } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }, x: { grid: { display: false } } }, animation: { duration: 800, easing: 'easeOutQuart' } } });
+        graficoInstancia = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ data: dados, backgroundColor: cores, borderRadius: 8, borderWidth: 0, barPercentage: 0.6 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#4E342E', titleFont: { size: 14, family: 'Inter' }, bodyFont: { size: 16, weight: 'bold', family: 'Inter' }, padding: 12, displayColors: false, callbacks: { label: function(context) { return context.parsed.y + ' toques na Nação'; } } } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }, x: { grid: { display: false } } }, animation: { duration: 800, easing: 'easeOutQuart' } } });
     }
 
     // ==========================================
@@ -625,19 +632,26 @@
 
     function abrirModalEditarAnuncio(linha) {
         const ad = anunciosAdminArray.find(a => a.linha === linha); if(!ad) return;
+        
         document.getElementById('edit-ad-linha').value = ad.linha; 
         document.getElementById('edit-ad-empresa').value = ad.empresa; 
         document.getElementById('edit-ad-status').value = ad.status; 
         document.getElementById('edit-ad-vencimento').value = ad.vencimento; 
         document.getElementById('edit-ad-valor').value = formatarPreco(ad.valor_negociado);
+        
         document.getElementById('edit-ad-desc').value = ad.descricao || "";
         document.getElementById('edit-ad-cupom').value = ad.cupom || "";
 
+        // Guarda as fotos antigas caso ele não mande novas
         document.getElementById('edit-ad-foto-antiga').value = ad.foto || "";
         document.getElementById('edit-ad-logo-antiga').value = ad.logo || "";
+
         document.getElementById('edit-ad-logo-preview').src = ad.logo || "logo.png";
         document.getElementById('edit-ad-banner-preview').src = ad.foto || "logo.png";
-        document.getElementById('edit-ad-logo-nova').value = ""; document.getElementById('edit-ad-banner-novo').value = "";
+
+        // Limpa os inputs de arquivo
+        document.getElementById('edit-ad-logo-nova').value = "";
+        document.getElementById('edit-ad-banner-novo').value = "";
 
         document.getElementById('modal-editar-anuncio').style.display = 'flex';
     }
@@ -646,18 +660,40 @@
 
     async function salvarEdicaoAnuncio() {
         const btn = document.getElementById('btn-salvar-edicao-ad'); btn.disabled = true; btn.innerText = "⏳ Atualizando Imagens/Dados...";
+        
         try {
             const imgbbKey = document.getElementById("imgbb-key").value.trim();
+            
+            // 1. Lida com Uploads se existirem
             let linkLogoFinal = document.getElementById('edit-ad-logo-antiga').value;
             let linkBannerFinal = document.getElementById('edit-ad-foto-antiga').value;
 
             const inputLogo = document.getElementById('edit-ad-logo-nova');
-            if(inputLogo.files.length > 0) { addLog("Comprimindo nova logo...", "info"); const logoComp = await comprimirImagem(inputLogo.files[0], 400, 400, 0.8); linkLogoFinal = await fazerUploadInteligente(logoComp, imgbbKey, true); }
+            if(inputLogo.files.length > 0) {
+                addLog("Comprimindo nova logo...", "info");
+                const logoComp = await comprimirImagem(inputLogo.files[0], 400, 400, 0.8);
+                linkLogoFinal = await fazerUploadInteligente(logoComp, imgbbKey, true);
+            }
 
             const inputBanner = document.getElementById('edit-ad-banner-novo');
-            if(inputBanner.files.length > 0) { addLog("Comprimindo novo banner...", "info"); const bannerComp = await comprimirImagem(inputBanner.files[0], 800, 800, 0.8); linkBannerFinal = await fazerUploadInteligente(bannerComp, imgbbKey, true); }
+            if(inputBanner.files.length > 0) {
+                addLog("Comprimindo novo banner...", "info");
+                const bannerComp = await comprimirImagem(inputBanner.files[0], 800, 800, 0.8);
+                linkBannerFinal = await fazerUploadInteligente(bannerComp, imgbbKey, true);
+            }
 
-            const payload = { acao: "atualizar_anuncio", linha: document.getElementById('edit-ad-linha').value, status: document.getElementById('edit-ad-status').value, vencimento: document.getElementById('edit-ad-vencimento').value, valor_negociado: document.getElementById('edit-ad-valor').value, descricao: document.getElementById('edit-ad-desc').value, cupom: document.getElementById('edit-ad-cupom').value, logo: linkLogoFinal, foto: linkBannerFinal };
+            // 2. Salva no Google Sheets
+            const payload = { 
+                acao: "atualizar_anuncio", 
+                linha: document.getElementById('edit-ad-linha').value, 
+                status: document.getElementById('edit-ad-status').value, 
+                vencimento: document.getElementById('edit-ad-vencimento').value, 
+                valor_negociado: document.getElementById('edit-ad-valor').value,
+                descricao: document.getElementById('edit-ad-desc').value,
+                cupom: document.getElementById('edit-ad-cupom').value,
+                logo: linkLogoFinal,
+                foto: linkBannerFinal
+            };
             
             const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
             if(result.sucesso) { addLog(`✅ Anúncio atualizado com sucesso!`, "success"); fecharModalEditarAnuncio(); carregarAnunciosAdmin(); } else throw new Error("Erro na planilha.");
@@ -681,7 +717,8 @@
         let html = "";
         arrayProdutos.forEach((p) => {
             const fotoPrincipal = p.foto.split(',')[0].trim() || 'logo.png', statusBadge = p.ativo ? `<span class="tag-ativo">Ativo na Loja</span>` : `<span class="tag-inativo">Inativo (Oculto)</span>`;
-            html += `<div class="list-item"><img src="${fotoPrincipal}" class="list-img" onerror="this.src='logo.png'"><div class="list-info"><h4 class="list-nome">${p.nome}</h4><div class="list-detalhes"><span style="color: var(--primary); font-weight: 800;">${formatarPreco(p.preco)}</span> • ${p.categoria} </div><div style="margin-top: 8px;">${statusBadge}</div></div><button class="btn-editar" onclick="abrirModalEditarProduto(${p.linha})">✏️</button></div>`;
+            const precoFormatado = formatarPreco(p.preco); 
+            html += `<div class="list-item"><img src="${fotoPrincipal}" class="list-img" onerror="this.src='logo.png'"><div class="list-info"><h4 class="list-nome">${p.nome}</h4><div class="list-detalhes"><span style="color: var(--primary); font-weight: 800;">${precoFormatado}</span> • ${p.categoria} </div><div style="margin-top: 8px;">${statusBadge}</div></div><button class="btn-editar" onclick="abrirModalEditarProduto(${p.linha})">✏️</button></div>`;
         });
         listaEl.innerHTML = html;
     }
@@ -694,28 +731,54 @@
 
     function abrirModalEditarProduto(linha) {
         const produto = catalogoAdminArray.find(p => p.linha === linha); if(!produto) return;
-        document.getElementById('edit-prod-linha').value = produto.linha; document.getElementById('edit-prod-nome').value = produto.nome; document.getElementById('edit-prod-preco').value = formatarPreco(produto.preco); document.getElementById('edit-prod-categoria').value = produto.categoria; document.getElementById('edit-prod-desc').value = produto.descricao; document.getElementById('edit-prod-status').value = produto.ativo ? "true" : "false";
-        document.getElementById('edit-prod-foto-antiga').value = produto.foto || ""; document.getElementById('edit-prod-img-preview').src = (produto.foto && produto.foto.split(',')[0]) ? produto.foto.split(',')[0] : "logo.png";
-        document.getElementById('edit-prod-fotos-novas').value = ""; 
+        
+        document.getElementById('edit-prod-linha').value = produto.linha; 
+        document.getElementById('edit-prod-nome').value = produto.nome; 
+        document.getElementById('edit-prod-preco').value = formatarPreco(produto.preco); 
+        document.getElementById('edit-prod-categoria').value = produto.categoria; 
+        document.getElementById('edit-prod-desc').value = produto.descricao; 
+        document.getElementById('edit-prod-status').value = produto.ativo ? "true" : "false";
+
+        // Salva e Mostra a foto antiga
+        document.getElementById('edit-prod-foto-antiga').value = produto.foto || "";
+        document.getElementById('edit-prod-img-preview').src = (produto.foto && produto.foto.split(',')[0]) ? produto.foto.split(',')[0] : "logo.png";
+        
+        document.getElementById('edit-prod-fotos-novas').value = ""; // Limpa o file input
+
         document.getElementById('modal-editar-produto').style.display = 'flex';
     }
+    
     function fecharModalEditarProduto() { document.getElementById('modal-editar-produto').style.display = 'none'; }
 
     async function salvarEdicaoProduto() {
         const btn = document.getElementById('btn-salvar-edicao-prod'); btn.disabled = true; btn.innerText = "⏳ Atualizando Dados/Imagens...";
+        
         try {
             const imgbbKey = document.getElementById("imgbb-key").value.trim();
-            let linkFinalFotos = document.getElementById('edit-prod-foto-antiga').value; 
+            let linkFinalFotos = document.getElementById('edit-prod-foto-antiga').value; // Mantém a antiga por padrão
+
             const inputFotos = document.getElementById('edit-prod-fotos-novas');
             if(inputFotos.files.length > 0) {
                 let novosLinks = [];
                 for(let i = 0; i < inputFotos.files.length; i++) {
-                    addLog(`Comprimindo nova foto ${i+1}...`, "info"); const fotoComp = await comprimirImagem(inputFotos.files[i], 1000, 1000, 0.8); novosLinks.push(await fazerUploadInteligente(fotoComp, imgbbKey, false));
+                    addLog(`Comprimindo nova foto ${i+1}...`, "info");
+                    const fotoComp = await comprimirImagem(inputFotos.files[i], 1000, 1000, 0.8);
+                    novosLinks.push(await fazerUploadInteligente(fotoComp, imgbbKey, false));
                 }
-                linkFinalFotos = novosLinks.join(","); 
+                linkFinalFotos = novosLinks.join(","); // Substitui pelas novas
             }
 
-            const payload = { acao: "atualizar_produto", linha: document.getElementById('edit-prod-linha').value, nome: document.getElementById('edit-prod-nome').value, preco: document.getElementById('edit-prod-preco').value, categoria: document.getElementById('edit-prod-categoria').value, descricao: document.getElementById('edit-prod-desc').value, ativo: document.getElementById('edit-prod-status').value === "true", foto: linkFinalFotos };
+            const payload = { 
+                acao: "atualizar_produto", 
+                linha: document.getElementById('edit-prod-linha').value, 
+                nome: document.getElementById('edit-prod-nome').value, 
+                preco: document.getElementById('edit-prod-preco').value, 
+                categoria: document.getElementById('edit-prod-categoria').value, 
+                descricao: document.getElementById('edit-prod-desc').value, 
+                ativo: document.getElementById('edit-prod-status').value === "true",
+                foto: linkFinalFotos
+            };
+            
             const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) }); const result = await resposta.json();
             if(result.sucesso) { addLog(`✅ Produto atualizado!`, "success"); fecharModalEditarProduto(); carregarCatalogoAdmin(); document.getElementById('busca-catalogo').value = ""; } else throw new Error("Erro na planilha.");
         } catch(e) { alert("Erro ao salvar: " + e.message); addLog(`❌ Erro no produto: ${e.message}`, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar"; }
@@ -756,13 +819,25 @@
     }
 
     async function processarTimeUnico(timeNome, timeUrl, qtd, apiKey, tema, dificuldade, modoReciclagem) {
-        addLog(`>> GERANDO: ${timeNome.toUpperCase()}`, "warn");
+        addLog(`>> INICIANDO: ${timeNome.toUpperCase()}`, "warn");
+        addLog(`Conectando à IA (Gemini) para criar ${qtd} perguntas...`, "info");
+
         const prompt = `Gere ${qtd} perguntas sobre a história do ${timeNome} (Dificuldade: ${dificuldade}). ${tema ? `Tema OBRIGATÓRIO: "${tema}".` : `Varie os temas.`}\nREGRAS: Fatos históricos, max 15 palavras/pergunta, max 4 palavras/opção.\nFormato ESTRITO:\nPergunta: [Texto]\nA) [Opc 1]\nB) [Opc 2]\nC) [Opc 3]\nD) [Opc 4]\nCorreta: [1 a 4]\nAPENAS o texto puro.`;
         let textoIA = null;
+        
         for (let t = 1; t <= 3; t++) {
             const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
-            if (res.ok) { const d = await res.json(); textoIA = d.candidates[0].content.parts[0].text; break; }
-            if (res.status === 429 && t < 3) { await delay(5000); continue; }
+            if (res.ok) { 
+                const d = await res.json(); 
+                textoIA = d.candidates[0].content.parts[0].text; 
+                addLog(`IA respondeu com sucesso! Analisando texto...`, "success");
+                break; 
+            }
+            if (res.status === 429 && t < 3) { 
+                addLog(`⚠️ Limite da IA atingido. Tentando novamente em 5s...`, "warn");
+                await delay(5000); 
+                continue; 
+            }
             throw new Error(`IA recusou (${res.status}).`);
         }
         
@@ -776,9 +851,19 @@
         });
         
         if(perguntas.length === 0) throw new Error("IA gerou texto inválido.");
+        addLog(`Foram validadas ${perguntas.length} perguntas.`, "info");
+        
+        if(modoReciclagem) addLog(`⚠️ Modo Reciclagem: O banco antigo será apagado!`, "error");
+        addLog(`Enviando para a Planilha do servidor...`, "info");
+
         const respostaPlanilha = await fetch(timeUrl, { method: "POST", body: JSON.stringify({ acao: "salvar_quiz", perguntas: perguntas, substituir: modoReciclagem }) });
         const r = await respostaPlanilha.json();
-        if(r.sucesso) { addLog(`✅ SUCESSO! (+${r.adicionadas})`, "success"); localStorage.setItem("ultimo_time_gerado", timeNome); localStorage.setItem("ultimo_horario_gerado", new Date().toLocaleString('pt-BR')); } 
+        
+        if(r.sucesso) { 
+            addLog(`✅ SUCESSO! Banco atualizado (+${r.adicionadas} perguntas).`, "success"); 
+            localStorage.setItem("ultimo_time_gerado", timeNome); 
+            localStorage.setItem("ultimo_horario_gerado", new Date().toLocaleString('pt-BR')); 
+        } 
         else throw new Error(r.erro);
     }
 
@@ -792,15 +877,16 @@
 
         try {
             if (modoGlobal) {
-                addLog(`--- INICIANDO LOTE GLOBAL ---`, "warn");
+                addLog(`--- INICIANDO LOTE GLOBAL (${qtd} p/ cada) ---`, "warn");
                 const opts = Array.from(document.getElementById("time").options);
                 for (let i = 0; i < opts.length; i++) {
                     try { await processarTimeUnico(opts[i].getAttribute("data-nome"), opts[i].value, qtd, apiKey, tema, dificuldade, modoReciclagem); } catch (e) { addLog(`❌ ERRO ${opts[i].getAttribute("data-nome")}: ${e.message}`, "error"); }
-                    if (i < opts.length - 1) await delay(6000);
+                    if (i < opts.length - 1) { addLog("Aguardando 5s (Evitar bloqueio da IA)...", "info"); await delay(5000); }
                 }
                 addLog(`--- LOTE GLOBAL FINALIZADO ---`, "success");
             } else {
-                const sel = document.getElementById("time"); await processarTimeUnico(sel.options[sel.selectedIndex].getAttribute("data-nome"), sel.value, qtd, apiKey, tema, dificuldade, modoReciclagem);
+                const sel = document.getElementById("time"); 
+                await processarTimeUnico(sel.options[sel.selectedIndex].getAttribute("data-nome"), sel.value, qtd, apiKey, tema, dificuldade, modoReciclagem);
             }
             atualizarBadgeUltimo(); carregarInfoBanco(); 
         } catch (erro) { addLog(`FALHA GERAL: ${erro.message}`, "error"); } finally { btnUnico.disabled = false; btnGlobal.disabled = false; }
