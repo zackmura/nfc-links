@@ -9,7 +9,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Fira+Code:wght@400;500&display=swap');
         
         :root {
-            /* PALETA MINI MUNDO */
             --primary: #d97706; 
             --primary-hover: #b45309;
             --brand-dark: #4E342E; 
@@ -34,7 +33,7 @@
         
         /* === SISTEMA DE ABAS === */
         .tabs-container { display: flex; gap: 10px; margin-bottom: 25px; background: var(--brand-bg); padding: 6px; border-radius: 16px; flex-wrap: wrap;}
-        .tab-btn { flex: 1; min-width: 120px; padding: 12px 10px; text-align: center; font-weight: 800; font-size: 0.8rem; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; color: var(--brand-light); text-transform: uppercase; letter-spacing: 0.5px;}
+        .tab-btn { flex: 1; min-width: 100px; padding: 12px 5px; text-align: center; font-weight: 800; font-size: 0.75rem; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; color: var(--brand-light); text-transform: uppercase; letter-spacing: 0.5px;}
         .tab-btn.active { background: #ffffff; color: var(--tab-active); box-shadow: 0 4px 10px rgba(78, 52, 46, 0.1); }
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
@@ -54,6 +53,10 @@
         input[type="file"] { background: #fff; border: 2px dashed var(--border-color); padding: 20px; text-align: center; cursor: pointer; color: var(--text-muted); font-weight: 600; width: 100%; box-sizing: border-box;}
         input[type="file"]:hover { border-color: var(--primary); background: #fffbeb; }
         
+        /* Barra de Busca */
+        .search-bar { background: #fff; border: 2px solid var(--primary); box-shadow: 0 4px 15px rgba(217, 119, 6, 0.1); margin-bottom: 20px; padding: 12px 16px; font-weight: 700;}
+        .search-bar:focus { box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); }
+
         .row { display: flex; gap: 15px; }
         .col { flex: 1; }
 
@@ -106,38 +109,32 @@
         .ranking-item:last-child { border-bottom: none; }
         .ranking-nome { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 1rem; width: 140px; white-space: nowrap;}
         .ranking-nome img { width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));}
-        
         .progresso-bg { flex-grow: 1; height: 10px; background: #f5f5f4; border-radius: 5px; margin: 0 20px; overflow: hidden; position: relative;}
         .progresso-bar { height: 100%; border-radius: 5px; transition: width 1s ease-in-out;}
         .ranking-valor { font-weight: 900; font-size: 1.2rem; width: 50px; text-align: right;}
-
         .chart-box { background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; width: 100%; box-sizing: border-box; box-shadow: 0 8px 20px rgba(78, 52, 46, 0.04);}
 
-        /* === 🛒 GERENCIAMENTO DE PRODUTOS === */
-        .produto-list-item { display: flex; align-items: center; padding: 15px; border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 15px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.02);}
-        .prod-list-img { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; margin-right: 15px; background: #f5f5f4; border: 1px solid #e7e5e4;}
-        .prod-list-info { flex-grow: 1; }
-        .prod-list-nome { font-weight: 800; color: var(--brand-dark); font-size: 1rem; margin: 0 0 5px; }
-        .prod-list-detalhes { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; gap: 10px; align-items: center;}
+        /* === 🛒 LISTAS GERAIS (CATÁLOGO E ANÚNCIOS) === */
+        .list-item { display: flex; align-items: center; padding: 15px; border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 15px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.02);}
+        .list-img { width: 60px; height: 60px; object-fit: cover; border-radius: 10px; margin-right: 15px; background: #f5f5f4; border: 1px solid #e7e5e4;}
+        .list-info { flex-grow: 1; }
+        .list-nome { font-weight: 800; color: var(--brand-dark); font-size: 1rem; margin: 0 0 5px; }
+        .list-detalhes { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;}
         .tag-ativo { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; font-weight: 800;}
+        .tag-pendente { background: #fef08a; color: #854d0e; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; font-weight: 800;}
         .tag-inativo { background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; text-transform: uppercase; font-weight: 800;}
         .btn-editar { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 15px; border-radius: 10px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s;}
         .btn-editar:hover { background: #e2e8f0; }
         .btn-editar:active { transform: scale(0.95); }
+        .btn-zap-lista { background: #25D366; color: white; padding: 10px; border-radius: 10px; text-decoration: none; margin-right: 10px; display: inline-flex; align-items: center;}
 
-        /* 🔥 SCROLLBOX INTELIGENTE PARA A LISTA DE PRODUTOS 🔥 */
-        .catalogo-scroll-container {
-            max-height: 500px;
-            overflow-y: auto;
-            padding-right: 10px;
-            margin-top: 15px;
-        }
-        .catalogo-scroll-container::-webkit-scrollbar { width: 8px; }
-        .catalogo-scroll-container::-webkit-scrollbar-track { background: #f5f5f4; border-radius: 10px; }
-        .catalogo-scroll-container::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
-        .catalogo-scroll-container::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+        /* 🔥 SCROLLBOX INTELIGENTE 🔥 */
+        .scroll-container { max-height: 500px; overflow-y: auto; padding-right: 10px; margin-top: 15px; }
+        .scroll-container::-webkit-scrollbar { width: 8px; }
+        .scroll-container::-webkit-scrollbar-track { background: #f5f5f4; border-radius: 10px; }
+        .scroll-container::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
 
-        /* Modal Editar Produto */
+        /* MODAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
         .modal-box { background: #fff; width: 90%; max-width: 450px; border-radius: 24px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
         .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #64748b; cursor: pointer;}
@@ -153,19 +150,20 @@
     <div class="brand-header">
         <img src="logo.jpg" alt="Mini Mundo 3D" onerror="this.style.display='none'">
         <h1>Central de Automação</h1>
-        <p>Inteligência Artificial & Analytics BI</p>
+        <p>Inteligência Artificial & CRM</p>
     </div>
 
     <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchTab('analytics')">📈 Analytics BI</button>
-        <button class="tab-btn" onclick="switchTab('quiz')">🎮 Gerar Quiz</button>
+        <button class="tab-btn active" onclick="switchTab('analytics')">📈 Analytics</button>
+        <button class="tab-btn" onclick="switchTab('anuncios')">📢 Anúncios</button>
         <button class="tab-btn" onclick="switchTab('loja')">🛒 Catálogo</button>
+        <button class="tab-btn" onclick="switchTab('quiz')">🎮 Quiz</button>
         <button class="tab-btn" onclick="switchTab('config')">⚙️ Chaves</button>
     </div>
 
     <div id="tab-analytics" class="tab-content active">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; font-weight: 600;">Monitoramento de engajamento dos chaveiros NFC.</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; font-weight: 600;">Monitoramento de engajamento dos chaveiros.</p>
             <button class="btn-magic btn-analise" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.8rem; border-radius: 8px;" onclick="carregarAnalytics(true)">🔄 Atualizar</button>
         </div>
 
@@ -236,56 +234,18 @@
     </div>
 
 
-    <div id="tab-quiz" class="tab-content">
-        <div class="row">
-            <div class="col">
-                <div class="input-group" style="margin-bottom: 5px;">
-                    <label for="tema">Foco Temático (Opcional):</label>
-                    <input type="text" id="tema" placeholder="Ex: Libertadores, Ídolos, Finais...">
-                </div>
+    <div id="tab-anuncios" class="tab-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0; font-weight: 600;">Gerencie os patrocinadores dos Chaveiros.</p>
+            <button class="btn-magic btn-analise" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.8rem; border-radius: 8px;" onclick="carregarAnunciosAdmin()">🔄 Atualizar</button>
+        </div>
+
+        <div id="loading-anuncios" style="text-align: center; padding: 30px; color: var(--primary); font-weight: 800; display: none;">⏳ Buscando anunciantes...</div>
+        
+        <div id="lista-anuncios-admin" class="scroll-container">
             </div>
-        </div>
-        <div class="row">
-            <div class="col" style="flex: 2;">
-                <div class="input-group" style="margin-bottom: 5px;">
-                    <label for="dificuldade">Dificuldade:</label>
-                    <select id="dificuldade">
-                        <option value="fáceis (nível torcedor comum)">🟢 Fácil</option>
-                        <option value="médias (nível fã fanático)" selected>🟡 Médio</option>
-                        <option value="difíceis e obscuras (nível historiador)">🔴 Hardcore (Difícil)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col">
-                <div class="input-group" style="margin-bottom: 5px;">
-                    <label for="qtd">Qtd. Perguntas:</label>
-                    <input type="number" id="qtd" value="10" min="1" max="30">
-                </div>
-            </div>
-        </div>
-        <div class="input-group" style="margin-bottom: 5px; margin-top: 10px;">
-            <label for="time">Selecionar Time Específico:</label>
-            <select id="time" onchange="carregarInfoBanco()">
-                <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
-                <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
-                <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
-                <option value="https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec" data-nome="Santos">🐳 Santos</option>
-                <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
-            </select>
-        </div>
-        <div class="badges-container">
-            <div class="badge badge-blue" id="badge-total">📊 Total neste time: Carregando...</div>
-            <div class="badge badge-green" id="badge-ultimo">🕒 Último lote: Nenhum</div>
-        </div>
-        <div class="box-perigo">
-            <label style="color: #e11d48; margin-bottom: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 800;">
-                <input type="checkbox" id="substituir" style="width: 20px; height: 20px; cursor: pointer; margin: 0;">
-                ⚠️ MODO RECICLAGEM: APAGAR banco antigo e substituir
-            </label>
-        </div>
-        <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao(false)">Gerar Apenas para o Time</button>
-        <button id="btn-global" class="btn-magic btn-global" onclick="iniciarAutomacao(true)">GERAR PARA TODOS OS TIMES (LOTE GLOBAL)</button>
     </div>
+
 
     <div id="tab-loja" class="tab-content">
         <div class="section-title" style="margin-top:0;">➕ Adicionar Produto (Com IA)</div>
@@ -306,26 +266,45 @@
         </div>
 
         <div class="section-title">📋 Produtos Cadastrados</div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Gerencie o que aparece na vitrine dos clientes.</p>
-            <button class="btn-magic btn-analise" style="width: auto; padding: 8px 15px; margin: 0; font-size: 0.8rem; border-radius: 8px;" onclick="carregarCatalogoAdmin()">🔄 Atualizar Lista</button>
-        </div>
         
+        <input type="text" id="busca-catalogo" class="search-bar" placeholder="🔍 Buscar por nome, categoria ou preço..." onkeyup="filtrarCatalogo()">
+
         <div id="loading-catalogo" style="text-align: center; padding: 30px; color: var(--primary); font-weight: 800; display: none;">⏳ Buscando catálogo completo...</div>
         
-        <div id="lista-produtos-admin" class="catalogo-scroll-container">
+        <div id="lista-produtos-admin" class="scroll-container">
             </div>
     </div>
 
+
+    <div id="tab-quiz" class="tab-content">
+        <div class="row">
+            <div class="col"><div class="input-group" style="margin-bottom: 5px;"><label>Foco Temático (Opcional):</label><input type="text" id="tema" placeholder="Ex: Libertadores..."></div></div>
+        </div>
+        <div class="row">
+            <div class="col" style="flex: 2;"><div class="input-group" style="margin-bottom: 5px;"><label>Dificuldade:</label><select id="dificuldade"><option value="fáceis (nível torcedor comum)">🟢 Fácil</option><option value="médias (nível fã fanático)" selected>🟡 Médio</option><option value="difíceis e obscuras (nível historiador)">🔴 Hardcore (Difícil)</option></select></div></div>
+            <div class="col"><div class="input-group" style="margin-bottom: 5px;"><label>Qtd. Perguntas:</label><input type="number" id="qtd" value="10" min="1" max="30"></div></div>
+        </div>
+        <div class="input-group" style="margin-bottom: 5px; margin-top: 10px;"><label>Selecionar Time Específico:</label>
+            <select id="time" onchange="carregarInfoBanco()">
+                <option value="https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec" data-nome="Corinthians">🦅 Corinthians</option>
+                <option value="https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzREOIT4__9rnbBjm0cx6JMOIfgp0eCihqcTl8wOH4PTPs34G-A/exec" data-nome="São Paulo">🔴 São Paulo</option>
+                <option value="https://script.google.com/macros/s/AKfycbwEjviHWdcxWVFc6hDAhyNE0JCH41J_DzDnUvIAlXosqihM83n1nRfe-WZUWUZs9nOb/exec" data-nome="Palmeiras">🐷 Palmeiras</option>
+                <option value="https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec" data-nome="Santos">🐳 Santos</option>
+                <option value="https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec" data-nome="Flamengo">🔴 Flamengo</option>
+            </select>
+        </div>
+        <div class="badges-container">
+            <div class="badge badge-blue" id="badge-total">📊 Total neste time: Carregando...</div>
+            <div class="badge badge-green" id="badge-ultimo">🕒 Último lote: Nenhum</div>
+        </div>
+        <div class="box-perigo"><label style="color: #e11d48; margin-bottom: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 800;"><input type="checkbox" id="substituir" style="width: 20px; height: 20px; margin: 0;">⚠️ MODO RECICLAGEM: APAGAR banco antigo e substituir</label></div>
+        <button id="btn-iniciar" class="btn-magic" onclick="iniciarAutomacao(false)">Gerar Apenas para o Time</button>
+        <button id="btn-global" class="btn-magic btn-global" onclick="iniciarAutomacao(true)">GERAR PARA TODOS OS TIMES (LOTE GLOBAL)</button>
+    </div>
+
     <div id="tab-config" class="tab-content">
-        <div class="input-group">
-            <label for="api-key">🧠 Chave Privada (Gemini):</label>
-            <input type="password" id="api-key" onchange="salvarChaves()">
-        </div>
-        <div class="input-group" style="margin-top: 25px;">
-            <label for="imgbb-key">📸 Chave de Backup (ImgBB):</label>
-            <input type="password" id="imgbb-key" onchange="salvarChaves()">
-        </div>
+        <div class="input-group"><label>🧠 Chave Privada (Gemini):</label><input type="password" id="api-key" onchange="salvarChaves()"></div>
+        <div class="input-group" style="margin-top: 25px;"><label>📸 Chave de Backup (ImgBB):</label><input type="password" id="imgbb-key" onchange="salvarChaves()"></div>
     </div>
 
     <div class="log-container" id="terminal">
@@ -335,42 +314,54 @@
 
 <div id="modal-editar-produto" class="modal-overlay">
     <div class="modal-box">
-        <button class="btn-fechar-modal" onclick="fecharModalEditar()">×</button>
+        <button class="btn-fechar-modal" onclick="fecharModalEditarProduto()">×</button>
         <h3 class="modal-title">✏️ Editar Produto</h3>
-        
-        <input type="hidden" id="edit-linha">
-        
-        <div class="input-group">
-            <label>Nome:</label>
-            <input type="text" id="edit-nome">
+        <input type="hidden" id="edit-prod-linha">
+        <div class="input-group"><label>Nome:</label><input type="text" id="edit-prod-nome"></div>
+        <div class="row">
+            <div class="col"><div class="input-group"><label>Preço:</label><input type="text" id="edit-prod-preco" class="mask-money"></div></div>
+            <div class="col"><div class="input-group"><label>Categoria:</label><input type="text" id="edit-prod-categoria"></div></div>
         </div>
+        <div class="input-group"><label>Descrição:</label><textarea id="edit-prod-desc"></textarea></div>
+        <div class="input-group">
+            <label>Status na Vitrine:</label>
+            <select id="edit-prod-status"><option value="true">🟢 ATIVO (Aparece no site)</option><option value="false">🔴 INATIVO (Oculto)</option></select>
+        </div>
+        <button id="btn-salvar-edicao-prod" class="btn-magic btn-global" style="margin-top: 10px;" onclick="salvarEdicaoProduto()">💾 Salvar Produto</button>
+    </div>
+</div>
+
+<div id="modal-editar-anuncio" class="modal-overlay">
+    <div class="modal-box">
+        <button class="btn-fechar-modal" onclick="fecharModalEditarAnuncio()">×</button>
+        <h3 class="modal-title">💼 Gerenciar Anúncio</h3>
+        <input type="hidden" id="edit-ad-linha">
+        <div class="input-group"><label>Empresa:</label><input type="text" id="edit-ad-empresa" disabled style="background: #f1f5f9; color: #94a3b8;"></div>
+        
         <div class="row">
             <div class="col">
                 <div class="input-group">
-                    <label>Preço:</label>
-                    <input type="text" id="edit-preco" class="mask-money">
+                    <label>Status da Campanha:</label>
+                    <select id="edit-ad-status">
+                        <option value="ATIVO">🟢 ATIVA (No ar)</option>
+                        <option value="PENDENTE">🟡 PENDENTE (Pausada)</option>
+                        <option value="CANCELADO">🔴 CANCELADA</option>
+                    </select>
                 </div>
             </div>
             <div class="col">
                 <div class="input-group">
-                    <label>Categoria:</label>
-                    <input type="text" id="edit-categoria">
+                    <label>Vencimento:</label>
+                    <input type="date" id="edit-ad-vencimento">
                 </div>
             </div>
         </div>
         <div class="input-group">
-            <label>Descrição:</label>
-            <textarea id="edit-desc"></textarea>
-        </div>
-        <div class="input-group">
-            <label>Status na Vitrine:</label>
-            <select id="edit-status">
-                <option value="true">🟢 ATIVO (Aparece no site)</option>
-                <option value="false">🔴 INATIVO (Oculto)</option>
-            </select>
+            <label>Valor Negociado (Contrato):</label>
+            <input type="text" id="edit-ad-valor" class="mask-money" placeholder="Ex: R$ 150,00">
         </div>
         
-        <button id="btn-salvar-edicao" class="btn-magic btn-global" style="margin-top: 10px;" onclick="salvarEdicaoProduto()">💾 Salvar Alterações</button>
+        <button id="btn-salvar-edicao-ad" class="btn-magic btn-global" style="margin-top: 10px;" onclick="salvarEdicaoAnuncio()">💾 Salvar Contrato</button>
     </div>
 </div>
 
@@ -391,8 +382,9 @@
     let dadosTotaisAcessos = []; 
     let graficoInstancia = null; 
     let catalogoAdminArray = [];
+    let anunciosAdminArray = [];
 
-    // === FORMATADOR DE MOEDA GLOBAL ===
+    // === FORMATADOR DE MOEDA GERAL ===
     function formatarPreco(valorString) {
         if(!valorString) return "";
         let v = String(valorString).trim();
@@ -404,7 +396,6 @@
         return "R$ " + v;
     }
 
-    // === MÁSCARA DE DINHEIRO NOS INPUTS (DIGITAÇÃO) ===
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money')) {
             let valor = e.target.value.replace(/\D/g, '');
@@ -429,6 +420,7 @@
         atualizarBadgeUltimo();
         carregarInfoBanco(); 
         carregarCatalogoAdmin(); 
+        carregarAnunciosAdmin(); // Carrega CRM de Anúncios
     };
 
     function salvarChaves() { 
@@ -441,24 +433,21 @@
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         
         if(tabName === 'analytics') {
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            document.getElementById('tab-analytics').classList.add('active');
-        } else if(tabName === 'quiz') {
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.getElementById('tab-quiz').classList.add('active');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('tab-analytics').classList.add('active');
+        } else if (tabName === 'anuncios') {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('tab-anuncios').classList.add('active');
         } else if (tabName === 'loja') {
-            document.querySelectorAll('.tab-btn')[2].classList.add('active');
-            document.getElementById('tab-loja').classList.add('active');
+            document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('tab-loja').classList.add('active');
+        } else if(tabName === 'quiz') {
+            document.querySelectorAll('.tab-btn')[3].classList.add('active'); document.getElementById('tab-quiz').classList.add('active');
         } else {
-            document.querySelectorAll('.tab-btn')[3].classList.add('active');
-            document.getElementById('tab-config').classList.add('active');
+            document.querySelectorAll('.tab-btn')[4].classList.add('active'); document.getElementById('tab-config').classList.add('active');
         }
     }
 
     function addLog(mensagem, tipo = 'info') {
         const terminal = document.getElementById("terminal");
-        const hora = new Date().toLocaleTimeString('pt-BR');
-        terminal.innerHTML += `<div class="log-line"><span class="log-time">[${hora}]</span><span class="log-${tipo}">${mensagem}</span></div>`;
+        terminal.innerHTML += `<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${mensagem}</span></div>`;
         terminal.scrollTop = terminal.scrollHeight; 
     }
 
@@ -470,53 +459,39 @@
 
     async function carregarAnalytics(forcar = false) {
         if(dadosTotaisAcessos.length > 0 && !forcar) return;
-        document.getElementById('loading-analytics').style.display = 'block';
-        document.getElementById('painel-dashboard').style.display = 'none';
+        document.getElementById('loading-analytics').style.display = 'block'; document.getElementById('painel-dashboard').style.display = 'none';
         try {
-            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics");
-            const resultado = await resposta.json();
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=analytics"); const resultado = await resposta.json();
             if(resultado.sucesso) { dadosTotaisAcessos = resultado.dados; aplicarFiltros(); } 
-            else throw new Error(resultado.erro || "Erro na planilha.");
+            else throw new Error(resultado.erro);
         } catch(e) { document.getElementById('loading-analytics').style.display = 'none'; addLog(`❌ Erro no Analytics: ${e.message}`, "error"); }
     }
 
     function aplicarFiltros() {
         document.getElementById('loading-analytics').style.display = 'none';
-        const mesSelect = document.getElementById('filtro-mes').value;
-        const anoSelect = document.getElementById('filtro-ano').value;
-        const timeSelect = document.getElementById('filtro-time').value.toLowerCase();
-        const dtIniInput = document.getElementById('data-inicio').value;
-        const dtFimInput = document.getElementById('data-fim').value;
+        const mesSelect = document.getElementById('filtro-mes').value, anoSelect = document.getElementById('filtro-ano').value, timeSelect = document.getElementById('filtro-time').value.toLowerCase();
+        const dtIniInput = document.getElementById('data-inicio').value, dtFimInput = document.getElementById('data-fim').value;
 
         const dadosFiltrados = dadosTotaisAcessos.filter(item => {
             if(!item.data || !item.time) return false;
-            if(timeSelect !== "todos") {
-                let nomeTimeReal = item.time.toLowerCase();
-                if(timeSelect === "são paulo" && (nomeTimeReal === "sao paulo" || nomeTimeReal === "são paulo")) { } 
-                else if(nomeTimeReal !== timeSelect) return false;
-            }
+            if(timeSelect !== "todos") { let nomeTimeReal = item.time.toLowerCase(); if(timeSelect === "são paulo" && (nomeTimeReal === "sao paulo" || nomeTimeReal === "são paulo")) { } else if(nomeTimeReal !== timeSelect) return false; }
             const dataToque = new Date(item.data);
             if(dtIniInput === "" && dtFimInput === "") {
                 if(anoSelect !== "todos" && String(dataToque.getFullYear()) !== anoSelect) return false;
                 if(mesSelect !== "todos" && String(dataToque.getMonth() + 1).padStart(2, '0') !== mesSelect) return false;
                 return true;
             }
-            if(dtIniInput !== "" && dtFimInput !== "") {
-                const dIni = new Date(dtIniInput), dFim = new Date(dtFimInput); dFim.setHours(23, 59, 59);
-                return dataToque >= dIni && dataToque <= dFim;
-            }
+            if(dtIniInput !== "" && dtFimInput !== "") { const dIni = new Date(dtIniInput), dFim = new Date(dtFimInput); dFim.setHours(23, 59, 59); return dataToque >= dIni && dataToque <= dFim; }
             return true;
         });
 
-        processarDashboard(dadosFiltrados);
-        document.getElementById('painel-dashboard').style.display = 'block';
+        processarDashboard(dadosFiltrados); document.getElementById('painel-dashboard').style.display = 'block';
     }
 
     function processarDashboard(dadosArray) {
         document.getElementById('dash-total').innerText = dadosArray.length;
         if(dadosArray.length === 0) {
-            document.getElementById('dash-media').innerText = `Média: 0 acessos/dia`;
-            document.getElementById('lista-ranking').innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum acesso no período.</p>";
+            document.getElementById('dash-media').innerText = `Média: 0 acessos/dia`; document.getElementById('lista-ranking').innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum acesso no período.</p>";
             document.getElementById('nome-campeao').innerText = "-"; document.getElementById('img-campeao').style.display = "none";
             document.getElementById('dash-campeao').className = "valor"; document.getElementById('dash-pico').innerText = `Pico: Nenhum`;
             if(graficoInstancia) graficoInstancia.destroy();
@@ -531,8 +506,7 @@
         });
 
         const totalDiasComAcesso = Object.keys(contagemDias).length;
-        const media = totalDiasComAcesso > 0 ? (dadosArray.length / totalDiasComAcesso).toFixed(1) : 0;
-        document.getElementById('dash-media').innerText = `Média: ${media} acessos/dia com uso`;
+        document.getElementById('dash-media').innerText = `Média: ${totalDiasComAcesso > 0 ? (dadosArray.length / totalDiasComAcesso).toFixed(1) : 0} acessos/dia com uso`;
 
         let melhorDia = "", maxAcessosDia = 0;
         for (const dia in contagemDias) { if (contagemDias[dia] > maxAcessosDia) { maxAcessosDia = contagemDias[dia]; melhorDia = dia; } }
@@ -542,8 +516,7 @@
         const arrayRanking = Object.keys(contagemTimes).map(t => { return { nome: t, acessos: contagemTimes[t] }; });
         arrayRanking.sort((a, b) => b.acessos - a.acessos);
         
-        const campeao = arrayRanking[0];
-        const infoCampeao = TIMES_INFO[campeao.nome.toLowerCase()] || { cor: "var(--brand-dark)", logo: "" };
+        const campeao = arrayRanking[0], infoCampeao = TIMES_INFO[campeao.nome.toLowerCase()] || { cor: "var(--brand-dark)", logo: "" };
         document.getElementById('nome-campeao').innerText = campeao.nome;
         const imgCampeaoEl = document.getElementById('img-campeao');
         if(infoCampeao.logo) { imgCampeaoEl.src = infoCampeao.logo; imgCampeaoEl.style.display = "block"; } else { imgCampeaoEl.style.display = "none"; }
@@ -577,7 +550,7 @@
             data: { labels: labels, datasets: [{ data: dados, backgroundColor: cores, borderRadius: 8, borderWidth: 0, barPercentage: 0.6 }] },
             options: {
                 responsive: true, maintainAspectRatio: true,
-                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#4E342E', titleFont: { size: 14, family: 'Inter' }, bodyFont: { size: 16, weight: 'bold', family: 'Inter' }, padding: 12, displayColors: false, callbacks: { label: function(context) { return context.parsed.y + ' toques na Nação'; } } } },
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: '#4E342E', titleFont: { size: 14, family: 'Inter' }, bodyFont: { size: 16, weight: 'bold', family: 'Inter' }, padding: 12, displayColors: false, callbacks: { label: function(context) { return context.parsed.y + ' toques'; } } } },
                 scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } }, x: { grid: { display: false } } },
                 animation: { duration: 800, easing: 'easeOutQuart' }
             }
@@ -585,7 +558,104 @@
     }
 
     // ==========================================
-    // 🛒 GERENCIAMENTO DE CATÁLOGO (COM SCROLL)
+    // 📢 CRM DE ANÚNCIOS
+    // ==========================================
+    async function carregarAnunciosAdmin() {
+        const loading = document.getElementById('loading-anuncios');
+        const listaEl = document.getElementById('lista-anuncios-admin');
+        loading.style.display = 'block'; listaEl.innerHTML = '';
+        
+        try {
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=anuncios_admin");
+            const resultado = await resposta.json();
+            if(resultado.sucesso) {
+                anunciosAdminArray = resultado.anuncios;
+                
+                if(anunciosAdminArray.length === 0) {
+                    listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum anúncio registrado.</p>";
+                } else {
+                    let html = "";
+                    // Mostra do mais novo pro mais velho
+                    anunciosAdminArray.slice().reverse().forEach((ad) => {
+                        let statusBadge = "";
+                        if(ad.status === "ATIVO") statusBadge = `<span class="tag-ativo">Ativo</span>`;
+                        else if(ad.status === "CANCELADO") statusBadge = `<span class="tag-inativo">Cancelado</span>`;
+                        else statusBadge = `<span class="tag-pendente">Pendente</span>`;
+
+                        let venciTexto = ad.vencimento ? `Vence em: ${ad.vencimento.split('-').reverse().join('/')}` : "Sem vencimento";
+                        let valorTexto = formatarPreco(ad.valor_negociado) || "R$ 0,00";
+
+                        html += `
+                        <div class="list-item">
+                            <div class="list-info">
+                                <h4 class="list-nome">${ad.empresa}</h4>
+                                <div class="list-detalhes">
+                                    <span style="color: var(--primary); font-weight: 800;">${valorTexto}</span> • ${venciTexto} 
+                                </div>
+                                <div style="margin-top: 8px;">${statusBadge}</div>
+                            </div>
+                            <a href="${ad.zap_link}" target="_blank" class="btn-zap-lista">💬</a>
+                            <button class="btn-editar" onclick="abrirModalEditarAnuncio(${ad.linha})">✏️</button>
+                        </div>`;
+                    });
+                    listaEl.innerHTML = html;
+                }
+            }
+        } catch(e) {
+            addLog(`Erro ao carregar anúncios: ${e.message}`, "error");
+            listaEl.innerHTML = "<p style='text-align:center; color:red;'>Erro ao carregar anunciantes.</p>";
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    function abrirModalEditarAnuncio(linha) {
+        const ad = anunciosAdminArray.find(a => a.linha === linha);
+        if(!ad) return;
+
+        document.getElementById('edit-ad-linha').value = ad.linha;
+        document.getElementById('edit-ad-empresa').value = ad.empresa;
+        document.getElementById('edit-ad-status').value = ad.status;
+        document.getElementById('edit-ad-vencimento').value = ad.vencimento; // Formato YYYY-MM-DD
+        document.getElementById('edit-ad-valor').value = formatarPreco(ad.valor_negociado);
+
+        document.getElementById('modal-editar-anuncio').style.display = 'flex';
+    }
+
+    function fecharModalEditarAnuncio() {
+        document.getElementById('modal-editar-anuncio').style.display = 'none';
+    }
+
+    async function salvarEdicaoAnuncio() {
+        const btn = document.getElementById('btn-salvar-edicao-ad');
+        btn.disabled = true; btn.innerText = "⏳ Salvando...";
+
+        const payload = {
+            acao: "atualizar_anuncio",
+            linha: document.getElementById('edit-ad-linha').value,
+            status: document.getElementById('edit-ad-status').value,
+            vencimento: document.getElementById('edit-ad-vencimento').value,
+            valor_negociado: document.getElementById('edit-ad-valor').value
+        };
+
+        try {
+            const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) });
+            const result = await resposta.json();
+            
+            if(result.sucesso) {
+                addLog(`✅ Anúncio atualizado com sucesso!`, "success");
+                fecharModalEditarAnuncio();
+                carregarAnunciosAdmin(); // Recarrega a lista
+            } else throw new Error("Erro na planilha.");
+        } catch(e) {
+            alert("Erro ao salvar: " + e.message);
+        } finally {
+            btn.disabled = false; btn.innerText = "💾 Salvar Contrato";
+        }
+    }
+
+    // ==========================================
+    // 🛒 GERENCIAMENTO DE CATÁLOGO E BUSCA
     // ==========================================
     async function carregarCatalogoAdmin() {
         const loading = document.getElementById('loading-catalogo');
@@ -596,32 +666,8 @@
             const resposta = await fetch(URL_ANALYTICS_CATALOGO + "?acao=catalogo_admin");
             const resultado = await resposta.json();
             if(resultado.sucesso) {
-                catalogoAdminArray = resultado.produtos;
-                
-                if(catalogoAdminArray.length === 0) {
-                    listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum produto cadastrado.</p>";
-                } else {
-                    let html = "";
-                    catalogoAdminArray.slice().reverse().forEach((p) => {
-                        const fotoPrincipal = p.foto.split(',')[0].trim() || 'logo.jpg';
-                        const statusBadge = p.ativo ? `<span class="tag-ativo">Ativo na Loja</span>` : `<span class="tag-inativo">Inativo (Oculto)</span>`;
-                        const precoFormatado = formatarPreco(p.preco); // Usa a função global para mostrar bonito na lista
-                        
-                        html += `
-                        <div class="produto-list-item">
-                            <img src="${fotoPrincipal}" class="prod-list-img" onerror="this.src='logo.jpg'">
-                            <div class="prod-list-info">
-                                <h4 class="prod-list-nome">${p.nome}</h4>
-                                <div class="prod-list-detalhes">
-                                    <span style="color: var(--primary); font-weight: 800;">${precoFormatado}</span> • ${p.categoria} 
-                                </div>
-                                <div style="margin-top: 8px;">${statusBadge}</div>
-                            </div>
-                            <button class="btn-editar" onclick="abrirModalEditar(${p.linha})">✏️ Editar</button>
-                        </div>`;
-                    });
-                    listaEl.innerHTML = html;
-                }
+                catalogoAdminArray = resultado.produtos.slice().reverse(); // Guarda a ordem do mais novo pro mais velho
+                renderizarListaCatalogo(catalogoAdminArray);
             }
         } catch(e) {
             addLog(`Erro ao carregar catálogo: ${e.message}`, "error");
@@ -631,59 +677,89 @@
         }
     }
 
-    function abrirModalEditar(linha) {
+    // Função que desenha os produtos na tela
+    function renderizarListaCatalogo(arrayProdutos) {
+        const listaEl = document.getElementById('lista-produtos-admin');
+        if(arrayProdutos.length === 0) {
+            listaEl.innerHTML = "<p style='text-align:center; color:#999; padding: 20px;'>Nenhum produto encontrado.</p>";
+            return;
+        }
+
+        let html = "";
+        arrayProdutos.forEach((p) => {
+            const fotoPrincipal = p.foto.split(',')[0].trim() || 'logo.jpg';
+            const statusBadge = p.ativo ? `<span class="tag-ativo">Ativo na Loja</span>` : `<span class="tag-inativo">Inativo (Oculto)</span>`;
+            const precoFormatado = formatarPreco(p.preco); 
+            
+            html += `
+            <div class="list-item">
+                <img src="${fotoPrincipal}" class="list-img" onerror="this.src='logo.jpg'">
+                <div class="list-info">
+                    <h4 class="list-nome">${p.nome}</h4>
+                    <div class="list-detalhes">
+                        <span style="color: var(--primary); font-weight: 800;">${precoFormatado}</span> • ${p.categoria} 
+                    </div>
+                    <div style="margin-top: 8px;">${statusBadge}</div>
+                </div>
+                <button class="btn-editar" onclick="abrirModalEditarProduto(${p.linha})">✏️ Editar</button>
+            </div>`;
+        });
+        listaEl.innerHTML = html;
+    }
+
+    // BARRA DE BUSCA EM TEMPO REAL
+    function filtrarCatalogo() {
+        const termoBusca = document.getElementById('busca-catalogo').value.toLowerCase();
+        
+        // Filtra a array original baseada no nome, categoria ou preço
+        const produtosFiltrados = catalogoAdminArray.filter(p => {
+            return p.nome.toLowerCase().includes(termoBusca) || 
+                   p.categoria.toLowerCase().includes(termoBusca) || 
+                   String(p.preco).toLowerCase().includes(termoBusca);
+        });
+
+        renderizarListaCatalogo(produtosFiltrados);
+    }
+
+    function abrirModalEditarProduto(linha) {
         const produto = catalogoAdminArray.find(p => p.linha === linha);
         if(!produto) return;
-
-        document.getElementById('edit-linha').value = produto.linha;
-        document.getElementById('edit-nome').value = produto.nome;
-        document.getElementById('edit-preco').value = formatarPreco(produto.preco); // Já vem formatado para a tela de edição
-        document.getElementById('edit-categoria').value = produto.categoria;
-        document.getElementById('edit-desc').value = produto.descricao;
-        document.getElementById('edit-status').value = produto.ativo ? "true" : "false";
-
+        document.getElementById('edit-prod-linha').value = produto.linha;
+        document.getElementById('edit-prod-nome').value = produto.nome;
+        document.getElementById('edit-prod-preco').value = formatarPreco(produto.preco); 
+        document.getElementById('edit-prod-categoria').value = produto.categoria;
+        document.getElementById('edit-prod-desc').value = produto.descricao;
+        document.getElementById('edit-prod-status').value = produto.ativo ? "true" : "false";
         document.getElementById('modal-editar-produto').style.display = 'flex';
     }
 
-    function fecharModalEditar() {
-        document.getElementById('modal-editar-produto').style.display = 'none';
-    }
+    function fecharModalEditarProduto() { document.getElementById('modal-editar-produto').style.display = 'none'; }
 
     async function salvarEdicaoProduto() {
-        const btn = document.getElementById('btn-salvar-edicao');
+        const btn = document.getElementById('btn-salvar-edicao-prod');
         btn.disabled = true; btn.innerText = "⏳ Salvando...";
-
         const payload = {
             acao: "atualizar_produto",
-            linha: document.getElementById('edit-linha').value,
-            nome: document.getElementById('edit-nome').value,
-            preco: document.getElementById('edit-preco').value,
-            categoria: document.getElementById('edit-categoria').value,
-            descricao: document.getElementById('edit-desc').value,
-            ativo: document.getElementById('edit-status').value === "true"
+            linha: document.getElementById('edit-prod-linha').value,
+            nome: document.getElementById('edit-prod-nome').value,
+            preco: document.getElementById('edit-prod-preco').value,
+            categoria: document.getElementById('edit-prod-categoria').value,
+            descricao: document.getElementById('edit-prod-desc').value,
+            ativo: document.getElementById('edit-prod-status').value === "true"
         };
 
         try {
             const resposta = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify(payload) });
             const result = await resposta.json();
-            
             if(result.sucesso) {
                 addLog(`✅ Produto atualizado com sucesso!`, "success");
-                fecharModalEditar();
-                carregarCatalogoAdmin(); // Recarrega a lista
-            } else {
-                throw new Error("Erro na planilha.");
-            }
-        } catch(e) {
-            alert("Erro ao salvar: " + e.message);
-            addLog(`❌ Erro ao editar produto: ${e.message}`, "error");
-        } finally {
-            btn.disabled = false; btn.innerText = "💾 Salvar Alterações";
-        }
+                fecharModalEditarProduto(); carregarCatalogoAdmin(); document.getElementById('busca-catalogo').value = "";
+            } else throw new Error("Erro na planilha.");
+        } catch(e) { alert("Erro ao salvar: " + e.message); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Produto"; }
     }
 
     // ==========================================
-    // UPLOAD (CRIAR NOVO PRODUTO)
+    // UPLOAD E IA (CRIAR NOVO PRODUTO)
     // ==========================================
     const fileToBase64 = (file) => new Promise((resolve, reject) => {
         const reader = new FileReader(); reader.readAsDataURL(file);
@@ -739,19 +815,16 @@
         const files = document.getElementById("prod-fotos").files, btn = document.getElementById("btn-salvar-produto");
 
         if(!apiKey || !nome || !preco || files.length === 0) return addLog("ERRO: Preencha todos os campos obrigatórios.", "error");
-
         btn.disabled = true; btn.innerText = "⏳ Processando...";
 
         try {
             addLog(`Iniciando: ${nome}`, "warn");
             const base64 = await fileToBase64(files[0]);
-            
             let links = [];
             for(let i = 0; i < files.length; i++) {
                 const foto = await comprimirImagem(files[i], 1000, 1000, 0.8);
                 links.push(await fazerUploadInteligente(foto, imgbbKey)); addLog(`Foto ${i+1} enviada.`, "success");
             }
-
             addLog(`IA criando a copy...`, "info");
             const prompt = `Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D (produtos personalizáveis).\n\nTítulo: ${nome}\nPreço: ${preco}\n\nResponda neste formato:\nDescricao: [Sua copy genial em até 3 frases]\nCategoria: [1 ou 2 palavras]`;
             const resIA = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: files[0].type, data: base64 } }] }] }) });
@@ -769,7 +842,7 @@
             if ((await resS.json()).sucesso) {
                 addLog(`✅ PRODUTO CADASTRADO!`, "success");
                 document.getElementById("prod-nome").value = ""; document.getElementById("prod-preco").value = ""; document.getElementById("prod-fotos").value = "";
-                carregarCatalogoAdmin(); // Atualiza a lista na hora!
+                carregarCatalogoAdmin(); 
             } else throw new Error("Erro planilha.");
         } catch (error) { addLog(`❌ ERRO: ${error.message}`, "error"); } finally { btn.disabled = false; btn.innerText = "✨ Enviar Fotos e Cadastrar Produto"; }
     }
@@ -800,7 +873,6 @@
         addLog(`>> GERANDO: ${timeNome.toUpperCase()}`, "warn");
         const prompt = `Gere ${qtd} perguntas sobre a história do ${timeNome} (Dificuldade: ${dificuldade}). ${tema ? `Tema OBRIGATÓRIO: "${tema}".` : `Varie os temas.`}\nREGRAS: Fatos históricos, max 15 palavras/pergunta, max 4 palavras/opção.\nFormato ESTRITO:\nPergunta: [Texto]\nA) [Opc 1]\nB) [Opc 2]\nC) [Opc 3]\nD) [Opc 4]\nCorreta: [1 a 4]\nAPENAS o texto puro.`;
         let textoIA = null;
-        
         for (let t = 1; t <= 3; t++) {
             const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
             if (res.ok) { const d = await res.json(); textoIA = d.candidates[0].content.parts[0].text; break; }
@@ -821,11 +893,8 @@
         if(perguntas.length === 0) throw new Error("IA gerou texto inválido.");
         const respostaPlanilha = await fetch(timeUrl, { method: "POST", body: JSON.stringify({ acao: "salvar_quiz", perguntas: perguntas, substituir: modoReciclagem }) });
         const r = await respostaPlanilha.json();
-        
-        if(r.sucesso) {
-            addLog(`✅ SUCESSO! (+${r.adicionadas})`, "success");
-            localStorage.setItem("ultimo_time_gerado", timeNome); localStorage.setItem("ultimo_horario_gerado", new Date().toLocaleString('pt-BR'));
-        } else throw new Error(r.erro);
+        if(r.sucesso) { addLog(`✅ SUCESSO! (+${r.adicionadas})`, "success"); localStorage.setItem("ultimo_time_gerado", timeNome); localStorage.setItem("ultimo_horario_gerado", new Date().toLocaleString('pt-BR')); } 
+        else throw new Error(r.erro);
     }
 
     async function iniciarAutomacao(modoGlobal) {
