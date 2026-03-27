@@ -19,27 +19,27 @@
         .music-btn { margin-top: 15px; background: #ffffff; color: #c90000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
         .music-btn:active { transform: scale(0.95); }
 
-        /* === SELETOR DE CAMPEONATOS === */
-        .instrucao-tabela { font-size: 0.85rem; color: #64748b; font-weight: 600; text-align: center; margin-bottom: 12px; }
-        .seletor-campeonato { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        /* === SELETOR DE CAMPEONATOS (PREPARADO PARA O FUTURO) === */
+        .instrucao-tabela { font-size: 0.85rem; color: #64748b; font-weight: 600; text-align: center; margin-bottom: 12px; display: none; }
+        .seletor-campeonato { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; display: none;}
         .btn-camp { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 18px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
         .btn-camp:hover { background: #e2e8f0; }
         .btn-camp.ativo { background: #c90000; color: white; border-color: #c90000; box-shadow: 0 6px 15px rgba(201, 0, 0, 0.3); }
         
-        /* === O NOVO VISUAL PREMIUM DAS TABELAS === */
-        .tabela-wrapper { display: none; animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
+        /* === O VISUAL PREMIUM DAS TABELAS DINÂMICAS === */
+        .tabela-wrapper { animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
         .tabela-wrapper.ativa { display: block; }
         .tabela-classificacao { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; white-space: nowrap; }
         .tabela-classificacao th { background: #f8fafc; color: #64748b; font-weight: 800; padding: 12px 6px; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px;}
         .tabela-classificacao td { padding: 12px 6px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600; }
         .tabela-classificacao tbody tr:last-child td { border-bottom: none; }
-        .tabela-classificacao tbody tr:nth-child(even) { background-color: #f8fafc; } /* Zebrado */
+        .tabela-classificacao tbody tr:nth-child(even) { background-color: #f8fafc; } 
         .time-col { text-align: left !important; display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 800; min-width: 120px;}
         .time-col img { width: 22px; height: 22px; object-fit: contain; }
         
-        /* Destaque do Mengão */
+        /* Destaque do Mengão na tabela */
         .flamengo-row { background-color: #fef2f2 !important; }
-        .flamengo-row td { color: #c90000; font-weight: 900; }
+        .flamengo-row td { color: #c90000 !important; font-weight: 900 !important; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -256,40 +256,15 @@
     <div class="section-title">Últimos Resultados <span class="cache-info" id="status-update">Buscando...</span></div>
     <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor...</p></div>
 
-   <div class="section-title">CLASSIFICAÇÃO</div>
+    <div class="section-title" id="titulo-classificacao">CLASSIFICAÇÃO</div>
 
-    <div class="instrucao-tabela">👇 Escolha o campeonato para ver a tabela:</div>
-    <div class="seletor-campeonato">
-        <button class="btn-camp ativo" onclick="mudarTabela(event, 'brasileirao')">Brasileirão Série A</button>
-        <button class="btn-camp" onclick="mudarTabela(event, 'libertadores')">Libertadores</button>
+    <div id="area-seletor" style="display: none;">
+        <div class="instrucao-tabela">👇 Escolha o campeonato para ver a tabela:</div>
+        <div class="seletor-campeonato" id="botoes-campeonato"></div>
     </div>
     
-    <div id="tab-brasileirao" class="tabela-wrapper ativa">
-        <table class="tabela-classificacao">
-            <thead>
-                <tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>1</td><td class="time-col"><img src="escudo-palmeiras.png" onerror="this.style.display='none'"> Palmeiras</td><td>19</td><td>8</td><td>6</td><td>1</td><td>1</td></tr>
-                <tr><td>2</td><td class="time-col"><img src="escudo-saopaulo.png" onerror="this.style.display='none'"> São Paulo</td><td>16</td><td>8</td><td>5</td><td>1</td><td>2</td></tr>
-                <tr class="flamengo-row"><td>3</td><td class="time-col"><img src="https://a.espncdn.com/i/teamlogos/soccer/500/819.png" onerror="this.style.display='none'"> Flamengo</td><td>14</td><td>7</td><td>4</td><td>2</td><td>1</td></tr>
-                </tbody>
-        </table>
-    </div>
-    
-    <div id="tab-libertadores" class="tabela-wrapper">
-        <div style="text-align: center; margin-bottom: 10px; font-weight: 800; color: #c90000; font-size: 0.9rem;">Fase de Grupos - Grupo E</div>
-        <table class="tabela-classificacao">
-            <thead>
-                <tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr>
-            </thead>
-            <tbody>
-                <tr class="flamengo-row"><td>1</td><td class="time-col"><img src="https://a.espncdn.com/i/teamlogos/soccer/500/819.png" onerror="this.style.display='none'"> Flamengo</td><td>9</td><td>3</td><td>3</td><td>0</td><td>0</td></tr>
-                <tr><td>2</td><td class="time-col"><img src="escudo-cusco.png" onerror="this.style.display='none'"> Cusco FC</td><td>6</td><td>3</td><td>2</td><td>0</td><td>1</td></tr>
-                <tr><td>3</td><td class="time-col"><img src="escudo-medellin.png" onerror="this.style.display='none'"> Ind. Medellín</td><td>3</td><td>3</td><td>1</td><td>0</td><td>2</td></tr>
-                <tr><td>4</td><td class="time-col">Outro Time</td><td>0</td><td>3</td><td>0</td><td>0</td><td>3</td></tr>
-            </tbody>
-        </table>
+    <div id="area-tabelas">
+        <p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Aguarde...</p>
     </div>
 
     <div class="section-title">Próximas Partidas</div>
@@ -433,6 +408,7 @@
     const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
     const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
+    const NOME_TIME_BUSCA = "flamengo"; // Variável mestra para a tabela dinâmica
 
     let bancoDePerguntas = []; let perguntaAtual = null; let acertos = 0; let erros = 0; let ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
@@ -549,16 +525,58 @@
         } catch (e) { console.error("Erro no radar: ", e); }
     }
 
+    // === GERADOR DA TABELA DE CLASSIFICAÇÃO ===
+    function renderizarTabelaHTML(dadosTabela, idTabela, isAtiva) {
+        let html = `<div id="${idTabela}" class="tabela-wrapper ${isAtiva ? 'ativa' : ''}">
+            <table class="tabela-classificacao">
+                <thead><tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr></thead>
+                <tbody>`;
+        
+        let tableToRender = dadosTabela.slice(0, 10);
+        
+        // Se o time não estiver no top 10, coloca ele no final
+        if (!tableToRender.some(t => t.team.toLowerCase().includes(NOME_TIME_BUSCA))) {
+            const timeData = dadosTabela.find(t => t.team.toLowerCase().includes(NOME_TIME_BUSCA));
+            if (timeData) { 
+                tableToRender.push({ isDivider: true }); 
+                tableToRender.push(timeData); 
+            }
+        }
+
+        tableToRender.forEach(t => {
+            if (t.isDivider) { 
+                html += `<tr><td colspan="7" style="background:#f8fafc; color:#cbd5e1; font-size:1.2rem; padding:2px;">...</td></tr>`; 
+                return; 
+            }
+            const bgClass = t.team.toLowerCase().includes(NOME_TIME_BUSCA) ? 'flamengo-row' : '';
+            html += `<tr class="${bgClass}">
+                <td style="color:#64748b; font-weight:700;">${t.rank}</td>
+                <td class="time-col"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'"> ${t.team}</td>
+                <td style="font-weight:900; color:#1e293b;">${t.points}</td>
+                <td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td>
+            </tr>`;
+        });
+        
+        html += `</tbody></table></div>`;
+        return html;
+    }
+
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
         carregarVitrine();
         carregarAnuncios();
 
-        const resDiv = document.getElementById("resultados"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
+        const resDiv = document.getElementById("resultados"), 
+              ageDiv = document.getElementById("agenda"), 
+              newsDiv = document.getElementById("noticias"), 
+              statusUpdate = document.getElementById("status-update"),
+              areaTabelas = document.getElementById("area-tabelas"),
+              areaSeletor = document.getElementById("area-seletor"),
+              botoesCamp = document.getElementById("botoes-campeonato"),
+              tituloClass = document.getElementById("titulo-classificacao");
 
         try {
-            // TRATAMENTO DE TIMEOUT DA ESPN (15 SEGUNDOS)
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -578,27 +596,49 @@
             const d = new Date(dados.lastUpdate);
             statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
+            // Resultados
             resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
-            // Removemos a geração da tabela ESPN para não quebrar nosso HTML bonito
-            // As tabelas estáticas continuarão ali independente do erro ou sucesso da ESPN
+            // === A MÁGICA DA TABELA DINÂMICA AQUI ===
+            areaTabelas.innerHTML = "";
+            botoesCamp.innerHTML = "";
 
+            if (dados.campeonatos && dados.campeonatos.length > 0) {
+                // Futuro: Se a API mandar mais de um campeonato
+                areaSeletor.style.display = "block";
+                tituloClass.innerText = "CLASSIFICAÇÃO";
+                
+                dados.campeonatos.forEach((camp, index) => {
+                    const idTab = "tab-camp-" + index;
+                    const isAtiva = index === 0;
+                    botoesCamp.innerHTML += `<button class="btn-camp ${isAtiva ? 'ativo' : ''}" onclick="mudarTabela(event, '${idTab}')">${camp.nome}</button>`;
+                    areaTabelas.innerHTML += renderizarTabelaHTML(camp.table, idTab, isAtiva);
+                });
+            } else if (dados.table && dados.table.length > 0) {
+                // Atual: Apenas a tabela principal
+                areaSeletor.style.display = "none";
+                tituloClass.innerText = "CLASSIFICAÇÃO DO CAMPEONATO";
+                areaTabelas.innerHTML = renderizarTabelaHTML(dados.table, 'tab-unica', true);
+            } else {
+                areaSeletor.style.display = "none";
+                areaTabelas.innerHTML = "<div style='padding:20px; text-align:center; color:#999; background:#fff; border-radius:15px;'>Classificação indisponível no momento.</div>";
+            }
+
+            // Próximos Jogos
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
 
+            // Notícias
             newsDiv.innerHTML = "";
             if (dados.news && dados.news.length > 0) {
                 dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
             }
         } catch (err) {
             console.error("Erro na API de Futebol:", err); 
-            // MENSAGEM AMIGÁVEL PARA O TORCEDOR SE A ESPN TRAVAR
             let msgErro = "Erro de conexão com o servidor.";
-            if (err.name === 'AbortError') {
-                msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!";
-            }
+            if (err.name === 'AbortError') { msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!"; }
             resDiv.innerHTML = `<div style='padding:20px; color:#c90000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
             ageDiv.innerHTML = "";
             newsDiv.innerHTML = "";
@@ -739,9 +779,8 @@
         document.querySelectorAll('.btn-camp').forEach(btn => btn.classList.remove('ativo'));
         document.querySelectorAll('.tabela-wrapper').forEach(tab => tab.classList.remove('ativa'));
         event.target.classList.add('ativo');
-        document.getElementById('tab-' + campeonatoId).classList.add('ativa');
+        document.getElementById(campeonatoId).classList.add('ativa');
     }
-    
 </script>
 
 </body>
