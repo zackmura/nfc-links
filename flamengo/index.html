@@ -1,253 +1,90 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flamengo | Chaveiro Inteligente Mini Mundo</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-
         body { font-family: 'Inter', sans-serif; background: #f4f6f8; margin: 0; padding: 15px 10px; display: flex; justify-content: center; }
         .widget { width: 100%; max-width: 420px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
         
-        /* Tema Flamengo */
         .header { background: linear-gradient(135deg, #c90000 0%, #000000 100%); color: white; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #000000; }
         .header img { width: 75px; height: 75px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));}
-        .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;}
-        .header p { margin: 4px 0 0; font-size: 0.75rem; color: #ffcccc; font-weight: 600;}
+        .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;} .header p { margin: 4px 0 0; font-size: 0.75rem; color: #ffcccc; font-weight: 600;}
+        .music-btn { margin-top: 15px; background: #ffffff; color: #c90000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;} .music-btn:active { transform: scale(0.95); }
 
-        .music-btn { margin-top: 15px; background: #ffffff; color: #c90000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
-        .music-btn:active { transform: scale(0.95); }
-
-        /* === SELETOR DE CAMPEONATOS (PREPARADO PARA O FUTURO) === */
+        /* === SELETOR DE CAMPEONATOS CORRIGIDO === */
         .instrucao-tabela { font-size: 0.85rem; color: #64748b; font-weight: 600; text-align: center; margin-bottom: 12px; display: none; }
         .seletor-campeonato { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; display: none;}
         .btn-camp { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 18px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
-        .btn-camp:hover { background: #e2e8f0; }
-        .btn-camp.ativo { background: #c90000; color: white; border-color: #c90000; box-shadow: 0 6px 15px rgba(201, 0, 0, 0.3); }
+        .btn-camp:hover { background: #e2e8f0; } .btn-camp.ativo { background: #c90000; color: white; border-color: #c90000; box-shadow: 0 6px 15px rgba(201, 0, 0, 0.3); }
         
-        /* === O VISUAL PREMIUM DAS TABELAS DINÂMICAS === */
-        .tabela-wrapper { animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
+        .tabela-wrapper { display: none; animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
         .tabela-wrapper.ativa { display: block; }
         .tabela-classificacao { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; white-space: nowrap; }
         .tabela-classificacao th { background: #f8fafc; color: #64748b; font-weight: 800; padding: 12px 6px; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px;}
         .tabela-classificacao td { padding: 12px 6px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600; }
-        .tabela-classificacao tbody tr:last-child td { border-bottom: none; }
-        .tabela-classificacao tbody tr:nth-child(even) { background-color: #f8fafc; } 
+        .tabela-classificacao tbody tr:last-child td { border-bottom: none; } .tabela-classificacao tbody tr:nth-child(even) { background-color: #f8fafc; } 
         .time-col { text-align: left !important; display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 800; min-width: 120px;}
         .time-col img { width: 22px; height: 22px; object-fit: contain; }
-        
-        /* Destaque do Mengão na tabela */
-        .flamengo-row { background-color: #fef2f2 !important; }
-        .flamengo-row td { color: #c90000 !important; font-weight: 900 !important; }
+        .flamengo-row { background-color: #fef2f2 !important; } .flamengo-row td { color: #c90000 !important; font-weight: 900 !important; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Placar ao Vivo & Estrutura */
         .live-container { background: #ffffff; border: 2px solid #c90000; border-radius: 15px; margin: 15px 10px; padding: 15px; box-shadow: 0 5px 20px rgba(201,0,0,0.15); }
         .live-header { text-align: center; font-weight: 900; color: #c90000; font-size: 0.9rem; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; letter-spacing: 1px;}
-        .live-dot { width: 10px; height: 10px; background-color: #c90000; border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .live-dot { width: 10px; height: 10px; background-color: #c90000; border-radius: 50%; animation: blink 1s infinite; } @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         .live-scoreboard { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 10px; border: 1px solid #eee;}
-        .live-team { display: flex; flex-direction: column; align-items: center; width: 30%; font-weight: 800; font-size: 0.75rem; color: #000; text-align: center; }
-        .live-team img { width: 45px; height: 45px; margin-bottom: 5px; object-fit: contain;}
+        .live-team { display: flex; flex-direction: column; align-items: center; width: 30%; font-weight: 800; font-size: 0.75rem; color: #000; text-align: center; } .live-team img { width: 45px; height: 45px; margin-bottom: 5px; object-fit: contain;}
         .live-score { font-size: 2.2rem; font-weight: 900; color: #000; letter-spacing: 2px; }
-        .live-stats { border-top: 1px dashed #ccc; padding-top: 10px; }
-        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f5f5f5; }
-        .stat-row:last-child { border-bottom: none; }
-        .stat-label { font-size: 0.7rem; font-weight: 800; color: #555; text-transform: uppercase; }
-        .stat-val { font-size: 0.95rem; font-weight: 900; color: #000; width: 35px; text-align: center; }
+        .live-stats { border-top: 1px dashed #ccc; padding-top: 10px; } .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f5f5f5; } .stat-row:last-child { border-bottom: none; } .stat-label { font-size: 0.7rem; font-weight: 800; color: #555; text-transform: uppercase; } .stat-val { font-size: 0.95rem; font-weight: 900; color: #000; width: 35px; text-align: center; }
 
         .section-title { font-size: 0.75rem; color: #333; padding: 15px 15px 8px; background: #f8f9fa; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; display: flex; justify-content: space-between; align-items: center;}
         .cache-info { font-size: 0.6rem; color: #888; text-transform: none; font-weight: 400;}
-        
-        .match-card { display: flex; flex-direction: column; align-items: center; padding: 12px 10px; border-bottom: 1px solid #f5f5f5; }
-        .match-card:last-child { border-bottom: none; }
+        .match-card { display: flex; flex-direction: column; align-items: center; padding: 12px 10px; border-bottom: 1px solid #f5f5f5; } .match-card:last-child { border-bottom: none; }
         .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
-        .match-row { display: flex; width: 100%; align-items: center; }
-        .team-col-match { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
-        .team-col-match img { width: 30px; height: 30px; object-fit: contain; }
-        .home { justify-content: flex-end; text-align: right; }
-        .away { justify-content: flex-start; text-align: left; }
-        .home img { margin-left: 10px; }
-        .away img { margin-right: 10px; }
-        .score-box { width: 90px; text-align: center; background: #f8f9fa; border-radius: 10px; padding: 8px 0; margin: 0 10px; border: 1px solid #e9ecef;}
-        .score { font-weight: 800; font-size: 1.2rem; color: #000; display: block; line-height: 1; }
-        .date { font-size: 0.65rem; color: #666; margin-top: 5px; display: block; font-weight: 600;}
+        .match-row { display: flex; width: 100%; align-items: center; } .team-col-match { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; } .team-col-match img { width: 30px; height: 30px; object-fit: contain; }
+        .home { justify-content: flex-end; text-align: right; } .away { justify-content: flex-start; text-align: left; } .home img { margin-left: 10px; } .away img { margin-right: 10px; }
+        .score-box { width: 90px; text-align: center; background: #f8f9fa; border-radius: 10px; padding: 8px 0; margin: 0 10px; border: 1px solid #e9ecef;} .score { font-weight: 800; font-size: 1.2rem; color: #000; display: block; line-height: 1; } .date { font-size: 0.65rem; color: #666; margin-top: 5px; display: block; font-weight: 600;}
 
-        .news-card { padding: 15px; border-bottom: 1px solid #f5f5f5; display: block; text-decoration: none; transition: background 0.2s; }
-        .news-card:hover { background: #fafafa; }
-        .news-card:last-child { border-bottom: none; }
-        .news-source { font-size: 0.65rem; color: #c90000; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center;}
-        .news-source span { background: #ffe6e6; padding: 2px 6px; border-radius: 4px; border: 1px solid #ffcccc;}
-        .news-title { font-size: 0.9rem; font-weight: 600; color: #111; line-height: 1.3; margin: 0;}
+        .news-card { padding: 15px; border-bottom: 1px solid #f5f5f5; display: block; text-decoration: none; transition: background 0.2s; } .news-card:hover { background: #fafafa; } .news-card:last-child { border-bottom: none; }
+        .news-source { font-size: 0.65rem; color: #c90000; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center;} .news-source span { background: #ffe6e6; padding: 2px 6px; border-radius: 4px; border: 1px solid #ffcccc;} .news-title { font-size: 0.9rem; font-weight: 600; color: #111; line-height: 1.3; margin: 0;}
+        .trophy-cabinet { padding: 10px; background: #fff; } .trophy-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 5px; border-bottom: 1px dashed #eee; font-size: 0.8rem; } .trophy-item:last-child { border-bottom: none; } .trophy-name { font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; } .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;} .trophy-icon { font-size: 1.1rem; }
 
-        .trophy-cabinet { padding: 10px; background: #fff; }
-        .trophy-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 5px; border-bottom: 1px dashed #eee; font-size: 0.8rem; }
-        .trophy-item:last-child { border-bottom: none; }
-        .trophy-name { font-weight: 800; color: #333; display: flex; align-items: center; gap: 8px; }
-        .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
-        .trophy-icon { font-size: 1.1rem; }
-
-        /* Quiz Gamificado */
         .quiz-container { background: #111111; border: 2px solid #c90000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(201,0,0,0.2); position: relative;}
         .promo-banner { background: linear-gradient(45deg, #ffd700, #ff8c00); color: #000; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);}
-        .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #444; }
-        .stat-box { flex: 1; color: #ffffff; font-weight: 900; font-size: 1.1rem; border-right: 1px solid #444; }
-        .stat-box:last-child { border-right: none; }
-        .stat-box small { display: block; font-size: 0.6rem; color: #aaaaaa; font-weight: 700; text-transform: uppercase; margin-top: 4px;}
-        .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.6); }
-        .timer-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); display: none;}
-        .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
-        .quiz-question { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; text-align: center; line-height: 1.3; }
-        .quiz-options { display: flex; flex-direction: column; gap: 10px; }
-        .quiz-btn { background: #2a2a2a; color: #f0f0f0; border: 1px solid #c90000; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: left; }
-        .quiz-btn:active { transform: scale(0.98); }
-        .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; }
-        .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; animation: tremer 0.4s; }
-        .btn-proxima { margin-top: 15px; color: #ffffff; border: none; padding: 14px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 900; font-size: 1.05rem; display: none; text-transform: uppercase; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s;}
-        .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); }
-        .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
-        .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
-        .btn-iniciar-quiz { background: linear-gradient(135deg, #c90000 0%, #8b0000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #5e0000; transition: all 0.2s; box-sizing: border-box;}
-        .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #5e0000; }
+        .quiz-stats { display: flex; justify-content: space-between; background: #222222; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #444; } .stat-box { flex: 1; color: #ffffff; font-weight: 900; font-size: 1.1rem; border-right: 1px solid #444; } .stat-box:last-child { border-right: none; } .stat-box small { display: block; font-size: 0.6rem; color: #aaaaaa; font-weight: 700; text-transform: uppercase; margin-top: 4px;} .chama-ativa { color: #ff8c00 !important; text-shadow: 0 0 8px rgba(255, 140, 0, 0.6); }
+        .timer-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-bottom: 20px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); display: none;} .timer-bar { height: 100%; width: 100%; background: #25D366; transition: width 1s linear, background-color 0.3s; }
+        .quiz-question { font-size: 1.1rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; text-align: center; line-height: 1.3; } .quiz-options { display: flex; flex-direction: column; gap: 10px; } .quiz-btn { background: #2a2a2a; color: #f0f0f0; border: 1px solid #c90000; padding: 12px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-align: left; } .quiz-btn:active { transform: scale(0.98); } .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; } .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; animation: tremer 0.4s; }
+        .btn-proxima { margin-top: 15px; color: #ffffff; border: none; padding: 14px 15px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: 900; font-size: 1.05rem; display: none; text-transform: uppercase; box-shadow: 0 5px 0 rgba(0,0,0,0.3); transition: transform 0.1s, box-shadow 0.1s;} .btn-proxima:active { transform: translateY(5px); box-shadow: 0 0 0 rgba(0,0,0,0.3); } .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; } .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
+        .btn-iniciar-quiz { background: linear-gradient(135deg, #c90000 0%, #8b0000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #5e0000; transition: all 0.2s; box-sizing: border-box;} .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #5e0000; }
 
-        /* === 🛒 VITRINE MINI MUNDO === */
-        .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;}
-        .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
-        .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
-        .minimundo-title-box { text-align: left; }
-        .minimundo-title { color: #4E342E; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
-        .minimundo-subtitle { color: #8D6E63; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
-        .carrossel-produtos { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
-        .carrossel-produtos::-webkit-scrollbar { height: 4px; }
-        .carrossel-produtos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .carrossel-produtos::-webkit-scrollbar-thumb { background: #8D6E63; border-radius: 10px; }
-        .produto-card-mini { min-width: 140px; max-width: 140px; background: #ffffff; border: 1px solid #efebe9; border-radius: 12px; text-align: left; scroll-snap-align: start; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s;}
-        .produto-card-mini:active { transform: scale(0.96); }
-        .produto-img-mini { width: 100%; height: 130px; object-fit: cover; background: #fafafa; border-bottom: 1px solid #f5f5f5;}
-        .produto-info-mini { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
-        .produto-tag-mini { font-size: 0.55rem; background: #efebe9; color: #5D4037; padding: 3px 6px; border-radius: 4px; font-weight: 800; align-self: flex-start; margin-bottom: 6px; text-transform: uppercase;}
-        .produto-nome-mini { font-size: 0.8rem; font-weight: 800; color: #3E2723; margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
-        .produto-preco-mini { font-size: 0.95rem; font-weight: 900; color: #2E7D32; margin-top: auto;}
-
-        /* === 📢 REDE DE ANÚNCIOS === */
-        .ads-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #111; border-bottom: 1px solid #eeeeee; display: none; }
-        .ads-header { text-align: center; margin-bottom: 15px; }
-        .ads-title { color: #c90000; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;}
-        .ads-subtitle { color: #555; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;}
-        .ad-carousel { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; }
-        .ad-carousel::-webkit-scrollbar { height: 4px; }
-        .ad-carousel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .ad-carousel::-webkit-scrollbar-thumb { background: #c90000; border-radius: 10px; }
+        .minimundo-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #5D4037; border-bottom: 1px solid #eeeeee; display: none;} .minimundo-header { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; } .minimundo-header img { width: 45px; height: auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);} .minimundo-title-box { text-align: left; } .minimundo-title { color: #4E342E; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;} .minimundo-subtitle { color: #8D6E63; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;} .carrossel-produtos { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 15px; scroll-snap-type: x mandatory; } .carrossel-produtos::-webkit-scrollbar { height: 4px; } .carrossel-produtos::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; } .carrossel-produtos::-webkit-scrollbar-thumb { background: #8D6E63; border-radius: 10px; } .produto-card-mini { min-width: 140px; max-width: 140px; background: #ffffff; border: 1px solid #efebe9; border-radius: 12px; text-align: left; scroll-snap-align: start; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s;} .produto-card-mini:active { transform: scale(0.96); } .produto-img-mini { width: 100%; height: 130px; object-fit: cover; background: #fafafa; border-bottom: 1px solid #f5f5f5;} .produto-info-mini { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; } .produto-tag-mini { font-size: 0.55rem; background: #efebe9; color: #5D4037; padding: 3px 6px; border-radius: 4px; font-weight: 800; align-self: flex-start; margin-bottom: 6px; text-transform: uppercase;} .produto-nome-mini { font-size: 0.8rem; font-weight: 800; color: #3E2723; margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;} .produto-preco-mini { font-size: 0.95rem; font-weight: 900; color: #2E7D32; margin-top: auto;}
         
-        .ad-card-mini { min-width: 160px; max-width: 160px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; overflow: hidden;}
-        .ad-card-mini:active { transform: scale(0.96); }
-        .ad-img-wrapper { position: relative; height: 90px; width: 100%; background: #eee;}
-        .ad-banner-mini { width: 100%; height: 100%; object-fit: cover; }
-        .ad-logo-mini { position: absolute; bottom: -15px; left: 10px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .ad-info-mini { padding: 22px 10px 10px; display: flex; flex-direction: column; flex-grow: 1; }
-        .ad-empresa-mini { font-size: 0.85rem; font-weight: 900; color: #111; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .ad-desc-mini { font-size: 0.65rem; color: #555; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;}
-        .ad-btn-ver { font-size: 0.7rem; font-weight: 800; color: #c90000; margin-top: auto; text-transform: uppercase;}
+        .ads-section { background: #ffffff; padding: 25px 15px; margin-top: 10px; border-top: 5px solid #111; border-bottom: 1px solid #eeeeee; display: none; } .ads-header { text-align: center; margin-bottom: 15px; } .ads-title { color: #c90000; font-weight: 900; font-size: 1.1rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;} .ads-subtitle { color: #555; font-size: 0.7rem; margin: 2px 0 0; font-weight: 600;} .ad-carousel { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 15px; scroll-snap-type: x mandatory; } .ad-carousel::-webkit-scrollbar { height: 4px; } .ad-carousel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; } .ad-carousel::-webkit-scrollbar-thumb { background: #c90000; border-radius: 10px; } .ad-card-mini { min-width: 160px; max-width: 160px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; scroll-snap-align: start; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; cursor: pointer; transition: transform 0.2s; overflow: hidden;} .ad-card-mini:active { transform: scale(0.96); } .ad-img-wrapper { position: relative; height: 90px; width: 100%; background: #eee;} .ad-banner-mini { width: 100%; height: 100%; object-fit: cover; } .ad-logo-mini { position: absolute; bottom: -15px; left: 10px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);} .ad-info-mini { padding: 22px 10px 10px; display: flex; flex-direction: column; flex-grow: 1; } .ad-empresa-mini { font-size: 0.85rem; font-weight: 900; color: #111; margin: 0 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;} .ad-desc-mini { font-size: 0.65rem; color: #555; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;} .ad-btn-ver { font-size: 0.7rem; font-weight: 800; color: #c90000; margin-top: auto; text-transform: uppercase;} .anuncie-aqui-banner { background: linear-gradient(135deg, #111 0%, #333 100%); color: #fff; padding: 20px; border-radius: 12px; text-align: center; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);} .anuncie-title { font-size: 1.1rem; font-weight: 900; margin: 0 0 5px; color: #ffd700;} .anuncie-desc { font-size: 0.8rem; color: #ccc; margin: 0 0 15px; line-height: 1.4;} .btn-anuncie { background: #ffd700; color: #000; text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #b8860b; transition: transform 0.2s;} .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #b8860b;}
 
-        .anuncie-aqui-banner { background: linear-gradient(135deg, #111 0%, #333 100%); color: #fff; padding: 20px; border-radius: 12px; text-align: center; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
-        .anuncie-title { font-size: 1.1rem; font-weight: 900; margin: 0 0 5px; color: #ffd700;}
-        .anuncie-desc { font-size: 0.8rem; color: #ccc; margin: 0 0 15px; line-height: 1.4;}
-        .btn-anuncie { background: #ffd700; color: #000; text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #b8860b; transition: transform 0.2s;}
-        .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #b8860b;}
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); } .modal-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;} .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #333; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+        .galeria-produto { width: 100%; background: #f8f9fa; } .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; } .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: #fff; border-bottom: 1px solid #eee;} .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s;} .miniatura.ativa { border-color: #5D4037; opacity: 1; } .info-completa { padding: 20px 20px 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;} .tag-modal { font-size: 0.65rem; background: #efebe9; color: #5D4037; padding: 4px 8px; border-radius: 4px; font-weight: 800; align-self: flex-start; text-transform: uppercase;} .titulo-modal { font-size: 1.3rem; font-weight: 900; color: #222; margin: 0; line-height: 1.2;} .preco-modal { font-size: 1.5rem; font-weight: 900; color: #2E7D32; margin: 0;} .desc-modal { font-size: 0.85rem; color: #555; line-height: 1.5; margin: 5px 0 15px; white-space: pre-wrap;} .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); transition: transform 0.1s, box-shadow 0.1s; text-decoration: none;} .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a;}
 
-        /* MODAIS GERAIS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
-        .modal-content { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.3s ease-out; position: relative; overflow: hidden;}
-        .btn-fechar-modal { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: #333; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);}
-        
-        /* Modal Loja Específicos */
-        .galeria-produto { width: 100%; background: #f8f9fa; }
-        .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
-        .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: #fff; border-bottom: 1px solid #eee;}
-        .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s;}
-        .miniatura.ativa { border-color: #5D4037; opacity: 1; }
-        .info-completa { padding: 20px 20px 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
-        .tag-modal { font-size: 0.65rem; background: #efebe9; color: #5D4037; padding: 4px 8px; border-radius: 4px; font-weight: 800; align-self: flex-start; text-transform: uppercase;}
-        .titulo-modal { font-size: 1.3rem; font-weight: 900; color: #222; margin: 0; line-height: 1.2;}
-        .preco-modal { font-size: 1.5rem; font-weight: 900; color: #2E7D32; margin: 0;}
-        .desc-modal { font-size: 0.85rem; color: #555; line-height: 1.5; margin: 5px 0 15px; white-space: pre-wrap;}
-        .btn-comprar-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a, 0 10px 20px rgba(37,211,102,0.3); transition: transform 0.1s, box-shadow 0.1s; text-decoration: none;}
-        .btn-comprar-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a;}
-
-        /* Modal Anúncio Específicos */
-        .modal-ad-header-imgs { position: relative; height: 180px; width: 100%; background: #f0f0f0; }
-        .modal-ad-banner { width: 100%; height: 100%; object-fit: cover; }
-        .modal-ad-logo { position: absolute; bottom: -30px; left: 20px; width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
-        .modal-ad-body { padding: 40px 20px 30px; overflow-y: auto; }
-        .modal-ad-empresa { font-size: 1.4rem; font-weight: 900; color: #111; margin: 0 0 8px;}
-        .modal-ad-desc { font-size: 0.9rem; color: #444; line-height: 1.5; margin: 0 0 15px;}
-        .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;}
-        .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;}
-        
-        .modal-ad-endereco { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); transition: transform 0.2s;}
-        .modal-ad-endereco:active { transform: scale(0.98); }
-        .modal-ad-endereco-icon { background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);}
-        .modal-ad-endereco-text { font-size: 0.85rem; font-weight: 700; flex-grow: 1; line-height: 1.3;}
-        .map-hint { font-size: 0.70rem; font-weight: 900; color: #3b82f6; text-transform: uppercase; background: white; padding: 6px 10px; border-radius: 8px; border: 1px solid #bfdbfe;}
-
-        .modal-ad-buttons { display: flex; gap: 10px; }
-        .btn-ad-zap { flex: 2; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1b9b4a; transition: transform 0.1s;}
-        .btn-ad-zap:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a; }
-        .btn-ad-call { flex: 1; background: #f1f5f9; color: #333; border: 1px solid #cbd5e1; padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px;}
-        .btn-ad-call:active { background: #e2e8f0; }
-
+        .modal-ad-header-imgs { position: relative; height: 180px; width: 100%; background: #f0f0f0; } .modal-ad-banner { width: 100%; height: 100%; object-fit: cover; } .modal-ad-logo { position: absolute; bottom: -30px; left: 20px; width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);} .modal-ad-body { padding: 40px 20px 30px; overflow-y: auto; } .modal-ad-empresa { font-size: 1.4rem; font-weight: 900; color: #111; margin: 0 0 8px;} .modal-ad-desc { font-size: 0.9rem; color: #444; line-height: 1.5; margin: 0 0 15px;} .modal-ad-preco { font-size: 1.2rem; font-weight: 900; color: #c90000; margin: 0 0 10px;} .modal-ad-cupom { display: inline-block; background: #fef08a; color: #b45309; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed #f59e0b; margin-bottom: 15px;} .modal-ad-endereco { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1); transition: transform 0.2s;} .modal-ad-endereco:active { transform: scale(0.98); } .modal-ad-endereco-icon { background: #3b82f6; color: white; width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);} .modal-ad-endereco-text { font-size: 0.85rem; font-weight: 700; flex-grow: 1; line-height: 1.3;} .map-hint { font-size: 0.70rem; font-weight: 900; color: #3b82f6; text-transform: uppercase; background: white; padding: 6px 10px; border-radius: 8px; border: 1px solid #bfdbfe;} .modal-ad-buttons { display: flex; gap: 10px; } .btn-ad-zap { flex: 2; background: #25D366; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 0 #1b9b4a; transition: transform 0.1s;} .btn-ad-zap:active { transform: translateY(4px); box-shadow: 0 0 0 #1b9b4a; } .btn-ad-call { flex: 1; background: #f1f5f9; color: #333; border: 1px solid #cbd5e1; padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px;} .btn-ad-call:active { background: #e2e8f0; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        /* Rodapé */
-        .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;}
-        .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;}
-        .brand-footer span { font-weight: 700; letter-spacing: 0.5px; }
-        .social-links { display: flex; gap: 10px; margin-top: 15px; width: 100%; justify-content: center;}
-        .social-btn { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: white; display: flex; align-items: center; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
-        .social-btn:active { transform: scale(0.95); }
-        .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .zap { background: #25D366; }
-        .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s; background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2);}
-        .youtube-button:active { transform: scale(0.95); }
-        
-        @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
-        @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        .brand-footer { background: #ffffff; padding: 15px; text-align: center; border-top: 1px solid #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.7rem;} .brand-footer img { width: 60px; height: auto; margin: 8px 0; border-radius: 8px;} .brand-footer span { font-weight: 700; letter-spacing: 0.5px; } .social-links { display: flex; gap: 10px; margin-top: 15px; width: 100%; justify-content: center;} .social-btn { padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.75rem; font-weight: 700; color: white; display: flex; align-items: center; transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);} .social-btn:active { transform: scale(0.95); } .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); } .zap { background: #25D366; } .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s; background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2);} .youtube-button:active { transform: scale(0.95); }
+        @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } } @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* Modal Conquista */
-        .modal-conquista-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
-        .achievement-modal { background: #111; border: 2px solid #c90000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: white; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 40px rgba(201,0,0,0.5); position: relative;}
-        .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);}
-        .modal-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; color: #ffcc00;}
-        .modal-text { font-size: 0.95rem; color: #ccc; margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
-        .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px; box-sizing: border-box;}
-        .modal-btn-share:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
-        .modal-btn-premio { background: #f09433 !important; box-shadow: 0 5px 0 #c2701e !important; }
-        .modal-btn-close { background: transparent; color: #888; border: none; font-size: 0.85rem; text-decoration: underline; cursor: pointer; padding: 10px; width: 100%; font-weight: 600;}
-        .confetti-wrap { position: absolute; top: -20px; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1;}
-        .confetti { position: absolute; width: 10px; height: 10px; background: #f00; animation: fall 3s linear infinite; }
-        .confetti:nth-child(2) { left: 20%; background: #0f0; animation-delay: 0.5s; }
-        .confetti:nth-child(3) { left: 40%; background: #ff0; animation-delay: 1s; }
-        .confetti:nth-child(4) { left: 60%; background: #00f; animation-delay: 0.2s; }
-        .confetti:nth-child(5) { left: 80%; background: #f0f; animation-delay: 0.8s; }
-        
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes pulseIcon { 0% { transform: scale(1) translateY(0); } 100% { transform: scale(1.1) translateY(-5px); } }
-        @keyframes fall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1;} 100% { transform: translateY(200px) rotate(360deg); opacity: 0;} }
+        .modal-conquista-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); } .achievement-modal { background: #111; border: 2px solid #c90000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: white; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 40px rgba(201,0,0,0.5); position: relative;} .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 0 20px rgba(255, 140, 0, 0.5);} .modal-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; color: #ffcc00;} .modal-text { font-size: 0.95rem; color: #ccc; margin-bottom: 25px; line-height: 1.4; font-weight: 600;} .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px; box-sizing: border-box;} .modal-btn-share:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; } .modal-btn-premio { background: #f09433 !important; box-shadow: 0 5px 0 #c2701e !important; } .modal-btn-close { background: transparent; color: #888; border: none; font-size: 0.85rem; text-decoration: underline; cursor: pointer; padding: 10px; width: 100%; font-weight: 600;} .confetti-wrap { position: absolute; top: -20px; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1;} .confetti { position: absolute; width: 10px; height: 10px; background: #f00; animation: fall 3s linear infinite; } .confetti:nth-child(2) { left: 20%; background: #0f0; animation-delay: 0.5s; } .confetti:nth-child(3) { left: 40%; background: #ff0; animation-delay: 1s; } .confetti:nth-child(4) { left: 60%; background: #00f; animation-delay: 0.2s; } .confetti:nth-child(5) { left: 80%; background: #f0f; animation-delay: 0.8s; }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } } @keyframes pulseIcon { 0% { transform: scale(1) translateY(0); } 100% { transform: scale(1.1) translateY(-5px); } } @keyframes fall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1;} 100% { transform: translateY(200px) rotate(360deg); opacity: 0;} }
     </style>
 </head>
 <body>
 
 <div class="widget">
     <div class="header">
-       <img src="https://a.espncdn.com/i/teamlogos/soccer/500/819.png" alt="Escudo Flamengo">
+       <img src="https://a.espncdn.com/i/teamlogos/soccer/500/819.png" alt="Escudo">
         <h1>FLAMENGO</h1>
         <p>Acesso Exclusivo via Chaveiro Inteligente Mini Mundo 3D</p>
-        
         <audio id="hino-audio" src="hino.mp3" loop preload="none"></audio>
         <button class="music-btn" id="btn-tocar" onclick="controlarMusica()">🎵 Tocar Hino</button>
-
         <a href="https://www.espn.com.br/futebol/time/elenco/_/id/819/flamengo" target="_blank" style="margin-top: 10px; background: transparent; color: #ffcccc; border: 1px solid #ffcccc; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; text-decoration: none; transition: 0.2s;">📋 Ver Elenco Atual</a>
     </div>
 
@@ -259,8 +96,8 @@
     <div class="section-title" id="titulo-classificacao">CLASSIFICAÇÃO</div>
 
     <div id="area-seletor" style="display: none;">
-        <div class="instrucao-tabela">👇 Escolha o campeonato para ver a tabela:</div>
-        <div class="seletor-campeonato" id="botoes-campeonato"></div>
+        <div class="instrucao-tabela" style="display: block;">👇 Escolha o campeonato:</div>
+        <div class="seletor-campeonato" id="botoes-campeonato" style="display: flex;"></div>
     </div>
     
     <div id="area-tabelas">
@@ -298,9 +135,9 @@
     <div class="trophy-cabinet">
         <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🌎</span> Mundial de Clubes</span><span class="trophy-years">1981</span></div>
         <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🏆</span> Libertadores</span><span class="trophy-years">1981, 2019, 2022</span></div>
-        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">⭐</span> Brasileirão</span><span class="trophy-years">8 Títulos (Último: 2020)</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">⭐</span> Brasileirão</span><span class="trophy-years">8 Títulos</span></div>
         <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🏆</span> Copa do Brasil</span><span class="trophy-years">1990, 2006, 2013, 2022</span></div>
-        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🥇</span> Cariocão</span><span class="trophy-years">37 Títulos (Maior Campeão)</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🥇</span> Cariocão</span><span class="trophy-years">37 Títulos</span></div>
     </div>
 
     <div id="secao-minimundo" class="minimundo-section">
@@ -321,11 +158,9 @@
             <h3 class="ads-title">Parceiros do Mengão</h3>
             <p class="ads-subtitle">Aproveite as ofertas exclusivas para a Nação</p>
         </div>
-        
         <div id="carrossel-anuncios" class="ad-carousel">
             <p style="text-align: center; width: 100%; color: #888; font-size: 0.8rem;">Procurando ofertas...</p>
         </div>
-
         <div class="anuncie-aqui-banner">
             <h4 class="anuncie-title">🚀 Sua marca vista por milhares!</h4>
             <p class="anuncie-desc">Anuncie seu negócio ou serviço diretamente no Chaveiro Inteligente da torcida.</p>
@@ -338,8 +173,8 @@
         <img src="logo.jpg" alt="Logo Mini Mundo" onerror="this.style.display='none'">
         <span>MINI MUNDO IMPRESSÃO 3D & DESIGN</span>
         <div class="social-links">
-            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="social-btn insta">📸 Instagram</a>
-            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20do%20meu%20time%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20produtos%20da%20Mini%20Mundo." target="_blank" class="social-btn zap">💬 WhatsApp</a>
+            <a href="https://www.instagram.com/minimundo3d.oficial" target="_blank" class="social-btn insta">📸 Instagram</a>
+            <a href="https://wa.me/5511992279009" target="_blank" class="social-btn zap">💬 WhatsApp</a>
         </div>
     </div>
 </div>
@@ -347,14 +182,9 @@
 <div id="modal-produto" class="modal-overlay">
     <div class="modal-content">
         <button class="btn-fechar-modal" onclick="fecharModalProduto()">×</button>
-        <div class="galeria-produto">
-            <img id="modal-foto-principal" src="" alt="Produto" class="foto-principal">
-            <div id="modal-miniaturas" class="miniaturas-container"></div>
-        </div>
+        <div class="galeria-produto"><img id="modal-foto-principal" src="" alt="Produto" class="foto-principal"><div id="modal-miniaturas" class="miniaturas-container"></div></div>
         <div class="info-completa">
-            <span id="modal-tag" class="tag-modal">Categoria</span>
-            <h3 id="modal-titulo-prod" class="titulo-modal">Nome do Produto</h3>
-            <h2 id="modal-preco" class="preco-modal">R$ 00,00</h2>
+            <span id="modal-tag" class="tag-modal">Categoria</span><h3 id="modal-titulo-prod" class="titulo-modal">Nome do Produto</h3><h2 id="modal-preco" class="preco-modal">R$ 00,00</h2>
             <p id="modal-desc" class="desc-modal">Descrição do produto vai aqui...</p>
             <a id="modal-btn-zap" href="#" target="_blank" class="btn-comprar-zap">🛒 COMPRAR PELO WHATSAPP</a>
         </div>
@@ -364,39 +194,20 @@
 <div id="modal-anuncio" class="modal-overlay">
     <div class="modal-content">
         <button class="btn-fechar-modal" onclick="fecharModalAnuncio()">×</button>
-        <div class="modal-ad-header-imgs">
-            <img id="modal-ad-banner" src="" alt="Banner" class="modal-ad-banner">
-            <img id="modal-ad-logo" src="" alt="Logo" class="modal-ad-logo">
-        </div>
+        <div class="modal-ad-header-imgs"><img id="modal-ad-banner" src="" class="modal-ad-banner"><img id="modal-ad-logo" src="" class="modal-ad-logo"></div>
         <div class="modal-ad-body">
-            <h3 id="modal-ad-empresa" class="modal-ad-empresa">Nome da Empresa</h3>
-            <p id="modal-ad-desc" class="modal-ad-desc">Descrição completa da oferta...</p>
-            <h2 id="modal-ad-preco" class="modal-ad-preco" style="display:none;">R$ 00,00</h2>
-            <div id="modal-ad-cupom" class="modal-ad-cupom" style="display:none;">🎟️ Cupom</div>
-            
-            <a id="modal-ad-endereco" href="#" target="_blank" class="modal-ad-endereco" style="display:none;">
-                <div class="modal-ad-endereco-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                </div>
-                <span id="modal-ad-endereco-text" class="modal-ad-endereco-text">Endereço da loja</span>
-                <span class="map-hint">VER ROTA</span>
-            </a>
-            
-            <div class="modal-ad-buttons">
-                <a id="modal-ad-zap" href="#" target="_blank" class="btn-ad-zap">💬 WhatsApp</a>
-                <a id="modal-ad-call" href="#" class="btn-ad-call" style="display:none;">📞 Ligar</a>
-            </div>
+            <h3 id="modal-ad-empresa" class="modal-ad-empresa">Empresa</h3><p id="modal-ad-desc" class="modal-ad-desc">Descrição...</p>
+            <h2 id="modal-ad-preco" class="modal-ad-preco" style="display:none;">R$ 00,00</h2><div id="modal-ad-cupom" class="modal-ad-cupom" style="display:none;">🎟️ Cupom</div>
+            <a id="modal-ad-endereco" href="#" target="_blank" class="modal-ad-endereco" style="display:none;"><div class="modal-ad-endereco-icon">🗺️</div><span id="modal-ad-endereco-text" class="modal-ad-endereco-text">Endereço</span><span class="map-hint">VER ROTA</span></a>
+            <div class="modal-ad-buttons"><a id="modal-ad-zap" href="#" target="_blank" class="btn-ad-zap">💬 WhatsApp</a><a id="modal-ad-call" href="#" class="btn-ad-call" style="display:none;">📞 Ligar</a></div>
         </div>
     </div>
 </div>
 
 <div id="modal-conquista" class="modal-conquista-overlay">
     <div class="achievement-modal">
-        <div class="confetti-wrap">
-            <div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div>
-        </div>
-        <span class="modal-icon" id="modal-icone">🔥</span>
-        <h2 class="modal-title" id="modal-titulo">NOVO RECORDE!</h2>
+        <div class="confetti-wrap"><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div><div class="confetti"></div></div>
+        <span class="modal-icon" id="modal-icone">🔥</span><h2 class="modal-title" id="modal-titulo">NOVO RECORDE!</h2>
         <p class="modal-text" id="modal-mensagem">Você atingiu a marca impressionante!</p>
         <a id="modal-btn-share" class="modal-btn-share" target="_blank" href="#">📱 Compartilhar e Zoar</a>
         <button class="modal-btn-close" onclick="fecharModalQuiz()">Continuar Jogando ➡️</button>
@@ -408,7 +219,7 @@
     const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
     const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
-    const NOME_TIME_BUSCA = "flamengo"; // Variável mestra para a tabela dinâmica
+    const NOME_TIME_BUSCA = "flamengo"; 
 
     let bancoDePerguntas = []; let perguntaAtual = null; let acertos = 0; let erros = 0; let ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_flamengo") || 0;
@@ -416,31 +227,19 @@
     let catalogoGlobal = []; let anunciosGlobal = [];
 
     function formatarPreco(valorString) {
-        if(!valorString) return "";
-        let v = String(valorString).trim();
-        if(v.toUpperCase().includes("R$")) return v;
-        if(!isNaN(v.replace(',','.'))) {
-            let num = parseFloat(v.replace(',','.'));
-            return "R$ " + num.toFixed(2).replace('.', ',');
-        }
-        return "R$ " + v;
+        if(!valorString) return ""; let v = String(valorString).trim(); if(v.toUpperCase().includes("R$")) return v;
+        if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ','); return "R$ " + v;
     }
 
     function verificarPasseLivre() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('t');
-        const agora = new Date().getTime();
+        const urlParams = new URLSearchParams(window.location.search); const token = urlParams.get('t'); const agora = new Date().getTime();
         if (!token || (agora - parseInt(token)) > 120000) {
             document.body.innerHTML = `<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:#f0f2f5; font-family:'Inter', sans-serif; text-align:center; padding:30px; box-sizing:border-box;"><img src="logo.jpg" style="width:120px; margin-bottom:25px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.1);"><h2 style="color:#c90000; margin-bottom:10px;">Acesso Expirado</h2><p style="color:#444; font-size:0.95rem; line-height:1.5;">Para sua segurança, acesse encostando o celular no <b>Chaveiro Inteligente</b>.</p></div>`;
             return false; 
-        }
-        return true; 
+        } return true; 
     }
 
-    function controlarMusica() {
-        const audio = document.getElementById("hino-audio"); const btn = document.getElementById("btn-tocar");
-        if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; }
-    }
+    function controlarMusica() { const audio = document.getElementById("hino-audio"); const btn = document.getElementById("btn-tocar"); if (audio.paused) { audio.play(); btn.innerHTML = "⏸️ Pausar Hino"; } else { audio.pause(); btn.innerHTML = "🎵 Tocar Hino"; } }
 
     function traduzirCampeonato(nomeOuSlug) {
         if (!nomeOuSlug) return "Campeonato"; const s = nomeOuSlug.toLowerCase();
@@ -453,196 +252,87 @@
     function checarJogoAoVivo(dados) {
         const jogoAoVivo = [...(dados.past || []), ...(dados.next || [])].find(j => j.status === 'in');
         if (jogoAoVivo && jogoAoVivo.id) {
-            document.getElementById("live-match-container").style.display = "block";
-            atualizarRadarESPN(jogoAoVivo.id); 
-            if(radarInterval) clearInterval(radarInterval);
-            radarInterval = setInterval(() => { atualizarRadarESPN(jogoAoVivo.id); }, 30000);
-        } else {
-            document.getElementById("live-match-container").style.display = "none";
-            if(radarInterval) clearInterval(radarInterval);
-        }
+            document.getElementById("live-match-container").style.display = "block"; atualizarRadarESPN(jogoAoVivo.id); 
+            if(radarInterval) clearInterval(radarInterval); radarInterval = setInterval(() => { atualizarRadarESPN(jogoAoVivo.id); }, 30000);
+        } else { document.getElementById("live-match-container").style.display = "none"; if(radarInterval) clearInterval(radarInterval); }
     }
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`);
-            const json = await res.json();
+            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`); const json = await res.json();
             const header = json.header.competitions[0], timeInfo = header.status.displayClock ? `${header.status.displayClock}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
             const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
-            const boxscore = json.boxscore?.teams || [];
-            let statsHTML = '';
+            const boxscore = json.boxscore?.teams || []; let statsHTML = '';
 
             if (boxscore.length === 2) {
-                const getStat = (teamStats, statName) => {
-                    if (!teamStats.statistics) return "0";
-                    const s = teamStats.statistics.find(x => x.name === statName);
-                    return s ? s.displayValue : "0";
-                };
-                
-                const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0];
-                const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
-
-                const estatisticas = [
-                    { label: "Posse de Bola", key: "possession" },
-                    { label: "Finalizações", key: "shotsTotal" },
-                    { label: "No Gol", key: "shotsOnTarget" },
-                    { label: "Escanteios", key: "wonCorners" },
-                    { label: "Faltas", key: "foulsCommitted" },
-                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
-                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
-                ];
-
-                statsHTML = estatisticas.map(stat => {
-                    const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
-                    return `
-                    <div class="stat-row">
-                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
-                        <span class="stat-label">${stat.label}</span>
-                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
-                    </div>
-                `}).join('');
+                const getStat = (teamStats, statName) => { if (!teamStats.statistics) return "0"; const s = teamStats.statistics.find(x => x.name === statName); return s ? s.displayValue : "0"; };
+                const homeStats = boxscore.find(b => b.team.id === home.id) || boxscore[0], awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
+                const estatisticas = [ { label: "Posse de Bola", key: "possession" }, { label: "Finalizações", key: "shotsTotal" }, { label: "No Gol", key: "shotsOnTarget" }, { label: "Escanteios", key: "wonCorners" }, { label: "Faltas", key: "foulsCommitted" }, { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" }, { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" } ];
+                statsHTML = estatisticas.map(stat => { const colorStyle = stat.color ? `style="color:${stat.color};"` : ""; return `<div class="stat-row"><span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span><span class="stat-label">${stat.label}</span><span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span></div>`}).join('');
             }
-
-            document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header">
-                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo}
-                </div>
-                <div class="live-scoreboard">
-                    <div class="live-team">
-                        <img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${home.team.abbreviation || home.team.shortDisplayName}</span>
-                    </div>
-                    <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
-                    <div class="live-team">
-                        <img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'">
-                        <span>${away.team.abbreviation || away.team.shortDisplayName}</span>
-                    </div>
-                </div>
-                <div class="live-stats">
-                    ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
-                </div>
-            `;
+            document.getElementById("live-match-container").innerHTML = `<div class="live-header"><span class="live-dot"></span> TEMPO REAL - ${timeInfo}</div><div class="live-scoreboard"><div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation || home.team.shortDisplayName}</span></div><div class="live-score">${home.score || 0} - ${away.score || 0}</div><div class="live-team"><img src="${away.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${away.team.abbreviation || away.team.shortDisplayName}</span></div></div><div class="live-stats">${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}</div>`;
         } catch (e) { console.error("Erro no radar: ", e); }
     }
 
     // === GERADOR DA TABELA DE CLASSIFICAÇÃO ===
     function renderizarTabelaHTML(dadosTabela, idTabela, isAtiva) {
-        let html = `<div id="${idTabela}" class="tabela-wrapper ${isAtiva ? 'ativa' : ''}">
-            <table class="tabela-classificacao">
-                <thead><tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr></thead>
-                <tbody>`;
-        
+        let html = `<div id="${idTabela}" class="tabela-wrapper ${isAtiva ? 'ativa' : ''}"><table class="tabela-classificacao"><thead><tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr></thead><tbody>`;
         let tableToRender = dadosTabela.slice(0, 10);
-        
-        // Se o time não estiver no top 10, coloca ele no final
         if (!tableToRender.some(t => t.team.toLowerCase().includes(NOME_TIME_BUSCA))) {
             const timeData = dadosTabela.find(t => t.team.toLowerCase().includes(NOME_TIME_BUSCA));
-            if (timeData) { 
-                tableToRender.push({ isDivider: true }); 
-                tableToRender.push(timeData); 
-            }
+            if (timeData) { tableToRender.push({ isDivider: true }); tableToRender.push(timeData); }
         }
-
         tableToRender.forEach(t => {
-            if (t.isDivider) { 
-                html += `<tr><td colspan="7" style="background:#f8fafc; color:#cbd5e1; font-size:1.2rem; padding:2px;">...</td></tr>`; 
-                return; 
-            }
+            if (t.isDivider) { html += `<tr><td colspan="7" style="background:#f8fafc; color:#cbd5e1; font-size:1.2rem; padding:2px;">...</td></tr>`; return; }
             const bgClass = t.team.toLowerCase().includes(NOME_TIME_BUSCA) ? 'flamengo-row' : '';
-            html += `<tr class="${bgClass}">
-                <td style="color:#64748b; font-weight:700;">${t.rank}</td>
-                <td class="time-col"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'"> ${t.team}</td>
-                <td style="font-weight:900; color:#1e293b;">${t.points}</td>
-                <td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td>
-            </tr>`;
+            html += `<tr class="${bgClass}"><td style="color:#64748b; font-weight:700;">${t.rank}</td><td class="time-col"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'"> ${t.team}</td><td style="font-weight:900; color:#1e293b;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td></tr>`;
         });
-        
         html += `</tbody></table></div>`;
         return html;
     }
 
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
-
-        carregarVitrine();
-        carregarAnuncios();
-
-        const resDiv = document.getElementById("resultados"), 
-              ageDiv = document.getElementById("agenda"), 
-              newsDiv = document.getElementById("noticias"), 
-              statusUpdate = document.getElementById("status-update"),
-              areaTabelas = document.getElementById("area-tabelas"),
-              areaSeletor = document.getElementById("area-seletor"),
-              botoesCamp = document.getElementById("botoes-campeonato"),
-              tituloClass = document.getElementById("titulo-classificacao");
+        carregarVitrine(); carregarAnuncios();
+        const resDiv = document.getElementById("resultados"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update"), areaTabelas = document.getElementById("area-tabelas"), areaSeletor = document.getElementById("area-seletor"), botoesCamp = document.getElementById("botoes-campeonato"), tituloClass = document.getElementById("titulo-classificacao");
 
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000);
-
-            const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal });
-            clearTimeout(timeoutId);
-
+            const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 15000);
+            const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal }); clearTimeout(timeoutId);
             const dados = await resposta.json();
 
             checarJogoAoVivo(dados);
+            if (dados.quiz && dados.quiz.length > 0) { bancoDePerguntas = dados.quiz; document.getElementById("quiz-box").style.display = "block"; document.getElementById("q-recorde").innerText = recorde; }
+            const d = new Date(dados.lastUpdate); statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
-            if (dados.quiz && dados.quiz.length > 0) {
-                bancoDePerguntas = dados.quiz;
-                document.getElementById("quiz-box").style.display = "block";
-                document.getElementById("q-recorde").innerText = recorde;
-            }
-
-            const d = new Date(dados.lastUpdate);
-            statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
-
-            // Resultados
             resDiv.innerHTML = "";
-            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
-            else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
+            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
-            // === A MÁGICA DA TABELA DINÂMICA AQUI ===
-            areaTabelas.innerHTML = "";
-            botoesCamp.innerHTML = "";
-
+            // === A MÁGICA DA TABELA ===
+            areaTabelas.innerHTML = ""; botoesCamp.innerHTML = "";
             if (dados.campeonatos && dados.campeonatos.length > 0) {
-                // Futuro: Se a API mandar mais de um campeonato
-                areaSeletor.style.display = "block";
+                areaSeletor.style.display = "block"; document.querySelector('.instrucao-tabela').style.display = "block"; botoesCamp.style.display = "flex";
                 tituloClass.innerText = "CLASSIFICAÇÃO";
-                
                 dados.campeonatos.forEach((camp, index) => {
-                    const idTab = "tab-camp-" + index;
-                    const isAtiva = index === 0;
+                    const idTab = "tab-camp-" + index; const isAtiva = index === 0;
                     botoesCamp.innerHTML += `<button class="btn-camp ${isAtiva ? 'ativo' : ''}" onclick="mudarTabela(event, '${idTab}')">${camp.nome}</button>`;
                     areaTabelas.innerHTML += renderizarTabelaHTML(camp.table, idTab, isAtiva);
                 });
             } else if (dados.table && dados.table.length > 0) {
-                // Atual: Apenas a tabela principal
-                areaSeletor.style.display = "none";
-                tituloClass.innerText = "CLASSIFICAÇÃO DO CAMPEONATO";
+                areaSeletor.style.display = "none"; tituloClass.innerText = "CLASSIFICAÇÃO DO CAMPEONATO";
                 areaTabelas.innerHTML = renderizarTabelaHTML(dados.table, 'tab-unica', true);
             } else {
-                areaSeletor.style.display = "none";
-                areaTabelas.innerHTML = "<div style='padding:20px; text-align:center; color:#999; background:#fff; border-radius:15px;'>Classificação indisponível no momento.</div>";
+                areaSeletor.style.display = "none"; areaTabelas.innerHTML = "<div style='padding:20px; text-align:center; color:#999; background:#fff; border-radius:15px;'>Classificação indisponível no momento.</div>";
             }
 
-            // Próximos Jogos
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
 
-            // Notícias
             newsDiv.innerHTML = "";
-            if (dados.news && dados.news.length > 0) {
-                dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
-            }
+            if (dados.news && dados.news.length > 0) { dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; }); }
         } catch (err) {
-            console.error("Erro na API de Futebol:", err); 
-            let msgErro = "Erro de conexão com o servidor.";
-            if (err.name === 'AbortError') { msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!"; }
-            resDiv.innerHTML = `<div style='padding:20px; color:#c90000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
-            ageDiv.innerHTML = "";
-            newsDiv.innerHTML = "";
-            statusUpdate.innerText = "VAR revisando conexão...";
+            console.error("Erro na API de Futebol:", err); let msgErro = "Erro de conexão com o servidor."; if (err.name === 'AbortError') { msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!"; }
+            resDiv.innerHTML = `<div style='padding:20px; color:#c90000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`; ageDiv.innerHTML = ""; newsDiv.innerHTML = ""; statusUpdate.innerText = "VAR revisando conexão...";
         }
     }
 
@@ -651,22 +341,15 @@
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
         const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
         const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
-
         return `<div class="match-card"><div class="league-label">${traduzirCampeonato(e.slug)}</div><div class="match-row"><div class="team-col-match home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col-match away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
     }
 
-    // === LOJA MINI MUNDO ===
     async function carregarVitrine() {
         try {
-            const res = await fetch(API_CATALOGO); const dados = await res.json();
-            const divVitrine = document.getElementById("vitrine-produtos");
-            
+            const res = await fetch(API_CATALOGO); const dados = await res.json(); const divVitrine = document.getElementById("vitrine-produtos");
             if(dados.sucesso && dados.vitrine && dados.vitrine.length > 0) {
                 catalogoGlobal = dados.vitrine; let html = "";
-                catalogoGlobal.forEach((p, index) => {
-                    const primeiraFoto = p.foto.split(',')[0].trim();
-                    html += `<div class="produto-card-mini" onclick="abrirModalProduto(${index})"><img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'"><div class="produto-info-mini"><span class="produto-tag-mini">${p.categoria}</span><h4 class="produto-nome-mini">${p.nome}</h4><div class="produto-preco-mini">${formatarPreco(p.preco)}</div></div></div>`;
-                });
+                catalogoGlobal.forEach((p, index) => { const primeiraFoto = p.foto.split(',')[0].trim(); html += `<div class="produto-card-mini" onclick="abrirModalProduto(${index})"><img src="${primeiraFoto}" alt="${p.nome}" class="produto-img-mini" onerror="this.src='logo.jpg'"><div class="produto-info-mini"><span class="produto-tag-mini">${p.categoria}</span><h4 class="produto-nome-mini">${p.nome}</h4><div class="produto-preco-mini">${formatarPreco(p.preco)}</div></div></div>`; });
                 divVitrine.innerHTML = html; document.getElementById("secao-minimundo").style.display = "block"; 
             }
         } catch(e) { console.error(e); }
@@ -677,94 +360,46 @@
         const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
         const imgPrincipal = document.getElementById("modal-foto-principal"); imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
         const divMiniaturas = document.getElementById("modal-miniaturas"); divMiniaturas.innerHTML = "";
-        
         if (arrayFotos.length > 1) {
-            arrayFotos.forEach((linkFoto, i) => {
-                const imgMini = document.createElement("img"); imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
-                imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); };
-                divMiniaturas.appendChild(imgMini);
-            });
+            arrayFotos.forEach((linkFoto, i) => { const imgMini = document.createElement("img"); imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura"; imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); }; divMiniaturas.appendChild(imgMini); });
             divMiniaturas.style.display = "flex";
         } else { divMiniaturas.style.display = "none"; }
-
-        document.getElementById("modal-tag").innerText = p.categoria; document.getElementById("modal-titulo-prod").innerText = p.nome;
-        document.getElementById("modal-preco").innerText = formatarPreco(p.preco); document.getElementById("modal-desc").innerText = p.descricao;
-        const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
-        document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
+        document.getElementById("modal-tag").innerText = p.categoria; document.getElementById("modal-titulo-prod").innerText = p.nome; document.getElementById("modal-preco").innerText = formatarPreco(p.preco); document.getElementById("modal-desc").innerText = p.descricao;
+        document.getElementById("modal-btn-zap").href = `https://wa.me/5511992279009?text=${encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`)}`;
         document.getElementById("modal-produto").style.display = "flex";
     }
     function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
     document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
-    // === REDE DE ANÚNCIOS ===
     async function carregarAnuncios() {
         try {
-            const res = await fetch(API_ANUNCIOS);
-            const dados = await res.json();
-            const divCarrossel = document.getElementById("carrossel-anuncios");
-            document.getElementById("secao-anuncios").style.display = "block";
-
+            const res = await fetch(API_ANUNCIOS); const dados = await res.json(); const divCarrossel = document.getElementById("carrossel-anuncios"); document.getElementById("secao-anuncios").style.display = "block";
             if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) {
-                anunciosGlobal = dados.anuncios;
-                let html = "";
+                anunciosGlobal = dados.anuncios; let html = "";
                 anunciosGlobal.forEach((ad, index) => {
-                    let precoFormatado = formatarPreco(ad.preco_oferta);
-                    let precoHtml = precoFormatado ? `<div class="ad-preco">${precoFormatado}</div>` : '';
-                    let cupomHtml = ad.cupom ? `<div class="ad-cupom">🎟️ ${ad.cupom}</div>` : '';
-                    
-                    html += `
-                    <div class="ad-card-mini" onclick="abrirModalAnuncio(${index})">
-                        <div class="ad-img-wrapper">
-                            <img src="${ad.foto}" class="ad-banner-mini" onerror="this.src='logo.jpg'">
-                            <img src="${ad.logo}" class="ad-logo-mini" onerror="this.src='logo.jpg'">
-                        </div>
-                        <div class="ad-info-mini">
-                            <h4 class="ad-empresa-mini">${ad.empresa}</h4>
-                            <p class="ad-desc-mini">${ad.descricao}</p>
-                            <span class="ad-btn-ver">Ver Oferta</span>
-                        </div>
-                    </div>`;
+                    let precoFormatado = formatarPreco(ad.preco_oferta); let precoHtml = precoFormatado ? `<div class="ad-preco">${precoFormatado}</div>` : ''; let cupomHtml = ad.cupom ? `<div class="ad-cupom">🎟️ ${ad.cupom}</div>` : '';
+                    html += `<div class="ad-card-mini" onclick="abrirModalAnuncio(${index})"><div class="ad-img-wrapper"><img src="${ad.foto}" class="ad-banner-mini" onerror="this.src='logo.jpg'"><img src="${ad.logo}" class="ad-logo-mini" onerror="this.src='logo.jpg'"></div><div class="ad-info-mini"><h4 class="ad-empresa-mini">${ad.empresa}</h4><p class="ad-desc-mini">${ad.descricao}</p><span class="ad-btn-ver">Ver Oferta</span></div></div>`;
                 });
                 divCarrossel.innerHTML = html;
-            } else {
-                divCarrossel.style.display = "none";
-            }
+            } else { divCarrossel.style.display = "none"; }
         } catch(e) { console.error("Erro anúncios:", e); document.getElementById("carrossel-anuncios").style.display = "none"; }
     }
 
     function abrirModalAnuncio(index) {
-        const ad = anunciosGlobal[index];
-        if(!ad) return;
-
-        document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg';
-        document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg';
-        document.getElementById("modal-ad-empresa").innerText = ad.empresa;
-        document.getElementById("modal-ad-desc").innerText = ad.descricao;
-        
-        const precoEl = document.getElementById("modal-ad-preco");
-        if(ad.preco_oferta) { precoEl.innerText = formatarPreco(ad.preco_oferta); precoEl.style.display = "block"; } else { precoEl.style.display = "none"; }
-        
-        const cupomEl = document.getElementById("modal-ad-cupom");
-        if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
-        
-        const endEl = document.getElementById("modal-ad-endereco");
-        const endText = document.getElementById("modal-ad-endereco-text");
-        if(ad.endereco) { endText.innerText = ad.endereco; endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; }
-        
+        const ad = anunciosGlobal[index]; if(!ad) return;
+        document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg'; document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg'; document.getElementById("modal-ad-empresa").innerText = ad.empresa; document.getElementById("modal-ad-desc").innerText = ad.descricao;
+        const precoEl = document.getElementById("modal-ad-preco"); if(ad.preco_oferta) { precoEl.innerText = formatarPreco(ad.preco_oferta); precoEl.style.display = "block"; } else { precoEl.style.display = "none"; }
+        const cupomEl = document.getElementById("modal-ad-cupom"); if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
+        const endEl = document.getElementById("modal-ad-endereco"); const endText = document.getElementById("modal-ad-endereco-text"); if(ad.endereco) { endText.innerText = ad.endereco; endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; }
         document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
-        
-        const btnCall = document.getElementById("modal-ad-call");
-        if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; }
-
+        const btnCall = document.getElementById("modal-ad-call"); if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; }
         document.getElementById("modal-anuncio").style.display = "flex";
     }
-
     function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
     document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
 
     document.addEventListener("DOMContentLoaded", carregarDoMeuServidor);
 
-    // === QUIZ ===
     function iniciarQuiz() { document.getElementById("tela-inicio-quiz").style.display = "none"; document.getElementById("timer-container").style.display = "block"; document.getElementById("quiz-anim-area").style.display = "block"; sortearPergunta(); }
     function iniciarTimer() { clearInterval(timerQuiz); tempoAtual = TEMPO_MAXIMO; atualizarBarraVisual(); timerQuiz = setInterval(() => { tempoAtual--; atualizarBarraVisual(); if (tempoAtual <= 0) { clearInterval(timerQuiz); verificarResposta(null, -1); } }, 1000); }
     function atualizarBarraVisual() { const barra = document.getElementById("barra-tempo"), p = (tempoAtual / TEMPO_MAXIMO) * 100; barra.style.width = p + "%"; barra.style.background = p > 50 ? "#25D366" : p > 20 ? "#ffcc00" : "#cc0000"; }
@@ -774,7 +409,6 @@
     function fecharModalQuiz() { document.getElementById("modal-conquista").style.display = "none"; sortearPergunta(); }
     function verificarResposta(botaoClicado, numEscolhido) { clearInterval(timerQuiz); const botoes = document.querySelectorAll(".quiz-btn"); botoes.forEach(b => b.onclick = null); const elementoChama = document.getElementById("q-chama"), btnProxima = document.getElementById("btn-proxima"); btnProxima.className = "btn-proxima"; if (numEscolhido === perguntaAtual.correta) { if (botaoClicado) botaoClicado.classList.add("correct"); if ("vibrate" in navigator) navigator.vibrate(50); acertos++; ofensiva++; elementoChama.classList.add("chama-ativa"); btnProxima.classList.add("acertou"); btnProxima.innerText = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)]; if (ofensiva > recorde) { recorde = ofensiva; localStorage.setItem("quiz_recorde_flamengo", recorde); document.getElementById("q-recorde").innerText = recorde; } if (ofensiva > 0 && ofensiva % 5 === 0) abrirModalConquista(ofensiva); else btnProxima.style.display = "block"; } else { if (botaoClicado) botaoClicado.classList.add("wrong"); botoes[perguntaAtual.correta - 1].classList.add("correct"); if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]); erros++; ofensiva = 0; elementoChama.classList.remove("chama-ativa"); btnProxima.classList.add("errou"); if (!botaoClicado) { btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️"; if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]); } else { btnProxima.innerText = frasesErro[Math.floor(Math.random() * frasesErro.length)]; } btnProxima.style.display = "block"; } document.getElementById("q-acertos").innerText = acertos; document.getElementById("q-erros").innerText = erros; document.getElementById("q-chama").innerText = ofensiva; }
 
-    // === MUDANÇA DE TABELA DE CLASSIFICAÇÃO ===
     function mudarTabela(event, campeonatoId) {
         document.querySelectorAll('.btn-camp').forEach(btn => btn.classList.remove('ativo'));
         document.querySelectorAll('.tabela-wrapper').forEach(tab => tab.classList.remove('ativa'));
