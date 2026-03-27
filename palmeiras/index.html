@@ -34,6 +34,8 @@
         .tabela-classificacao td { padding: 12px 6px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600; }
         .tabela-classificacao tbody tr:last-child td { border-bottom: none; }
         .tabela-classificacao tbody tr:nth-child(even) { background-color: #f8fafc; } 
+        
+        /* 🔥 ESTA CLASSE CONTROLA O TAMANHO DOS ESCUDOS NA TABELA 🔥 */
         .time-col { text-align: left !important; display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 800; min-width: 120px;}
         .time-col img { width: 22px; height: 22px; object-fit: contain; }
         
@@ -66,7 +68,7 @@
         .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
         .match-row { display: flex; width: 100%; align-items: center; }
         
-        /* 🔥 AQUI ESTÁ A CORREÇÃO QUE DEIXA O ESCUDO PEQUENO 🔥 */
+        /* ESTA CLASSE CONTROLA OS ESCUDOS DAS PARTIDAS */
         .team-col-match { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
         .team-col-match img { width: 30px; height: 30px; object-fit: contain; }
         
@@ -576,10 +578,10 @@
                 return; 
             }
             const bgClass = t.team.toLowerCase().includes(NOME_TIME_BUSCA) ? 'palmeiras-row' : '';
-            // AQUI ESTÁ A CORREÇÃO: "time-col-match" em vez de "time-col"
+            // 🔥 CLASSE CORRETA PARA O ESCUDO NA TABELA 🔥
             html += `<tr class="${bgClass}">
                 <td style="color:#64748b; font-weight:700;">${t.rank}</td>
-                <td class="time-col-match"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'"> ${t.team}</td>
+                <td class="time-col"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'"> ${t.team}</td>
                 <td style="font-weight:900; color:#1e293b;">${t.points}</td>
                 <td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td>
             </tr>`;
@@ -623,7 +625,6 @@
             areaTabelas.innerHTML = "";
             botoesCamp.innerHTML = "";
 
-            // 🔥 A MÁGICA DO DISPLAY NONE CONSERTADO AQUI 🔥
             if (dados.campeonatos && dados.campeonatos.length > 0) {
                 areaSeletor.style.display = "block"; document.querySelector('.instrucao-tabela').style.display = "block"; botoesCamp.style.display = "flex";
                 tituloClass.innerText = "CLASSIFICAÇÃO";
