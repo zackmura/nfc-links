@@ -27,7 +27,8 @@
         .btn-camp.ativo { background: #000000; color: white; border-color: #000000; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); }
         
         /* === O VISUAL PREMIUM DAS TABELAS DINÂMICAS === */
-        .tabela-wrapper { animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
+        /* 🔥 CORREÇÃO: Adicionado o display: none; para esconder as tabelas inativas 🔥 */
+        .tabela-wrapper { display: none; animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
         .tabela-wrapper.ativa { display: block; }
         .tabela-classificacao { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; white-space: nowrap; }
         .tabela-classificacao th { background: #f8fafc; color: #64748b; font-weight: 800; padding: 12px 6px; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px;}
@@ -65,8 +66,11 @@
         .match-card:last-child { border-bottom: none; }
         .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
         .match-row { display: flex; width: 100%; align-items: center; }
+        
+        /* 🔥 CORREÇÃO: CSS DEIXADO IGUAL AO FLAMENGO (team-col-match) PARA NÃO ESTOURAR A TELA 🔥 */
         .team-col-match { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
         .team-col-match img { width: 30px; height: 30px; object-fit: contain; }
+        
         .home { justify-content: flex-end; text-align: right; }
         .away { justify-content: flex-start; text-align: left; }
         .home img { margin-left: 10px; }
@@ -116,7 +120,6 @@
         .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
         .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
 
-        /* Botão para iniciar o Quiz */
         .btn-iniciar-quiz { background: linear-gradient(135deg, #333333 0%, #000000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #000000; transition: all 0.2s; box-sizing: border-box;}
         .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #000000; }
 
@@ -664,7 +667,8 @@
         const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
         const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
 
-        return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
+        // 🔥 CORREÇÃO DA CLASSE team-col-match AQUI 🔥
+        return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col-match home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col-match away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
     }
 
     // === LOJA MINI MUNDO ===
