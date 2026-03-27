@@ -7,33 +7,45 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #f4f6f8; 
-            margin: 0; 
-            padding: 15px 10px; 
-            display: flex; 
-            justify-content: center; 
-        }
-        .widget { 
-            width: 100%; 
-            max-width: 420px; 
-            background: white; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            overflow: hidden; 
-        }
+        body { font-family: 'Inter', sans-serif; background: #f4f6f8; margin: 0; padding: 15px 10px; display: flex; justify-content: center; }
+        .widget { width: 100%; max-width: 420px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
         
-        /* Tema Santos FC - Branco e Preto Clássico */
-        .header { background: #ffffff; color: #000000; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #000000; }
-        .header img { width: 75px; height: 75px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));}
-        .header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 1px; font-weight: 900;}
-        .header p { margin: 4px 0 0; font-size: 0.75rem; color: #555555; font-weight: 600;}
+        /* Tema Santos - Preto e Branco Clássico */
+        .header { background: #000000; color: white; padding: 25px 15px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; border-bottom: 5px solid #ffffff; }
+        .header img { width: 75px; height: 75px; margin-bottom: 12px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(255,255,255,0.15));}
+        .header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; font-weight: 800;}
+        .header p { margin: 4px 0 0; font-size: 0.75rem; color: #cccccc; font-weight: 600;}
 
-        .music-btn { margin-top: 15px; background: #000000; color: #ffffff; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
+        .music-btn { margin-top: 15px; background: #ffffff; color: #000000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(255,255,255,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
         .music-btn:active { transform: scale(0.95); }
 
-        /* === 🔴 CSS DO PLACAR AO VIVO === */
+        /* === SELETOR DE CAMPEONATOS === */
+        .instrucao-tabela { font-size: 0.85rem; color: #64748b; font-weight: 600; text-align: center; margin-bottom: 12px; display: none; }
+        .seletor-campeonato { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; display: none;}
+        .btn-camp { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 18px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
+        .btn-camp:hover { background: #e2e8f0; }
+        .btn-camp.ativo { background: #000000; color: white; border-color: #000000; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); }
+        
+        /* === O VISUAL PREMIUM DAS TABELAS DINÂMICAS === */
+        .tabela-wrapper { display: none; animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
+        .tabela-wrapper.ativa { display: block; }
+        .tabela-classificacao { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; white-space: nowrap; }
+        .tabela-classificacao th { background: #f8fafc; color: #64748b; font-weight: 800; padding: 12px 6px; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px;}
+        .tabela-classificacao td { padding: 12px 6px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600; }
+        .tabela-classificacao tbody tr:last-child td { border-bottom: none; }
+        .tabela-classificacao tbody tr:nth-child(even) { background-color: #f8fafc; } 
+        
+        /* 🔥 CLASSE DE SEGURANÇA PARA OS ESCUDOS DA TABELA (Pequenos 22px) 🔥 */
+        .time-col { text-align: left !important; display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 800; min-width: 120px;}
+        .time-col img { width: 22px; height: 22px; object-fit: contain; }
+        
+        /* Destaque do Santos na tabela */
+        .santos-row { background-color: #e2e8f0 !important; }
+        .santos-row td { color: #000000 !important; font-weight: 900 !important; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Placar ao Vivo & Estrutura */
         .live-container { background: #ffffff; border: 2px solid #000000; border-radius: 15px; margin: 15px 10px; padding: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
         .live-header { text-align: center; font-weight: 900; color: #000000; font-size: 0.9rem; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; letter-spacing: 1px;}
         .live-dot { width: 10px; height: 10px; background-color: #cc0000; border-radius: 50%; animation: blink 1s infinite; }
@@ -48,7 +60,6 @@
         .stat-label { font-size: 0.7rem; font-weight: 800; color: #555; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 900; color: #000; width: 35px; text-align: center; }
 
-        /* === ESTRUTURA GERAL === */
         .section-title { font-size: 0.75rem; color: #333; padding: 15px 15px 8px; background: #f8f9fa; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; border-top: 1px solid #eeeeee; border-bottom: 1px solid #eeeeee; display: flex; justify-content: space-between; align-items: center;}
         .cache-info { font-size: 0.6rem; color: #888; text-transform: none; font-weight: 400;}
         
@@ -56,8 +67,11 @@
         .match-card:last-child { border-bottom: none; }
         .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
         .match-row { display: flex; width: 100%; align-items: center; }
-        .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
-        .team-col img { width: 30px; height: 30px; object-fit: contain; }
+        
+        /* 🔥 CLASSE DE SEGURANÇA PARA OS ESCUDOS DOS JOGOS (Maiores 30px) 🔥 */
+        .team-col-match { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
+        .team-col-match img { width: 30px; height: 30px; object-fit: contain; }
+        
         .home { justify-content: flex-end; text-align: right; }
         .away { justify-content: flex-start; text-align: left; }
         .home img { margin-left: 10px; }
@@ -65,21 +79,12 @@
         .score-box { width: 90px; text-align: center; background: #f8f9fa; border-radius: 10px; padding: 8px 0; margin: 0 10px; border: 1px solid #e9ecef;}
         .score { font-weight: 800; font-size: 1.2rem; color: #000; display: block; line-height: 1; }
         .date { font-size: 0.65rem; color: #666; margin-top: 5px; display: block; font-weight: 600;}
-        
-        .table-container { padding: 0 5px 15px; }
-        .standings-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; }
-        .standings-table th { background: #f8f9fa; color: #444; font-weight: 800; padding: 10px 4px; border-bottom: 2px solid #ddd; }
-        .standings-table td { padding: 10px 4px; border-bottom: 1px solid #f0f0f0; color: #222; font-weight: 600; }
-        .team-cell { display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 800; text-align: left;}
-        .team-cell img { width: 20px; height: 20px; object-fit: contain; }
-        .highlight-team { background: #f0f0f0 !important; }
-        .highlight-team td { color: #000000; }
 
         .news-card { padding: 15px; border-bottom: 1px solid #f5f5f5; display: block; text-decoration: none; transition: background 0.2s; }
         .news-card:hover { background: #fafafa; }
         .news-card:last-child { border-bottom: none; }
         .news-source { font-size: 0.65rem; color: #000000; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center;}
-        .news-source span { background: #e9ecef; padding: 2px 6px; border-radius: 4px; border: 1px solid #dee2e6;}
+        .news-source span { background: #e0e0e0; padding: 2px 6px; border-radius: 4px; border: 1px solid #cccccc;}
         .news-title { font-size: 0.9rem; font-weight: 600; color: #111; line-height: 1.3; margin: 0;}
 
         .trophy-cabinet { padding: 10px; background: #fff; }
@@ -89,9 +94,9 @@
         .trophy-years { font-size: 0.7rem; color: #777; font-weight: 600; text-align: right; max-width: 50%; line-height: 1.3;}
         .trophy-icon { font-size: 1.1rem; }
 
-        /* === 🏆 QUIZ GAMIFICADO === */
+        /* Quiz Gamificado */
         .quiz-container { background: #ffffff; border: 2px solid #000000; border-radius: 12px; padding: 20px; margin: 20px auto; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; overflow: hidden;}
-        .quiz-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: #000000; }
+        .quiz-container::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px); }
         .promo-banner { background: #000000; color: #ffffff; text-align: center; padding: 10px; font-size: 0.7rem; font-weight: 900; border-radius: 8px; margin-bottom: 15px; text-transform: uppercase; animation: pulseBanner 2s infinite; border-bottom: 3px solid #555555;}
         
         .quiz-stats { display: flex; justify-content: space-between; background: #f8f9fa; border-radius: 8px; padding: 12px 10px; margin-bottom: 15px; text-align: center; border: 1px solid #ddd; }
@@ -106,8 +111,8 @@
         .quiz-question { font-size: 1.1rem; font-weight: 800; color: #111; margin-bottom: 15px; text-align: center; line-height: 1.3; }
         .quiz-options { display: flex; flex-direction: column; gap: 10px; }
         
-        .quiz-btn { background: #ffffff; color: #000; border: 2px solid #e0e0e0; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: left; box-shadow: 0 4px 0 #e0e0e0;}
-        .quiz-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #e0e0e0; }
+        .quiz-btn { background: #ffffff; color: #000; border: 2px solid #000000; padding: 12px; border-radius: 8px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: left; box-shadow: 0 4px 0 #000000;}
+        .quiz-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #000000; }
         .quiz-btn.correct { background: #198754; border-color: #198754; color: #fff; box-shadow: 0 4px 0 #115c38; }
         .quiz-btn.wrong { background: #dc3545; border-color: #dc3545; color: #fff; box-shadow: 0 4px 0 #921925; animation: tremer 0.4s; }
         
@@ -116,7 +121,6 @@
         .btn-proxima.acertou { background: #198754; box-shadow: 0 5px 0 #115c38; }
         .btn-proxima.errou { background: #dc3545; box-shadow: 0 5px 0 #921925; }
 
-        /* Botão para iniciar o Quiz */
         .btn-iniciar-quiz { background: linear-gradient(135deg, #333333 0%, #000000 100%); color: white; border: none; padding: 15px 20px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; width: 100%; text-transform: uppercase; box-shadow: 0 6px 0 #000000; transition: all 0.2s; box-sizing: border-box;}
         .btn-iniciar-quiz:active { transform: translateY(6px); box-shadow: 0 0 0 #000000; }
 
@@ -226,7 +230,7 @@
 
         .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s;}
         .dynamic-button:active { transform: scale(0.95); }
-        .youtube-button { background: #ffffff !important; color: #000000 !important; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #000000;}
+        .youtube-button { background: #000000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -234,38 +238,41 @@
         @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
         /* === MODAL CONQUISTA === */
-        .modal-conquista-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
+        .modal-conquista-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(5px); }
         .achievement-modal { background: #ffffff; border: 2px solid #000000; border-radius: 20px; padding: 35px 20px 20px; text-align: center; width: 85%; max-width: 340px; color: #000; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
-        .achievement-modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: #000000; }
+        .achievement-modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px); }
         .modal-icon { font-size: 4.5rem; margin-bottom: 5px; display: inline-block; animation: pulseIcon 1.5s infinite alternate; text-shadow: 0 5px 15px rgba(0,0,0,0.1);}
         .modal-title { font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0; text-transform: uppercase; color: #000000;}
         .modal-text { font-size: 0.95rem; color: #444; margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
         .modal-btn-share { background: #25D366; color: #fff; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; display: block; text-align: center; text-decoration: none; box-shadow: 0 5px 0 #188c42; text-transform: uppercase; font-size: 0.95rem; transition: transform 0.1s; margin-bottom: 15px; box-sizing: border-box;}
         .modal-btn-share:active { transform: translateY(5px); box-shadow: 0 0 0 #188c42; }
         .modal-btn-premio { background: #f09433 !important; box-shadow: 0 5px 0 #c2701e !important; color: #000 !important; }
-        .modal-btn-close { background: #f0f0f0; color: #555; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; padding: 12px; width: 100%; font-weight: 700; transition: background 0.2s;}
-        .modal-btn-close:active { background: #e0e0e0; }
-        
+        .modal-btn-close { background: #000000; color: #ffffff; border: none; border-radius: 8px; font-size: 0.85rem; cursor: pointer; padding: 12px; width: 100%; font-weight: 700; transition: background 0.2s;}
+        .modal-btn-close:active { background: #333333; }
         .confetti-wrap { position: absolute; top: -20px; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: -1;}
         .confetti { position: absolute; width: 10px; height: 10px; background: #000000; animation: fall 3s linear infinite; }
         .confetti:nth-child(2) { left: 20%; background: #dddddd; animation-delay: 0.5s; }
         .confetti:nth-child(3) { left: 40%; background: #555555; animation-delay: 1s; }
         .confetti:nth-child(4) { left: 60%; background: #000000; animation-delay: 0.2s; }
         .confetti:nth-child(5) { left: 80%; background: #aaaaaa; animation-delay: 0.8s; }
+        
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulseIcon { 0% { transform: scale(1) translateY(0); } 100% { transform: scale(1.1) translateY(-5px); } }
+        @keyframes fall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1;} 100% { transform: translateY(200px) rotate(360deg); opacity: 0;} }
     </style>
 </head>
 <body>
 
 <div class="widget">
     <div class="header">
-       <img src="https://a.espncdn.com/i/teamlogos/soccer/500/2674.png" alt="Escudo Santos">
+       <img src="https://a.espncdn.com/i/teamlogos/soccer/500/2278.png" alt="Escudo Santos">
         <h1>SANTOS</h1>
         <p>Acesso Exclusivo via Chaveiro Inteligente Mini Mundo 3D</p>
         
         <audio id="hino-audio" src="hino.mp3" loop preload="none"></audio>
         <button class="music-btn" id="btn-tocar" onclick="controlarMusica()">🎵 Tocar Hino</button>
 
-        <a href="https://www.espn.com.br/futebol/time/elenco/_/id/2674/santos" target="_blank" style="margin-top: 10px; background: transparent; color: #555555; border: 1px solid #555555; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; text-decoration: none; transition: 0.2s;">📋 Ver Elenco Atual</a>
+        <a href="https://www.espn.com.br/futebol/time/elenco/_/id/2278/santos" target="_blank" style="margin-top: 10px; background: transparent; color: #cccccc; border: 1px solid #cccccc; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; text-decoration: none; transition: 0.2s;">📋 Ver Elenco Atual</a>
     </div>
 
     <div id="live-match-container" class="live-container" style="display: none;"></div>
@@ -273,18 +280,15 @@
     <div class="section-title">Últimos Resultados <span class="cache-info" id="status-update">Buscando...</span></div>
     <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor...</p></div>
 
-    <div class="section-title" id="titulo-classificacao">Classificação</div>
-    <div class="table-container">
-        <table class="standings-table">
-            <thead>
-                <tr>
-                    <th width="10%">#</th><th width="40%" style="text-align: left;">Time</th><th width="10%">P</th><th width="10%">J</th><th width="10%">V</th><th width="10%">E</th><th width="10%">D</th>
-                </tr>
-            </thead>
-            <tbody id="classificacao">
-                <tr><td colspan="7" style="text-align:center; padding:20px; color:#666;">Carregando tabela...</td></tr>
-            </tbody>
-        </table>
+    <div class="section-title" id="titulo-classificacao">CLASSIFICAÇÃO</div>
+
+    <div id="area-seletor" style="display: none;">
+        <div class="instrucao-tabela" style="display: block;">👇 Escolha o campeonato:</div>
+        <div class="seletor-campeonato" id="botoes-campeonato" style="display: flex;"></div>
+    </div>
+    
+    <div id="area-tabelas">
+        <p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Aguarde...</p>
     </div>
 
     <div class="section-title">Próximas Partidas</div>
@@ -308,7 +312,7 @@
         <div class="timer-container" id="timer-container"><div class="timer-bar" id="barra-tempo"></div></div>
 
         <div id="tela-inicio-quiz" style="text-align: center; padding: 15px 0;">
-            <p style="color: #444; font-size: 0.95rem; margin-bottom: 20px; font-weight: 600;">Mostre que você entende tudo do Peixe e concorra a prêmios!</p>
+            <p style="color: #444; font-size: 0.95rem; margin-bottom: 20px; font-weight: 600;">Mostre que você entende tudo do Peixão e concorra a prêmios!</p>
             <button class="btn-iniciar-quiz" onclick="iniciarQuiz()">▶️ INICIAR DESAFIO</button>
         </div>
 
@@ -324,9 +328,9 @@
     <div class="trophy-cabinet">
         <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🌎</span> Mundial de Clubes</span><span class="trophy-years">1962, 1963</span></div>
         <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🏆</span> Libertadores</span><span class="trophy-years">1962, 1963, 2011</span></div>
-        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">⭐</span> Brasileirão</span><span class="trophy-years">8 Títulos (Último: 2004)</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">⭐</span> Brasileirão</span><span class="trophy-years">8 Títulos</span></div>
         <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🏆</span> Copa do Brasil</span><span class="trophy-years">2010</span></div>
-        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🥇</span> Paulistão</span><span class="trophy-years">22 Títulos (Último: 2016)</span></div>
+        <div class="trophy-item"><span class="trophy-name"><span class="trophy-icon">🥇</span> Paulistão</span><span class="trophy-years">22 Títulos</span></div>
     </div>
 
     <div id="secao-minimundo" class="minimundo-section">
@@ -344,7 +348,7 @@
 
     <div id="secao-anuncios" class="ads-section">
         <div class="ads-header">
-            <h3 class="ads-title">Parceiros do Peixe</h3>
+            <h3 class="ads-title">Parceiros da Vila</h3>
             <p class="ads-subtitle">Aproveite as ofertas exclusivas para a Nação Santista</p>
         </div>
         
@@ -365,8 +369,8 @@
         <span>MINI MUNDO IMPRESSÃO 3D & DESIGN</span>
         
         <div class="social-links">
-            <a href="https://www.instagram.com/minimundo3d.oficial?igsh=M2g0ZzlraDRuM2Z3" target="_blank" class="social-btn insta">📸 Instagram</a>
-            <a href="https://wa.me/5511992279009?text=Ol%C3%A1%21%20Vim%20pelo%20chaveiro%20do%20meu%20time%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20produtos%20da%20Mini%20Mundo." target="_blank" class="social-btn zap">💬 WhatsApp</a>
+            <a href="https://www.instagram.com/minimundo3d.oficial" target="_blank" class="social-btn insta">📸 Instagram</a>
+            <a href="https://wa.me/5511992279009" target="_blank" class="social-btn zap">💬 WhatsApp</a>
         </div>
     </div>
 </div>
@@ -431,17 +435,24 @@
 </div>
 
 <script>
-    const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxiHVwdciFEW8ro_JqBokolGgSm-Vh1ILi2aB7gu9VKs4YcVnQBCEDa7QnqOPXuRlb3pQ/exec"; 
+    // 🔥 COLOQUE AQUI O LINK DA IMPLANTAÇÃO DA PLANILHA DO SANTOS 🔥
+    const MINHA_API_GOOGLE = "SUA_API_DO_SANTOS_AQUI"; 
+    
     const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
     const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
+    
+    // 🔥 VARIÁVEL QUE FAZ A TABELA FICAR DESTACADA PRO TIME CERTO 🔥
+    const NOME_TIME_BUSCA = "santos";
 
     let bancoDePerguntas = []; let perguntaAtual = null; let acertos = 0, erros = 0, ofensiva = 0;
+    
+    // 🔥 MEMÓRIA LOCAL EXCLUSIVA DO SANTOS 🔥
     let recorde = localStorage.getItem("quiz_recorde_santos") || 0;
+    
     let radarInterval = null; const TEMPO_MAXIMO = 15; let tempoAtual = TEMPO_MAXIMO, timerQuiz = null;
     let catalogoGlobal = []; let anunciosGlobal = [];
 
-    // === FUNÇÃO MÁGICA: EMBELEZAR PREÇO ===
     function formatarPreco(valorString) {
         if(!valorString) return "";
         let v = String(valorString).trim();
@@ -475,6 +486,7 @@
         const s = nomeOuSlug.toLowerCase();
         if (s.includes("paulista")) return "Paulistão"; if (s.includes("carioca")) return "Cariocão";
         if (s.includes("bra.1") || s.includes("serie a")) return "Brasileirão Série A";
+        if (s.includes("bra.2") || s.includes("serie b")) return "Brasileirão Série B";
         if (s.includes("libertadores")) return "Libertadores"; if (s.includes("copa do brasil")) return "Copa do Brasil";
         if (s.includes("sul-americana") || s.includes("sudamericana")) return "Copa Sul-Americana";
         return nomeOuSlug;
@@ -519,7 +531,7 @@
                     { label: "Escanteios", key: "wonCorners" },
                     { label: "Faltas", key: "foulsCommitted" },
                     { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
-                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
+                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" } 
                 ];
 
                 statsHTML = estatisticas.map(stat => {
@@ -547,16 +559,50 @@
         } catch (e) { console.error(e); }
     }
 
+    function renderizarTabelaHTML(dadosTabela, idTabela, isAtiva) {
+        let html = `<div id="${idTabela}" class="tabela-wrapper ${isAtiva ? 'ativa' : ''}">
+            <table class="tabela-classificacao">
+                <thead><tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr></thead>
+                <tbody>`;
+        
+        let tableToRender = dadosTabela.slice(0, 10);
+        
+        if (!tableToRender.some(t => t.team.toLowerCase().includes(NOME_TIME_BUSCA))) {
+            const timeData = dadosTabela.find(t => t.team.toLowerCase().includes(NOME_TIME_BUSCA));
+            if (timeData) { 
+                tableToRender.push({ isDivider: true }); 
+                tableToRender.push(timeData); 
+            }
+        }
+
+        tableToRender.forEach(t => {
+            if (t.isDivider) { 
+                html += `<tr><td colspan="7" style="background:#f8fafc; color:#cbd5e1; font-size:1.2rem; padding:2px;">...</td></tr>`; 
+                return; 
+            }
+            const bgClass = t.team.toLowerCase().includes(NOME_TIME_BUSCA) ? 'santos-row' : '';
+            // 🔥 CLASSE DA TABELA .time-col (PEQUENA) 🔥
+            html += `<tr class="${bgClass}">
+                <td style="color:#64748b; font-weight:700;">${t.rank}</td>
+                <td class="time-col"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'"> ${t.team}</td>
+                <td style="font-weight:900; color:#1e293b;">${t.points}</td>
+                <td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td>
+            </tr>`;
+        });
+        
+        html += `</tbody></table></div>`;
+        return html;
+    }
+
     async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
         carregarVitrine();
         carregarAnuncios();
 
-        const resDiv = document.getElementById("resultados"), classDiv = document.getElementById("classificacao"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
+        const resDiv = document.getElementById("resultados"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update"), areaTabelas = document.getElementById("area-tabelas"), areaSeletor = document.getElementById("area-seletor"), botoesCamp = document.getElementById("botoes-campeonato"), tituloClass = document.getElementById("titulo-classificacao");
 
         try {
-            // 🔥 TRATAMENTO DE TIMEOUT (15 SEGUNDOS) 🔥
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -579,23 +625,27 @@
             resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center;'>Sem dados recentes.</p>";
 
-            classDiv.innerHTML = "";
-            if (dados.leagueName && dados.leagueName !== "Classificação") {
-                document.getElementById("titulo-classificacao").innerText = `Classificação: ${traduzirCampeonato(dados.leagueName)}`;
-            }
-            
-            if (dados.table && dados.table.length > 0) {
-                let tableToRender = dados.table.slice(0, 10);
-                if (!tableToRender.some(t => t.team.toLowerCase().includes('santos'))) {
-                    const sanData = dados.table.find(t => t.team.toLowerCase().includes('santos'));
-                    if (sanData) { tableToRender.push({ isDivider: true }); tableToRender.push(sanData); }
-                }
-                tableToRender.forEach(t => {
-                    if (t.isDivider) { classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`; return; }
-                    const bgClass = t.team.toLowerCase().includes('santos') ? 'highlight-team' : '';
-                    classDiv.innerHTML += `<tr class="${bgClass}"><td style="color:#777;">${t.rank}</td><td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td><td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td></tr>`;
+            areaTabelas.innerHTML = "";
+            botoesCamp.innerHTML = "";
+
+            if (dados.campeonatos && dados.campeonatos.length > 0) {
+                areaSeletor.style.display = "block"; document.querySelector('.instrucao-tabela').style.display = "block"; botoesCamp.style.display = "flex";
+                tituloClass.innerText = "CLASSIFICAÇÃO";
+                
+                dados.campeonatos.forEach((camp, index) => {
+                    const idTab = "tab-camp-" + index;
+                    const isAtiva = index === 0;
+                    botoesCamp.innerHTML += `<button class="btn-camp ${isAtiva ? 'ativo' : ''}" onclick="mudarTabela(event, '${idTab}')">${camp.nome}</button>`;
+                    areaTabelas.innerHTML += renderizarTabelaHTML(camp.table, idTab, isAtiva);
                 });
-            } else classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível.</td></tr>";
+            } else if (dados.table && dados.table.length > 0) {
+                areaSeletor.style.display = "none";
+                tituloClass.innerText = "CLASSIFICAÇÃO DO CAMPEONATO";
+                areaTabelas.innerHTML = renderizarTabelaHTML(dados.table, 'tab-unica', true);
+            } else {
+                areaSeletor.style.display = "none";
+                areaTabelas.innerHTML = "<div style='padding:20px; text-align:center; color:#999; background:#fff; border-radius:15px;'>Classificação indisponível no momento.</div>";
+            }
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
@@ -606,13 +656,12 @@
             }
         } catch (err) {
             console.error(err); 
-            // 🔥 MENSAGEM AMIGÁVEL PARA O TORCEDOR SE A ESPN TRAVAR 🔥
             let msgErro = "Erro de conexão com o servidor.";
             if (err.name === 'AbortError') {
                 msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!";
             }
             resDiv.innerHTML = `<div style='padding:20px; color:#000000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
-            classDiv.innerHTML = `<tr><td colspan='7' style='padding:20px; color:#000000; font-weight:800; font-size:0.85rem; line-height:1.4;'>${msgErro}</td></tr>`;
+            areaTabelas.innerHTML = `<div style='padding:20px; color:#000000; text-align:center; font-weight:800; font-size:0.85rem; line-height:1.4;'>${msgErro}</div>`;
             ageDiv.innerHTML = "";
             newsDiv.innerHTML = "";
             statusUpdate.innerText = "VAR revisando conexão...";
@@ -626,7 +675,8 @@
         const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
         const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
 
-        return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
+        // 🔥 CLASSE .team-col-match AQUI PARA AS PARTIDAS (MÉDIOS 30px) 🔥
+        return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col-match home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col-match away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
     }
 
     // === LOJA MINI MUNDO ===
@@ -832,7 +882,11 @@
         if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]);
         const btnShare = document.getElementById("modal-btn-share"); btnShare.classList.remove("modal-btn-premio");
 
-        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; } else if (marca === 10) { nivel = "GÊNIO DA VILA!"; icone = "🧠"; } else if (marca === 15) { nivel = "NÍVEL NEYMAR!"; icone = "👑"; } else if (marca === 20) { nivel = "REI DO FUTEBOL!"; icone = "👑"; } else { nivel = "LENDA VIVA!"; icone = "🏆"; }
+        if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; } 
+        else if (marca === 10) { nivel = "MENINO DA VILA!"; icone = "🧠"; } 
+        else if (marca === 15) { nivel = "NÍVEL NEYMAR!"; icone = "👑"; } 
+        else if (marca === 20) { nivel = "NÍVEL REI PELÉ!"; icone = "⚡"; } 
+        else { nivel = "DEUS DA VILA!"; icone = "🏆"; }
 
         document.getElementById("modal-icone").innerText = icone; document.getElementById("modal-titulo").innerText = nivel;
 
@@ -875,6 +929,14 @@
             btnProxima.style.display = "block";
         }
         document.getElementById("q-acertos").innerText = acertos; document.getElementById("q-erros").innerText = erros; document.getElementById("q-chama").innerText = ofensiva;
+    }
+
+    // === MUDANÇA DE TABELA DE CLASSIFICAÇÃO ===
+    function mudarTabela(event, campeonatoId) {
+        document.querySelectorAll('.btn-camp').forEach(btn => btn.classList.remove('ativo'));
+        document.querySelectorAll('.tabela-wrapper').forEach(tab => tab.classList.remove('ativa'));
+        event.target.classList.add('ativo');
+        document.getElementById(campeonatoId).classList.add('ativa');
     }
 </script>
 
