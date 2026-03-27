@@ -19,6 +19,17 @@
         .music-btn { margin-top: 15px; background: #ffffff; color: #c90000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
         .music-btn:active { transform: scale(0.95); }
 
+        /* === SELETOR DE CAMPEONATOS (CLASSIFICAÇÃO) === */
+        .instrucao-tabela { font-size: 0.85rem; color: #64748b; font-weight: 600; text-align: center; margin-bottom: 12px; }
+        .seletor-campeonato { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .btn-camp { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 18px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
+        .btn-camp:hover { background: #e2e8f0; }
+        .btn-camp.ativo { background: #c90000; color: white; border-color: #c90000; box-shadow: 0 6px 15px rgba(201, 0, 0, 0.3); }
+        
+        .tabela-wrapper { display: none; animation: fadeIn 0.3s ease; }
+        .tabela-wrapper.ativa { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
         /* Placar ao Vivo & Estrutura */
         .live-container { background: #ffffff; border: 2px solid #c90000; border-radius: 15px; margin: 15px 10px; padding: 15px; box-shadow: 0 5px 20px rgba(201,0,0,0.15); }
         .live-header { text-align: center; font-weight: 900; color: #c90000; font-size: 0.9rem; margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 8px; letter-spacing: 1px;}
@@ -243,16 +254,38 @@
     <div class="section-title">Últimos Resultados <span class="cache-info" id="status-update">Buscando...</span></div>
     <div id="resultados"><p style='padding:20px; text-align:center; color:#666; font-size: 0.85rem;'>Conectando ao servidor...</p></div>
 
-    <div class="section-title" id="titulo-classificacao">Classificação</div>
-    <div class="table-container">
-        <table class="standings-table">
+   <div class="section-title">CLASSIFICAÇÃO</div>
+
+    <div class="instrucao-tabela">👇 Escolha o campeonato para ver a tabela:</div>
+    <div class="seletor-campeonato">
+        <button class="btn-camp ativo" onclick="mudarTabela(event, 'brasileirao')">Brasileirão Série A</button>
+        <button class="btn-camp" onclick="mudarTabela(event, 'libertadores')">Libertadores</button>
+    </div>
+    
+    <div id="tab-brasileirao" class="tabela-wrapper ativa">
+        <table class="tabela-classificacao">
             <thead>
-                <tr>
-                    <th width="10%">#</th><th width="40%" style="text-align: left;">Time</th><th width="10%">P</th><th width="10%">J</th><th width="10%">V</th><th width="10%">E</th><th width="10%">D</th>
-                </tr>
+                <tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr>
             </thead>
-            <tbody id="classificacao">
-                <tr><td colspan="7" style="text-align:center; padding:20px; color:#666;">Carregando tabela...</td></tr>
+            <tbody>
+                <tr><td>1</td><td class="time-col"><img src="escudo-palmeiras.png"> Palmeiras</td><td>19</td><td>8</td><td>6</td><td>1</td><td>1</td></tr>
+                <tr><td>2</td><td class="time-col"><img src="escudo-saopaulo.png"> São Paulo</td><td>16</td><td>8</td><td>5</td><td>1</td><td>2</td></tr>
+                <tr class="flamengo-row"><td>3</td><td class="time-col"><img src="escudo-flamengo.png"> Flamengo</td><td>14</td><td>7</td><td>4</td><td>2</td><td>1</td></tr>
+                </tbody>
+        </table>
+    </div>
+    
+    <div id="tab-libertadores" class="tabela-wrapper">
+        <div style="text-align: center; margin-bottom: 10px; font-weight: 800; color: #c90000; font-size: 0.9rem;">Fase de Grupos - Grupo E</div>
+        <table class="tabela-classificacao">
+            <thead>
+                <tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr>
+            </thead>
+            <tbody>
+                <tr class="flamengo-row"><td>1</td><td class="time-col"><img src="escudo-flamengo.png"> Flamengo</td><td>9</td><td>3</td><td>3</td><td>0</td><td>0</td></tr>
+                <tr><td>2</td><td class="time-col"><img src="escudo-cusco.png"> Cusco FC</td><td>6</td><td>3</td><td>2</td><td>0</td><td>1</td></tr>
+                <tr><td>3</td><td class="time-col"><img src="escudo-medellin.png"> Ind. Medellín</td><td>3</td><td>3</td><td>1</td><td>0</td><td>2</td></tr>
+                <tr><td>4</td><td class="time-col">Outro Time</td><td>0</td><td>3</td><td>0</td><td>0</td><td>3</td></tr>
             </tbody>
         </table>
     </div>
@@ -732,6 +765,20 @@
     function abrirModalConquista(marca) { let nivel = "", icone = ""; if ("vibrate" in navigator) navigator.vibrate([100, 50, 100, 50, 200]); const btnShare = document.getElementById("modal-btn-share"); btnShare.classList.remove("modal-btn-premio"); if (marca === 5) { nivel = "MÁQUINA DE ACERTOS!"; icone = "🔥"; } else if (marca === 10) { nivel = "GÊNIO DA NAÇÃO!"; icone = "🧠"; } else if (marca === 15) { nivel = "NÍVEL ZICO!"; icone = "👑"; } else if (marca === 20) { nivel = "DEUS DO FUTEBOL!"; icone = "⚡"; } else { nivel = "LENDA VIVA!"; icone = "🏆"; } document.getElementById("modal-icone").innerText = icone; document.getElementById("modal-titulo").innerText = nivel; if (marca >= 30 && marca % 30 === 0) { document.getElementById("modal-mensagem").innerHTML = `Você alcançou a marca épica de <b>${marca} acertos seguidos!</b> Tire um print desta tela e mande no WhatsApp da Mini Mundo para resgatar sua recompensa exclusiva num novo Chaveiro!`; btnShare.href = `https://wa.me/5511992279009?text=Atingi%20o%20n%C3%ADvel%20Lenda%20Viva%20com%20${marca}%20acertos%20no%20Flamengo%21%20Quero%20meu%20desconto%21`; btnShare.innerText = "🎁 Resgatar Minha Recompensa"; btnShare.classList.add("modal-btn-premio"); } else { document.getElementById("modal-mensagem").innerText = `Você atingiu a marca impressionante de ${marca} acertos seguidos! Mostre para seus amigos quem é que sabe tudo do Flamengo.`; btnShare.href = `https://wa.me/?text=${encodeURIComponent(`${icone} ${nivel} Acabei de acertar ${marca} perguntas seguidas no Quiz do Flamengo direto no meu Chaveiro Inteligente da Mini Mundo! Duvido você bater meu recorde: https://www.instagram.com/minimundo3d.oficial`)}`; btnShare.innerText = "📱 Compartilhar e Zoar"; } document.getElementById("modal-conquista").style.display = "flex"; }
     function fecharModalQuiz() { document.getElementById("modal-conquista").style.display = "none"; sortearPergunta(); }
     function verificarResposta(botaoClicado, numEscolhido) { clearInterval(timerQuiz); const botoes = document.querySelectorAll(".quiz-btn"); botoes.forEach(b => b.onclick = null); const elementoChama = document.getElementById("q-chama"), btnProxima = document.getElementById("btn-proxima"); btnProxima.className = "btn-proxima"; if (numEscolhido === perguntaAtual.correta) { if (botaoClicado) botaoClicado.classList.add("correct"); if ("vibrate" in navigator) navigator.vibrate(50); acertos++; ofensiva++; elementoChama.classList.add("chama-ativa"); btnProxima.classList.add("acertou"); btnProxima.innerText = frasesAcerto[Math.floor(Math.random() * frasesAcerto.length)]; if (ofensiva > recorde) { recorde = ofensiva; localStorage.setItem("quiz_recorde_flamengo", recorde); document.getElementById("q-recorde").innerText = recorde; } if (ofensiva > 0 && ofensiva % 5 === 0) abrirModalConquista(ofensiva); else btnProxima.style.display = "block"; } else { if (botaoClicado) botaoClicado.classList.add("wrong"); botoes[perguntaAtual.correta - 1].classList.add("correct"); if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]); erros++; ofensiva = 0; elementoChama.classList.remove("chama-ativa"); btnProxima.classList.add("errou"); if (!botaoClicado) { btnProxima.innerText = "⏰ TEMPO ESGOTADO! Tentar Outra ➡️"; if ("vibrate" in navigator) navigator.vibrate([200, 100, 200]); } else { btnProxima.innerText = frasesErro[Math.floor(Math.random() * frasesErro.length)]; } btnProxima.style.display = "block"; } document.getElementById("q-acertos").innerText = acertos; document.getElementById("q-erros").innerText = erros; document.getElementById("q-chama").innerText = ofensiva; }
+
+    // === MUDANÇA DE TABELA DE CLASSIFICAÇÃO ===
+    function mudarTabela(event, campeonatoId) {
+        // 1. Tira a cor vermelha de todos os botões
+        document.querySelectorAll('.btn-camp').forEach(btn => btn.classList.remove('ativo'));
+        
+        // 2. Esconde todas as tabelas
+        document.querySelectorAll('.tabela-wrapper').forEach(tab => tab.classList.remove('ativa'));
+    
+        // 3. Pinta o botão clicado de vermelho e mostra a tabela certa
+        event.target.classList.add('ativo');
+        document.getElementById('tab-' + campeonatoId).classList.add('ativa');
+    }
+    
 </script>
 
 </body>
