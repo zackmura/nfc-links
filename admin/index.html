@@ -737,8 +737,9 @@
         } catch(e) { alert("Erro: " + e.message); addLog(`❌ Erro produto: ${e.message}`, "error"); } finally { b.disabled = false; b.innerText = "💾 Salvar"; }
     }
 
-    // === UPLOAD INTELIGENTE E IA (GERAL) ===
+    // === UPLOAD INTELIGENTE (COM LOGS DE ERRO) ===
     const fileToBase64 = f => new Promise((r, j) => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => r(rd.result.split(',')[1]); rd.onerror = e => j(e); });
+    
     function comprimirImagem(f, mW, mH, q) {
         return new Promise((r, j) => {
             if (!f.type.match(/image.*/)) return j(new Error(`Formato inválido.`));
@@ -749,7 +750,7 @@
                     let w = i.width, h = i.height; if (w > h) { if (w > mW) { h = Math.round(h * mW / w); w = mW; } } else { if (h > mH) { w = Math.round(w * mH / h); h = mH; } }
                     const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const cx = cv.getContext('2d'); cx.drawImage(i, 0, 0, w, h);
                     const nU = Date.now() + "_" + f.name.replace(/[^a-zA-Z0-9.]/g, '_').toLowerCase();
-                    cv.toBlob(b => b ? r(new File([b], nU, { type: 'image/jpeg' })) : j(new Error("Falha.")), 'image/jpeg', q);
+                    cv.toBlob(b => b ? r(new File([b], nU, { type: 'image/jpeg' })) : j(new Error("Falha na compressão.")), 'image/jpeg', q);
                 };
             };
         });
@@ -757,40 +758,113 @@
 
     async function fazerUploadInteligente(fC, ik, iA = false) {
         try {
+            // Tenta o Servidor Principal (OnionSys)
             const fd = new FormData(); fd.append("imagem", fC); const ep = iA ? API_ONIONSYS_ADS : API_ONIONSYS;
             const rp = await fetch(ep, { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id": "MiniMundo" }, body: fd });
             const tx = await rp.text();
             if (rp.ok) {
                 try {
                     const rs = JSON.parse(tx); let u = (rs.arquivos && rs.arquivos.length > 0) ? rs.arquivos[0].url : (rs.url || rs.link || rs.URL || (rs.filename ? `https://api.onionsys.com.br/arquivos/${iA ? 'anuncios' : 'catalogo'}/${rs.filename}` : null));
-                    if (u) return u; else throw new Error("URL branco.");
-                } catch(e) { throw new Error("Formato inválido."); }
-            } else throw new Error(`Status ${rp.status}`);
+                    if (u) return u; else throw new Error("URL em branco retornada pelo servidor.");
+                } catch(e) { throw new Error("Servidor retornou um formato inválido."); }
+            } else throw new Error(`Servidor rejeitou conexão (Status ${rp.status})`);
         } catch (er) {
-            addLog(`⚠️ Fallback ImgBB...`, "warn"); if(!ik) throw new Error("Chave ImgBB ausente.");
-            const fd2 = new FormData(); fd2.append("image", fC);
-            const r2 = await fetch(`https://api.imgbb.com/1/upload?key=${ik}`, { method: "POST", body: fd2 }); const d2 = await r2.json();
-            if(d2.success) return d2.data.url; throw new Error(`ImgBB falhou.`);
+            // Se falhar, tenta o ImgBB de forma clara no Log
+            addLog(`⚠️ Servidor primário falhou. Tentando ImgBB...`, "warn"); 
+            if(!ik) {
+                addLog(`❌ Faltando chave do ImgBB na aba 'Chaves'!`, "error");
+                throw new Error("Chave ImgBB ausente.");
+            }
+            try {
+                const fd2 = new FormData(); fd2.append("image", fC);
+                const r2 = await fetch(`https://api.imgbb.com/1/upload?key=${ik}`, { method: "POST", body: fd2 }); 
+                const d2 = await r2.json();
+                if(d2.success) return d2.data.url; 
+                throw new Error(`A API do ImgBB recusou a imagem.`);
+            } catch (errImgBB) {
+                addLog(`❌ Falha dupla no upload de imagens. Verifique sua chave.`, "error");
+                throw errImgBB;
+            }
         }
     }
 
+    // 🔥 O BOTÃO DE CADASTRAR PRODUTO CORRIGIDO 🔥
     async function cadastrarProdutoIA() {
-        const ak = document.getElementById("api-key").value.trim(), ik = document.getElementById("imgbb-key").value.trim(), n = document.getElementById("prod-nome").value.trim(), p = document.getElementById("prod-preco").value.trim(), f = document.getElementById("prod-fotos").files, b = document.getElementById("btn-salvar-produto");
-        if(!ak || !n || !p || f.length === 0) return addLog("ERRO: Faltam campos.", "error");
-        b.disabled = true; b.innerText = "⏳ Processando...";
+        const ak = document.getElementById("api-key").value.trim();
+        const ik = document.getElementById("imgbb-key").value.trim(); 
+        const n = document.getElementById("prod-nome").value.trim();
+        const p = document.getElementById("prod-preco").value.trim();
+        const f = document.getElementById("prod-fotos").files;
+        const b = document.getElementById("btn-salvar-produto");
+        
+        if(!ak) {
+            switchTab('config');
+            return addLog("❌ ERRO: Coloque a chave da IA (Gemini) primeiro!", "error");
+        }
+        if(!n || !p || f.length === 0) {
+            return addLog("⚠️ Preencha Nome, Preço e escolha uma Foto.", "warn");
+        }
+        
+        b.disabled = true; b.innerText = "⏳ Analisando...";
+        
         try {
-            addLog(`Iniciando: ${n}`, "warn"); const b6 = await fileToBase64(f[0]); let ls = [];
-            for(let i = 0; i < f.length; i++) { ls.push(await fazerUploadInteligente(await comprimirImagem(f[i], 1000, 1000, 0.8), ik, false)); addLog(`Foto ${i+1} ok.`, "success"); }
-            addLog(`IA criando copy...`, "info");
-            const pr = `Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda:\nDescricao: [Sua copy em até 3 frases]\nCategoria: [1 ou 2 palavras]`;
-            const rI = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ak}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: pr }, { inlineData: { mimeType: f[0].type, data: b6 } }] }] }) });
-            if (!rI.ok) throw new Error("Falha Gemini.");
-            const dI = await rI.json(); let ds = "Exclusivo.", ct = "Geral";
-            dI.candidates[0].content.parts[0].text.split('\n').forEach(l => { if (l.toLowerCase().startsWith('descricao:')) ds = l.substring(10).trim(); if (l.toLowerCase().startsWith('categoria:')) ct = l.substring(10).trim(); });
-            addLog(`Salvando Planilha...`, "info");
-            const rS = await fetch(URL_ANALYTICS_CATALOGO, { method: "POST", body: JSON.stringify({ acao: "salvar_produto", nome: n, descricao: ds, preco: p, foto: ls.join(","), categoria: ct }) });
-            if ((await rS.json()).sucesso) { addLog(`✅ NOVO CADASTRADO!`, "success"); document.getElementById("prod-nome").value = ""; document.getElementById("prod-preco").value = ""; document.getElementById("prod-fotos").value = ""; carregarCatalogoAdmin(); } else throw new Error("Erro planilha.");
-        } catch (er) { addLog(`❌ ERRO: ${er.message}`, "error"); } finally { b.disabled = false; b.innerText = "✨ Enviar e Cadastrar"; }
+            addLog(`Iniciando cadastro: ${n}...`, "warn"); 
+            
+            // 1. Pega a primeira imagem para a IA ver
+            const b6 = await fileToBase64(f[0]); 
+            let ls = [];
+            
+            // 2. Faz o upload de todas as imagens para a internet (ImgBB/Onion)
+            for(let i = 0; i < f.length; i++) { 
+                addLog(`⏳ Enviando foto ${i+1} de ${f.length}...`, "info");
+                const urlFoto = await fazerUploadInteligente(await comprimirImagem(f[i], 1000, 1000, 0.8), ik, false);
+                ls.push(urlFoto); 
+                addLog(`✅ Foto ${i+1} online.`, "success"); 
+            }
+            
+            // 3. Pede para a IA criar o texto
+            addLog(`🤖 IA criando a copy...`, "info");
+            const pr = `Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda:\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`;
+            
+            const rI = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ak}`, { 
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ contents: [{ parts: [{ text: pr }, { inlineData: { mimeType: f[0].type, data: b6 } }] }] }) 
+            });
+            
+            if (!rI.ok) throw new Error("A Inteligência Artificial não respondeu (Verifique a Chave).");
+            
+            const dI = await rI.json(); 
+            let ds = "Exclusivo Mini Mundo 3D.", ct = "Geral";
+            
+            // Tenta extrair a Descrição e a Categoria do texto gerado
+            dI.candidates[0].content.parts[0].text.split('\n').forEach(l => { 
+                if (l.toLowerCase().startsWith('descricao:')) ds = l.substring(10).trim(); 
+                if (l.toLowerCase().startsWith('categoria:')) ct = l.substring(10).trim(); 
+            });
+            
+            // 4. Salva tudo na planilha do Google usando a ação 'salvar_produto' corrigida
+            addLog(`💾 Salvando na Planilha...`, "info");
+            const rS = await fetch(URL_ANALYTICS_CATALOGO, { 
+                method: "POST", 
+                body: JSON.stringify({ acao: "salvar_produto", nome: n, descricao: ds, preco: p, foto: ls.join(","), categoria: ct }) 
+            });
+            
+            const resultSalvar = await rS.json();
+            
+            if (resultSalvar.sucesso) { 
+                addLog(`🎉 NOVO PRODUTO CADASTRADO COM SUCESSO!`, "success"); 
+                document.getElementById("prod-nome").value = ""; 
+                document.getElementById("prod-preco").value = ""; 
+                document.getElementById("prod-fotos").value = ""; 
+                carregarCatalogoAdmin(); 
+            } else {
+                throw new Error("A API do Google falhou ao gravar na linha.");
+            }
+        } catch (er) { 
+            addLog(`❌ ERRO FATAL: ${er.message}`, "error"); 
+        } finally { 
+            b.disabled = false; b.innerText = "✨ Enviar e Cadastrar"; 
+        }
     }
 
     // === 🎮 QUIZ E AUTOMAÇÃO ===
