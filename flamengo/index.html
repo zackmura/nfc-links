@@ -19,15 +19,28 @@
         .music-btn { margin-top: 15px; background: #ffffff; color: #c90000; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 6px; transition: transform 0.2s;}
         .music-btn:active { transform: scale(0.95); }
 
-        /* === SELETOR DE CAMPEONATOS (CLASSIFICAÇÃO) === */
+        /* === SELETOR DE CAMPEONATOS === */
         .instrucao-tabela { font-size: 0.85rem; color: #64748b; font-weight: 600; text-align: center; margin-bottom: 12px; }
-        .seletor-campeonato { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .seletor-campeonato { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .btn-camp { background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 10px 18px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.3s ease; }
         .btn-camp:hover { background: #e2e8f0; }
         .btn-camp.ativo { background: #c90000; color: white; border-color: #c90000; box-shadow: 0 6px 15px rgba(201, 0, 0, 0.3); }
         
-        .tabela-wrapper { display: none; animation: fadeIn 0.3s ease; }
+        /* === O NOVO VISUAL PREMIUM DAS TABELAS === */
+        .tabela-wrapper { display: none; animation: fadeIn 0.3s ease; background: #fff; border-radius: 15px; padding: 5px; margin: 0 10px 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow-x: auto;}
         .tabela-wrapper.ativa { display: block; }
+        .tabela-classificacao { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; white-space: nowrap; }
+        .tabela-classificacao th { background: #f8fafc; color: #64748b; font-weight: 800; padding: 12px 6px; border-bottom: 2px solid #e2e8f0; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px;}
+        .tabela-classificacao td { padding: 12px 6px; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 600; }
+        .tabela-classificacao tbody tr:last-child td { border-bottom: none; }
+        .tabela-classificacao tbody tr:nth-child(even) { background-color: #f8fafc; } /* Zebrado */
+        .time-col { text-align: left !important; display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 800; min-width: 120px;}
+        .time-col img { width: 22px; height: 22px; object-fit: contain; }
+        
+        /* Destaque do Mengão */
+        .flamengo-row { background-color: #fef2f2 !important; }
+        .flamengo-row td { color: #c90000; font-weight: 900; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Placar ao Vivo & Estrutura */
@@ -52,8 +65,8 @@
         .match-card:last-child { border-bottom: none; }
         .league-label { font-size: 0.55rem; color: #aaa; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-align: center; width: 100%;}
         .match-row { display: flex; width: 100%; align-items: center; }
-        .team-col { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
-        .team-col img { width: 30px; height: 30px; object-fit: contain; }
+        .team-col-match { flex: 1; display: flex; align-items: center; font-size: 0.85rem; color: #222; font-weight: 600; }
+        .team-col-match img { width: 30px; height: 30px; object-fit: contain; }
         .home { justify-content: flex-end; text-align: right; }
         .away { justify-content: flex-start; text-align: left; }
         .home img { margin-left: 10px; }
@@ -61,15 +74,6 @@
         .score-box { width: 90px; text-align: center; background: #f8f9fa; border-radius: 10px; padding: 8px 0; margin: 0 10px; border: 1px solid #e9ecef;}
         .score { font-weight: 800; font-size: 1.2rem; color: #000; display: block; line-height: 1; }
         .date { font-size: 0.65rem; color: #666; margin-top: 5px; display: block; font-weight: 600;}
-        
-        .table-container { padding: 0 5px 15px; }
-        .standings-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: center; }
-        .standings-table th { background: #f8f9fa; color: #444; font-weight: 800; padding: 10px 4px; border-bottom: 2px solid #ddd; }
-        .standings-table td { padding: 10px 4px; border-bottom: 1px solid #f0f0f0; color: #222; font-weight: 600; }
-        .team-cell { display: flex; align-items: center; justify-content: flex-start; gap: 8px; font-weight: 800; text-align: left;}
-        .team-cell img { width: 20px; height: 20px; object-fit: contain; }
-        .highlight-team { background: #ffe6e6 !important; }
-        .highlight-team td { color: #c90000; }
 
         .news-card { padding: 15px; border-bottom: 1px solid #f5f5f5; display: block; text-decoration: none; transition: background 0.2s; }
         .news-card:hover { background: #fafafa; }
@@ -208,8 +212,6 @@
         .youtube-button { display:block; text-align:center; padding:10px; border-radius:10px; font-size:0.8rem; font-weight:800; text-decoration:none; margin-top:12px; width:100%; box-sizing:border-box; transition: transform 0.2s; background: #c90000 !important; color: #ffffff !important; box-shadow: 0 4px 10px rgba(201,0,0,0.2);}
         .youtube-button:active { transform: scale(0.95); }
         
-        .fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes tremer { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 50% { transform: translateX(5px); } 75% { transform: translateX(-5px); } 100% { transform: translateX(0); } }
         @keyframes pulseBanner { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
@@ -268,9 +270,9 @@
                 <tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr>
             </thead>
             <tbody>
-                <tr><td>1</td><td class="time-col"><img src="escudo-palmeiras.png"> Palmeiras</td><td>19</td><td>8</td><td>6</td><td>1</td><td>1</td></tr>
-                <tr><td>2</td><td class="time-col"><img src="escudo-saopaulo.png"> São Paulo</td><td>16</td><td>8</td><td>5</td><td>1</td><td>2</td></tr>
-                <tr class="flamengo-row"><td>3</td><td class="time-col"><img src="escudo-flamengo.png"> Flamengo</td><td>14</td><td>7</td><td>4</td><td>2</td><td>1</td></tr>
+                <tr><td>1</td><td class="time-col"><img src="escudo-palmeiras.png" onerror="this.style.display='none'"> Palmeiras</td><td>19</td><td>8</td><td>6</td><td>1</td><td>1</td></tr>
+                <tr><td>2</td><td class="time-col"><img src="escudo-saopaulo.png" onerror="this.style.display='none'"> São Paulo</td><td>16</td><td>8</td><td>5</td><td>1</td><td>2</td></tr>
+                <tr class="flamengo-row"><td>3</td><td class="time-col"><img src="https://a.espncdn.com/i/teamlogos/soccer/500/819.png" onerror="this.style.display='none'"> Flamengo</td><td>14</td><td>7</td><td>4</td><td>2</td><td>1</td></tr>
                 </tbody>
         </table>
     </div>
@@ -282,9 +284,9 @@
                 <tr><th>#</th><th class="time-col">Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th></tr>
             </thead>
             <tbody>
-                <tr class="flamengo-row"><td>1</td><td class="time-col"><img src="escudo-flamengo.png"> Flamengo</td><td>9</td><td>3</td><td>3</td><td>0</td><td>0</td></tr>
-                <tr><td>2</td><td class="time-col"><img src="escudo-cusco.png"> Cusco FC</td><td>6</td><td>3</td><td>2</td><td>0</td><td>1</td></tr>
-                <tr><td>3</td><td class="time-col"><img src="escudo-medellin.png"> Ind. Medellín</td><td>3</td><td>3</td><td>1</td><td>0</td><td>2</td></tr>
+                <tr class="flamengo-row"><td>1</td><td class="time-col"><img src="https://a.espncdn.com/i/teamlogos/soccer/500/819.png" onerror="this.style.display='none'"> Flamengo</td><td>9</td><td>3</td><td>3</td><td>0</td><td>0</td></tr>
+                <tr><td>2</td><td class="time-col"><img src="escudo-cusco.png" onerror="this.style.display='none'"> Cusco FC</td><td>6</td><td>3</td><td>2</td><td>0</td><td>1</td></tr>
+                <tr><td>3</td><td class="time-col"><img src="escudo-medellin.png" onerror="this.style.display='none'"> Ind. Medellín</td><td>3</td><td>3</td><td>1</td><td>0</td><td>2</td></tr>
                 <tr><td>4</td><td class="time-col">Outro Time</td><td>0</td><td>3</td><td>0</td><td>0</td><td>3</td></tr>
             </tbody>
         </table>
@@ -437,7 +439,6 @@
     let radarInterval = null; const TEMPO_MAXIMO = 15; let tempoAtual = TEMPO_MAXIMO; let timerQuiz = null;
     let catalogoGlobal = []; let anunciosGlobal = [];
 
-    // === FUNÇÃO MÁGICA: EMBELEZAR PREÇO ===
     function formatarPreco(valorString) {
         if(!valorString) return "";
         let v = String(valorString).trim();
@@ -545,9 +546,7 @@
                     ${statsHTML || '<p style="text-align:center; font-size:0.8rem; color:#666;">Calculando estatísticas...</p>'}
                 </div>
             `;
-        } catch (e) {
-            console.error("Erro no radar: ", e);
-        }
+        } catch (e) { console.error("Erro no radar: ", e); }
     }
 
     async function carregarDoMeuServidor() {
@@ -559,7 +558,7 @@
         const resDiv = document.getElementById("resultados"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
 
         try {
-            // 🔥 TRATAMENTO DE TIMEOUT DA ESPN (15 SEGUNDOS) 🔥
+            // TRATAMENTO DE TIMEOUT DA ESPN (15 SEGUNDOS)
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -583,7 +582,8 @@
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
-            // Removemos a tentativa de gerar a tabela automática aqui para usar as tabelas HTML que você já criou.
+            // Removemos a geração da tabela ESPN para não quebrar nosso HTML bonito
+            // As tabelas estáticas continuarão ali independente do erro ou sucesso da ESPN
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
@@ -594,7 +594,7 @@
             }
         } catch (err) {
             console.error("Erro na API de Futebol:", err); 
-            // 🔥 MENSAGEM AMIGÁVEL PARA O TORCEDOR SE A ESPN TRAVAR 🔥
+            // MENSAGEM AMIGÁVEL PARA O TORCEDOR SE A ESPN TRAVAR
             let msgErro = "Erro de conexão com o servidor.";
             if (err.name === 'AbortError') {
                 msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!";
@@ -612,7 +612,7 @@
         const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
         const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
 
-        return `<div class="match-card"><div class="league-label">${traduzirCampeonato(e.slug)}</div><div class="match-row"><div class="team-col home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
+        return `<div class="match-card"><div class="league-label">${traduzirCampeonato(e.slug)}</div><div class="match-row"><div class="team-col-match home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col-match away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
     }
 
     // === LOJA MINI MUNDO ===
@@ -689,10 +689,7 @@
             } else {
                 divCarrossel.style.display = "none";
             }
-        } catch(e) {
-            console.error("Erro anúncios:", e);
-            document.getElementById("carrossel-anuncios").style.display = "none";
-        }
+        } catch(e) { console.error("Erro anúncios:", e); document.getElementById("carrossel-anuncios").style.display = "none"; }
     }
 
     function abrirModalAnuncio(index) {
@@ -705,35 +702,19 @@
         document.getElementById("modal-ad-desc").innerText = ad.descricao;
         
         const precoEl = document.getElementById("modal-ad-preco");
-        if(ad.preco_oferta) { 
-            precoEl.innerText = formatarPreco(ad.preco_oferta); 
-            precoEl.style.display = "block"; 
-        } else { 
-            precoEl.style.display = "none"; 
-        }
+        if(ad.preco_oferta) { precoEl.innerText = formatarPreco(ad.preco_oferta); precoEl.style.display = "block"; } else { precoEl.style.display = "none"; }
         
         const cupomEl = document.getElementById("modal-ad-cupom");
         if(ad.cupom) { cupomEl.innerText = `🎟️ Cupom: ${ad.cupom}`; cupomEl.style.display = "inline-block"; } else { cupomEl.style.display = "none"; }
         
         const endEl = document.getElementById("modal-ad-endereco");
         const endText = document.getElementById("modal-ad-endereco-text");
-        if(ad.endereco) { 
-            endText.innerText = ad.endereco; 
-            endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`;
-            endEl.style.display = "flex"; 
-        } else { 
-            endEl.style.display = "none"; 
-        }
+        if(ad.endereco) { endText.innerText = ad.endereco; endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; }
         
         document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
         
         const btnCall = document.getElementById("modal-ad-call");
-        if(ad.telefone) { 
-            btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; 
-            btnCall.style.display = "flex"; 
-        } else { 
-            btnCall.style.display = "none"; 
-        }
+        if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; }
 
         document.getElementById("modal-anuncio").style.display = "flex";
     }
@@ -755,13 +736,8 @@
 
     // === MUDANÇA DE TABELA DE CLASSIFICAÇÃO ===
     function mudarTabela(event, campeonatoId) {
-        // 1. Tira a cor vermelha de todos os botões
         document.querySelectorAll('.btn-camp').forEach(btn => btn.classList.remove('ativo'));
-        
-        // 2. Esconde todas as tabelas
         document.querySelectorAll('.tabela-wrapper').forEach(tab => tab.classList.remove('ativa'));
-    
-        // 3. Pinta o botão clicado de vermelho e mostra a tabela certa
         event.target.classList.add('ativo');
         document.getElementById('tab-' + campeonatoId).classList.add('ativa');
     }
