@@ -556,7 +556,7 @@
         carregarVitrine();
         carregarAnuncios();
 
-        const resDiv = document.getElementById("resultados"), classDiv = document.getElementById("classificacao"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
+        const resDiv = document.getElementById("resultados"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update");
 
         try {
             // 🔥 TRATAMENTO DE TIMEOUT DA ESPN (15 SEGUNDOS) 🔥
@@ -583,19 +583,7 @@
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true));
             else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
 
-            classDiv.innerHTML = "";
-            if (dados.table && dados.table.length > 0) {
-                let tableToRender = dados.table.slice(0, 10);
-                if (!tableToRender.some(t => t.team.toLowerCase().includes('flamengo'))) {
-                    const flaData = dados.table.find(t => t.team.toLowerCase().includes('flamengo'));
-                    if (flaData) { tableToRender.push({ isDivider: true }); tableToRender.push(flaData); }
-                }
-                tableToRender.forEach(t => {
-                    if (t.isDivider) { classDiv.innerHTML += `<tr><td colspan="7" style="background:#f8f9fa; color:#aaa; font-size:1rem; padding:5px;">...</td></tr>`; return; }
-                    const bgClass = t.team.toLowerCase().includes('flamengo') ? 'highlight-team' : '';
-                    classDiv.innerHTML += `<tr class="${bgClass}"><td style="color:#777;">${t.rank}</td><td><div class="team-cell"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'">${t.team}</div></td><td style="font-weight:800; color:#000;">${t.points}</td><td>${t.matches}</td><td>${t.wins}</td><td>${t.draws}</td><td>${t.losses}</td></tr>`;
-                });
-            } else classDiv.innerHTML = "<tr><td colspan='7' style='padding:20px; color:#999;'>Classificação indisponível.</td></tr>";
+            // Removemos a tentativa de gerar a tabela automática aqui para usar as tabelas HTML que você já criou.
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
@@ -612,7 +600,6 @@
                 msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!";
             }
             resDiv.innerHTML = `<div style='padding:20px; color:#c90000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
-            classDiv.innerHTML = `<tr><td colspan='7' style='padding:20px; color:#c90000; font-weight:800; font-size:0.85rem; line-height:1.4;'>${msgErro}</td></tr>`;
             ageDiv.innerHTML = "";
             newsDiv.innerHTML = "";
             statusUpdate.innerText = "VAR revisando conexão...";
