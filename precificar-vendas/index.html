@@ -16,7 +16,9 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 600px; }
 
-        .header { text-align: center; margin-bottom: 20px; }
+        /* 🔥 CSS DO HEADER COM LOGO 🔥 */
+        .header { text-align: center; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
+        .header img { width: 140px; height: auto; margin-bottom: 12px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08)); border-radius: 12px; }
         .header h1 { color: var(--brand-dark); font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase;}
         .header p { color: var(--primary); font-weight: 600; margin: 5px 0 0; font-size: 0.9rem;}
 
@@ -53,6 +55,7 @@
 
 <div class="app-container">
     <div class="header">
+        <img src="logo.jpg" alt="Mini Mundo Impressão 3D" onerror="this.src='logo.png'; this.onerror=null;">
         <h1>Calculadora 3D</h1>
         <p>Precificação Inteligente Mini Mundo</p>
     </div>
@@ -132,7 +135,6 @@
 </div>
 
 <script>
-    // Formatador de Moeda
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     function toggleConfig() {
@@ -141,20 +143,17 @@
     }
 
     function calcular() {
-        // 1. Pegar valores FIXOS
         const vWatts = parseFloat(document.getElementById("v-watts").value) || 0;
         const vKwh = parseFloat(document.getElementById("v-kwh").value) || 0;
         const vMaq = parseFloat(document.getElementById("v-maq").value) || 0;
         const vHora = parseFloat(document.getElementById("v-hora").value) || 0;
 
-        // 2. Pegar valores VARIÁVEIS
         const filamento = parseFloat(document.getElementById("v-filamento").value) || 0;
         const peso = parseFloat(document.getElementById("v-peso").value) || 0;
         const tImp = parseFloat(document.getElementById("v-tempo-imp").value) || 0;
         const tMao = parseFloat(document.getElementById("v-tempo-mao").value) || 0;
         const insumos = parseFloat(document.getElementById("v-insumos").value) || 0;
 
-        // 3. Fórmulas de Custo
         const cMaterial = (filamento / 1000) * peso;
         const cEnergia = (vWatts / 1000) * tImp * vKwh;
         const cDeprec = tImp * vMaq;
@@ -163,7 +162,6 @@
         
         const cTotal = cMaterial + cEnergia + cDeprec + cHumano + cFalha + insumos;
 
-        // 4. Imprimir Custos na Tela
         document.getElementById("r-material").innerText = fmt(cMaterial);
         document.getElementById("r-energia").innerText = fmt(cEnergia);
         document.getElementById("r-deprec").innerText = fmt(cDeprec);
@@ -172,20 +170,16 @@
         document.getElementById("r-insumos").innerText = fmt(insumos);
         document.getElementById("r-total").innerText = fmt(cTotal);
 
-        // 5. Cálculos de Markup (Baseados na planilha)
-        // Peças Simples (2x a 3x + Mão de Obra)
         const precoSimplesMin = (cTotal * 2) + cHumano;
         const precoSimplesMax = (cTotal * 3) + cHumano;
         const lucroSimplesMin = precoSimplesMin - cTotal;
         const lucroSimplesMax = precoSimplesMax - cTotal;
 
-        // Peças Decorativas (4x a 6x + Mão de Obra)
         const precoDecorMin = (cTotal * 4) + cHumano;
         const precoDecorMax = (cTotal * 6) + cHumano;
         const lucroDecorMin = precoDecorMin - cTotal;
         const lucroDecorMax = precoDecorMax - cTotal;
 
-        // 6. Imprimir Sugestões de Venda
         document.getElementById("m-simples-preco").innerText = `${fmt(precoSimplesMin)} ou ${fmt(precoSimplesMax)}`;
         document.getElementById("m-simples-lucro").innerText = `Lucro Limpo: ${fmt(lucroSimplesMin)} a ${fmt(lucroSimplesMax)}`;
 
@@ -193,7 +187,6 @@
         document.getElementById("m-decor-lucro").innerText = `Lucro Limpo: ${fmt(lucroDecorMin)} a ${fmt(lucroDecorMax)}`;
     }
 
-    // Calcula ao carregar a página com os valores padrão
     document.addEventListener("DOMContentLoaded", calcular);
 </script>
 
