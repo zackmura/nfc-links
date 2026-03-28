@@ -306,7 +306,7 @@
 </div>
 
 <script>
-    // 🔥 SUA API OFICIAL 🔥
+    // 🔥 SUA API OFICIAL DA PLANILHA DE PRECIFICAÇÃO 🔥
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
 
     let custoTotalGlobal = 0; 
@@ -318,14 +318,13 @@
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
 
-    // Leitor Robusto de Dinheiro da Planilha (Elimina o bug dos trilhões)
+    // Leitor Robusto de Dinheiro
     const limparValorPlanilha = (valorStr) => {
         if (!valorStr) return 0;
         if (typeof valorStr === 'number') return valorStr;
         let str = String(valorStr).trim();
         
         str = str.replace(/R\$\s?/gi, '').trim();
-        
         if (str.includes(',') && str.includes('.')) {
             str = str.replace(/\./g, '').replace(',', '.');
         } else if (str.includes(',')) {
@@ -355,6 +354,7 @@
             }
         }
         
+        // Mágica para o cálculo rodar com segurança
         if (e.target.id === "d-valor-uni" || e.target.id === "d-qtd") {
             calcularDespesaTotal();
         }
@@ -535,7 +535,6 @@
 
     // === ABA 3: DESPESAS E CUSTOS ===
     
-    // Calcula Preço Uni x Qtd para lançar Total
     function calcularDespesaTotal() {
         const qtdRaw = document.getElementById("d-qtd").value;
         const qtd = parseFloat(qtdRaw.replace(',', '.')) || 1; 
@@ -575,7 +574,6 @@
         filtroLocais.innerHTML = '<option value="todos">Todos os Locais</option>' + locaisUnicos.map(nome => `<option value="${nome}">${nome}</option>`).join('');
     }
 
-    // === 🧹 LIMPAR FILTROS (A SOLUÇÃO AQUI) ===
     function limparFiltrosDespesas() {
         document.getElementById('filtro-d-mes').value = "todos";
         document.getElementById('filtro-d-ano').value = "todos";
@@ -619,6 +617,7 @@
         renderizarListaDespesas(filtrados);
     }
 
+    // 🔥 CORREÇÃO VISUAL AQUI 🔥
     function renderizarListaDespesas(arrayDespesasLocais) {
         const listaDiv = document.getElementById("lista-despesas");
         listaDiv.innerHTML = "";
@@ -635,21 +634,30 @@
             let numeroGasto = limparValorPlanilha(d.valor);
             somaTotal += numeroGasto;
 
-            let detailsHTML = `<span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">📅 ${d.data}</span>
-                               <span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">🏢 ${d.local}</span>`;
+            let detailsHTML = `
+                <div class="pb-detalhes" style="flex-direction: column; gap: 8px; align-items: flex-start; margin-top: 5px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span style="color: #64748b;"><strong style="font-size: 0.8rem;">📅</strong> ${d.data}</span>
+                        <span style="color: #64748b;"><strong style="font-size: 0.8rem;">🏢</strong> ${d.local}</span>
+                    </div>
+            `;
             
             if (d.quantidade && d.preco_uni && d.preco_uni !== "R$ 0,00") {
-                detailsHTML += `<br><span class="pb-tag" style="margin-top:4px;">📦 Qtd: ${d.quantidade}</span>
-                                <span class="pb-tag" style="margin-top:4px;">💲 ${formatarDoBanco(d.preco_uni)} /un</span>`;
+                detailsHTML += `
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span style="color: #64748b;"><strong style="font-size: 0.8rem;">📦</strong> Qtd: ${d.quantidade}</span>
+                        <span style="color: #64748b;"><strong style="font-size: 0.8rem;">💲</strong> ${formatarDoBanco(d.preco_uni)} /un</span>
+                    </div>
+                `;
             }
+
+            detailsHTML += `</div>`;
 
             html += `
             <div class="produto-banco-card">
                 <div class="pb-info">
                     <h4 class="pb-nome" style="color: #334155;">${d.item}</h4>
-                    <div class="pb-detalhes" style="flex-direction: column; gap: 4px; align-items: flex-start;">
-                        <div>${detailsHTML}</div>
-                    </div>
+                    ${detailsHTML}
                 </div>
                 <div class="pb-custo" style="background: transparent; border: none; color: #ef4444; font-size: 1.1rem; padding-right: 0;">- ${fmt(numeroGasto)}</div>
             </div>`;
