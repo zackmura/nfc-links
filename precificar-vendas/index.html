@@ -16,7 +16,6 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 600px; }
 
-        /* 🔥 CSS DO HEADER COM LOGO 🔥 */
         .header { text-align: center; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
         .header img { width: 140px; height: auto; margin-bottom: 12px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08)); border-radius: 12px; }
         .header h1 { color: var(--brand-dark); font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase;}
@@ -49,6 +48,11 @@
 
         .config-btn { background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 800; color: #475569; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px;}
         .config-area { display: none; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;}
+
+        /* ESTILO DO BOTÃO DE SALVAR */
+        .btn-salvar { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-salvar:active { transform: translateY(4px); box-shadow: 0 0 0 rgba(16, 185, 129, 0.4); }
+        .btn-salvar:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
     </style>
 </head>
 <body>
@@ -76,7 +80,7 @@
     <div class="card">
         <div class="card-title">📝 Dados do Projeto</div>
         <div class="input-group">
-            <label>Nome do Modelo (Opcional)</label>
+            <label>Nome do Modelo (Obrigatório para Salvar)</label>
             <input type="text" id="v-modelo" class="input-var" placeholder="Ex: Placa profissões">
         </div>
         <div class="row">
@@ -132,10 +136,20 @@
             <p class="markup-lucro" id="m-decor-lucro">Lucro Limpo: R$ 0,00 a R$ 0,00</p>
         </div>
     </div>
+
+    <button id="btn-salvar-custo" class="btn-salvar" onclick="salvarBanco()">💾 Salvar no Banco de Custos</button>
 </div>
 
 <script>
+    // 🔥 COLE AQUI O LINK DA API DA PLANILHA DE PRECIFICAÇÃO 🔥
+    const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
+
+    let custoTotalGlobal = 0; // Guardamos o total para o envio
+
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    // Converte de "10.5" para numérico simples sem R$ e vírgulas bagunçadas, formata pra planilha.
+    const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
 
     function toggleConfig() {
         const area = document.getElementById("area-config");
@@ -161,6 +175,7 @@
         const cFalha = (cMaterial + cEnergia + cDeprec + cHumano) * 0.10;
         
         const cTotal = cMaterial + cEnergia + cDeprec + cHumano + cFalha + insumos;
+        custoTotalGlobal = cTotal; // Salva para o banco
 
         document.getElementById("r-material").innerText = fmt(cMaterial);
         document.getElementById("r-energia").innerText = fmt(cEnergia);
@@ -185,6 +200,57 @@
 
         document.getElementById("m-decor-preco").innerText = `${fmt(precoDecorMin)} ou ${fmt(precoDecorMax)}`;
         document.getElementById("m-decor-lucro").innerText = `Lucro Limpo: ${fmt(lucroDecorMin)} a ${fmt(lucroDecorMax)}`;
+    }
+
+    async function salvarBanco() {
+        const modelo = document.getElementById("v-modelo").value.trim();
+        if (!modelo) {
+            alert("⚠️ Por favor, digite o Nome do Modelo para poder salvar na planilha.");
+            return;
+        }
+        
+        if (API_PRECIFICACAO === "COLE_AQUI_O_LINK_DA_SUA_API_DE_PRECIFICACAO") {
+            alert("⚠️ Ops! Você esqueceu de colar a sua MINHA_API_GOOGLE no código (linha 147).");
+            return;
+        }
+
+        const btn = document.getElementById("btn-salvar-custo");
+        btn.disabled = true;
+        btn.innerText = "⏳ Salvando...";
+
+        const peso = document.getElementById("v-peso").value;
+        const tempo = document.getElementById("v-tempo-imp").value;
+        const insumos = parseFloat(document.getElementById("v-insumos").value) || 0;
+
+        try {
+            const payload = {
+                acao: "salvar_custo",
+                modelo: modelo,
+                peso: peso,
+                tempo: tempo,
+                insumos: fmtPlanilha(insumos),
+                custo_total: fmtPlanilha(custoTotalGlobal)
+            };
+
+            const response = await fetch(API_PRECIFICACAO, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+            
+            const result = await response.json();
+            
+            if (result.sucesso) {
+                alert("✅ Produto salvo com sucesso no Banco de Custos!");
+                document.getElementById("v-modelo").value = ""; // Limpa só o nome para facilitar o próximo
+            } else {
+                throw new Error("A API retornou erro ao salvar.");
+            }
+        } catch (e) {
+            alert("❌ Falha na comunicação com o banco de dados: " + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "💾 Salvar no Banco de Custos";
+        }
     }
 
     document.addEventListener("DOMContentLoaded", calcular);
