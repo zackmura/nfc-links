@@ -49,6 +49,19 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+        .tab-btn-erp {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--brand-dark);
+            color: white !important; /* Força a cor branca por cima do padrão */
+        }
+        .tab-btn-erp:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+        
         /* GERAL */
         .section-title { font-size: 0.95rem; color: var(--brand-dark); font-weight: 900; margin: 25px 0 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; border-left: 4px solid var(--primary); padding-left: 10px;}
         .input-group { margin-bottom: 15px; }
@@ -180,6 +193,9 @@
             <button class="tab-btn" onclick="switchTab('loja')">🛒 Catálogo</button>
             <button class="tab-btn" onclick="switchTab('quiz')">🎮 Quiz</button>
             <button class="tab-btn" onclick="switchTab('config')">⚙️ Chaves</button>
+
+            <a href="https://diario.vivainteligente.net/precificar-vendas/" target="_blank" class="tab-btn tab-btn-erp">🧮 ERP</a>
+            
         </div>
 
         <div id="tab-analytics" class="tab-content active">
