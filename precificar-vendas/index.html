@@ -258,7 +258,7 @@
         const modelo = document.getElementById("v-modelo").value.trim();
         
         if (!modelo) {
-            mostrarAlerta("Atenção", "Por favor, digite o Nome do Modelo para poder salvar na planilha.", "warning");
+            mostrarAlerta("Atenção", "Por favor, digite o Nome do Modelo para poder salvar no banco de dados.", "warning");
             return;
         }
         
@@ -297,7 +297,7 @@
                 document.getElementById("v-modelo").value = ""; 
             } else if (result.erro === "DUPLICADO") {
                 // Aqui a mágica da trava entra em ação!
-                mostrarAlerta("Modelo já cadastrado!", "Atenção: O modelo '" + modelo + "' já existe na sua planilha de Custos. Salve com um nome diferente para evitar duplicidade.", "warning");
+                mostrarAlerta("Modelo já cadastrado!", "Atenção: O modelo '" + modelo + "' já existe na seu banco de Custos. Salve com um nome diferente para evitar duplicidade.", "warning");
             } else {
                 throw new Error("A API retornou erro ao salvar: " + result.erro);
             }
