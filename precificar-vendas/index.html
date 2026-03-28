@@ -10,7 +10,8 @@
         :root {
             --primary: #d97706; --primary-hover: #b45309; --brand-dark: #4E342E; 
             --bg-color: #fafaf9; --card-bg: #ffffff; --text-main: #292524; 
-            --border-color: #e7e5e4; --yellow-highlight: #fef08a; --green-profit: #10b981;
+            --text-muted: #78716c; --border-color: #e7e5e4; 
+            --yellow-highlight: #fef08a; --green-profit: #10b981;
         }
 
         body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
@@ -31,7 +32,6 @@
         input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-main); box-sizing: border-box; transition: 0.2s;}
         input:focus { border-color: var(--primary); outline: none; }
         
-        /* Destaque para os campos que o usuário deve preencher (Amarelos da Planilha) */
         .input-var { background-color: #fffbeb; border-color: #fde68a; }
         .input-var:focus { background-color: #fef3c7; border-color: var(--primary); }
 
@@ -49,10 +49,22 @@
         .config-btn { background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 800; color: #475569; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px;}
         .config-area { display: none; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;}
 
-        /* ESTILO DO BOTÃO DE SALVAR */
         .btn-salvar { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
         .btn-salvar:active { transform: translateY(4px); box-shadow: 0 0 0 rgba(16, 185, 129, 0.4); }
         .btn-salvar:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* 🔥 CSS DO MODAL PREMIUM 🔥 */
+        .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
+        .modal-box-alert { background: #fff; width: 90%; max-width: 360px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
+        .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block; animation: pulseIcon 1s infinite alternate;}
+        .modal-title-alert { font-size: 1.4rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 10px; text-transform: uppercase;}
+        .modal-text-alert { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
+        .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 1rem; text-transform: uppercase; transition: transform 0.1s;}
+        .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulseIcon { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
@@ -140,16 +152,56 @@
     <button id="btn-salvar-custo" class="btn-salvar" onclick="salvarBanco()">💾 Salvar no Banco de Custos</button>
 </div>
 
+<div id="custom-modal" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert" id="modal-icone-alert">✅</span>
+        <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
+        <p class="modal-text-alert" id="modal-texto-alert">Operação realizada com sucesso!</p>
+        <button id="btn-modal-ok" class="btn-modal-ok" onclick="fecharAlerta()">Certo, entendi</button>
+    </div>
+</div>
+
 <script>
     // 🔥 COLE AQUI O LINK DA API DA PLANILHA DE PRECIFICAÇÃO 🔥
-    const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
+    const API_PRECIFICACAO = "COLE_AQUI_O_LINK_DA_SUA_API_DE_PRECIFICACAO";
 
-    let custoTotalGlobal = 0; // Guardamos o total para o envio
+    let custoTotalGlobal = 0; 
 
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
-    // Converte de "10.5" para numérico simples sem R$ e vírgulas bagunçadas, formata pra planilha.
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
+
+    // Função que gerencia o Modal Customizado
+    function mostrarAlerta(titulo, texto, tipo) {
+        const modal = document.getElementById("custom-modal");
+        const icone = document.getElementById("modal-icone-alert");
+        const titleEl = document.getElementById("modal-titulo-alert");
+        const textEl = document.getElementById("modal-texto-alert");
+        const btnEl = document.getElementById("btn-modal-ok");
+
+        titleEl.innerText = titulo;
+        textEl.innerText = texto;
+
+        if(tipo === "success") {
+            icone.innerText = "✅";
+            btnEl.style.background = "#10b981"; // Verde
+            btnEl.style.boxShadow = "0 6px 0 #059669";
+        } else if (tipo === "warning") {
+            icone.innerText = "⚠️";
+            btnEl.style.background = "#f59e0b"; // Amarelo/Laranja
+            btnEl.style.boxShadow = "0 6px 0 #d97706";
+        } else {
+            icone.innerText = "❌";
+            btnEl.style.background = "#ef4444"; // Vermelho
+            btnEl.style.boxShadow = "0 6px 0 #b91c1c";
+        }
+
+        modal.style.display = "flex";
+        if ("vibrate" in navigator) navigator.vibrate(50); // Vibra o celular levemente
+    }
+
+    function fecharAlerta() {
+        document.getElementById("custom-modal").style.display = "none";
+    }
 
     function toggleConfig() {
         const area = document.getElementById("area-config");
@@ -175,7 +227,7 @@
         const cFalha = (cMaterial + cEnergia + cDeprec + cHumano) * 0.10;
         
         const cTotal = cMaterial + cEnergia + cDeprec + cHumano + cFalha + insumos;
-        custoTotalGlobal = cTotal; // Salva para o banco
+        custoTotalGlobal = cTotal; 
 
         document.getElementById("r-material").innerText = fmt(cMaterial);
         document.getElementById("r-energia").innerText = fmt(cEnergia);
@@ -204,13 +256,14 @@
 
     async function salvarBanco() {
         const modelo = document.getElementById("v-modelo").value.trim();
+        
         if (!modelo) {
-            alert("⚠️ Por favor, digite o Nome do Modelo para poder salvar na planilha.");
+            mostrarAlerta("Atenção", "Por favor, digite o Nome do Modelo para poder salvar na planilha.", "warning");
             return;
         }
         
         if (API_PRECIFICACAO === "COLE_AQUI_O_LINK_DA_SUA_API_DE_PRECIFICACAO") {
-            alert("⚠️ Ops! Você esqueceu de colar a sua MINHA_API_GOOGLE no código (linha 147).");
+            mostrarAlerta("Erro de Sistema", "Ops! Você esqueceu de colar a sua MINHA_API_GOOGLE no código fonte.", "error");
             return;
         }
 
@@ -240,13 +293,16 @@
             const result = await response.json();
             
             if (result.sucesso) {
-                alert("✅ Produto salvo com sucesso no Banco de Custos!");
-                document.getElementById("v-modelo").value = ""; // Limpa só o nome para facilitar o próximo
+                mostrarAlerta("Sucesso!", "Produto salvo com perfeição no seu Banco de Custos!", "success");
+                document.getElementById("v-modelo").value = ""; 
+            } else if (result.erro === "DUPLICADO") {
+                // Aqui a mágica da trava entra em ação!
+                mostrarAlerta("Modelo já cadastrado!", "Atenção: O modelo '" + modelo + "' já existe na sua planilha de Custos. Salve com um nome diferente para evitar duplicidade.", "warning");
             } else {
-                throw new Error("A API retornou erro ao salvar.");
+                throw new Error("A API retornou erro ao salvar: " + result.erro);
             }
         } catch (e) {
-            alert("❌ Falha na comunicação com o banco de dados: " + e.message);
+            mostrarAlerta("Erro de Conexão", "Falha ao enviar os dados para o Google Sheets: " + e.message, "error");
         } finally {
             btn.disabled = false;
             btn.innerText = "💾 Salvar no Banco de Custos";
