@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precificação 3D | Mini Mundo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+
+        :root {
+            --primary: #d97706; --primary-hover: #b45309; --brand-dark: #4E342E; 
+            --bg-color: #fafaf9; --card-bg: #ffffff; --text-main: #292524; 
+            --border-color: #e7e5e4; --yellow-highlight: #fef08a; --green-profit: #10b981;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 600px; }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { color: var(--brand-dark); font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase;}
+        .header p { color: var(--primary); font-weight: 600; margin: 5px 0 0; font-size: 0.9rem;}
+
+        .card { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border-color);}
+        .card-title { font-size: 1.1rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 15px; display: flex; align-items: center; gap: 8px; border-bottom: 2px dashed var(--border-color); padding-bottom: 10px;}
+        
+        .row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .col { flex: 1; }
+        
+        label { display: block; font-size: 0.8rem; font-weight: 700; color: #555; margin-bottom: 6px; }
+        input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-main); box-sizing: border-box; transition: 0.2s;}
+        input:focus { border-color: var(--primary); outline: none; }
+        
+        /* Destaque para os campos que o usuário deve preencher (Amarelos da Planilha) */
+        .input-var { background-color: #fffbeb; border-color: #fde68a; }
+        .input-var:focus { background-color: #fef3c7; border-color: var(--primary); }
+
+        .resumo-box { background: var(--brand-dark); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px;}
+        .resumo-box h3 { margin: 0 0 15px; font-weight: 900; font-size: 1.2rem; color: var(--primary); text-transform: uppercase;}
+        
+        .custo-linha { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: #d6d3d1; border-bottom: 1px dashed #78716c; padding-bottom: 5px;}
+        .custo-total { display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.3rem; font-weight: 900; color: white; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px;}
+
+        .markup-box { background: #f0fdf4; border: 2px solid #bbf7d0; padding: 15px; border-radius: 12px; margin-bottom: 15px;}
+        .markup-title { color: #166534; font-weight: 900; font-size: 1rem; margin: 0 0 10px;}
+        .markup-preco { font-size: 1.4rem; font-weight: 900; color: var(--text-main); margin: 0;}
+        .markup-lucro { font-size: 0.85rem; font-weight: 800; color: var(--green-profit); margin-top: 5px;}
+
+        .config-btn { background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 800; color: #475569; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px;}
+        .config-area { display: none; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;}
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>Calculadora 3D</h1>
+        <p>Precificação Inteligente Mini Mundo</p>
+    </div>
+
+    <button class="config-btn" onclick="toggleConfig()">⚙️ Configurações da Impressora (Custos Fixos)</button>
+    
+    <div class="config-area" id="area-config">
+        <div class="row">
+            <div class="col"><label>Consumo (Watts)</label><input type="number" id="v-watts" value="175" oninput="calcular()"></div>
+            <div class="col"><label>Energia (R$/kWh)</label><input type="number" id="v-kwh" value="0.70" step="0.01" oninput="calcular()"></div>
+        </div>
+        <div class="row">
+            <div class="col"><label>Máquina/Hora (R$)</label><input type="number" id="v-maq" value="0.75" step="0.01" oninput="calcular()"></div>
+            <div class="col"><label>Sua Hora (R$)</label><input type="number" id="v-hora" value="10.00" step="0.50" oninput="calcular()"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">📝 Dados do Projeto</div>
+        <div class="input-group">
+            <label>Nome do Modelo (Opcional)</label>
+            <input type="text" id="v-modelo" class="input-var" placeholder="Ex: Placa profissões">
+        </div>
+        <div class="row">
+            <div class="col">
+                <label>Preço Filamento (kg)</label>
+                <input type="number" id="v-filamento" class="input-var" value="100" step="1" oninput="calcular()">
+            </div>
+            <div class="col">
+                <label>Peso da Peça (g)</label>
+                <input type="number" id="v-peso" class="input-var" value="126" step="1" oninput="calcular()">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label>Tempo Impressão (h)</label>
+                <input type="number" id="v-tempo-imp" class="input-var" value="9" step="0.1" oninput="calcular()">
+            </div>
+            <div class="col">
+                <label>Mão de Obra (h)</label>
+                <input type="number" id="v-tempo-mao" class="input-var" value="0" step="0.1" oninput="calcular()">
+            </div>
+        </div>
+        <div class="input-group" style="margin-bottom: 0;">
+            <label>Custos Materiais Externos (Embalagem, Ímã, etc)</label>
+            <input type="number" id="v-insumos" class="input-var" value="0" step="0.50" oninput="calcular()">
+        </div>
+    </div>
+
+    <div class="resumo-box">
+        <h3>Custo Real de Produção</h3>
+        <div class="custo-linha"><span>Material (Filamento)</span> <span id="r-material">R$ 0,00</span></div>
+        <div class="custo-linha"><span>Energia Elétrica</span> <span id="r-energia">R$ 0,00</span></div>
+        <div class="custo-linha"><span>Manutenção/Depreciação</span> <span id="r-deprec">R$ 0,00</span></div>
+        <div class="custo-linha"><span>Mão de Obra</span> <span id="r-humano">R$ 0,00</span></div>
+        <div class="custo-linha"><span>Taxa de Falha (10%)</span> <span id="r-falha">R$ 0,00</span></div>
+        <div class="custo-linha" style="border-bottom: none;"><span>Insumos Extras</span> <span id="r-insumos">R$ 0,00</span></div>
+        
+        <div class="custo-total"><span>Custo Total:</span> <span id="r-total">R$ 0,00</span></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">💰 Sugestão de Venda</div>
+        
+        <div class="markup-box">
+            <p class="markup-title">Peças Simples / Reposição (2x a 3x)</p>
+            <p class="markup-preco" id="m-simples-preco">R$ 0,00 a R$ 0,00</p>
+            <p class="markup-lucro" id="m-simples-lucro">Lucro Limpo: R$ 0,00 a R$ 0,00</p>
+        </div>
+
+        <div class="markup-box" style="background: #fffbeb; border-color: #fde68a;">
+            <p class="markup-title" style="color: #b45309;">Decorativos / Colecionáveis (4x a 6x)</p>
+            <p class="markup-preco" id="m-decor-preco">R$ 0,00 a R$ 0,00</p>
+            <p class="markup-lucro" id="m-decor-lucro">Lucro Limpo: R$ 0,00 a R$ 0,00</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Formatador de Moeda
+    const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function toggleConfig() {
+        const area = document.getElementById("area-config");
+        area.style.display = area.style.display === "block" ? "none" : "block";
+    }
+
+    function calcular() {
+        // 1. Pegar valores FIXOS
+        const vWatts = parseFloat(document.getElementById("v-watts").value) || 0;
+        const vKwh = parseFloat(document.getElementById("v-kwh").value) || 0;
+        const vMaq = parseFloat(document.getElementById("v-maq").value) || 0;
+        const vHora = parseFloat(document.getElementById("v-hora").value) || 0;
+
+        // 2. Pegar valores VARIÁVEIS
+        const filamento = parseFloat(document.getElementById("v-filamento").value) || 0;
+        const peso = parseFloat(document.getElementById("v-peso").value) || 0;
+        const tImp = parseFloat(document.getElementById("v-tempo-imp").value) || 0;
+        const tMao = parseFloat(document.getElementById("v-tempo-mao").value) || 0;
+        const insumos = parseFloat(document.getElementById("v-insumos").value) || 0;
+
+        // 3. Fórmulas de Custo
+        const cMaterial = (filamento / 1000) * peso;
+        const cEnergia = (vWatts / 1000) * tImp * vKwh;
+        const cDeprec = tImp * vMaq;
+        const cHumano = tMao * vHora;
+        const cFalha = (cMaterial + cEnergia + cDeprec + cHumano) * 0.10;
+        
+        const cTotal = cMaterial + cEnergia + cDeprec + cHumano + cFalha + insumos;
+
+        // 4. Imprimir Custos na Tela
+        document.getElementById("r-material").innerText = fmt(cMaterial);
+        document.getElementById("r-energia").innerText = fmt(cEnergia);
+        document.getElementById("r-deprec").innerText = fmt(cDeprec);
+        document.getElementById("r-humano").innerText = fmt(cHumano);
+        document.getElementById("r-falha").innerText = fmt(cFalha);
+        document.getElementById("r-insumos").innerText = fmt(insumos);
+        document.getElementById("r-total").innerText = fmt(cTotal);
+
+        // 5. Cálculos de Markup (Baseados na planilha)
+        // Peças Simples (2x a 3x + Mão de Obra)
+        const precoSimplesMin = (cTotal * 2) + cHumano;
+        const precoSimplesMax = (cTotal * 3) + cHumano;
+        const lucroSimplesMin = precoSimplesMin - cTotal;
+        const lucroSimplesMax = precoSimplesMax - cTotal;
+
+        // Peças Decorativas (4x a 6x + Mão de Obra)
+        const precoDecorMin = (cTotal * 4) + cHumano;
+        const precoDecorMax = (cTotal * 6) + cHumano;
+        const lucroDecorMin = precoDecorMin - cTotal;
+        const lucroDecorMax = precoDecorMax - cTotal;
+
+        // 6. Imprimir Sugestões de Venda
+        document.getElementById("m-simples-preco").innerText = `${fmt(precoSimplesMin)} ou ${fmt(precoSimplesMax)}`;
+        document.getElementById("m-simples-lucro").innerText = `Lucro Limpo: ${fmt(lucroSimplesMin)} a ${fmt(lucroSimplesMax)}`;
+
+        document.getElementById("m-decor-preco").innerText = `${fmt(precoDecorMin)} ou ${fmt(precoDecorMax)}`;
+        document.getElementById("m-decor-lucro").innerText = `Lucro Limpo: ${fmt(lucroDecorMin)} a ${fmt(lucroDecorMax)}`;
+    }
+
+    // Calcula ao carregar a página com os valores padrão
+    document.addEventListener("DOMContentLoaded", calcular);
+</script>
+
+</body>
+</html>
