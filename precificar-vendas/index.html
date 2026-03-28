@@ -17,7 +17,7 @@
             --tab-active: #d97706; --green-profit: #10b981;
         }
         
-        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px 20px 100px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
         
         .app-container { width: 100%; max-width: 700px; }
         
@@ -89,14 +89,21 @@
         .btn-baixar-pgt:active { background: #fde68a; transform: translateY(2px); }
         .card-pendente { border: 2px solid #fde68a; background: #fffbeb; }
 
-        /* MODAL ALERTS PREMIUM */
+        /* MODAL ALERTS PREMIUM E CONFIRMAÇÃO */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
         .modal-box-alert { background: #fff; width: 90%; max-width: 360px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
         .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block; animation: pulseIcon 1s infinite alternate;}
         .modal-title-alert { font-size: 1.3rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 10px; text-transform: uppercase;}
         .modal-text-alert { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
+        
         .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; transition: transform 0.1s;}
         .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
+
+        .btn-modal-cancel { flex: 1; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 0.90rem; text-transform: uppercase; transition: 0.2s;}
+        .btn-modal-cancel:active { background: #e2e8f0; }
+        
+        .btn-modal-confirm { flex: 1; background: #10b981; color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: 900; font-size: 0.90rem; text-transform: uppercase; transition: transform 0.1s; box-shadow: 0 6px 0 #059669;}
+        .btn-modal-confirm:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -143,6 +150,7 @@
         <div id="view-calculadora" class="view-section active">
             
             <button class="config-btn" onclick="toggleConfig()">⚙️ Configurações da Impressora (Custos Fixos)</button>
+            
             <div class="config-area" id="area-config">
                 <div class="row">
                     <div class="col"><label>Consumo (Watts)</label><input type="number" id="v-watts" value="175" oninput="calcular()"></div>
@@ -155,6 +163,7 @@
             </div>
 
             <div class="section-title">📝 Dados do Novo Projeto</div>
+            
             <div class="input-group">
                 <label>Nome do Modelo (Obrigatório para Salvar)</label>
                 <input type="text" id="v-modelo" class="input-var" placeholder="Ex: Placa profissões">
@@ -184,6 +193,7 @@
             </div>
 
             <div class="section-title">💰 Margens Sugeridas</div>
+            
             <div class="markup-box">
                 <p class="markup-title">Peças Simples / Reposição (2x a 3x)</p>
                 <p class="markup-preco" id="m-simples-preco">R$ 0,00 a R$ 0,00</p>
@@ -207,7 +217,7 @@
 
         <div id="view-despesas" class="view-section">
             <div class="resumo-box" style="background: #1e293b; text-align: center;">
-                <h3 style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px;">Investimento (Com base no Filtro)</h3>
+                <h3 style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px;">Investimento Total</h3>
                 <div class="custo-total" style="justify-content: center; background: transparent; font-size: 2.2rem; color: #38bdf8; margin-top: 5px;">
                     <span id="total-despesas-valor">R$ 0,00</span>
                 </div>
@@ -359,6 +369,18 @@
     </div>
 </div>
 
+<div id="custom-confirm-modal" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert">💸</span>
+        <h3 class="modal-title-alert">Confirmar Pagamento</h3>
+        <p class="modal-text-alert">Tem certeza que deseja marcar esta venda como <b>PAGA</b>? A data de hoje será registrada automaticamente.</p>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn-modal-cancel" onclick="fecharConfirmacao()">Cancelar</button>
+            <button class="btn-modal-confirm" onclick="executarPagamentoVenda()">✅ Sim, Recebi!</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // 🔥 SUA API OFICIAL DA PLANILHA DE PRECIFICAÇÃO E VENDAS 🔥
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
@@ -369,6 +391,7 @@
     let arrayBancoCustos = [];
     let arrayDespesas = [];
     let arrayVendas = [];
+    let linhaVendaPagamento = null; // Guarda qual linha estamos baixando o pgt
 
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
@@ -414,7 +437,7 @@
         const dataHojeIso = hoje.toISOString().split('T')[0];
         
         document.getElementById('d-data').value = dataHojeIso;
-        document.getElementById('venda-data').value = dataHojeIso;
+        document.getElementById('venda-data').value = dataHojeIso; 
         
         const mesStr = String(hoje.getMonth() + 1).padStart(2, '0');
         const anoStr = String(hoje.getFullYear());
@@ -478,6 +501,18 @@
         if ("vibrate" in navigator) navigator.vibrate(50);
     }
     function fecharAlerta() { document.getElementById("custom-modal").style.display = "none"; }
+
+    // Funções do Modal de Confirmação de Pagamento
+    function abrirConfirmacaoPagamento(linha) {
+        linhaVendaPagamento = linha;
+        document.getElementById("custom-confirm-modal").style.display = "flex";
+        if ("vibrate" in navigator) navigator.vibrate(50);
+    }
+
+    function fecharConfirmacao() {
+        document.getElementById("custom-confirm-modal").style.display = "none";
+        linhaVendaPagamento = null;
+    }
 
     // === ABA 1: CALCULADORA ===
     function toggleConfig() {
@@ -673,6 +708,7 @@
             }
             return true;
         });
+
         renderizarListaDespesas(filtrados);
     }
 
@@ -683,12 +719,14 @@
 
         if (arrayDespesasLocais.length === 0) {
             listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhuma despesa para este filtro.</p>";
-            document.getElementById("total-despesas-valor").innerText = "R$ 0,00"; return;
+            document.getElementById("total-despesas-valor").innerText = "R$ 0,00";
+            return;
         }
 
         let html = "";
         arrayDespesasLocais.forEach(d => {
             let numeroGasto = limparValorPlanilha(d.valor);
+            let numPrecoUni = limparValorPlanilha(d.preco_uni);
             somaTotal += numeroGasto;
 
             let detailsHTML = `
@@ -698,18 +736,24 @@
                         <span style="color: #64748b;"><strong style="font-size: 0.8rem;">🏢</strong> ${d.local}</span>
                     </div>
             `;
+            
             if (d.quantidade && d.preco_uni && d.preco_uni !== "R$ 0,00") {
                 detailsHTML += `
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <span style="color: #64748b;"><strong style="font-size: 0.8rem;">📦</strong> Qtd: ${d.quantidade}</span>
                         <span style="color: #64748b;"><strong style="font-size: 0.8rem;">💲</strong> ${formatarDoBanco(d.preco_uni)} /un</span>
-                    </div>`;
+                    </div>
+                `;
             }
+
             detailsHTML += `</div>`;
 
             html += `
             <div class="produto-banco-card">
-                <div class="pb-info"><h4 class="pb-nome" style="color: #334155;">${d.item}</h4>${detailsHTML}</div>
+                <div class="pb-info">
+                    <h4 class="pb-nome" style="color: #334155;">${d.item}</h4>
+                    ${detailsHTML}
+                </div>
                 <div class="pb-custo" style="background: transparent; border: none; color: #ef4444; font-size: 1.1rem; padding-right: 0;">- ${fmt(numeroGasto)}</div>
             </div>`;
         });
@@ -726,30 +770,43 @@
         const valorUniStr = document.getElementById("d-valor-uni").value;
 
         if (!dataCompra || !itemCompra || !valorUniStr || !localCompra) {
-            mostrarAlerta("Atenção", "Preencha a data, local, o nome do item e o valor para lançar a despesa.", "warning"); return;
+            mostrarAlerta("Atenção", "Preencha a data, local, o nome do item e o valor para lançar a despesa.", "warning");
+            return;
         }
+
         const btn = document.getElementById("btn-salvar-despesa");
         btn.disabled = true; btn.innerText = "⏳ Lançando...";
 
         try {
             const vUniNum = limparValorPlanilha(valorUniStr);
             const payload = {
-                acao: "salvar_despesa", item: itemCompra, local: localCompra,
+                acao: "salvar_despesa",
+                item: itemCompra,
+                local: localCompra,
                 data: dataCompra.split('-').reverse().join('/'), 
-                quantidade: qtdCompra, preco_uni: fmtPlanilha(vUniNum), preco_total: fmtPlanilha(despesaTotalCalculada)
+                quantidade: qtdCompra,
+                preco_uni: fmtPlanilha(vUniNum),
+                preco_total: fmtPlanilha(despesaTotalCalculada)
             };
+
             const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
             const result = await response.json();
             
             if (result.sucesso) {
                 mostrarAlerta("Lançado!", "Despesa registrada com sucesso no fluxo de caixa.", "success");
-                document.getElementById("d-item").value = ""; document.getElementById("d-valor-uni").value = ""; document.getElementById("d-qtd").value = "1";
-                calcularDespesaTotal(); carregarDespesas(); 
+                document.getElementById("d-item").value = ""; 
+                document.getElementById("d-valor-uni").value = ""; 
+                document.getElementById("d-qtd").value = "1";
+                calcularDespesaTotal();
+                carregarDespesas(); 
             } else { throw new Error(result.erro); }
         } catch (e) {
             mostrarAlerta("Erro de Conexão", "Falha ao enviar a despesa para a Planilha: " + e.message, "error");
-        } finally { btn.disabled = false; btn.innerText = "💳 Lançar Despesa"; }
+        } finally {
+            btn.disabled = false; btn.innerText = "💳 Lançar Despesa";
+        }
     }
+
 
     // === ABA 4: VENDAS (HISTÓRICO E REGISTRO) ===
     async function carregarOpcoesVenda() {
@@ -799,7 +856,7 @@
                 document.getElementById("venda-cliente").value = ""; document.getElementById("venda-produto").value = ""; 
                 document.getElementById("venda-plataforma").value = ""; document.getElementById("venda-qtd").value = "1"; 
                 document.getElementById("venda-valor").value = ""; document.getElementById("venda-status").value = "Pago"; 
-                carregarVendas(); // Atualiza a lista e o placar
+                carregarVendas(); 
             } else { throw new Error(result.erro); }
         } catch (e) {
             mostrarAlerta("Erro", "Falha ao enviar a venda para a Planilha: " + e.message, "error");
@@ -888,7 +945,8 @@
             let emojiStatus = isPendente ? "🟡" : "🟢";
             let lucroStr = v.lucro && limparValorPlanilha(v.lucro) > 0 ? `💰 Lucro: ${formatarDoBanco(v.lucro)}` : "";
 
-            let btnBaixar = isPendente ? `<button class="btn-baixar-pgt" onclick="marcarVendaComoPaga(${v.linha})">💸 Confirmar Pagamento</button>` : "";
+            // 🔥 BOTAO CHAMA A CONFIRMACAO CUSTOMIZADA AGORA 🔥
+            let btnBaixar = isPendente ? `<button class="btn-baixar-pgt" onclick="abrirConfirmacaoPagamento(${v.linha})">💸 Confirmar Pagamento</button>` : "";
 
             html += `
             <div class="produto-banco-card ${cssCard}">
@@ -920,8 +978,12 @@
         document.getElementById("vendas-pagas-valor").innerText = fmt(somaPagos);
     }
 
-    async function marcarVendaComoPaga(linha) {
-        if(!confirm("Tem certeza que deseja marcar esta venda como PAGA? A data de hoje será registrada automaticamente.")) return;
+    // 🔥 NOVA FUNÇÃO: EXECUTA O PAGAMENTO APÓS CLICAR NO "SIM" DO MODAL 🔥
+    async function executarPagamentoVenda() {
+        if (!linhaVendaPagamento) return;
+        
+        const linha = linhaVendaPagamento;
+        fecharConfirmacao(); // Fecha a pergunta
 
         try {
             const payload = {
@@ -934,7 +996,7 @@
 
             if(result.sucesso) {
                 mostrarAlerta("Dinheiro no Bolso!", "Pagamento recebido e registrado com sucesso!", "success");
-                carregarVendas(); // Recarrega a lista e atualiza os valores
+                carregarVendas(); // Recarrega a lista para sumir o botão e ir pro verde
             } else {
                 throw new Error(result.erro);
             }
