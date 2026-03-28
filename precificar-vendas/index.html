@@ -45,8 +45,8 @@
         .section-title { font-size: 0.95rem; color: var(--brand-dark); font-weight: 900; margin: 25px 0 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; border-left: 4px solid var(--primary); padding-left: 10px;}
         .input-group { margin-bottom: 15px; }
         label { font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px; font-size: 0.8rem; }
-        input[type="number"], input[type="text"], input[type="date"] { width: 100%; padding: 12px 14px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text-main); box-sizing: border-box; background: #fafaf9; transition: all 0.3s ease; font-weight: 700;}
-        input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15); }
+        input[type="number"], input[type="text"], input[type="date"], select { width: 100%; padding: 12px 14px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--text-main); box-sizing: border-box; background: #fafaf9; transition: all 0.3s ease; font-weight: 700;}
+        input:focus, select:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.15); }
         
         .input-var { background-color: #fffbeb !important; border-color: #fde68a !important; }
         .input-var:focus { background-color: #fef3c7 !important; border-color: var(--primary) !important; }
@@ -74,10 +74,12 @@
         /* ABA BANCO DE DADOS E DESPESAS */
         .search-bar { width: 100%; padding: 14px 16px; border: 2px solid var(--primary); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.1);}
         
+        .filtros-box { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 20px;}
+        
         .produto-banco-card { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02);}
         .pb-info { flex-grow: 1; overflow: hidden;}
         .pb-nome { margin: 0 0 6px; font-size: 0.95rem; font-weight: 900; color: var(--brand-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-        .pb-detalhes { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; display: flex; gap: 8px; flex-wrap: wrap;}
+        .pb-detalhes { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;}
         .pb-tag { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; color: #475569;}
         .pb-custo { font-size: 1.1rem; font-weight: 900; color: var(--primary); background: #fffbeb; padding: 8px 12px; border-radius: 10px; border: 1px solid #fde68a; flex-shrink: 0; min-width: 80px; text-align: center;}
 
@@ -188,7 +190,7 @@
                 <p class="markup-lucro" id="m-decor-lucro">Lucro: R$ 0,00 a R$ 0,00</p>
             </div>
 
-            <button id="btn-salvar-custo" class="btn-salvar" onclick="salvarBanco()">💾 Salvar Modelo no Banco</button>
+            <button id="btn-salvar-custo" class="btn-salvar" onclick="salvarBancoModelos()">💾 Salvar Modelo no Banco</button>
         </div>
 
         <div id="view-banco" class="view-section">
@@ -206,35 +208,78 @@
 
         <div id="view-despesas" class="view-section">
             <div class="resumo-box" style="background: #1e293b; text-align: center;">
-                <h3 style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px;">Investimento Total em Materiais</h3>
-                <div class="custo-total" style="justify-content: center; background: transparent; font-size: 2rem; color: #38bdf8;">
+                <h3 style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px;">Investimento (Com base no Filtro)</h3>
+                <div class="custo-total" style="justify-content: center; background: transparent; font-size: 2.2rem; color: #38bdf8; margin-top: 5px;">
                     <span id="total-despesas-valor">R$ 0,00</span>
                 </div>
             </div>
 
-            <div style="background: #fffbeb; padding: 20px; border-radius: 16px; border: 2px solid #fde68a; margin-bottom: 20px;">
-                <div class="section-title" style="margin-top: 0; color: #b45309; border-left-color: #d97706;">➕ Registrar Compra / Custo</div>
+            <div style="background: #fffbeb; padding: 20px; border-radius: 16px; border: 2px solid #fde68a; margin-bottom: 25px;">
+                <div class="section-title" style="margin-top: 0; color: #b45309; border-left-color: #d97706;">➕ Registrar Nova Compra</div>
                 
-                <div class="input-group">
-                    <label>Data da Compra</label>
-                    <input type="date" id="d-data">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col">
+                        <label>Data</label>
+                        <input type="date" id="d-data">
+                    </div>
+                    <div class="col">
+                        <label>Local de Compra</label>
+                        <input type="text" id="d-local" class="input-var" list="lista-locais-sugestao" placeholder="Ex: Shopee">
+                        <datalist id="lista-locais-sugestao"></datalist>
+                    </div>
                 </div>
                 
                 <div class="input-group">
-                    <label>Item / Produto (Digite ou escolha da lista)</label>
+                    <label>Item / Produto</label>
                     <input type="text" id="d-item" class="input-var" list="lista-itens-sugestao" placeholder="Ex: Filamento PLA Preto" autocomplete="off">
                     <datalist id="lista-itens-sugestao"></datalist>
                 </div>
                 
-                <div class="input-group">
-                    <label>Valor Gasto</label>
-                    <input type="text" id="d-valor" class="input-var mask-money" placeholder="R$ 0,00">
+                <div class="row">
+                    <div class="col">
+                        <label>Quantidade</label>
+                        <input type="number" id="d-qtd" class="input-var" value="1" min="1" step="0.01" oninput="calcularDespesaTotal()">
+                    </div>
+                    <div class="col">
+                        <label>Valor Unitário</label>
+                        <input type="text" id="d-valor-uni" class="input-var mask-money" placeholder="R$ 0,00" oninput="calcularDespesaTotal()">
+                    </div>
+                </div>
+
+                <div class="resumo-box" style="margin-top: 5px; padding: 15px; margin-bottom: 15px;">
+                    <div class="custo-total" style="margin-top: 0; font-size: 1.1rem; padding: 5px;"><span>Total a Lançar:</span> <span id="d-total-calc">R$ 0,00</span></div>
                 </div>
                 
                 <button class="btn-salvar" id="btn-salvar-despesa" onclick="salvarDespesa()" style="margin-bottom: 0;">💳 Lançar Despesa</button>
             </div>
 
             <div class="section-title">🧾 Histórico de Lançamentos</div>
+            <div class="filtros-box">
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col">
+                        <label>Mês:</label>
+                        <select id="filtro-d-mes" onchange="filtrarDespesas()">
+                            <option value="todos">Todos</option>
+                            <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Ano:</label>
+                        <select id="filtro-d-ano" onchange="filtrarDespesas()">
+                            <option value="todos">Todos</option>
+                            <option value="2025">2025</option><option value="2026">2026</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Local / Fornecedor:</label>
+                    <select id="filtro-d-local" onchange="filtrarDespesas()">
+                        <option value="todos">Todos os Locais</option>
+                    </select>
+                </div>
+                <input type="text" id="busca-despesa" class="search-bar" style="margin-top:15px; margin-bottom:0;" placeholder="🔍 Buscar item..." onkeyup="filtrarDespesas()">
+            </div>
+
             <div id="loading-despesas" style="text-align: center; padding: 20px; color: var(--primary); font-weight: 800; display: none;">⏳ Lendo histórico...</div>
             <div id="lista-despesas">
                 </div>
@@ -242,6 +287,7 @@
 
     </div>
 </div>
+
 
 <div id="custom-modal" class="modal-overlay-alert">
     <div class="modal-box-alert">
@@ -257,30 +303,25 @@
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
 
     let custoTotalGlobal = 0; 
+    let despesaTotalCalculada = 0;
+    
     let arrayBancoCustos = [];
     let arrayDespesas = [];
 
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
-    // Leitor de Dinheiro BLINDADO (Evita os números em trilhões)
+    const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
+
+    // Leitor de Dinheiro BLINDADO
     const limparValorPlanilha = (valorStr) => {
         if (!valorStr) return 0;
         if (typeof valorStr === 'number') return valorStr;
         let str = String(valorStr).trim();
-        
-        // Limpa R$ e espaços
         str = str.replace(/R\$\s?/gi, '').trim();
-        
-        // Se tem ponto e vírgula (R$ 1.500,00)
         if (str.includes(',') && str.includes('.')) {
             str = str.replace(/\./g, '').replace(',', '.');
-        } 
-        // Se tem só vírgula (R$ 15,00)
-        else if (str.includes(',')) {
+        } else if (str.includes(',')) {
             str = str.replace(',', '.');
         }
-        // Se tem só ponto, deixamos quieto pois é o float natural do Javascript (15.00)
-
         let numero = parseFloat(str);
         return isNaN(numero) ? 0 : numero;
     };
@@ -289,9 +330,6 @@
         let numLimpo = limparValorPlanilha(valorStr);
         return fmt(numLimpo);
     };
-
-    // Função para gravar na planilha
-    const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
 
     // Máscara de dinheiro em tempo real para os inputs
     document.addEventListener('input', function (e) {
@@ -309,16 +347,18 @@
     window.onload = () => {
         const hoje = new Date();
         document.getElementById('d-data').value = hoje.toISOString().split('T')[0];
+        
+        // Define Mês e Ano atual nos filtros de Despesa
+        document.getElementById('filtro-d-mes').value = String(hoje.getMonth() + 1).padStart(2, '0'); 
+        document.getElementById('filtro-d-ano').value = String(hoje.getFullYear());
+        
         calcular();
     };
 
     // === NAVEGAÇÃO DO TOPO (DINÂMICA) ===
-    function toggleMenuMobile() { 
-        document.getElementById('menu-abas').classList.toggle('menu-aberto'); 
-    }
+    function toggleMenuMobile() { document.getElementById('menu-abas').classList.toggle('menu-aberto'); }
 
     function trocarAba(aba, tituloAba) {
-        // Atualiza o texto do botão Mobile para o nome da Aba ativa
         const btnMobile = document.getElementById("btn-menu-mobile");
         btnMobile.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> ${tituloAba}`;
 
@@ -346,11 +386,10 @@
     function mostrarAlerta(titulo, texto, tipo) {
         const modal = document.getElementById("custom-modal");
         const icone = document.getElementById("modal-icone-alert");
-        const titleEl = document.getElementById("modal-titulo-alert");
-        const textEl = document.getElementById("modal-texto-alert");
         const btnEl = document.getElementById("btn-modal-ok");
 
-        titleEl.innerText = titulo; textEl.innerText = texto;
+        document.getElementById("modal-titulo-alert").innerText = titulo; 
+        document.getElementById("modal-texto-alert").innerText = texto;
 
         if(tipo === "success") { icone.innerText = "✅"; btnEl.style.background = "#10b981"; btnEl.style.boxShadow = "0 6px 0 #059669"; } 
         else if (tipo === "warning") { icone.innerText = "⚠️"; btnEl.style.background = "#f59e0b"; btnEl.style.boxShadow = "0 6px 0 #d97706"; } 
@@ -359,165 +398,9 @@
         modal.style.display = "flex";
         if ("vibrate" in navigator) navigator.vibrate(50);
     }
-
     function fecharAlerta() { document.getElementById("custom-modal").style.display = "none"; }
 
-    // === LÓGICA DA ABA 2: BANCO DE DADOS (MODELOS) ===
-    async function carregarBancoDeCustos() {
-        document.getElementById("loading-banco").style.display = "block";
-        document.getElementById("lista-banco").innerHTML = "";
-
-        try {
-            const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_custos");
-            const resultado = await resposta.json();
-            if (resultado.sucesso) {
-                arrayBancoCustos = resultado.produtos;
-                renderizarListaBanco(arrayBancoCustos);
-            } else { throw new Error(resultado.erro); }
-        } catch (e) {
-            document.getElementById("loading-banco").innerHTML = "❌ Erro ao conectar com a Planilha.";
-        } finally { document.getElementById("loading-banco").style.display = "none"; }
-    }
-
-    function renderizarListaBanco(arrayProdutos) {
-        const listaDiv = document.getElementById("lista-banco");
-        listaDiv.innerHTML = "";
-
-        if (arrayProdutos.length === 0) {
-            listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhum modelo cadastrado.</p>";
-            return;
-        }
-
-        let html = "";
-        arrayProdutos.forEach(p => {
-            let pesoStr = p.peso ? p.peso : "0";
-            let tempoStr = p.tempo ? p.tempo : "0";
-            
-            // Formatando e blindando o dinheiro quebrado vindo do banco
-            let insumoLimpo = formatarDoBanco(p.insumos);
-            let custoTotalLimpo = formatarDoBanco(p.custo_total);
-
-            html += `
-            <div class="produto-banco-card">
-                <div class="pb-info">
-                    <h4 class="pb-nome">${p.modelo}</h4>
-                    <div class="pb-detalhes">
-                        <span class="pb-tag">⚖️ ${pesoStr}g</span>
-                        <span class="pb-tag">⏱️ ${tempoStr}h</span>
-                        <span class="pb-tag">📦 ${insumoLimpo}</span>
-                    </div>
-                </div>
-                <div class="pb-custo">${custoTotalLimpo}</div>
-            </div>`;
-        });
-        listaDiv.innerHTML = html;
-    }
-
-    function filtrarBanco() {
-        const termoBusca = document.getElementById('busca-banco').value.toLowerCase();
-        const filtrados = arrayBancoCustos.filter(p => p.modelo.toLowerCase().includes(termoBusca));
-        renderizarListaBanco(filtrados);
-    }
-
-    // === LÓGICA DA ABA 3: DESPESAS E CUSTOS ===
-    async function carregarDespesas() {
-        document.getElementById("loading-despesas").style.display = "block";
-        document.getElementById("lista-despesas").innerHTML = "";
-
-        try {
-            const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_despesas");
-            const resultado = await resposta.json();
-            
-            if (resultado.sucesso) {
-                arrayDespesas = resultado.despesas;
-                renderizarListaDespesas(arrayDespesas);
-                alimentarDatalist(arrayDespesas); // Cria as sugestões do input
-            } else { throw new Error(resultado.erro); }
-        } catch (e) {
-            document.getElementById("loading-despesas").innerHTML = "❌ Erro ao ler despesas. Verifique se criou a aba 'Custos' na planilha.";
-        } finally { document.getElementById("loading-despesas").style.display = "none"; }
-    }
-
-    function renderizarListaDespesas(arrayDespesasLocais) {
-        const listaDiv = document.getElementById("lista-despesas");
-        listaDiv.innerHTML = "";
-        let somaTotal = 0;
-
-        if (arrayDespesasLocais.length === 0) {
-            listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhum lançamento feito ainda.</p>";
-            document.getElementById("total-despesas-valor").innerText = "R$ 0,00";
-            return;
-        }
-
-        let html = "";
-        arrayDespesasLocais.forEach(d => {
-            let numeroLimpo = limparValorPlanilha(d.valor);
-            somaTotal += numeroLimpo;
-
-            html += `
-            <div class="produto-banco-card">
-                <div class="pb-info">
-                    <h4 class="pb-nome" style="color: #334155;">${d.item}</h4>
-                    <div class="pb-detalhes">
-                        <span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">📅 ${d.data}</span>
-                    </div>
-                </div>
-                <div class="pb-custo" style="background: transparent; border: none; color: #ef4444; font-size: 1rem;">- ${fmt(numeroLimpo)}</div>
-            </div>`;
-        });
-        
-        listaDiv.innerHTML = html;
-        document.getElementById("total-despesas-valor").innerText = fmt(somaTotal);
-    }
-
-    // A MÁGICA DA SUGESTÃO DE ITENS (Igual Planilha)
-    function alimentarDatalist(arrayDespesasLocais) {
-        const datalist = document.getElementById("lista-itens-sugestao");
-        const nomesUnicos = [...new Set(arrayDespesasLocais.map(d => d.item.trim()))];
-        let htmlOptions = "";
-        nomesUnicos.forEach(nome => { if(nome) htmlOptions += `<option value="${nome}">`; });
-        datalist.innerHTML = htmlOptions;
-    }
-
-    async function salvarDespesa() {
-        const dataCompra = document.getElementById("d-data").value;
-        const itemCompra = document.getElementById("d-item").value.trim();
-        const valorCompraStr = document.getElementById("d-valor").value;
-
-        if (!dataCompra || !itemCompra || !valorCompraStr) {
-            mostrarAlerta("Atenção", "Preencha a data, o nome do item e o valor para lançar a despesa.", "warning");
-            return;
-        }
-
-        const btn = document.getElementById("btn-salvar-despesa");
-        btn.disabled = true; btn.innerText = "⏳ Lançando...";
-
-        try {
-            const payload = {
-                acao: "salvar_despesa",
-                data: dataCompra,
-                item: itemCompra,
-                valor: valorCompraStr
-            };
-
-            const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
-            const result = await response.json();
-            
-            if (result.sucesso) {
-                mostrarAlerta("Lançado!", "Despesa registrada com sucesso no fluxo de caixa.", "success");
-                document.getElementById("d-item").value = ""; 
-                document.getElementById("d-valor").value = ""; 
-                carregarDespesas(); // Recarrega a lista para mostrar a nova
-            } else { throw new Error(result.erro); }
-        } catch (e) {
-            mostrarAlerta("Erro de Conexão", "Falha ao enviar a despesa para a Planilha: " + e.message, "error");
-        } finally {
-            btn.disabled = false; btn.innerText = "💳 Lançar Despesa";
-        }
-    }
-
-
-    // === LÓGICA DA CALCULADORA ===
+    // === ABA 1: CALCULADORA ===
     function toggleConfig() {
         const area = document.getElementById("area-config");
         area.style.display = area.style.display === "block" ? "none" : "block";
@@ -552,36 +435,32 @@
         document.getElementById("r-insumos").innerText = fmt(insumos);
         document.getElementById("r-total").innerText = fmt(cTotal);
 
-        const precoSimplesMin = (cTotal * 2) + cHumano;
-        const precoSimplesMax = (cTotal * 3) + cHumano;
-        const lucroSimplesMin = precoSimplesMin - cTotal;
-        const lucroSimplesMax = precoSimplesMax - cTotal;
+        const pS_Min = (cTotal * 2) + cHumano, pS_Max = (cTotal * 3) + cHumano;
+        const pD_Min = (cTotal * 4) + cHumano, pD_Max = (cTotal * 6) + cHumano;
 
-        const precoDecorMin = (cTotal * 4) + cHumano;
-        const precoDecorMax = (cTotal * 6) + cHumano;
-        const lucroDecorMin = precoDecorMin - cTotal;
-        const lucroDecorMax = precoDecorMax - cTotal;
+        document.getElementById("m-simples-preco").innerText = `${fmt(pS_Min)} ou ${fmt(pS_Max)}`;
+        document.getElementById("m-simples-lucro").innerText = `Lucro Limpo: ${fmt(pS_Min - cTotal)} a ${fmt(pS_Max - cTotal)}`;
 
-        document.getElementById("m-simples-preco").innerText = `${fmt(precoSimplesMin)} ou ${fmt(precoSimplesMax)}`;
-        document.getElementById("m-simples-lucro").innerText = `Lucro Limpo: ${fmt(lucroSimplesMin)} a ${fmt(lucroSimplesMax)}`;
-
-        document.getElementById("m-decor-preco").innerText = `${fmt(precoDecorMin)} ou ${fmt(precoDecorMax)}`;
-        document.getElementById("m-decor-lucro").innerText = `Lucro Limpo: ${fmt(lucroDecorMin)} a ${fmt(lucroDecorMax)}`;
+        document.getElementById("m-decor-preco").innerText = `${fmt(pD_Min)} ou ${fmt(pD_Max)}`;
+        document.getElementById("m-decor-lucro").innerText = `Lucro Limpo: ${fmt(pD_Min - cTotal)} a ${fmt(pD_Max - cTotal)}`;
     }
 
-    async function salvarBanco() {
+    async function salvarBancoModelos() {
         const modelo = document.getElementById("v-modelo").value.trim();
-        if (!modelo) { mostrarAlerta("Atenção", "Por favor, digite o Nome do Modelo para poder salvar no banco de dados.", "warning"); return; }
+        if (!modelo) { mostrarAlerta("Atenção", "Digite o Nome do Modelo para poder salvar no banco.", "warning"); return; }
         
         const btn = document.getElementById("btn-salvar-custo");
         btn.disabled = true; btn.innerText = "⏳ Salvando...";
 
-        const peso = document.getElementById("v-peso").value;
-        const tempo = document.getElementById("v-tempo-imp").value;
-        const insumos = parseFloat(document.getElementById("v-insumos").value) || 0;
-
         try {
-            const payload = { acao: "salvar_custo", modelo: modelo, peso: peso, tempo: tempo, insumos: fmtPlanilha(insumos), custo_total: fmtPlanilha(custoTotalGlobal) };
+            const payload = { 
+                acao: "salvar_custo", 
+                modelo: modelo, 
+                peso: document.getElementById("v-peso").value, 
+                tempo: document.getElementById("v-tempo-imp").value, 
+                insumos: fmtPlanilha(parseFloat(document.getElementById("v-insumos").value) || 0), 
+                custo_total: fmtPlanilha(custoTotalGlobal) 
+            };
             const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
             const result = await response.json();
             
@@ -589,16 +468,219 @@
                 mostrarAlerta("Sucesso!", "Produto salvo com perfeição no seu Banco de Custos!", "success");
                 document.getElementById("v-modelo").value = ""; 
             } else if (result.erro === "DUPLICADO") {
-                mostrarAlerta("Modelo já cadastrado!", "O modelo '" + modelo + "' já existe no seu banco de dados. Salve com um nome diferente para evitar duplicidade.", "warning");
+                mostrarAlerta("Modelo já cadastrado!", "O modelo '" + modelo + "' já existe no seu banco de dados.", "warning");
             } else { throw new Error(result.erro); }
         } catch (e) {
-            mostrarAlerta("Erro de Conexão", "Falha ao enviar os dados para a Planilha: " + e.message, "error");
-        } finally {
-            btn.disabled = false; btn.innerText = "💾 Salvar Modelo no Banco";
-        }
+            mostrarAlerta("Erro de Conexão", "Falha ao enviar os dados: " + e.message, "error");
+        } finally { btn.disabled = false; btn.innerText = "💾 Salvar Modelo no Banco"; }
     }
 
-</script>
+    // === ABA 2: BANCO DE DADOS (MODELOS) ===
+    async function carregarBancoDeCustos() {
+        document.getElementById("loading-banco").style.display = "block"; document.getElementById("lista-banco").innerHTML = "";
+        try {
+            const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_custos");
+            const resultado = await resposta.json();
+            if (resultado.sucesso) {
+                arrayBancoCustos = resultado.produtos;
+                renderizarListaBanco(arrayBancoCustos);
+            } else { throw new Error(resultado.erro); }
+        } catch (e) { document.getElementById("loading-banco").innerHTML = "❌ Erro ao conectar com a Planilha.";
+        } finally { document.getElementById("loading-banco").style.display = "none"; }
+    }
 
+    function renderizarListaBanco(arrayProdutos) {
+        const listaDiv = document.getElementById("lista-banco"); listaDiv.innerHTML = "";
+        if (arrayProdutos.length === 0) { listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhum modelo cadastrado.</p>"; return; }
+
+        let html = "";
+        arrayProdutos.forEach(p => {
+            html += `
+            <div class="produto-banco-card">
+                <div class="pb-info">
+                    <h4 class="pb-nome">${p.modelo}</h4>
+                    <div class="pb-detalhes">
+                        <span class="pb-tag">⚖️ ${p.peso || "0"}g</span>
+                        <span class="pb-tag">⏱️ ${p.tempo || "0"}h</span>
+                        <span class="pb-tag">📦 ${formatarDoBanco(p.insumos)}</span>
+                    </div>
+                </div>
+                <div class="pb-custo">${formatarDoBanco(p.custo_total)}</div>
+            </div>`;
+        });
+        listaDiv.innerHTML = html;
+    }
+
+    function filtrarBanco() {
+        const t = document.getElementById('busca-banco').value.toLowerCase();
+        renderizarListaBanco(arrayBancoCustos.filter(p => p.modelo.toLowerCase().includes(t)));
+    }
+
+
+    // === ABA 3: DESPESAS E CUSTOS ===
+    
+    // Calcula Preço Uni x Qtd para lançar Total
+    function calcularDespesaTotal() {
+        const qtd = parseFloat(document.getElementById("d-qtd").value) || 1;
+        const vUni = limparValorPlanilha(document.getElementById("d-valor-uni").value);
+        despesaTotalCalculada = qtd * vUni;
+        document.getElementById("d-total-calc").innerText = fmt(despesaTotalCalculada);
+    }
+
+    async function carregarDespesas() {
+        document.getElementById("loading-despesas").style.display = "block"; document.getElementById("lista-despesas").innerHTML = "";
+        try {
+            const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_despesas");
+            const resultado = await resposta.json();
+            
+            if (resultado.sucesso) {
+                arrayDespesas = resultado.despesas;
+                alimentarDatalistE_Filtro(arrayDespesas); 
+                filtrarDespesas(); // Roda o filtro (Mês atual) para exibir a lista
+            } else { throw new Error(resultado.erro); }
+        } catch (e) {
+            document.getElementById("loading-despesas").innerHTML = "❌ Erro ao ler despesas da aba 'Custos'.";
+        } finally { document.getElementById("loading-despesas").style.display = "none"; }
+    }
+
+    function alimentarDatalistE_Filtro(arrayDespesasLocais) {
+        const dataItens = document.getElementById("lista-itens-sugestao");
+        const dataLocais = document.getElementById("lista-locais-sugestao");
+        const filtroLocais = document.getElementById("filtro-d-local");
+        
+        const itensUnicos = [...new Set(arrayDespesasLocais.map(d => d.item.trim()))].filter(i=>i);
+        const locaisUnicos = [...new Set(arrayDespesasLocais.map(d => d.local.trim()))].filter(i=>i);
+        
+        dataItens.innerHTML = itensUnicos.map(nome => `<option value="${nome}">`).join('');
+        dataLocais.innerHTML = locaisUnicos.map(nome => `<option value="${nome}">`).join('');
+        
+        filtroLocais.innerHTML = '<option value="todos">Todos os Locais</option>' + locaisUnicos.map(nome => `<option value="${nome}">${nome}</option>`).join('');
+    }
+
+    function filtrarDespesas() {
+        const mesSelect = document.getElementById('filtro-d-mes').value;
+        const anoSelect = document.getElementById('filtro-d-ano').value;
+        const localSelect = document.getElementById('filtro-d-local').value.toLowerCase();
+        const textoBusca = document.getElementById('busca-despesa').value.toLowerCase();
+
+        const filtrados = arrayDespesas.filter(d => {
+            // Filtro de Texto (Item)
+            if (textoBusca && !d.item.toLowerCase().includes(textoBusca)) return false;
+            
+            // Filtro de Local
+            if (localSelect !== "todos" && d.local.toLowerCase() !== localSelect) return false;
+
+            // Filtro de Data (Vem como "28/11/2025" do Google se a célula for data, ou como string)
+            if (mesSelect !== "todos" || anoSelect !== "todos") {
+                let parts = [];
+                // Se o Google devolveu com barras (DD/MM/YYYY)
+                if(d.data.includes('/')) { parts = d.data.split('/'); } 
+                // Se devolveu com traços (YYYY-MM-DD)
+                else if (d.data.includes('-')) { let p = d.data.split('-'); parts = [p[2], p[1], p[0]]; }
+                
+                if (parts.length >= 3) {
+                    let mesData = parts[1]; // MM
+                    let anoData = parts[2].substring(0,4); // YYYY
+                    
+                    if (mesSelect !== "todos" && mesData !== mesSelect) return false;
+                    if (anoSelect !== "todos" && anoData !== anoSelect) return false;
+                } else {
+                    return false; // Se a data é inválida, não passa no filtro de data
+                }
+            }
+            return true;
+        });
+
+        renderizarListaDespesas(filtrados);
+    }
+
+    function renderizarListaDespesas(arrayDespesasLocais) {
+        const listaDiv = document.getElementById("lista-despesas");
+        listaDiv.innerHTML = "";
+        let somaTotal = 0;
+
+        if (arrayDespesasLocais.length === 0) {
+            listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhuma despesa para este filtro.</p>";
+            document.getElementById("total-despesas-valor").innerText = "R$ 0,00";
+            return;
+        }
+
+        let html = "";
+        arrayDespesasLocais.forEach(d => {
+            let numeroGasto = limparValorPlanilha(d.valor);
+            let numPrecoUni = limparValorPlanilha(d.preco_uni);
+            somaTotal += numeroGasto;
+
+            let detailsHTML = `<span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">📅 ${d.data}</span>
+                               <span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">🏢 ${d.local}</span>`;
+            
+            // Se tiver quantidade e preço unitário cadastrado na base (nova estrutura)
+            if (d.quantidade && d.preco_uni && d.preco_uni !== "R$ 0,00") {
+                detailsHTML += `<br><span class="pb-tag" style="margin-top:4px;">📦 Qtd: ${d.quantidade}</span>
+                                <span class="pb-tag" style="margin-top:4px;">💲 ${fmt(numPrecoUni)} /un</span>`;
+            }
+
+            html += `
+            <div class="produto-banco-card">
+                <div class="pb-info">
+                    <h4 class="pb-nome" style="color: #334155;">${d.item}</h4>
+                    <div class="pb-detalhes" style="flex-direction: column; gap: 4px; align-items: flex-start;">
+                        <div>${detailsHTML}</div>
+                    </div>
+                </div>
+                <div class="pb-custo" style="background: transparent; border: none; color: #ef4444; font-size: 1.1rem; padding-right: 0;">- ${fmt(numeroGasto)}</div>
+            </div>`;
+        });
+        
+        listaDiv.innerHTML = html;
+        document.getElementById("total-despesas-valor").innerText = fmt(somaTotal);
+    }
+
+    async function salvarDespesa() {
+        const dataCompra = document.getElementById("d-data").value;
+        const localCompra = document.getElementById("d-local").value.trim();
+        const itemCompra = document.getElementById("d-item").value.trim();
+        const qtdCompra = document.getElementById("d-qtd").value;
+        const valorUniStr = document.getElementById("d-valor-uni").value;
+
+        if (!dataCompra || !itemCompra || !valorUniStr || !localCompra) {
+            mostrarAlerta("Atenção", "Preencha a data, local, o nome do item e o valor para lançar a despesa.", "warning");
+            return;
+        }
+
+        const btn = document.getElementById("btn-salvar-despesa");
+        btn.disabled = true; btn.innerText = "⏳ Lançando...";
+
+        try {
+            const vUniNum = limparValorPlanilha(valorUniStr);
+            // Payload respeitando as colunas: Produto(A), Local(B), Data(C), Qtd(D), PreçoUni(E), PreçoTotal(F)
+            const payload = {
+                acao: "salvar_despesa",
+                item: itemCompra,
+                local: localCompra,
+                data: dataCompra.split('-').reverse().join('/'), // Manda pro Google em DD/MM/YYYY
+                quantidade: qtdCompra,
+                preco_uni: fmtPlanilha(vUniNum),
+                preco_total: fmtPlanilha(despesaTotalCalculada)
+            };
+
+            const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
+            const result = await response.json();
+            
+            if (result.sucesso) {
+                mostrarAlerta("Lançado!", "Despesa registrada com sucesso no fluxo de caixa.", "success");
+                document.getElementById("d-item").value = ""; 
+                document.getElementById("d-valor-uni").value = ""; 
+                document.getElementById("d-qtd").value = "1";
+                calcularDespesaTotal();
+                carregarDespesas(); // Recarrega a lista
+            } else { throw new Error(result.erro); }
+        } catch (e) {
+            mostrarAlerta("Erro de Conexão", "Falha ao enviar a despesa para a Planilha: " + e.message, "error");
+        } finally {
+            btn.disabled = false; btn.innerText = "💳 Lançar Despesa";
+        }
+    }
+</script>
 </body>
 </html>
