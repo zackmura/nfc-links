@@ -29,7 +29,7 @@
         .brand-header h1 { margin: 0; color: var(--brand-dark); font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px; text-transform: uppercase; }
         .brand-header p { margin: 5px 0 0; color: var(--brand-light); font-size: 0.9rem; font-weight: 600; }
         
-        /* MENU MOBILE NO TOPO (PADRÃO ADMIN) */
+        /* MENU MOBILE NO TOPO (DINÂMICO) */
         .mobile-menu-btn { display: none; background: var(--brand-bg); color: var(--brand-dark); border: 2px solid var(--border-color); padding: 12px 20px; border-radius: 12px; font-weight: 800; width: 100%; margin-bottom: 15px; cursor: pointer; text-transform: uppercase; font-size: 0.9rem; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;}
         .mobile-menu-btn:active { background: #e7e5e4; }
 
@@ -93,21 +93,16 @@
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes pulseIcon { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
-        /* MOBILE FIXES PARA O MENU SUPERIOR */
+        /* MOBILE FIXES */
         @media (max-width: 600px) { 
             body { padding: 10px; }
             .admin-card { padding: 25px 15px; border-radius: 16px; } 
             .brand-header { margin-bottom: 15px; padding-bottom: 15px; }
-            
-            /* Mostra o botão hambúrguer */
             .mobile-menu-btn { display: flex; }
-            
-            /* Esconde as abas e arruma para descer quando clicar */
             .tabs-container { display: none; flex-direction: column; padding: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); gap: 5px;}
             .tabs-container.menu-aberto { display: flex; animation: slideDown 0.2s ease;}
             .tab-btn { text-align: left; padding: 12px; font-size: 0.85rem;}
             @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-            
             .row { flex-direction: column; gap: 0; } 
             .input-group { margin-bottom: 12px; } 
         }
@@ -124,15 +119,15 @@
             <p>Precificação e Controle de Custos</p>
         </div>
 
-        <button class="mobile-menu-btn" onclick="toggleMenuMobile()">
+        <button class="mobile-menu-btn" id="btn-menu-mobile" onclick="toggleMenuMobile()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            Navegação do Painel
+            ➕ Precificar
         </button>
 
         <div class="tabs-container" id="menu-abas">
-            <button class="tab-btn active" id="tab-calc" onclick="trocarAba('calculadora')">➕ Precificar</button>
-            <button class="tab-btn" id="tab-banco" onclick="trocarAba('banco')">📋 Modelos Salvos</button>
-            <button class="tab-btn" id="tab-despesas" onclick="trocarAba('despesas')">💳 Meus Custos</button>
+            <button class="tab-btn active" id="tab-calc" onclick="trocarAba('calculadora', '➕ Precificar')">➕ Precificar</button>
+            <button class="tab-btn" id="tab-banco" onclick="trocarAba('banco', '📋 Modelos Salvos')">📋 Modelos Salvos</button>
+            <button class="tab-btn" id="tab-despesas" onclick="trocarAba('despesas', '💳 Meus Custos')">💳 Meus Custos</button>
         </div>
 
         <div id="view-calculadora" class="view-section active">
@@ -258,6 +253,7 @@
 </div>
 
 <script>
+    // 🔥 COLE AQUI O LINK DA API DA PLANILHA DE PRECIFICAÇÃO 🔥
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
 
     let custoTotalGlobal = 0; 
@@ -266,16 +262,35 @@
 
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     
-    // Leitor Robusto de Dinheiro da Planilha
+    // Leitor de Dinheiro BLINDADO (Evita os números em trilhões)
     const limparValorPlanilha = (valorStr) => {
         if (!valorStr) return 0;
+        if (typeof valorStr === 'number') return valorStr;
         let str = String(valorStr).trim();
-        // Remove 'R$', espaços, e converte formato brasileiro (vírgula) para americano (ponto)
-        str = str.replace(/R\$\s?/g, '').replace(/\./g, '').replace(',', '.');
+        
+        // Limpa R$ e espaços
+        str = str.replace(/R\$\s?/gi, '').trim();
+        
+        // Se tem ponto e vírgula (R$ 1.500,00)
+        if (str.includes(',') && str.includes('.')) {
+            str = str.replace(/\./g, '').replace(',', '.');
+        } 
+        // Se tem só vírgula (R$ 15,00)
+        else if (str.includes(',')) {
+            str = str.replace(',', '.');
+        }
+        // Se tem só ponto, deixamos quieto pois é o float natural do Javascript (15.00)
+
         let numero = parseFloat(str);
         return isNaN(numero) ? 0 : numero;
     };
 
+    const formatarDoBanco = (valorStr) => {
+        let numLimpo = limparValorPlanilha(valorStr);
+        return fmt(numLimpo);
+    };
+
+    // Função para gravar na planilha
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
 
     // Máscara de dinheiro em tempo real para os inputs
@@ -297,12 +312,16 @@
         calcular();
     };
 
-    // === NAVEGAÇÃO DO TOPO ===
+    // === NAVEGAÇÃO DO TOPO (DINÂMICA) ===
     function toggleMenuMobile() { 
         document.getElementById('menu-abas').classList.toggle('menu-aberto'); 
     }
 
-    function trocarAba(aba) {
+    function trocarAba(aba, tituloAba) {
+        // Atualiza o texto do botão Mobile para o nome da Aba ativa
+        const btnMobile = document.getElementById("btn-menu-mobile");
+        btnMobile.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> ${tituloAba}`;
+
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); 
         document.querySelectorAll('.view-section').forEach(content => content.classList.remove('active'));
 
@@ -374,9 +393,9 @@
             let pesoStr = p.peso ? p.peso : "0";
             let tempoStr = p.tempo ? p.tempo : "0";
             
-            // Formatando o dinheiro quebrado vindo do banco
-            let numInsumo = limparValorPlanilha(p.insumos);
-            let numTotal = limparValorPlanilha(p.custo_total);
+            // Formatando e blindando o dinheiro quebrado vindo do banco
+            let insumoLimpo = formatarDoBanco(p.insumos);
+            let custoTotalLimpo = formatarDoBanco(p.custo_total);
 
             html += `
             <div class="produto-banco-card">
@@ -385,10 +404,10 @@
                     <div class="pb-detalhes">
                         <span class="pb-tag">⚖️ ${pesoStr}g</span>
                         <span class="pb-tag">⏱️ ${tempoStr}h</span>
-                        <span class="pb-tag">📦 ${fmt(numInsumo)}</span>
+                        <span class="pb-tag">📦 ${insumoLimpo}</span>
                     </div>
                 </div>
-                <div class="pb-custo">${fmt(numTotal)}</div>
+                <div class="pb-custo">${custoTotalLimpo}</div>
             </div>`;
         });
         listaDiv.innerHTML = html;
@@ -432,8 +451,8 @@
 
         let html = "";
         arrayDespesasLocais.forEach(d => {
-            let numeroGasto = limparValorPlanilha(d.valor);
-            somaTotal += numeroGasto;
+            let numeroLimpo = limparValorPlanilha(d.valor);
+            somaTotal += numeroLimpo;
 
             html += `
             <div class="produto-banco-card">
@@ -443,7 +462,7 @@
                         <span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">📅 ${d.data}</span>
                     </div>
                 </div>
-                <div class="pb-custo" style="background: transparent; border: none; color: #ef4444; font-size: 1rem;">- ${fmt(numeroGasto)}</div>
+                <div class="pb-custo" style="background: transparent; border: none; color: #ef4444; font-size: 1rem;">- ${fmt(numeroLimpo)}</div>
             </div>`;
         });
         
