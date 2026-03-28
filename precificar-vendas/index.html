@@ -14,13 +14,14 @@
             --yellow-highlight: #fef08a; --green-profit: #10b981;
         }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        /* Ajuste no padding-bottom para não conflitar com a Navbar Fixa */
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px 20px 100px; display: flex; justify-content: center; }
         .app-container { width: 100%; max-width: 600px; }
 
         .header { text-align: center; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
-        .header img { width: 140px; height: auto; margin-bottom: 12px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08)); border-radius: 12px; }
-        .header h1 { color: var(--brand-dark); font-weight: 900; margin: 0; font-size: 1.8rem; text-transform: uppercase;}
-        .header p { color: var(--primary); font-weight: 600; margin: 5px 0 0; font-size: 0.9rem;}
+        .header img { width: 120px; height: auto; margin-bottom: 10px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08)); border-radius: 12px; }
+        .header h1 { color: var(--brand-dark); font-weight: 900; margin: 0; font-size: 1.6rem; text-transform: uppercase;}
+        .header p { color: var(--primary); font-weight: 600; margin: 2px 0 0; font-size: 0.85rem;}
 
         .card { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border-color);}
         .card-title { font-size: 1.1rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 15px; display: flex; align-items: center; gap: 8px; border-bottom: 2px dashed var(--border-color); padding-bottom: 10px;}
@@ -37,7 +38,6 @@
 
         .resumo-box { background: var(--brand-dark); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px;}
         .resumo-box h3 { margin: 0 0 15px; font-weight: 900; font-size: 1.2rem; color: var(--primary); text-transform: uppercase;}
-        
         .custo-linha { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 600; color: #d6d3d1; border-bottom: 1px dashed #78716c; padding-bottom: 5px;}
         .custo-total { display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.3rem; font-weight: 900; color: white; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px;}
 
@@ -49,11 +49,31 @@
         .config-btn { background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 800; color: #475569; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px;}
         .config-area { display: none; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;}
 
-        .btn-salvar { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .btn-salvar { width: 100%; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-bottom: 10px; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 1px; }
         .btn-salvar:active { transform: translateY(4px); box-shadow: 0 0 0 rgba(16, 185, 129, 0.4); }
         .btn-salvar:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* 🔥 CSS DO MODAL PREMIUM 🔥 */
+        /* 🔥 CSS DO MENU INFERIOR (ESTILO APP) 🔥 */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 15px 10px; box-shadow: 0 -5px 15px rgba(0,0,0,0.05); border-top: 1px solid var(--border-color); z-index: 999; box-sizing: border-box;}
+        .nav-item { flex: 1; text-align: center; color: var(--text-muted); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; padding: 10px 0; border-radius: 12px; transition: 0.2s;}
+        .nav-item.active { color: var(--primary); background: #fffbeb; }
+        .nav-icon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+
+        /* 🔥 CSS DA ABA DO BANCO DE DADOS 🔥 */
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
+        .view-section.active { display: block; }
+        
+        .search-bar { width: 100%; padding: 14px; border: 2px solid var(--primary); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px; box-sizing: border-box; box-shadow: 0 4px 10px rgba(217, 119, 6, 0.1);}
+        .search-bar:focus { outline: none; background: #fffbeb;}
+        
+        .produto-banco-card { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02);}
+        .pb-info { flex-grow: 1; overflow: hidden;}
+        .pb-nome { margin: 0 0 5px; font-size: 0.95rem; font-weight: 900; color: var(--brand-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .pb-detalhes { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: flex; gap: 8px;}
+        .pb-tag { background: #f1f5f9; padding: 3px 6px; border-radius: 6px; color: #475569;}
+        .pb-custo { font-size: 1.1rem; font-weight: 900; color: var(--primary); background: #fffbeb; padding: 8px 12px; border-radius: 10px; border: 1px solid #fde68a; flex-shrink: 0;}
+
+        /* MODAL ALERTS */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
         .modal-box-alert { background: #fff; width: 90%; max-width: 360px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
         .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block; animation: pulseIcon 1s infinite alternate;}
@@ -72,84 +92,94 @@
 <div class="app-container">
     <div class="header">
         <img src="logo.jpg" alt="Mini Mundo Impressão 3D" onerror="this.src='logo.png'; this.onerror=null;">
-        <h1>Calculadora 3D</h1>
-        <p>Precificação Inteligente Mini Mundo</p>
+        <h1>Precificador 3D</h1>
+        <p>Sistema Inteligente Mini Mundo</p>
     </div>
 
-    <button class="config-btn" onclick="toggleConfig()">⚙️ Configurações da Impressora (Custos Fixos)</button>
-    
-    <div class="config-area" id="area-config">
-        <div class="row">
-            <div class="col"><label>Consumo (Watts)</label><input type="number" id="v-watts" value="175" oninput="calcular()"></div>
-            <div class="col"><label>Energia (R$/kWh)</label><input type="number" id="v-kwh" value="0.70" step="0.01" oninput="calcular()"></div>
-        </div>
-        <div class="row">
-            <div class="col"><label>Máquina/Hora (R$)</label><input type="number" id="v-maq" value="0.75" step="0.01" oninput="calcular()"></div>
-            <div class="col"><label>Sua Hora (R$)</label><input type="number" id="v-hora" value="10.00" step="0.50" oninput="calcular()"></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">📝 Dados do Projeto</div>
-        <div class="input-group">
-            <label>Nome do Modelo (Obrigatório para Salvar)</label>
-            <input type="text" id="v-modelo" class="input-var" placeholder="Ex: Placa profissões">
-        </div>
-        <div class="row">
-            <div class="col">
-                <label>Preço Filamento (kg)</label>
-                <input type="number" id="v-filamento" class="input-var" value="100" step="1" oninput="calcular()">
-            </div>
-            <div class="col">
-                <label>Peso da Peça (g)</label>
-                <input type="number" id="v-peso" class="input-var" value="126" step="1" oninput="calcular()">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <label>Tempo Impressão (h)</label>
-                <input type="number" id="v-tempo-imp" class="input-var" value="9" step="0.1" oninput="calcular()">
-            </div>
-            <div class="col">
-                <label>Mão de Obra (h)</label>
-                <input type="number" id="v-tempo-mao" class="input-var" value="0" step="0.1" oninput="calcular()">
-            </div>
-        </div>
-        <div class="input-group" style="margin-bottom: 0;">
-            <label>Custos Materiais Externos (Embalagem, Ímã, etc)</label>
-            <input type="number" id="v-insumos" class="input-var" value="0" step="0.50" oninput="calcular()">
-        </div>
-    </div>
-
-    <div class="resumo-box">
-        <h3>Custo Real de Produção</h3>
-        <div class="custo-linha"><span>Material (Filamento)</span> <span id="r-material">R$ 0,00</span></div>
-        <div class="custo-linha"><span>Energia Elétrica</span> <span id="r-energia">R$ 0,00</span></div>
-        <div class="custo-linha"><span>Manutenção/Depreciação</span> <span id="r-deprec">R$ 0,00</span></div>
-        <div class="custo-linha"><span>Mão de Obra</span> <span id="r-humano">R$ 0,00</span></div>
-        <div class="custo-linha"><span>Taxa de Falha (10%)</span> <span id="r-falha">R$ 0,00</span></div>
-        <div class="custo-linha" style="border-bottom: none;"><span>Insumos Extras</span> <span id="r-insumos">R$ 0,00</span></div>
+    <div id="view-calculadora" class="view-section active">
+        <button class="config-btn" onclick="toggleConfig()">⚙️ Configurações da Impressora (Custos Fixos)</button>
         
-        <div class="custo-total"><span>Custo Total:</span> <span id="r-total">R$ 0,00</span></div>
+        <div class="config-area" id="area-config">
+            <div class="row">
+                <div class="col"><label>Consumo (Watts)</label><input type="number" id="v-watts" value="175" oninput="calcular()"></div>
+                <div class="col"><label>Energia (R$/kWh)</label><input type="number" id="v-kwh" value="0.70" step="0.01" oninput="calcular()"></div>
+            </div>
+            <div class="row">
+                <div class="col"><label>Máquina/Hora (R$)</label><input type="number" id="v-maq" value="0.75" step="0.01" oninput="calcular()"></div>
+                <div class="col"><label>Sua Hora (R$)</label><input type="number" id="v-hora" value="10.00" step="0.50" oninput="calcular()"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📝 Dados do Projeto</div>
+            <div class="input-group">
+                <label>Nome do Modelo (Obrigatório para Salvar)</label>
+                <input type="text" id="v-modelo" class="input-var" placeholder="Ex: Placa profissões">
+            </div>
+            <div class="row">
+                <div class="col"><label>Filamento (kg)</label><input type="number" id="v-filamento" class="input-var" value="100" step="1" oninput="calcular()"></div>
+                <div class="col"><label>Peso (g)</label><input type="number" id="v-peso" class="input-var" value="126" step="1" oninput="calcular()"></div>
+            </div>
+            <div class="row">
+                <div class="col"><label>Impressão (h)</label><input type="number" id="v-tempo-imp" class="input-var" value="9" step="0.1" oninput="calcular()"></div>
+                <div class="col"><label>Mão de Obra (h)</label><input type="number" id="v-tempo-mao" class="input-var" value="0" step="0.1" oninput="calcular()"></div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Custos Extras (Embalagem, Ímãs, etc)</label>
+                <input type="number" id="v-insumos" class="input-var" value="0" step="0.50" oninput="calcular()">
+            </div>
+        </div>
+
+        <div class="resumo-box">
+            <h3>Custo Real de Produção</h3>
+            <div class="custo-linha"><span>Material (Filamento)</span> <span id="r-material">R$ 0,00</span></div>
+            <div class="custo-linha"><span>Energia Elétrica</span> <span id="r-energia">R$ 0,00</span></div>
+            <div class="custo-linha"><span>Manutenção/Depreciação</span> <span id="r-deprec">R$ 0,00</span></div>
+            <div class="custo-linha"><span>Mão de Obra</span> <span id="r-humano">R$ 0,00</span></div>
+            <div class="custo-linha"><span>Taxa de Falha (10%)</span> <span id="r-falha">R$ 0,00</span></div>
+            <div class="custo-linha" style="border-bottom: none;"><span>Insumos Extras</span> <span id="r-insumos">R$ 0,00</span></div>
+            <div class="custo-total"><span>Custo Total:</span> <span id="r-total">R$ 0,00</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">💰 Sugestão de Venda</div>
+            <div class="markup-box">
+                <p class="markup-title">Peças Simples / Reposição (2x a 3x)</p>
+                <p class="markup-preco" id="m-simples-preco">R$ 0,00 a R$ 0,00</p>
+                <p class="markup-lucro" id="m-simples-lucro">Lucro: R$ 0,00 a R$ 0,00</p>
+            </div>
+            <div class="markup-box" style="background: #fffbeb; border-color: #fde68a;">
+                <p class="markup-title" style="color: #b45309;">Decorativos / Colecionáveis (4x a 6x)</p>
+                <p class="markup-preco" id="m-decor-preco">R$ 0,00 a R$ 0,00</p>
+                <p class="markup-lucro" id="m-decor-lucro">Lucro: R$ 0,00 a R$ 0,00</p>
+            </div>
+        </div>
+
+        <button id="btn-salvar-custo" class="btn-salvar" onclick="salvarBanco()">💾 Salvar no Banco de Dados</button>
     </div>
 
-    <div class="card">
-        <div class="card-title">💰 Sugestão de Venda</div>
+    <div id="view-banco" class="view-section">
+        <input type="text" id="busca-banco" class="search-bar" placeholder="🔍 Buscar modelo pelo nome..." onkeyup="filtrarBanco()">
         
-        <div class="markup-box">
-            <p class="markup-title">Peças Simples / Reposição (2x a 3x)</p>
-            <p class="markup-preco" id="m-simples-preco">R$ 0,00 a R$ 0,00</p>
-            <p class="markup-lucro" id="m-simples-lucro">Lucro Limpo: R$ 0,00 a R$ 0,00</p>
+        <div id="loading-banco" style="text-align: center; padding: 30px; color: var(--primary); font-weight: 900; font-size: 1.1rem; display: none;">
+            ⏳ Conectando ao Banco de Dados...
         </div>
-
-        <div class="markup-box" style="background: #fffbeb; border-color: #fde68a;">
-            <p class="markup-title" style="color: #b45309;">Decorativos / Colecionáveis (4x a 6x)</p>
-            <p class="markup-preco" id="m-decor-preco">R$ 0,00 a R$ 0,00</p>
-            <p class="markup-lucro" id="m-decor-lucro">Lucro Limpo: R$ 0,00 a R$ 0,00</p>
-        </div>
+        
+        <div id="lista-banco">
+            </div>
     </div>
 
-    <button id="btn-salvar-custo" class="btn-salvar" onclick="salvarBanco()">💾 Salvar no Banco de Custos</button>
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-item active" id="nav-calc" onclick="trocarAba('calculadora')">
+        <span class="nav-icon">➕</span>
+        Calcular
+    </div>
+    <div class="nav-item" id="nav-banco" onclick="trocarAba('banco')">
+        <span class="nav-icon">📋</span>
+        Meu Banco
+    </div>
 </div>
 
 <div id="custom-modal" class="modal-overlay-alert">
@@ -166,11 +196,95 @@
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
 
     let custoTotalGlobal = 0; 
+    let arrayBancoCustos = []; // Memória da lista de produtos
 
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
 
-    // Função que gerencia o Modal Customizado
+    // === NAVEGAÇÃO DO APP ===
+    function trocarAba(aba) {
+        document.getElementById("nav-calc").classList.remove("active");
+        document.getElementById("nav-banco").classList.remove("active");
+        document.getElementById("view-calculadora").classList.remove("active");
+        document.getElementById("view-banco").classList.remove("active");
+
+        if (aba === 'calculadora') {
+            document.getElementById("nav-calc").classList.add("active");
+            document.getElementById("view-calculadora").classList.add("active");
+        } else {
+            document.getElementById("nav-banco").classList.add("active");
+            document.getElementById("view-banco").classList.add("active");
+            carregarBancoDeCustos(); // Carrega os dados sempre que abrir a aba
+        }
+        window.scrollTo(0,0);
+    }
+
+    // === LÓGICA DO BANCO DE DADOS ===
+    async function carregarBancoDeCustos() {
+        document.getElementById("loading-banco").style.display = "block";
+        document.getElementById("lista-banco").innerHTML = "";
+
+        if (API_PRECIFICACAO === "COLE_AQUI_O_LINK_DA_SUA_API_DE_PRECIFICACAO") {
+            document.getElementById("loading-banco").innerHTML = "⚠️ API Não Configurada no Código.";
+            return;
+        }
+
+        try {
+            const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_custos");
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                arrayBancoCustos = resultado.produtos;
+                renderizarListaBanco(arrayBancoCustos);
+            } else {
+                throw new Error(resultado.erro);
+            }
+        } catch (e) {
+            document.getElementById("loading-banco").innerHTML = "❌ Erro ao conectar com o banco de dados.";
+        } finally {
+            document.getElementById("loading-banco").style.display = "none";
+        }
+    }
+
+    function renderizarListaBanco(arrayProdutos) {
+        const listaDiv = document.getElementById("lista-banco");
+        listaDiv.innerHTML = "";
+
+        if (arrayProdutos.length === 0) {
+            listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhum modelo cadastrado.</p>";
+            return;
+        }
+
+        let html = "";
+        arrayProdutos.forEach(p => {
+            // Garante que mostre "0" se estiver vazio
+            let pesoStr = p.peso ? p.peso : "0";
+            let tempoStr = p.tempo ? p.tempo : "0";
+            let insumoStr = p.insumos && p.insumos !== "R$ 0,00" ? p.insumos : "S/ Extras";
+
+            html += `
+            <div class="produto-banco-card">
+                <div class="pb-info">
+                    <h4 class="pb-nome">${p.modelo}</h4>
+                    <div class="pb-detalhes">
+                        <span class="pb-tag">⚖️ ${pesoStr}g</span>
+                        <span class="pb-tag">⏱️ ${tempoStr}h</span>
+                        <span class="pb-tag">📦 ${insumoStr}</span>
+                    </div>
+                </div>
+                <div class="pb-custo">${p.custo_total}</div>
+            </div>`;
+        });
+        listaDiv.innerHTML = html;
+    }
+
+    function filtrarBanco() {
+        const termoBusca = document.getElementById('busca-banco').value.toLowerCase();
+        const filtrados = arrayBancoCustos.filter(p => p.modelo.toLowerCase().includes(termoBusca));
+        renderizarListaBanco(filtrados);
+    }
+
+    // === LÓGICA DA CALCULADORA ===
     function mostrarAlerta(titulo, texto, tipo) {
         const modal = document.getElementById("custom-modal");
         const icone = document.getElementById("modal-icone-alert");
@@ -178,30 +292,17 @@
         const textEl = document.getElementById("modal-texto-alert");
         const btnEl = document.getElementById("btn-modal-ok");
 
-        titleEl.innerText = titulo;
-        textEl.innerText = texto;
+        titleEl.innerText = titulo; textEl.innerText = texto;
 
-        if(tipo === "success") {
-            icone.innerText = "✅";
-            btnEl.style.background = "#10b981"; // Verde
-            btnEl.style.boxShadow = "0 6px 0 #059669";
-        } else if (tipo === "warning") {
-            icone.innerText = "⚠️";
-            btnEl.style.background = "#f59e0b"; // Amarelo/Laranja
-            btnEl.style.boxShadow = "0 6px 0 #d97706";
-        } else {
-            icone.innerText = "❌";
-            btnEl.style.background = "#ef4444"; // Vermelho
-            btnEl.style.boxShadow = "0 6px 0 #b91c1c";
-        }
+        if(tipo === "success") { icone.innerText = "✅"; btnEl.style.background = "#10b981"; btnEl.style.boxShadow = "0 6px 0 #059669"; } 
+        else if (tipo === "warning") { icone.innerText = "⚠️"; btnEl.style.background = "#f59e0b"; btnEl.style.boxShadow = "0 6px 0 #d97706"; } 
+        else { icone.innerText = "❌"; btnEl.style.background = "#ef4444"; btnEl.style.boxShadow = "0 6px 0 #b91c1c"; }
 
         modal.style.display = "flex";
-        if ("vibrate" in navigator) navigator.vibrate(50); // Vibra o celular levemente
+        if ("vibrate" in navigator) navigator.vibrate(50);
     }
 
-    function fecharAlerta() {
-        document.getElementById("custom-modal").style.display = "none";
-    }
+    function fecharAlerta() { document.getElementById("custom-modal").style.display = "none"; }
 
     function toggleConfig() {
         const area = document.getElementById("area-config");
@@ -261,11 +362,6 @@
             mostrarAlerta("Atenção", "Por favor, digite o Nome do Modelo para poder salvar no banco de dados.", "warning");
             return;
         }
-        
-        if (API_PRECIFICACAO === "COLE_AQUI_O_LINK_DA_SUA_API_DE_PRECIFICACAO") {
-            mostrarAlerta("Erro de Sistema", "Ops! Você esqueceu de colar a sua MINHA_API_GOOGLE no código fonte.", "error");
-            return;
-        }
 
         const btn = document.getElementById("btn-salvar-custo");
         btn.disabled = true;
@@ -276,36 +372,23 @@
         const insumos = parseFloat(document.getElementById("v-insumos").value) || 0;
 
         try {
-            const payload = {
-                acao: "salvar_custo",
-                modelo: modelo,
-                peso: peso,
-                tempo: tempo,
-                insumos: fmtPlanilha(insumos),
-                custo_total: fmtPlanilha(custoTotalGlobal)
-            };
-
-            const response = await fetch(API_PRECIFICACAO, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            });
-            
+            const payload = { acao: "salvar_custo", modelo: modelo, peso: peso, tempo: tempo, insumos: fmtPlanilha(insumos), custo_total: fmtPlanilha(custoTotalGlobal) };
+            const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
             const result = await response.json();
             
             if (result.sucesso) {
                 mostrarAlerta("Sucesso!", "Produto salvo com perfeição no seu Banco de Custos!", "success");
                 document.getElementById("v-modelo").value = ""; 
             } else if (result.erro === "DUPLICADO") {
-                // Aqui a mágica da trava entra em ação!
-                mostrarAlerta("Modelo já cadastrado!", "Atenção: O modelo '" + modelo + "' já existe na seu banco de Custos. Salve com um nome diferente para evitar duplicidade.", "warning");
+                mostrarAlerta("Modelo já cadastrado!", "O modelo '" + modelo + "' já existe no seu banco de dados. Salve com um nome diferente para evitar duplicidade.", "warning");
             } else {
-                throw new Error("A API retornou erro ao salvar: " + result.erro);
+                throw new Error(result.erro);
             }
         } catch (e) {
             mostrarAlerta("Erro de Conexão", "Falha ao enviar os dados para o Google Sheets: " + e.message, "error");
         } finally {
             btn.disabled = false;
-            btn.innerText = "💾 Salvar no Banco de Custos";
+            btn.innerText = "💾 Salvar no Banco de Dados";
         }
     }
 
