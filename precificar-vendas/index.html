@@ -17,7 +17,7 @@
             --tab-active: #d97706; --green-profit: #10b981;
         }
         
-        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px 20px 100px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
         
         .app-container { width: 100%; max-width: 700px; }
         
@@ -35,7 +35,7 @@
 
         /* ABAS PADRÃO ADMIN */
         .tabs-container { display: flex; gap: 10px; margin-bottom: 25px; background: var(--brand-bg); padding: 6px; border-radius: 16px; flex-wrap: wrap;}
-        .tab-btn { flex: 1; min-width: 100px; padding: 12px 5px; text-align: center; font-weight: 800; font-size: 0.8rem; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; color: var(--brand-light); text-transform: uppercase; letter-spacing: 0.5px;}
+        .tab-btn { flex: 1; min-width: 100px; padding: 12px 5px; text-align: center; font-weight: 800; font-size: 0.75rem; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; color: var(--brand-light); text-transform: uppercase; letter-spacing: 0.5px;}
         .tab-btn.active { background: #ffffff; color: var(--tab-active); box-shadow: 0 4px 10px rgba(78, 52, 46, 0.1); }
         .view-section { display: none; animation: fadeIn 0.3s ease; }
         .view-section.active { display: block; }
@@ -56,7 +56,7 @@
         .config-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px 15px; border-radius: 12px; font-weight: 800; color: #475569; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px;}
         .config-area { display: none; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;}
 
-        /* BOXES RESUMO */
+        /* BOXES RESUMO E BOTOES */
         .resumo-box { background: var(--brand-dark); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(78, 52, 46, 0.15);}
         .resumo-box h3 { margin: 0 0 15px; font-weight: 900; font-size: 1.1rem; color: var(--primary); text-transform: uppercase;}
         .custo-linha { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; color: #d6d3d1; border-bottom: 1px dashed #78716c; padding-bottom: 5px;}
@@ -131,8 +131,9 @@
 
         <div class="tabs-container" id="menu-abas">
             <button class="tab-btn active" id="tab-calc" onclick="trocarAba('calculadora', '➕ Precificar')">➕ Precificar</button>
-            <button class="tab-btn" id="tab-banco" onclick="trocarAba('banco', '📋 Modelos Salvos')">📋 Modelos Salvos</button>
-            <button class="tab-btn" id="tab-despesas" onclick="trocarAba('despesas', '💳 Meus Custos')">💳 Meus Custos</button>
+            <button class="tab-btn" id="tab-banco" onclick="trocarAba('banco', '📋 Modelos')">📋 Modelos</button>
+            <button class="tab-btn" id="tab-despesas" onclick="trocarAba('despesas', '💳 Custos')">💳 Custos</button>
+            <button class="tab-btn" id="tab-vendas" onclick="trocarAba('vendas', '🛒 Vendas')">🛒 Vendas</button>
         </div>
 
         <div id="view-calculadora" class="view-section active">
@@ -198,15 +199,9 @@
 
         <div id="view-banco" class="view-section">
             <div class="section-title" style="margin-top: 0;">📋 Modelos Cadastrados</div>
-            
             <input type="text" id="busca-banco" class="search-bar" placeholder="🔍 Buscar modelo pelo nome..." onkeyup="filtrarBanco()">
-            
-            <div id="loading-banco" style="text-align: center; padding: 30px; color: var(--primary); font-weight: 900; font-size: 1rem; display: none;">
-                ⏳ Lendo Banco de Dados...
-            </div>
-            
-            <div id="lista-banco">
-                </div>
+            <div id="loading-banco" style="text-align: center; padding: 30px; color: var(--primary); font-weight: 900; font-size: 1rem; display: none;">⏳ Lendo Banco de Dados...</div>
+            <div id="lista-banco"></div>
         </div>
 
         <div id="view-despesas" class="view-section">
@@ -221,76 +216,104 @@
                 <div class="section-title" style="margin-top: 0; color: #b45309; border-left-color: #d97706;">➕ Registrar Nova Compra</div>
                 
                 <div class="row" style="margin-bottom: 10px;">
-                    <div class="col">
-                        <label>Data</label>
-                        <input type="date" id="d-data">
-                    </div>
-                    <div class="col">
-                        <label>Local de Compra</label>
-                        <input type="text" id="d-local" class="input-var" list="lista-locais-sugestao" placeholder="Ex: Shopee">
-                        <datalist id="lista-locais-sugestao"></datalist>
-                    </div>
+                    <div class="col"><label>Data</label><input type="date" id="d-data"></div>
+                    <div class="col"><label>Local de Compra</label><input type="text" id="d-local" class="input-var" list="lista-locais-sugestao" placeholder="Ex: Shopee"><datalist id="lista-locais-sugestao"></datalist></div>
                 </div>
-                
                 <div class="input-group">
-                    <label>Item / Produto</label>
-                    <input type="text" id="d-item" class="input-var" list="lista-itens-sugestao" placeholder="Ex: Filamento PLA Preto" autocomplete="off">
-                    <datalist id="lista-itens-sugestao"></datalist>
+                    <label>Item / Produto</label><input type="text" id="d-item" class="input-var" list="lista-itens-sugestao" placeholder="Ex: Filamento PLA Preto" autocomplete="off"><datalist id="lista-itens-sugestao"></datalist>
                 </div>
-                
                 <div class="row">
-                    <div class="col">
-                        <label>Quantidade</label>
-                        <input type="number" id="d-qtd" class="input-var" value="1" min="1" step="0.01">
-                    </div>
-                    <div class="col">
-                        <label>Valor Unitário</label>
-                        <input type="text" id="d-valor-uni" class="input-var mask-money" placeholder="R$ 0,00">
-                    </div>
+                    <div class="col"><label>Quantidade</label><input type="number" id="d-qtd" class="input-var" value="1" min="1" step="0.01"></div>
+                    <div class="col"><label>Valor Unitário</label><input type="text" id="d-valor-uni" class="input-var mask-money" placeholder="R$ 0,00"></div>
                 </div>
-
                 <div class="resumo-box" style="margin-top: 5px; padding: 15px; margin-bottom: 15px;">
                     <div class="custo-total" style="margin-top: 0; font-size: 1.1rem; padding: 5px;"><span>Total a Lançar:</span> <span id="d-total-calc">R$ 0,00</span></div>
                 </div>
-                
                 <button class="btn-salvar" id="btn-salvar-despesa" onclick="salvarDespesa()" style="margin-bottom: 0;">💳 Lançar Despesa</button>
             </div>
 
             <div class="section-title">🧾 Histórico de Lançamentos</div>
             <div class="filtros-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <label style="margin: 0;">Filtros:</label>
-                    <button class="btn-limpar" onclick="limparFiltrosDespesas()">🧹 Limpar Tudo</button>
+                    <label style="margin: 0;">Filtros:</label><button class="btn-limpar" onclick="limparFiltrosDespesas()">🧹 Limpar Tudo</button>
                 </div>
-
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col">
                         <label>Mês:</label>
                         <select id="filtro-d-mes" onchange="filtrarDespesas()">
-                            <option value="todos">Todos</option>
-                            <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
+                            <option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
                         </select>
                     </div>
                     <div class="col">
                         <label>Ano:</label>
                         <select id="filtro-d-ano" onchange="filtrarDespesas()">
-                            <option value="todos">Todos</option>
-                            <option value="2025">2025</option><option value="2026">2026</option>
+                            <option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option>
                         </select>
                     </div>
                 </div>
                 <div class="input-group" style="margin-bottom: 0;">
-                    <label>Local / Fornecedor:</label>
-                    <select id="filtro-d-local" onchange="filtrarDespesas()">
-                        <option value="todos">Todos os Locais</option>
-                    </select>
+                    <label>Local / Fornecedor:</label><select id="filtro-d-local" onchange="filtrarDespesas()"><option value="todos">Todos os Locais</option></select>
                 </div>
                 <input type="text" id="busca-despesa" class="search-bar" style="margin-top:15px; margin-bottom:0;" placeholder="🔍 Buscar item..." onkeyup="filtrarDespesas()">
             </div>
 
             <div id="loading-despesas" style="text-align: center; padding: 20px; color: var(--primary); font-weight: 800; display: none;">⏳ Lendo histórico...</div>
-            <div id="lista-despesas">
+            <div id="lista-despesas"></div>
+        </div>
+
+        <div id="view-vendas" class="view-section">
+            
+            <div style="background: #f0fdf4; padding: 20px; border-radius: 16px; border: 2px solid #bbf7d0; margin-bottom: 25px;">
+                <div class="section-title" style="margin-top: 0; color: #166534; border-left-color: #10b981;">🛒 Registrar Nova Venda</div>
+                
+                <div id="loading-opcoes-venda" style="text-align: center; color: #166534; font-weight: 700; font-size: 0.8rem; margin-bottom: 10px; display: none;">Sincronizando clientes e produtos...</div>
+
+                <div class="row">
+                    <div class="col">
+                        <label>Data da Venda</label>
+                        <input type="date" id="venda-data">
+                    </div>
+                    <div class="col">
+                        <label>Status</label>
+                        <select id="venda-status" class="input-var" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
+                            <option value="Pago">🟢 Pago</option>
+                            <option value="Pendente">🟡 Pendente</option>
+                        </select>
+                    </div>
                 </div>
+
+                <div class="input-group">
+                    <label>Cliente (Digite ou escolha da lista)</label>
+                    <input type="text" id="venda-cliente" class="input-var" list="lista-clientes-venda" placeholder="Ex: João Silva" autocomplete="off" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
+                    <datalist id="lista-clientes-venda"></datalist>
+                </div>
+
+                <div class="input-group">
+                    <label>Produto Vendido (Com base no Catálogo)</label>
+                    <input type="text" id="venda-produto" class="input-var" list="lista-produtos-venda" placeholder="Ex: Placa profissões" autocomplete="off" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
+                    <datalist id="lista-produtos-venda"></datalist>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <label>Plataforma</label>
+                        <input type="text" id="venda-plataforma" class="input-var" list="lista-plataformas-venda" placeholder="Ex: Instagram" autocomplete="off" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
+                        <datalist id="lista-plataformas-venda"></datalist>
+                    </div>
+                    <div class="col">
+                        <label>Qtd</label>
+                        <input type="number" id="venda-qtd" class="input-var" value="1" min="1" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Valor Total da Venda</label>
+                    <input type="text" id="venda-valor" class="input-var mask-money" placeholder="R$ 0,00" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
+                </div>
+
+                <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()" style="margin-bottom: 0; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">✅ Confirmar Venda</button>
+            </div>
+            
         </div>
 
     </div>
@@ -306,7 +329,7 @@
 </div>
 
 <script>
-    // 🔥 SUA API OFICIAL DA PLANILHA DE PRECIFICAÇÃO 🔥
+    // 🔥 SUA API OFICIAL DA PLANILHA DE PRECIFICAÇÃO E VENDAS 🔥
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
 
     let custoTotalGlobal = 0; 
@@ -318,12 +341,10 @@
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
 
-    // Leitor Robusto de Dinheiro
     const limparValorPlanilha = (valorStr) => {
         if (!valorStr) return 0;
         if (typeof valorStr === 'number') return valorStr;
         let str = String(valorStr).trim();
-        
         str = str.replace(/R\$\s?/gi, '').trim();
         if (str.includes(',') && str.includes('.')) {
             str = str.replace(/\./g, '').replace(',', '.');
@@ -339,7 +360,7 @@
         return fmt(numLimpo);
     };
 
-    // Máscara de dinheiro em tempo real + Disparador de Cálculo Seguro
+    // Máscara de dinheiro em tempo real + Disparador de Cálculo
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money')) {
             let valor = e.target.value.replace(/\D/g, ''); 
@@ -353,8 +374,6 @@
                 e.target.value = "R$ " + valor;
             }
         }
-        
-        // Mágica para o cálculo rodar com segurança
         if (e.target.id === "d-valor-uni" || e.target.id === "d-qtd") {
             calcularDespesaTotal();
         }
@@ -363,6 +382,7 @@
     window.onload = () => {
         const hoje = new Date();
         document.getElementById('d-data').value = hoje.toISOString().split('T')[0];
+        document.getElementById('venda-data').value = hoje.toISOString().split('T')[0]; // Data de Vendas
         
         document.getElementById('filtro-d-mes').value = String(hoje.getMonth() + 1).padStart(2, '0'); 
         document.getElementById('filtro-d-ano').value = String(hoje.getFullYear());
@@ -391,6 +411,10 @@
             document.getElementById("tab-despesas").classList.add("active");
             document.getElementById("view-despesas").classList.add("active");
             carregarDespesas();
+        } else if (aba === 'vendas') {
+            document.getElementById("tab-vendas").classList.add("active");
+            document.getElementById("view-vendas").classList.add("active");
+            carregarOpcoesVenda(); // Busca clientes e produtos para o Autocomplete!
         }
         
         window.scrollTo(0,0);
@@ -534,7 +558,6 @@
 
 
     // === ABA 3: DESPESAS E CUSTOS ===
-    
     function calcularDespesaTotal() {
         const qtdRaw = document.getElementById("d-qtd").value;
         const qtd = parseFloat(qtdRaw.replace(',', '.')) || 1; 
@@ -617,7 +640,6 @@
         renderizarListaDespesas(filtrados);
     }
 
-    // 🔥 CORREÇÃO VISUAL AQUI 🔥
     function renderizarListaDespesas(arrayDespesasLocais) {
         const listaDiv = document.getElementById("lista-despesas");
         listaDiv.innerHTML = "";
@@ -711,6 +733,89 @@
             btn.disabled = false; btn.innerText = "💳 Lançar Despesa";
         }
     }
+
+
+    // === ABA 4: VENDAS (NOVO) ===
+    async function carregarOpcoesVenda() {
+        const loading = document.getElementById("loading-opcoes-venda");
+        loading.style.display = "block";
+        
+        try {
+            const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_opcoes_venda");
+            const resultado = await resposta.json();
+            
+            if (resultado.sucesso) {
+                // Preenche Autocomplete Clientes
+                document.getElementById("lista-clientes-venda").innerHTML = 
+                    resultado.clientes.map(nome => `<option value="${nome}">`).join('');
+                
+                // Preenche Autocomplete Produtos
+                document.getElementById("lista-produtos-venda").innerHTML = 
+                    resultado.produtos.map(nome => `<option value="${nome}">`).join('');
+                
+                // Preenche Autocomplete Plataformas
+                document.getElementById("lista-plataformas-venda").innerHTML = 
+                    resultado.plataformas.map(nome => `<option value="${nome}">`).join('');
+            }
+        } catch(e) {
+            console.error("Erro ao carregar opções de venda:", e);
+        } finally {
+            loading.style.display = "none";
+        }
+    }
+
+    async function salvarVenda() {
+        const dataVenda = document.getElementById("venda-data").value;
+        const cliente = document.getElementById("venda-cliente").value.trim();
+        const produto = document.getElementById("venda-produto").value.trim();
+        const plataforma = document.getElementById("venda-plataforma").value.trim();
+        const qtd = document.getElementById("venda-qtd").value;
+        const valorStr = document.getElementById("venda-valor").value;
+        const status = document.getElementById("venda-status").value;
+
+        if (!dataVenda || !cliente || !produto || !plataforma || !valorStr) {
+            mostrarAlerta("Atenção", "Preencha todos os campos para registrar a venda.", "warning");
+            return;
+        }
+
+        const btn = document.getElementById("btn-salvar-venda");
+        btn.disabled = true; btn.innerText = "⏳ Lançando Venda...";
+
+        try {
+            const valorNum = limparValorPlanilha(valorStr);
+            
+            const payload = {
+                acao: "salvar_venda",
+                data_venda: dataVenda.split('-').reverse().join('/'), 
+                cliente: cliente,
+                produto: produto,
+                plataforma: plataforma,
+                qtd: qtd,
+                valor_venda: fmtPlanilha(valorNum),
+                status: status
+            };
+
+            const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
+            const result = await response.json();
+            
+            if (result.sucesso) {
+                mostrarAlerta("Venda Feita! 🎉", "A venda para " + cliente + " foi registrada com sucesso!", "success");
+                
+                // Limpa campos (mantém a data para não irritar se tiver várias no mesmo dia)
+                document.getElementById("venda-cliente").value = ""; 
+                document.getElementById("venda-produto").value = ""; 
+                document.getElementById("venda-plataforma").value = ""; 
+                document.getElementById("venda-qtd").value = "1"; 
+                document.getElementById("venda-valor").value = ""; 
+                document.getElementById("venda-status").value = "Pago"; 
+            } else { throw new Error(result.erro); }
+        } catch (e) {
+            mostrarAlerta("Erro", "Falha ao enviar a venda para a Planilha: " + e.message, "error");
+        } finally {
+            btn.disabled = false; btn.innerText = "✅ Confirmar Venda";
+        }
+    }
+
 </script>
 </body>
 </html>
