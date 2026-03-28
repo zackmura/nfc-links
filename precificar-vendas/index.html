@@ -83,7 +83,7 @@
         .pb-tag { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; color: #475569;}
         .pb-custo { font-size: 1.1rem; font-weight: 900; color: var(--primary); background: #fffbeb; padding: 8px 12px; border-radius: 10px; border: 1px solid #fde68a; flex-shrink: 0; min-width: 80px; text-align: center;}
 
-        /* MODAL ALERTS */
+        /* MODAL ALERTS PREMIUM */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
         .modal-box-alert { background: #fff; width: 90%; max-width: 360px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
         .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block; animation: pulseIcon 1s infinite alternate;}
@@ -92,6 +92,7 @@
         .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; transition: transform 0.1s;}
         .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
 
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes pulseIcon { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
@@ -238,11 +239,11 @@
                 <div class="row">
                     <div class="col">
                         <label>Quantidade</label>
-                        <input type="number" id="d-qtd" class="input-var" value="1" min="1" step="0.01" oninput="calcularDespesaTotal()">
+                        <input type="number" id="d-qtd" class="input-var" value="1" min="1" step="0.01">
                     </div>
                     <div class="col">
                         <label>Valor Unitário</label>
-                        <input type="text" id="d-valor-uni" class="input-var mask-money" placeholder="R$ 0,00" oninput="calcularDespesaTotal()">
+                        <input type="text" id="d-valor-uni" class="input-var mask-money" placeholder="R$ 0,00">
                     </div>
                 </div>
 
@@ -288,7 +289,6 @@
     </div>
 </div>
 
-
 <div id="custom-modal" class="modal-overlay-alert">
     <div class="modal-box-alert">
         <span class="modal-icon-alert" id="modal-icone-alert">✅</span>
@@ -311,17 +311,20 @@
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
 
-    // Leitor de Dinheiro BLINDADO
+    // Leitor Robusto de Dinheiro da Planilha (Elimina o bug dos trilhões)
     const limparValorPlanilha = (valorStr) => {
         if (!valorStr) return 0;
         if (typeof valorStr === 'number') return valorStr;
         let str = String(valorStr).trim();
-        str = str.replace(/R\$\s?/gi, '').trim();
-        if (str.includes(',') && str.includes('.')) {
-            str = str.replace(/\./g, '').replace(',', '.');
-        } else if (str.includes(',')) {
+        
+        // Remove R$ e deixa apenas números, vírgula e sinal de negativo se houver
+        str = str.replace(/[^\d,-]/g, '');
+        
+        // Troca vírgula por ponto para o Javascript entender
+        if (str.includes(',')) {
             str = str.replace(',', '.');
         }
+        
         let numero = parseFloat(str);
         return isNaN(numero) ? 0 : numero;
     };
@@ -331,16 +334,24 @@
         return fmt(numLimpo);
     };
 
-    // Máscara de dinheiro em tempo real para os inputs
+    // Máscara de dinheiro em tempo real + Disparador de Cálculo Seguro
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money')) {
             let valor = e.target.value.replace(/\D/g, ''); 
-            if(valor === "") { e.target.value = ""; return; }
-            valor = (parseInt(valor) / 100).toFixed(2) + ''; 
-            valor = valor.replace(".", ","); 
-            valor = valor.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); 
-            valor = valor.replace(/(\d)(\d{3}),/g, "$1.$2,");
-            e.target.value = "R$ " + valor;
+            if(valor === "") { 
+                e.target.value = ""; 
+            } else {
+                valor = (parseInt(valor) / 100).toFixed(2) + ''; 
+                valor = valor.replace(".", ","); 
+                valor = valor.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); 
+                valor = valor.replace(/(\d)(\d{3}),/g, "$1.$2,");
+                e.target.value = "R$ " + valor;
+            }
+        }
+        
+        // Aqui o cálculo da despesa roda de forma segura, DEPOIS da máscara
+        if (e.target.id === "d-valor-uni" || e.target.id === "d-qtd") {
+            calcularDespesaTotal();
         }
     });
 
@@ -348,7 +359,6 @@
         const hoje = new Date();
         document.getElementById('d-data').value = hoje.toISOString().split('T')[0];
         
-        // Define Mês e Ano atual nos filtros de Despesa
         document.getElementById('filtro-d-mes').value = String(hoje.getMonth() + 1).padStart(2, '0'); 
         document.getElementById('filtro-d-ano').value = String(hoje.getFullYear());
         
@@ -386,10 +396,11 @@
     function mostrarAlerta(titulo, texto, tipo) {
         const modal = document.getElementById("custom-modal");
         const icone = document.getElementById("modal-icone-alert");
+        const titleEl = document.getElementById("modal-titulo-alert");
+        const textEl = document.getElementById("modal-texto-alert");
         const btnEl = document.getElementById("btn-modal-ok");
 
-        document.getElementById("modal-titulo-alert").innerText = titulo; 
-        document.getElementById("modal-texto-alert").innerText = texto;
+        titleEl.innerText = titulo; textEl.innerText = texto;
 
         if(tipo === "success") { icone.innerText = "✅"; btnEl.style.background = "#10b981"; btnEl.style.boxShadow = "0 6px 0 #059669"; } 
         else if (tipo === "warning") { icone.innerText = "⚠️"; btnEl.style.background = "#f59e0b"; btnEl.style.boxShadow = "0 6px 0 #d97706"; } 
@@ -519,9 +530,11 @@
 
     // === ABA 3: DESPESAS E CUSTOS ===
     
-    // Calcula Preço Uni x Qtd para lançar Total
+    // Função blindada que faz a conta
     function calcularDespesaTotal() {
-        const qtd = parseFloat(document.getElementById("d-qtd").value) || 1;
+        const qtdRaw = document.getElementById("d-qtd").value;
+        const qtd = parseFloat(qtdRaw.replace(',', '.')) || 1; // Aceita ponto ou vírgula
+        
         const vUni = limparValorPlanilha(document.getElementById("d-valor-uni").value);
         despesaTotalCalculada = qtd * vUni;
         document.getElementById("d-total-calc").innerText = fmt(despesaTotalCalculada);
@@ -536,7 +549,7 @@
             if (resultado.sucesso) {
                 arrayDespesas = resultado.despesas;
                 alimentarDatalistE_Filtro(arrayDespesas); 
-                filtrarDespesas(); // Roda o filtro (Mês atual) para exibir a lista
+                filtrarDespesas(); 
             } else { throw new Error(resultado.erro); }
         } catch (e) {
             document.getElementById("loading-despesas").innerHTML = "❌ Erro ao ler despesas da aba 'Custos'.";
@@ -564,28 +577,28 @@
         const textoBusca = document.getElementById('busca-despesa').value.toLowerCase();
 
         const filtrados = arrayDespesas.filter(d => {
-            // Filtro de Texto (Item)
             if (textoBusca && !d.item.toLowerCase().includes(textoBusca)) return false;
-            
-            // Filtro de Local
             if (localSelect !== "todos" && d.local.toLowerCase() !== localSelect) return false;
 
-            // Filtro de Data (Vem como "28/11/2025" do Google se a célula for data, ou como string)
             if (mesSelect !== "todos" || anoSelect !== "todos") {
                 let parts = [];
-                // Se o Google devolveu com barras (DD/MM/YYYY)
+                // Identifica se o Google mandou com barra ou com traço
                 if(d.data.includes('/')) { parts = d.data.split('/'); } 
-                // Se devolveu com traços (YYYY-MM-DD)
                 else if (d.data.includes('-')) { let p = d.data.split('-'); parts = [p[2], p[1], p[0]]; }
+                else if (d.data.includes(' ')) { 
+                    // Algumas datas podem vir como texto completo (ex: Mon Mar 20)
+                    let td = new Date(d.data);
+                    if (!isNaN(td)) parts = [td.getDate(), String(td.getMonth()+1).padStart(2,'0'), td.getFullYear()];
+                }
                 
                 if (parts.length >= 3) {
-                    let mesData = parts[1]; // MM
-                    let anoData = parts[2].substring(0,4); // YYYY
+                    let mesData = String(parts[1]).padStart(2,'0'); 
+                    let anoData = String(parts[2]).substring(0,4); 
                     
                     if (mesSelect !== "todos" && mesData !== mesSelect) return false;
                     if (anoSelect !== "todos" && anoData !== anoSelect) return false;
                 } else {
-                    return false; // Se a data é inválida, não passa no filtro de data
+                    return false; 
                 }
             }
             return true;
@@ -614,7 +627,6 @@
             let detailsHTML = `<span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">📅 ${d.data}</span>
                                <span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">🏢 ${d.local}</span>`;
             
-            // Se tiver quantidade e preço unitário cadastrado na base (nova estrutura)
             if (d.quantidade && d.preco_uni && d.preco_uni !== "R$ 0,00") {
                 detailsHTML += `<br><span class="pb-tag" style="margin-top:4px;">📦 Qtd: ${d.quantidade}</span>
                                 <span class="pb-tag" style="margin-top:4px;">💲 ${fmt(numPrecoUni)} /un</span>`;
@@ -653,12 +665,11 @@
 
         try {
             const vUniNum = limparValorPlanilha(valorUniStr);
-            // Payload respeitando as colunas: Produto(A), Local(B), Data(C), Qtd(D), PreçoUni(E), PreçoTotal(F)
             const payload = {
                 acao: "salvar_despesa",
                 item: itemCompra,
                 local: localCompra,
-                data: dataCompra.split('-').reverse().join('/'), // Manda pro Google em DD/MM/YYYY
+                data: dataCompra.split('-').reverse().join('/'), // DD/MM/YYYY para a planilha
                 quantidade: qtdCompra,
                 preco_uni: fmtPlanilha(vUniNum),
                 preco_total: fmtPlanilha(despesaTotalCalculada)
@@ -673,7 +684,7 @@
                 document.getElementById("d-valor-uni").value = ""; 
                 document.getElementById("d-qtd").value = "1";
                 calcularDespesaTotal();
-                carregarDespesas(); // Recarrega a lista
+                carregarDespesas(); 
             } else { throw new Error(result.erro); }
         } catch (e) {
             mostrarAlerta("Erro de Conexão", "Falha ao enviar a despesa para a Planilha: " + e.message, "error");
