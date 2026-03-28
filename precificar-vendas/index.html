@@ -17,7 +17,7 @@
             --tab-active: #d97706; --green-profit: #10b981;
         }
         
-        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); margin: 0; padding: 20px 20px 100px; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; box-sizing: border-box; }
         
         .app-container { width: 100%; max-width: 700px; }
         
@@ -75,7 +75,9 @@
         .search-bar { width: 100%; padding: 14px 16px; border: 2px solid var(--primary); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.1);}
         
         .filtros-box { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 20px;}
-        
+        .btn-limpar { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase;}
+        .btn-limpar:active { background: #e2e8f0; }
+
         .produto-banco-card { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02);}
         .pb-info { flex-grow: 1; overflow: hidden;}
         .pb-nome { margin: 0 0 6px; font-size: 0.95rem; font-weight: 900; color: var(--brand-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
@@ -256,6 +258,11 @@
 
             <div class="section-title">🧾 Histórico de Lançamentos</div>
             <div class="filtros-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <label style="margin: 0;">Filtros:</label>
+                    <button class="btn-limpar" onclick="limparFiltrosDespesas()">🧹 Limpar Tudo</button>
+                </div>
+
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col">
                         <label>Mês:</label>
@@ -299,7 +306,7 @@
 </div>
 
 <script>
-    // 🔥 COLE AQUI O LINK DA API DA PLANILHA DE PRECIFICAÇÃO 🔥
+    // 🔥 SUA API OFICIAL 🔥
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
 
     let custoTotalGlobal = 0; 
@@ -317,14 +324,13 @@
         if (typeof valorStr === 'number') return valorStr;
         let str = String(valorStr).trim();
         
-        // Remove R$ e deixa apenas números, vírgula e sinal de negativo se houver
-        str = str.replace(/[^\d,-]/g, '');
+        str = str.replace(/R\$\s?/gi, '').trim();
         
-        // Troca vírgula por ponto para o Javascript entender
-        if (str.includes(',')) {
+        if (str.includes(',') && str.includes('.')) {
+            str = str.replace(/\./g, '').replace(',', '.');
+        } else if (str.includes(',')) {
             str = str.replace(',', '.');
         }
-        
         let numero = parseFloat(str);
         return isNaN(numero) ? 0 : numero;
     };
@@ -349,7 +355,6 @@
             }
         }
         
-        // Aqui o cálculo da despesa roda de forma segura, DEPOIS da máscara
         if (e.target.id === "d-valor-uni" || e.target.id === "d-qtd") {
             calcularDespesaTotal();
         }
@@ -530,10 +535,10 @@
 
     // === ABA 3: DESPESAS E CUSTOS ===
     
-    // Função blindada que faz a conta
+    // Calcula Preço Uni x Qtd para lançar Total
     function calcularDespesaTotal() {
         const qtdRaw = document.getElementById("d-qtd").value;
-        const qtd = parseFloat(qtdRaw.replace(',', '.')) || 1; // Aceita ponto ou vírgula
+        const qtd = parseFloat(qtdRaw.replace(',', '.')) || 1; 
         
         const vUni = limparValorPlanilha(document.getElementById("d-valor-uni").value);
         despesaTotalCalculada = qtd * vUni;
@@ -570,6 +575,15 @@
         filtroLocais.innerHTML = '<option value="todos">Todos os Locais</option>' + locaisUnicos.map(nome => `<option value="${nome}">${nome}</option>`).join('');
     }
 
+    // === 🧹 LIMPAR FILTROS (A SOLUÇÃO AQUI) ===
+    function limparFiltrosDespesas() {
+        document.getElementById('filtro-d-mes').value = "todos";
+        document.getElementById('filtro-d-ano').value = "todos";
+        document.getElementById('filtro-d-local').value = "todos";
+        document.getElementById('busca-despesa').value = "";
+        filtrarDespesas();
+    }
+
     function filtrarDespesas() {
         const mesSelect = document.getElementById('filtro-d-mes').value;
         const anoSelect = document.getElementById('filtro-d-ano').value;
@@ -582,11 +596,9 @@
 
             if (mesSelect !== "todos" || anoSelect !== "todos") {
                 let parts = [];
-                // Identifica se o Google mandou com barra ou com traço
                 if(d.data.includes('/')) { parts = d.data.split('/'); } 
                 else if (d.data.includes('-')) { let p = d.data.split('-'); parts = [p[2], p[1], p[0]]; }
                 else if (d.data.includes(' ')) { 
-                    // Algumas datas podem vir como texto completo (ex: Mon Mar 20)
                     let td = new Date(d.data);
                     if (!isNaN(td)) parts = [td.getDate(), String(td.getMonth()+1).padStart(2,'0'), td.getFullYear()];
                 }
@@ -621,7 +633,6 @@
         let html = "";
         arrayDespesasLocais.forEach(d => {
             let numeroGasto = limparValorPlanilha(d.valor);
-            let numPrecoUni = limparValorPlanilha(d.preco_uni);
             somaTotal += numeroGasto;
 
             let detailsHTML = `<span class="pb-tag" style="background: #f8fafc; border: none; padding:0;">📅 ${d.data}</span>
@@ -629,7 +640,7 @@
             
             if (d.quantidade && d.preco_uni && d.preco_uni !== "R$ 0,00") {
                 detailsHTML += `<br><span class="pb-tag" style="margin-top:4px;">📦 Qtd: ${d.quantidade}</span>
-                                <span class="pb-tag" style="margin-top:4px;">💲 ${fmt(numPrecoUni)} /un</span>`;
+                                <span class="pb-tag" style="margin-top:4px;">💲 ${formatarDoBanco(d.preco_uni)} /un</span>`;
             }
 
             html += `
@@ -669,7 +680,7 @@
                 acao: "salvar_despesa",
                 item: itemCompra,
                 local: localCompra,
-                data: dataCompra.split('-').reverse().join('/'), // DD/MM/YYYY para a planilha
+                data: dataCompra.split('-').reverse().join('/'), 
                 quantidade: qtdCompra,
                 preco_uni: fmtPlanilha(vUniNum),
                 preco_total: fmtPlanilha(despesaTotalCalculada)
