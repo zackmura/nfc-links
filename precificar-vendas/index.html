@@ -35,7 +35,7 @@
 
         /* ABAS PADRÃO ADMIN */
         .tabs-container { display: flex; gap: 10px; margin-bottom: 25px; background: var(--brand-bg); padding: 6px; border-radius: 16px; flex-wrap: wrap;}
-        .tab-btn { flex: 1; min-width: 100px; padding: 12px 5px; text-align: center; font-weight: 800; font-size: 0.75rem; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; color: var(--brand-light); text-transform: uppercase; letter-spacing: 0.5px;}
+        .tab-btn { flex: 1; min-width: 100px; padding: 12px 5px; text-align: center; font-weight: 800; font-size: 0.8rem; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; color: var(--brand-light); text-transform: uppercase; letter-spacing: 0.5px;}
         .tab-btn.active { background: #ffffff; color: var(--tab-active); box-shadow: 0 4px 10px rgba(78, 52, 46, 0.1); }
         .view-section { display: none; animation: fadeIn 0.3s ease; }
         .view-section.active { display: block; }
@@ -56,7 +56,7 @@
         .config-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 12px 15px; border-radius: 12px; font-weight: 800; color: #475569; cursor: pointer; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px;}
         .config-area { display: none; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;}
 
-        /* BOXES RESUMO E BOTOES */
+        /* BOXES RESUMO E BOTÕES */
         .resumo-box { background: var(--brand-dark); color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(78, 52, 46, 0.15);}
         .resumo-box h3 { margin: 0 0 15px; font-weight: 900; font-size: 1.1rem; color: var(--primary); text-transform: uppercase;}
         .custo-linha { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 600; color: #d6d3d1; border-bottom: 1px dashed #78716c; padding-bottom: 5px;}
@@ -71,19 +71,23 @@
         .btn-salvar:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
         .btn-salvar:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
 
-        /* ABA BANCO DE DADOS E DESPESAS */
+        /* LISTAGEM (BANCO, DESPESAS E VENDAS) */
         .search-bar { width: 100%; padding: 14px 16px; border: 2px solid var(--primary); border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 20px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.1);}
-        
         .filtros-box { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 20px;}
         .btn-limpar { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.2s; text-transform: uppercase;}
         .btn-limpar:active { background: #e2e8f0; }
 
-        .produto-banco-card { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02);}
-        .pb-info { flex-grow: 1; overflow: hidden;}
+        .produto-banco-card { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 12px; display: flex; flex-direction: column; box-shadow: 0 2px 6px rgba(0,0,0,0.02);}
+        .card-row-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%;}
+        .pb-info { flex-grow: 1; overflow: hidden; padding-right: 10px;}
         .pb-nome { margin: 0 0 6px; font-size: 0.95rem; font-weight: 900; color: var(--brand-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .pb-detalhes { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;}
         .pb-tag { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; color: #475569;}
-        .pb-custo { font-size: 1.1rem; font-weight: 900; color: var(--primary); background: #fffbeb; padding: 8px 12px; border-radius: 10px; border: 1px solid #fde68a; flex-shrink: 0; min-width: 80px; text-align: center;}
+        .pb-custo { font-size: 1.1rem; font-weight: 900; color: var(--primary); background: #fffbeb; padding: 8px 12px; border-radius: 10px; border: 1px solid #fde68a; flex-shrink: 0; text-align: center;}
+        
+        .btn-baixar-pgt { width: 100%; background: #fef08a; color: #b45309; border: 2px dashed #f59e0b; padding: 12px; border-radius: 10px; font-weight: 900; font-size: 0.85rem; cursor: pointer; transition: 0.2s; text-transform: uppercase; margin-top: 12px;}
+        .btn-baixar-pgt:active { background: #fde68a; transform: translateY(2px); }
+        .card-pendente { border: 2px solid #fde68a; background: #fffbeb; }
 
         /* MODAL ALERTS PREMIUM */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
@@ -131,15 +135,14 @@
 
         <div class="tabs-container" id="menu-abas">
             <button class="tab-btn active" id="tab-calc" onclick="trocarAba('calculadora', '➕ Precificar')">➕ Precificar</button>
-            <button class="tab-btn" id="tab-banco" onclick="trocarAba('banco', '📋 Modelos')">📋 Modelos</button>
-            <button class="tab-btn" id="tab-despesas" onclick="trocarAba('despesas', '💳 Custos')">💳 Custos</button>
+            <button class="tab-btn" id="tab-banco" onclick="trocarAba('banco', '📋 Modelos Salvos')">📋 Modelos Salvos</button>
+            <button class="tab-btn" id="tab-despesas" onclick="trocarAba('despesas', '💳 Meus Custos')">💳 Meus Custos</button>
             <button class="tab-btn" id="tab-vendas" onclick="trocarAba('vendas', '🛒 Vendas')">🛒 Vendas</button>
         </div>
 
         <div id="view-calculadora" class="view-section active">
             
             <button class="config-btn" onclick="toggleConfig()">⚙️ Configurações da Impressora (Custos Fixos)</button>
-            
             <div class="config-area" id="area-config">
                 <div class="row">
                     <div class="col"><label>Consumo (Watts)</label><input type="number" id="v-watts" value="175" oninput="calcular()"></div>
@@ -152,7 +155,6 @@
             </div>
 
             <div class="section-title">📝 Dados do Novo Projeto</div>
-            
             <div class="input-group">
                 <label>Nome do Modelo (Obrigatório para Salvar)</label>
                 <input type="text" id="v-modelo" class="input-var" placeholder="Ex: Placa profissões">
@@ -182,7 +184,6 @@
             </div>
 
             <div class="section-title">💰 Margens Sugeridas</div>
-            
             <div class="markup-box">
                 <p class="markup-title">Peças Simples / Reposição (2x a 3x)</p>
                 <p class="markup-preco" id="m-simples-preco">R$ 0,00 a R$ 0,00</p>
@@ -240,15 +241,11 @@
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col">
                         <label>Mês:</label>
-                        <select id="filtro-d-mes" onchange="filtrarDespesas()">
-                            <option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
-                        </select>
+                        <select id="filtro-d-mes" onchange="filtrarDespesas()"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select>
                     </div>
                     <div class="col">
                         <label>Ano:</label>
-                        <select id="filtro-d-ano" onchange="filtrarDespesas()">
-                            <option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option>
-                        </select>
+                        <select id="filtro-d-ano" onchange="filtrarDespesas()"><option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option></select>
                     </div>
                 </div>
                 <div class="input-group" style="margin-bottom: 0;">
@@ -263,18 +260,26 @@
 
         <div id="view-vendas" class="view-section">
             
+            <div class="resumo-box" style="background: #1e293b; display: flex; gap: 10px;">
+                <div style="flex: 1; text-align: center;">
+                    <h3 style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 5px;">A Receber (Pendentes)</h3>
+                    <span id="vendas-pendentes-valor" style="font-size: 1.5rem; color: #f59e0b; font-weight: 900;">R$ 0,00</span>
+                </div>
+                <div style="flex: 1; text-align: center; border-left: 1px solid #334155;">
+                    <h3 style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 5px;">Receita (Pagos)</h3>
+                    <span id="vendas-pagas-valor" style="font-size: 1.5rem; color: #10b981; font-weight: 900;">R$ 0,00</span>
+                </div>
+            </div>
+
             <div style="background: #f0fdf4; padding: 20px; border-radius: 16px; border: 2px solid #bbf7d0; margin-bottom: 25px;">
                 <div class="section-title" style="margin-top: 0; color: #166534; border-left-color: #10b981;">🛒 Registrar Nova Venda</div>
                 
                 <div id="loading-opcoes-venda" style="text-align: center; color: #166534; font-weight: 700; font-size: 0.8rem; margin-bottom: 10px; display: none;">Sincronizando clientes e produtos...</div>
 
                 <div class="row">
+                    <div class="col"><label>Data da Venda</label><input type="date" id="venda-data"></div>
                     <div class="col">
-                        <label>Data da Venda</label>
-                        <input type="date" id="venda-data">
-                    </div>
-                    <div class="col">
-                        <label>Status</label>
+                        <label>Status Inicial</label>
                         <select id="venda-status" class="input-var" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
                             <option value="Pago">🟢 Pago</option>
                             <option value="Pendente">🟡 Pendente</option>
@@ -289,7 +294,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Produto Vendido (Com base no Catálogo)</label>
+                    <label>Produto Vendido (Do seu Catálogo)</label>
                     <input type="text" id="venda-produto" class="input-var" list="lista-produtos-venda" placeholder="Ex: Placa profissões" autocomplete="off" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
                     <datalist id="lista-produtos-venda"></datalist>
                 </div>
@@ -297,13 +302,10 @@
                 <div class="row">
                     <div class="col">
                         <label>Plataforma</label>
-                        <input type="text" id="venda-plataforma" class="input-var" list="lista-plataformas-venda" placeholder="Ex: Instagram" autocomplete="off" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
+                        <input type="text" id="venda-plataforma" class="input-var" list="lista-plataformas-venda" placeholder="Ex: Física, Shopee" autocomplete="off" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
                         <datalist id="lista-plataformas-venda"></datalist>
                     </div>
-                    <div class="col">
-                        <label>Qtd</label>
-                        <input type="number" id="venda-qtd" class="input-var" value="1" min="1" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
-                    </div>
+                    <div class="col"><label>Qtd</label><input type="number" id="venda-qtd" class="input-var" value="1" min="1" style="border-color: #bbf7d0 !important; background-color: #fff !important;"></div>
                 </div>
 
                 <div class="input-group">
@@ -311,8 +313,37 @@
                     <input type="text" id="venda-valor" class="input-var mask-money" placeholder="R$ 0,00" style="border-color: #bbf7d0 !important; background-color: #fff !important;">
                 </div>
 
-                <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()" style="margin-bottom: 0; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">✅ Confirmar Venda</button>
+                <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()" style="margin-bottom: 0; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">✅ Lançar Venda</button>
             </div>
+
+            <div class="section-title">📊 Histórico de Vendas</div>
+            <div class="filtros-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <label style="margin: 0;">Filtros:</label><button class="btn-limpar" onclick="limparFiltrosVendas()">🧹 Limpar Tudo</button>
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col">
+                        <label>Mês:</label>
+                        <select id="filtro-v-mes" onchange="filtrarVendas()"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select>
+                    </div>
+                    <div class="col">
+                        <label>Ano:</label>
+                        <select id="filtro-v-ano" onchange="filtrarVendas()"><option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option></select>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Status do Pagamento:</label>
+                    <select id="filtro-v-status" onchange="filtrarVendas()">
+                        <option value="todos">Todos</option>
+                        <option value="pago">Somente Pagos 🟢</option>
+                        <option value="pendente">Somente Pendentes (A Receber) 🟡</option>
+                    </select>
+                </div>
+                <input type="text" id="busca-venda" class="search-bar" style="margin-top:15px; margin-bottom:0;" placeholder="🔍 Buscar cliente ou produto..." onkeyup="filtrarVendas()">
+            </div>
+
+            <div id="loading-vendas" style="text-align: center; padding: 20px; color: var(--primary); font-weight: 800; display: none;">⏳ Carregando vendas...</div>
+            <div id="lista-vendas"></div>
             
         </div>
 
@@ -337,6 +368,7 @@
     
     let arrayBancoCustos = [];
     let arrayDespesas = [];
+    let arrayVendas = [];
 
     const fmt = (valor) => "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = (valor) => "R$ " + valor.toFixed(2).replace('.', ',');
@@ -345,10 +377,8 @@
         if (!valorStr) return 0;
         if (typeof valorStr === 'number') return valorStr;
         let str = String(valorStr).trim();
-        str = str.replace(/R\$\s?/gi, '').trim();
-        if (str.includes(',') && str.includes('.')) {
-            str = str.replace(/\./g, '').replace(',', '.');
-        } else if (str.includes(',')) {
+        str = str.replace(/[^\d,-]/g, '');
+        if (str.includes(',')) {
             str = str.replace(',', '.');
         }
         let numero = parseFloat(str);
@@ -381,11 +411,19 @@
 
     window.onload = () => {
         const hoje = new Date();
-        document.getElementById('d-data').value = hoje.toISOString().split('T')[0];
-        document.getElementById('venda-data').value = hoje.toISOString().split('T')[0]; // Data de Vendas
+        const dataHojeIso = hoje.toISOString().split('T')[0];
         
-        document.getElementById('filtro-d-mes').value = String(hoje.getMonth() + 1).padStart(2, '0'); 
-        document.getElementById('filtro-d-ano').value = String(hoje.getFullYear());
+        document.getElementById('d-data').value = dataHojeIso;
+        document.getElementById('venda-data').value = dataHojeIso;
+        
+        const mesStr = String(hoje.getMonth() + 1).padStart(2, '0');
+        const anoStr = String(hoje.getFullYear());
+        
+        document.getElementById('filtro-d-mes').value = mesStr;
+        document.getElementById('filtro-d-ano').value = anoStr;
+        
+        document.getElementById('filtro-v-mes').value = mesStr;
+        document.getElementById('filtro-v-ano').value = anoStr;
         
         calcular();
     };
@@ -414,7 +452,8 @@
         } else if (aba === 'vendas') {
             document.getElementById("tab-vendas").classList.add("active");
             document.getElementById("view-vendas").classList.add("active");
-            carregarOpcoesVenda(); // Busca clientes e produtos para o Autocomplete!
+            carregarOpcoesVenda(); 
+            carregarVendas();
         }
         
         window.scrollTo(0,0);
@@ -630,13 +669,10 @@
                     
                     if (mesSelect !== "todos" && mesData !== mesSelect) return false;
                     if (anoSelect !== "todos" && anoData !== anoSelect) return false;
-                } else {
-                    return false; 
-                }
+                } else { return false; }
             }
             return true;
         });
-
         renderizarListaDespesas(filtrados);
     }
 
@@ -647,8 +683,7 @@
 
         if (arrayDespesasLocais.length === 0) {
             listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhuma despesa para este filtro.</p>";
-            document.getElementById("total-despesas-valor").innerText = "R$ 0,00";
-            return;
+            document.getElementById("total-despesas-valor").innerText = "R$ 0,00"; return;
         }
 
         let html = "";
@@ -663,24 +698,18 @@
                         <span style="color: #64748b;"><strong style="font-size: 0.8rem;">🏢</strong> ${d.local}</span>
                     </div>
             `;
-            
             if (d.quantidade && d.preco_uni && d.preco_uni !== "R$ 0,00") {
                 detailsHTML += `
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <span style="color: #64748b;"><strong style="font-size: 0.8rem;">📦</strong> Qtd: ${d.quantidade}</span>
                         <span style="color: #64748b;"><strong style="font-size: 0.8rem;">💲</strong> ${formatarDoBanco(d.preco_uni)} /un</span>
-                    </div>
-                `;
+                    </div>`;
             }
-
             detailsHTML += `</div>`;
 
             html += `
             <div class="produto-banco-card">
-                <div class="pb-info">
-                    <h4 class="pb-nome" style="color: #334155;">${d.item}</h4>
-                    ${detailsHTML}
-                </div>
+                <div class="pb-info"><h4 class="pb-nome" style="color: #334155;">${d.item}</h4>${detailsHTML}</div>
                 <div class="pb-custo" style="background: transparent; border: none; color: #ef4444; font-size: 1.1rem; padding-right: 0;">- ${fmt(numeroGasto)}</div>
             </div>`;
         });
@@ -697,71 +726,45 @@
         const valorUniStr = document.getElementById("d-valor-uni").value;
 
         if (!dataCompra || !itemCompra || !valorUniStr || !localCompra) {
-            mostrarAlerta("Atenção", "Preencha a data, local, o nome do item e o valor para lançar a despesa.", "warning");
-            return;
+            mostrarAlerta("Atenção", "Preencha a data, local, o nome do item e o valor para lançar a despesa.", "warning"); return;
         }
-
         const btn = document.getElementById("btn-salvar-despesa");
         btn.disabled = true; btn.innerText = "⏳ Lançando...";
 
         try {
             const vUniNum = limparValorPlanilha(valorUniStr);
             const payload = {
-                acao: "salvar_despesa",
-                item: itemCompra,
-                local: localCompra,
+                acao: "salvar_despesa", item: itemCompra, local: localCompra,
                 data: dataCompra.split('-').reverse().join('/'), 
-                quantidade: qtdCompra,
-                preco_uni: fmtPlanilha(vUniNum),
-                preco_total: fmtPlanilha(despesaTotalCalculada)
+                quantidade: qtdCompra, preco_uni: fmtPlanilha(vUniNum), preco_total: fmtPlanilha(despesaTotalCalculada)
             };
-
             const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
             const result = await response.json();
             
             if (result.sucesso) {
                 mostrarAlerta("Lançado!", "Despesa registrada com sucesso no fluxo de caixa.", "success");
-                document.getElementById("d-item").value = ""; 
-                document.getElementById("d-valor-uni").value = ""; 
-                document.getElementById("d-qtd").value = "1";
-                calcularDespesaTotal();
-                carregarDespesas(); 
+                document.getElementById("d-item").value = ""; document.getElementById("d-valor-uni").value = ""; document.getElementById("d-qtd").value = "1";
+                calcularDespesaTotal(); carregarDespesas(); 
             } else { throw new Error(result.erro); }
         } catch (e) {
             mostrarAlerta("Erro de Conexão", "Falha ao enviar a despesa para a Planilha: " + e.message, "error");
-        } finally {
-            btn.disabled = false; btn.innerText = "💳 Lançar Despesa";
-        }
+        } finally { btn.disabled = false; btn.innerText = "💳 Lançar Despesa"; }
     }
 
-
-    // === ABA 4: VENDAS (NOVO) ===
+    // === ABA 4: VENDAS (HISTÓRICO E REGISTRO) ===
     async function carregarOpcoesVenda() {
         const loading = document.getElementById("loading-opcoes-venda");
         loading.style.display = "block";
-        
         try {
             const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_opcoes_venda");
             const resultado = await resposta.json();
-            
             if (resultado.sucesso) {
-                // Preenche Autocomplete Clientes
-                document.getElementById("lista-clientes-venda").innerHTML = 
-                    resultado.clientes.map(nome => `<option value="${nome}">`).join('');
-                
-                // Preenche Autocomplete Produtos
-                document.getElementById("lista-produtos-venda").innerHTML = 
-                    resultado.produtos.map(nome => `<option value="${nome}">`).join('');
-                
-                // Preenche Autocomplete Plataformas
-                document.getElementById("lista-plataformas-venda").innerHTML = 
-                    resultado.plataformas.map(nome => `<option value="${nome}">`).join('');
+                document.getElementById("lista-clientes-venda").innerHTML = resultado.clientes.map(nome => `<option value="${nome}">`).join('');
+                document.getElementById("lista-produtos-venda").innerHTML = resultado.produtos.map(nome => `<option value="${nome}">`).join('');
+                document.getElementById("lista-plataformas-venda").innerHTML = resultado.plataformas.map(nome => `<option value="${nome}">`).join('');
             }
-        } catch(e) {
-            console.error("Erro ao carregar opções de venda:", e);
-        } finally {
-            loading.style.display = "none";
-        }
+        } catch(e) { console.error("Erro ao carregar opções:", e);
+        } finally { loading.style.display = "none"; }
     }
 
     async function salvarVenda() {
@@ -774,8 +777,7 @@
         const status = document.getElementById("venda-status").value;
 
         if (!dataVenda || !cliente || !produto || !plataforma || !valorStr) {
-            mostrarAlerta("Atenção", "Preencha todos os campos para registrar a venda.", "warning");
-            return;
+            mostrarAlerta("Atenção", "Preencha todos os campos para registrar a venda.", "warning"); return;
         }
 
         const btn = document.getElementById("btn-salvar-venda");
@@ -783,16 +785,10 @@
 
         try {
             const valorNum = limparValorPlanilha(valorStr);
-            
             const payload = {
-                acao: "salvar_venda",
-                data_venda: dataVenda.split('-').reverse().join('/'), 
-                cliente: cliente,
-                produto: produto,
-                plataforma: plataforma,
-                qtd: qtd,
-                valor_venda: fmtPlanilha(valorNum),
-                status: status
+                acao: "salvar_venda", data_venda: dataVenda.split('-').reverse().join('/'), 
+                cliente: cliente, produto: produto, plataforma: plataforma, qtd: qtd,
+                valor_venda: fmtPlanilha(valorNum), status: status
             };
 
             const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
@@ -800,22 +796,152 @@
             
             if (result.sucesso) {
                 mostrarAlerta("Venda Feita! 🎉", "A venda para " + cliente + " foi registrada com sucesso!", "success");
-                
-                // Limpa campos (mantém a data para não irritar se tiver várias no mesmo dia)
-                document.getElementById("venda-cliente").value = ""; 
-                document.getElementById("venda-produto").value = ""; 
-                document.getElementById("venda-plataforma").value = ""; 
-                document.getElementById("venda-qtd").value = "1"; 
-                document.getElementById("venda-valor").value = ""; 
-                document.getElementById("venda-status").value = "Pago"; 
+                document.getElementById("venda-cliente").value = ""; document.getElementById("venda-produto").value = ""; 
+                document.getElementById("venda-plataforma").value = ""; document.getElementById("venda-qtd").value = "1"; 
+                document.getElementById("venda-valor").value = ""; document.getElementById("venda-status").value = "Pago"; 
+                carregarVendas(); // Atualiza a lista e o placar
             } else { throw new Error(result.erro); }
         } catch (e) {
             mostrarAlerta("Erro", "Falha ao enviar a venda para a Planilha: " + e.message, "error");
-        } finally {
-            btn.disabled = false; btn.innerText = "✅ Confirmar Venda";
-        }
+        } finally { btn.disabled = false; btn.innerText = "✅ Lançar Venda"; }
     }
 
+    // LISTAR VENDAS E CONTAS A RECEBER
+    async function carregarVendas() {
+        document.getElementById("loading-vendas").style.display = "block"; document.getElementById("lista-vendas").innerHTML = "";
+        try {
+            const resposta = await fetch(API_PRECIFICACAO + "?acao=listar_vendas");
+            const resultado = await resposta.json();
+            if (resultado.sucesso) {
+                arrayVendas = resultado.vendas;
+                filtrarVendas();
+            } else { throw new Error(resultado.erro); }
+        } catch (e) {
+            document.getElementById("loading-vendas").innerHTML = "❌ Erro ao ler Vendas.";
+        } finally { document.getElementById("loading-vendas").style.display = "none"; }
+    }
+
+    function limparFiltrosVendas() {
+        document.getElementById('filtro-v-mes').value = "todos";
+        document.getElementById('filtro-v-ano').value = "todos";
+        document.getElementById('filtro-v-status').value = "todos";
+        document.getElementById('busca-venda').value = "";
+        filtrarVendas();
+    }
+
+    function filtrarVendas() {
+        const mesSelect = document.getElementById('filtro-v-mes').value;
+        const anoSelect = document.getElementById('filtro-v-ano').value;
+        const statusSelect = document.getElementById('filtro-v-status').value.toLowerCase();
+        const textoBusca = document.getElementById('busca-venda').value.toLowerCase();
+
+        const filtrados = arrayVendas.filter(v => {
+            if (textoBusca && !(v.cliente.toLowerCase().includes(textoBusca) || v.produto.toLowerCase().includes(textoBusca))) return false;
+            
+            if (statusSelect !== "todos" && v.status.toLowerCase() !== statusSelect) return false;
+
+            if (mesSelect !== "todos" || anoSelect !== "todos") {
+                let parts = [];
+                if(v.data.includes('/')) { parts = v.data.split('/'); } 
+                else if (v.data.includes('-')) { let p = v.data.split('-'); parts = [p[2], p[1], p[0]]; }
+                else if (v.data.includes(' ')) { 
+                    let td = new Date(v.data);
+                    if (!isNaN(td)) parts = [td.getDate(), String(td.getMonth()+1).padStart(2,'0'), td.getFullYear()];
+                }
+                
+                if (parts.length >= 3) {
+                    let mesData = String(parts[1]).padStart(2,'0'); 
+                    let anoData = String(parts[2]).substring(0,4); 
+                    
+                    if (mesSelect !== "todos" && mesData !== mesSelect) return false;
+                    if (anoSelect !== "todos" && anoData !== anoSelect) return false;
+                } else { return false; }
+            }
+            return true;
+        });
+
+        renderizarListaVendas(filtrados);
+    }
+
+    function renderizarListaVendas(arrayVendasLocais) {
+        const listaDiv = document.getElementById("lista-vendas");
+        listaDiv.innerHTML = "";
+        
+        let somaPendentes = 0;
+        let somaPagos = 0;
+
+        if (arrayVendasLocais.length === 0) {
+            listaDiv.innerHTML = "<p style='text-align:center; color:#999; padding:20px; font-weight:600;'>Nenhuma venda encontrada para este filtro.</p>";
+            document.getElementById("vendas-pendentes-valor").innerText = "R$ 0,00";
+            document.getElementById("vendas-pagas-valor").innerText = "R$ 0,00";
+            return;
+        }
+
+        let html = "";
+        arrayVendasLocais.forEach(v => {
+            let numValorVenda = limparValorPlanilha(v.valor_venda);
+            let isPendente = v.status.toLowerCase() === "pendente";
+
+            if (isPendente) { somaPendentes += numValorVenda; } else { somaPagos += numValorVenda; }
+
+            let cssCard = isPendente ? "card-pendente" : "";
+            let emojiStatus = isPendente ? "🟡" : "🟢";
+            let lucroStr = v.lucro && limparValorPlanilha(v.lucro) > 0 ? `💰 Lucro: ${formatarDoBanco(v.lucro)}` : "";
+
+            let btnBaixar = isPendente ? `<button class="btn-baixar-pgt" onclick="marcarVendaComoPaga(${v.linha})">💸 Confirmar Pagamento</button>` : "";
+
+            html += `
+            <div class="produto-banco-card ${cssCard}">
+                <div class="card-row-top">
+                    <div class="pb-info">
+                        <h4 class="pb-nome">${v.cliente}</h4>
+                        <div class="pb-detalhes" style="flex-direction: column; gap: 4px; align-items: flex-start; margin-top: 5px;">
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <span style="color: #64748b;"><strong style="font-size: 0.8rem;">📅</strong> ${v.data}</span>
+                                <span style="color: #64748b;"><strong style="font-size: 0.8rem;">🏷️</strong> ${v.produto} (${v.qtd}x)</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px;">
+                                <span style="color: #64748b;"><strong style="font-size: 0.8rem;">📱</strong> ${v.plataforma}</span>
+                                <span style="color: #10b981; font-weight: 900;">${lucroStr}</span>
+                            </div>
+                            <div style="margin-top: 4px;">
+                                <span style="font-weight: 900; font-size: 0.75rem; color: ${isPendente ? '#b45309' : '#059669'};">${emojiStatus} ${v.status.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pb-custo" style="background: transparent; border: none; color: var(--brand-dark); font-size: 1.2rem; padding: 0;">${fmt(numValorVenda)}</div>
+                </div>
+                ${btnBaixar}
+            </div>`;
+        });
+        
+        listaDiv.innerHTML = html;
+        document.getElementById("vendas-pendentes-valor").innerText = fmt(somaPendentes);
+        document.getElementById("vendas-pagas-valor").innerText = fmt(somaPagos);
+    }
+
+    async function marcarVendaComoPaga(linha) {
+        if(!confirm("Tem certeza que deseja marcar esta venda como PAGA? A data de hoje será registrada automaticamente.")) return;
+
+        try {
+            const payload = {
+                acao: "atualizar_status_venda",
+                linha: linha,
+                novo_status: "Pago"
+            };
+            const response = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
+            const result = await response.json();
+
+            if(result.sucesso) {
+                mostrarAlerta("Dinheiro no Bolso!", "Pagamento recebido e registrado com sucesso!", "success");
+                carregarVendas(); // Recarrega a lista e atualiza os valores
+            } else {
+                throw new Error(result.erro);
+            }
+        } catch(e) {
+            mostrarAlerta("Erro", "Falha ao atualizar o status de pagamento: " + e.message, "error");
+        }
+    }
 </script>
 </body>
 </html>
