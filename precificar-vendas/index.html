@@ -480,7 +480,7 @@
         if (e.target.id === "d-valor-uni" || e.target.id === "d-qtd") calcularDespesaTotal();
     });
 
-    window.onload = () => {
+   window.onload = () => {
         const hoje = new Date();
         const dataHojeIso = hoje.toISOString().split('T')[0];
         document.getElementById('d-data').value = dataHojeIso; document.getElementById('venda-data').value = dataHojeIso; 
@@ -494,6 +494,16 @@
         document.getElementById('filtro-dash-ano').value = anoStr;
         
         calcular();
+
+        // 🔥 MÁGICA NOVA: LER A URL PARA ABRIR A ABA CERTA 🔥
+        const urlParams = new URLSearchParams(window.location.search);
+        const abaAtiva = urlParams.get('aba');
+        
+        if (abaAtiva === 'vendas') trocarAba('vendas', '🛒 Vendas');
+        else if (abaAtiva === 'banco') trocarAba('banco', '📋 Modelos');
+        else if (abaAtiva === 'despesas') trocarAba('despesas', '💳 Custos');
+        else if (abaAtiva === 'dashboard') trocarAba('dashboard', '📊 Dashboard');
+        // Se não tiver parâmetro ou for 'calculadora', ele mantém a tela inicial padrão.
     };
 
     // === NAVEGAÇÃO DO TOPO ===
