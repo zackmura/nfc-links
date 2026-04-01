@@ -22,7 +22,6 @@
         .login-box img { width:120px; margin-bottom:20px; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1)); border-radius:15px;}
         .login-box h2 { color:var(--brand-dark); font-weight:900; margin:0 0 5px; font-size:1.5rem;}
         .login-box p { color:var(--text-muted); font-size:0.85rem; margin-bottom:25px; font-weight:600;}
-        /* TRUQUE DA SENHA PARA BURLAR O AUTOCOMPLETAR */
         .login-input { width:100%; padding:16px; border:2px solid var(--border-color); border-radius:12px; font-family:'Inter', sans-serif; font-size:1.1rem; text-align:center; margin-bottom:20px; box-sizing:border-box; font-weight:700; letter-spacing:2px; -webkit-text-security: disc; text-security: disc; }
         .login-input:focus { border-color:var(--primary); outline:none; background:#fffbeb;}
         
@@ -41,8 +40,9 @@
         .tab-content { display:none; animation:fadeIn 0.3s ease; } .tab-content.active { display:block; }
         .divisor-erp { width:100%; text-align:center; font-size:0.70rem; font-weight:900; color:var(--text-muted); margin:5px 0; border-bottom:1px dashed var(--border-color); padding-bottom:8px; text-transform:uppercase; letter-spacing:1px;}
         
-        /* TÍTULO MÓDULO ATIVO */
-        #titulo-modulo-ativo { text-align:center; font-size:1.1rem; font-weight:900; color:var(--primary); margin-bottom:20px; text-transform:uppercase; letter-spacing: 1px; background: #fffbeb; padding: 10px; border-radius: 12px; border: 1px dashed #fcd34d;}
+        /* TÍTULO MÓDULO ATIVO (REFINADO E FINO) */
+        .titulo-wrapper { text-align: center; margin-bottom: 25px; }
+        #titulo-modulo-ativo { display: inline-block; font-size:0.75rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing: 1.5px; background: #fffbeb; padding: 6px 16px; border-radius: 20px; border: 1px solid #fde68a; box-shadow: 0 2px 5px rgba(217,119,6,0.05); }
 
         .section-title { font-size:0.95rem; color:var(--brand-dark); font-weight:900; margin:25px 0 12px; display:flex; align-items:center; gap:8px; text-transform:uppercase; letter-spacing:0.5px; border-left:4px solid var(--primary); padding-left:10px;}
         .input-group { margin-bottom:15px; } label { font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px; font-size:0.8rem; }
@@ -134,7 +134,7 @@
             <button id="btn-dashboard_erp" class="tab-btn" onclick="switchTab('dashboard_erp', '📊 Dashboard Financeiro')">📊 Dashboard</button>
         </div>
 
-        <div id="titulo-modulo-ativo">📈 ANALYTICS</div>
+        <div class="titulo-wrapper"><span id="titulo-modulo-ativo">📈 ANALYTICS</span></div>
 
         <div id="tab-analytics" class="tab-content active">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -269,7 +269,8 @@
                 </div>
                 <div class="row" style="margin-bottom:10px;"><div class="col"><label>Mês:</label><select id="filtro-v-mes" onchange="filtrarVendas()"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Ano:</label><select id="filtro-v-ano" onchange="filtrarVendas()"><option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option></select></div></div>
                 <div class="input-group" style="margin-bottom:0;"><label>Status do Pagamento:</label><select id="filtro-v-status" onchange="filtrarVendas()"><option value="todos">Todos</option><option value="pago">Somente Pagos 🟢</option><option value="pendente">Somente Pendentes 🟡</option></select></div>
-                <input type="text" id="busca-venda" class="search-bar" style="margin-top:15px; margin-bottom:0;" placeholder="🔍 Buscar cliente ou produto..." onkeyup="filtrarVendas()">
+                <input type="text" id="busca-venda" class="search-bar" style="margin-top:15px; margin-bottom:0;" placeholder="🔍 Buscar cliente ou produto..." list="lista-clientes-busca" autocomplete="off" onkeyup="filtrarVendas()">
+                <datalist id="lista-clientes-busca"></datalist>
             </div>
 
             <div id="loading-vendas" style="text-align:center; padding:20px; color:var(--primary); font-weight:800; display:none;">⏳ Carregando vendas...</div>
@@ -474,7 +475,7 @@
     // ==========================================
     // ERP: VENDAS (INCLUI RELATÓRIO DO CLIENTE)
     // ==========================================
-    async function carregarOpcoesVenda(){ $('loading-opcoes-venda').style.display="block"; try{ const r=await fetch(API_PRECIFICACAO+"?acao=listar_opcoes_venda"); const res=await r.json(); if(res.sucesso){$('lista-clientes-venda').innerHTML=res.clientes.map(n=>`<option value="${n}">`).join('');$('lista-produtos-venda').innerHTML=res.produtos.map(n=>`<option value="${n}">`).join('');$('lista-plataformas-venda').innerHTML=res.plataformas.map(n=>`<option value="${n}">`).join('');} }catch(e){}finally{$('loading-opcoes-venda').style.display="none";} }
+    async function carregarOpcoesVenda(){ $('loading-opcoes-venda').style.display="block"; try{ const r=await fetch(API_PRECIFICACAO+"?acao=listar_opcoes_venda"); const res=await r.json(); if(res.sucesso){ $('lista-clientes-venda').innerHTML=res.clientes.map(n=>`<option value="${n}">`).join(''); $('lista-clientes-busca').innerHTML=res.clientes.map(n=>`<option value="${n}">`).join(''); $('lista-produtos-venda').innerHTML=res.produtos.map(n=>`<option value="${n}">`).join(''); $('lista-plataformas-venda').innerHTML=res.plataformas.map(n=>`<option value="${n}">`).join('');} }catch(e){}finally{$('loading-opcoes-venda').style.display="none";} }
     async function salvarVenda(){ const dV=$('venda-data').value, c=$('venda-cliente').value.trim(), p=$('venda-produto').value.trim(), pl=$('venda-plataforma').value.trim(), q=$('venda-qtd').value, vS=$('venda-valor').value, s=$('venda-status').value; if(!dV||!c||!p||!pl||!vS)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-venda'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const py={acao:"salvar_venda",data_venda:dV.split('-').reverse().join('/'),cliente:c,produto:p,plataforma:pl,qtd:q,valor_venda:fmtPlanilha(limparValorPlanilha(vS)),status:s}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(py)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Venda Feita! 🎉","Registrado!","success");$('venda-cliente').value="";$('venda-produto').value="";$('venda-plataforma').value="";$('venda-qtd').value="1";$('venda-valor').value="";$('venda-status').value="Pago";carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="✅ Lançar Venda";} }
     async function salvarEdicaoVenda(){ const l=$('edit-venda-linha').value, dV=$('edit-venda-data').value, s=$('edit-venda-status').value, c=$('edit-venda-cliente').value.trim(), p=$('edit-venda-produto').value.trim(), pl=$('edit-venda-plataforma').value.trim(), q=$('edit-venda-qtd').value, vS=$('edit-venda-valor').value; if(!dV||!c||!p||!pl||!vS)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-edicao-venda'); btn.disabled=true; btn.innerText="⏳ Salvando..."; try{ const py={acao:"atualizar_venda",linha:l,data_venda:dV.split('-').reverse().join('/'),cliente:c,produto:p,plataforma:pl,qtd:q,valor_venda:fmtPlanilha(limparValorPlanilha(vS)),status:s}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(py)}); const res=await r.json(); if(res.sucesso){fecharEditarVenda();mostrarAlerta("Atualizado!","Editada.","success");carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar Alterações";} }
     async function carregarVendas(){ $('loading-vendas').style.display="block"; $('lista-vendas').innerHTML=""; try{ const r=await fetch(API_PRECIFICACAO+"?acao=listar_vendas"); const res=await r.json(); if(res.sucesso){arrayVendas=res.vendas;filtrarVendas();}else throw new Error(res.erro); }catch(e){$('loading-vendas').innerHTML="❌ Erro Vendas.";}finally{$('loading-vendas').style.display="none";} }
@@ -485,9 +486,12 @@
         const busca = $('busca-venda').value.trim().toLowerCase();
         if(!busca) return mostrarAlerta("Atenção", "Para gerar o extrato, digite o nome do cliente na barra de busca primeiro!", "warning");
         
+        const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const tB = norm(busca);
         const mS = $('filtro-v-mes').value, aS = $('filtro-v-ano').value, stS = $('filtro-v-status').value.toLowerCase();
+        
         const filtrados = arrayVendas.filter(v => {
-            if (!v.cliente.toLowerCase().includes(busca)) return false;
+            if (!norm(v.cliente).includes(tB)) return false;
             if (stS !== "todos" && v.status.toLowerCase() !== stS) return false;
             if (mS !== "todos" || aS !== "todos") {
                 let pt = v.data.includes('/') ? v.data.split('/') : (v.data.includes('-') ? v.data.split('-').reverse() : []);
@@ -515,7 +519,20 @@
         }).catch(() => { alert("Erro ao copiar. Segue o texto:\n\n" + texto); });
     }
 
-    function filtrarVendas(){ const mS=$('filtro-v-mes').value, aS=$('filtro-v-ano').value, stS=$('filtro-v-status').value.toLowerCase(), tB=$('busca-venda').value.toLowerCase(); const flt=arrayVendas.filter(v=>{ if(tB&&!(v.cliente.toLowerCase().includes(tB)||v.produto.toLowerCase().includes(tB)))return false; if(stS!=="todos"&&v.status.toLowerCase()!==stS)return false; if(mS!=="todos"||aS!=="todos"){let pt=[]; if(v.data.includes('/'))pt=v.data.split('/'); else if(v.data.includes('-')){let p=v.data.split('-');pt=[p[2],p[1],p[0]];} else if(v.data.includes(' ')){let td=new Date(v.data);if(!isNaN(td))pt=[td.getDate(),String(td.getMonth()+1).padStart(2,'0'),td.getFullYear()];} if(pt.length>=3){let m=String(pt[1]).padStart(2,'0'), a=String(pt[2]).substring(0,4); if(mS!=="todos"&&m!==mS)return false; if(aS!=="todos"&&a!==aS)return false;}else return false;} return true; }); renderizarListaVendas(flt); }
+    function filtrarVendas(){ 
+        const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const mS=$('filtro-v-mes').value, aS=$('filtro-v-ano').value, stS=$('filtro-v-status').value.toLowerCase(), tB=norm($('busca-venda').value); 
+        const flt=arrayVendas.filter(v=>{ 
+            if(tB&&!(norm(v.cliente).includes(tB)||norm(v.produto).includes(tB)))return false; 
+            if(stS!=="todos"&&v.status.toLowerCase()!==stS)return false; 
+            if(mS!=="todos"||aS!=="todos"){
+                let pt=[]; if(v.data.includes('/'))pt=v.data.split('/'); else if(v.data.includes('-')){let p=v.data.split('-');pt=[p[2],p[1],p[0]];} else if(v.data.includes(' ')){let td=new Date(v.data);if(!isNaN(td))pt=[td.getDate(),String(td.getMonth()+1).padStart(2,'0'),td.getFullYear()];} 
+                if(pt.length>=3){let m=String(pt[1]).padStart(2,'0'), a=String(pt[2]).substring(0,4); if(mS!=="todos"&&m!==mS)return false; if(aS!=="todos"&&a!==aS)return false;}else return false;
+            } return true; 
+        }); 
+        renderizarListaVendas(flt); 
+    }
+    
     function renderizarListaVendas(aV){ const lD=$('lista-vendas'); lD.innerHTML=""; let sP=0, sPa=0, sL=0, sQ=0; if(aV.length===0){lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhuma venda.</p>";$('vendas-total-valor').innerText="R$ 0,00";$('vendas-pendentes-valor').innerText="R$ 0,00";$('vendas-pagas-valor').innerText="R$ 0,00";$('vendas-lucro-valor').innerText="R$ 0,00";$('vendas-qtd-valor').innerText="0 un";return;} let h=""; aV.forEach(v=>{let nV=limparValorPlanilha(v.valor_venda), nL=limparValorPlanilha(v.lucro), nQ=parseFloat(v.qtd)||0, isP=v.status.toLowerCase()==="pendente"; sQ+=nQ; if(isP)sP+=nV;else sPa+=nV; sL+=nL; let cs=isP?"card-pendente":"", em=isP?"🟡":"🟢", lS=v.lucro&&nL>0?`💰 Lucro: ${formatarDoBanco(v.lucro)}`:"", bB=isP?`<button class="btn-baixar-pgt" onclick="abrirConfirmacaoPagamento(${v.linha})">💸 Confirmar Pagamento</button>`:""; h+=`<div class="produto-banco-card ${cs}"><div class="card-row-top"><div class="pb-info"><div style="display:flex;justify-content:space-between;align-items:center;"><h4 class="pb-nome" style="margin:0;">${v.cliente}</h4><div><button onclick="abrirModalEditarVenda(${v.linha})" class="btn-editar-venda" style="margin-right:10px;">✏️</button><button onclick="abrirConfirmacaoExclusao(${v.linha})" class="btn-excluir-venda">🗑️</button></div></div><div class="pb-detalhes" style="flex-direction:column;gap:4px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${v.data}</span><span style="color:#64748b;">🏷️ ${v.produto} (x${v.qtd})</span></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;"><span style="color:#64748b;">📱 ${v.plataforma}</span><span style="color:#10b981;font-weight:900;">${lS}</span></div><div style="margin-top:4px;"><span style="font-weight:900;font-size:0.75rem;color:${isP?'#b45309':'#059669'};">${em} ${v.status.toUpperCase()}</span></div></div></div><div class="pb-custo" style="background:transparent;border:none;color:var(--brand-dark);font-size:1.2rem;padding:0;">${fmt(nV)}</div></div>${bB}</div>`;}); lD.innerHTML=h; $('vendas-total-valor').innerText=fmt(sP+sPa); $('vendas-pendentes-valor').innerText=fmt(sP); $('vendas-pagas-valor').innerText=fmt(sPa); $('vendas-lucro-valor').innerText=fmt(sL); $('vendas-qtd-valor').innerText=sQ+" un"; }
     async function executarPagamentoVenda(){ if(!linhaVendaPagamento)return; const l=linhaVendaPagamento; fecharConfirmacao(); try{ const p={acao:"atualizar_status_venda",linha:l,novo_status:"Pago"}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Sucesso!","Pagamento registrado!","success");carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");} }
     async function executarExclusaoVenda(){ if(!linhaVendaExclusao)return; const l=linhaVendaExclusao; fecharExclusao(); try{ const p={acao:"excluir_registro",aba:"Vendas",linha:l}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Excluído!","Venda apagada.","success");carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");} }
