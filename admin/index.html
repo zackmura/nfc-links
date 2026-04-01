@@ -873,6 +873,15 @@
         
         if(window.innerWidth <= 600) document.getElementById('menu-abas').classList.remove('menu-aberto');
 
+        // 🔥 CONTROLE DO TERMINAL DE LOGS 🔥
+        const terminal = document.getElementById('terminal');
+        const abasERP = ['precificar', 'vendas', 'modelos', 'custos', 'dashboard_erp'];
+        if (abasERP.includes(tabName)) {
+            terminal.style.display = 'none'; // Esconde no ERP
+        } else {
+            terminal.style.display = 'block'; // Mostra no Admin
+        }
+
         // Lazy Load ERP
         if (tabName === 'modelos') carregarBancoDeCustos(); 
         if (tabName === 'custos') carregarDespesas(); 
