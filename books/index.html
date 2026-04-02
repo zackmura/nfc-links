@@ -3,102 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mini Mundo 3D - Leitor Imersivo</title>
+    <title>Mini Mundo 3D - Experience</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 
     <style>
         :root {
-            /* Paleta Sépia / Descanso Visual */
-            --bg-color: #f5f2eb;    /* Fundo da tela: um off-white muito suave */
-            --page-bg: #f9eed7;     /* Papel: tom de areia/pergaminho quente */
-            --text-color: #3b2f27;  /* Texto: marrom escuro quente (sem usar preto puro) */
+            --bg-color: #efead9;    /* Fundo suave (Areia) */
+            --page-bg: #fdfaf2;     /* Papel (Pergaminho claro) */
+            --text-color: #3d342d;  /* Texto (Marrom terroso escuro) */
+            --accent: #8b5a2b;      /* Cor de destaque para o botão */
             --speed: 0.35s; 
         }
 
         body { 
-            margin: 0; 
-            background-color: var(--bg-color); 
-            height: 100vh; 
-            overflow: hidden; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; background-color: var(--bg-color); 
+            height: 100vh; overflow: hidden; 
+            font-family: 'Georgia', serif; /* Fonte mais literária */
         }
 
-        /* Logo no Topo Esquerdo */
+        /* Cabeçalho de Identidade Visual */
         #brand-header {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            pointer-events: none; 
+            position: absolute; top: 0; width: 100%; height: 70px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 25px; box-sizing: border-box; z-index: 100;
         }
 
         #brand-header img {
-            max-height: 45px;
-            mix-blend-mode: multiply; /* Apaga o fundo branco do logo */
+            max-height: 40px; mix-blend-mode: multiply;
         }
 
-        /* Container Principal */
+        /* Botão Recomeçar Estilizado */
+        #reset-btn {
+            background: none; border: 1px solid var(--accent);
+            color: var(--accent); padding: 6px 12px; border-radius: 20px;
+            font-size: 12px; cursor: pointer; font-family: sans-serif;
+            text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
+            transition: all 0.3s;
+        }
+        #reset-btn:hover { background: var(--accent); color: white; }
+
         #viewer-container {
-            flex: 1; 
-            height: 100vh; 
-            perspective: 1500px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
+            flex: 1; height: 100vh; perspective: 1500px;
+            display: flex; justify-content: center; align-items: center;
             position: relative;
         }
 
-        /* O WRAPPER: É ele quem sofre as animações 3D agora */
         #viewer-wrapper {
-            width: 90%; 
-            height: 80%; 
-            margin-top: 30px; 
-            background: var(--page-bg); 
-            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
-            border-radius: 4px;
-            z-index: 5;
-            border: 1px solid #e8dec7; /* Borda fininha e elegante */
+            width: 92%; height: 82%; margin-top: 40px;
+            background: var(--page-bg); border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(61, 52, 45, 0.15);
+            z-index: 5; border: 1px solid #e3dec6;
         }
 
-        /* O LEITOR: Fica estático, sem se confundir com animações */
-        #viewer { 
-            width: 100%; 
-            height: 100%; 
-            overflow: hidden;
-        }
+        #viewer { width: 100%; height: 100%; }
 
-        /* Zonas de Toque nas laterais */
-        .touch-zone { 
-            position: absolute; top: 0; bottom: 0; width: 35%; 
-            z-index: 100; -webkit-tap-highlight-color: transparent; 
-        }
+        .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10; }
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
 
         #loading { 
-            position: absolute; color: var(--text-color); width: 100%; text-align: center; 
-            top: 50%; transform: translateY(-50%); z-index: 1; font-weight: 500;
-            font-size: 1.1rem; letter-spacing: 1px;
+            position: absolute; color: var(--text-color); width: 100%; 
+            text-align: center; top: 50%; transform: translateY(-50%);
+            font-style: italic; opacity: 0.7;
         }
     </style>
 </head>
 <body>
 
     <div id="brand-header">
-        <img src="logo.jpg" alt="Mini Mundo Impressão 3D">
+        <img src="logo.jpg" alt="Mini Mundo">
+        <button id="reset-btn" title="Voltar ao Início">Recomeçar</button>
     </div>
 
-    <div id="loading">Abrindo seu livro...</div>
+    <div id="loading">Sincronizando sua leitura...</div>
 
     <div id="viewer-container">
         <div id="zone-prev" class="touch-zone"></div>
-        
         <div id="viewer-wrapper">
             <div id="viewer"></div>
         </div>
-        
         <div id="zone-next" class="touch-zone"></div>
     </div>
 
@@ -106,95 +91,61 @@
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const bookParam = urlParams.get('books');
-            
-            // Agora a animação acontece no wrapper
-            const viewerWrapper = document.getElementById('viewer-wrapper'); 
+            const wrapper = document.getElementById('viewer-wrapper');
 
-            if (!bookParam) {
-                document.getElementById('loading').innerHTML = "Aproxime a Tag NFC Mini Mundo";
-                return;
-            }
+            if (!bookParam) return;
 
-            const bookPath = "./books/" + bookParam + ".epub";
-            const book = ePub(bookPath);
-            
+            const storageKey = 'minimundo_v2_' + bookParam;
+            const book = ePub("./books/" + bookParam + ".epub");
             const rendition = book.renderTo("viewer", {
-                width: "100%", 
-                height: "100%", 
-                flow: "paginated", 
-                manager: "default",
-                spread: "none"
+                width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "none"
             });
 
-            // Tema de Leitura Confortável (Sépia)
+            // Configuração do Tema (Conforto Visual)
             rendition.themes.default({
-                body: { 
-                    "background": "transparent", 
-                    "padding": "4% 6% !important" /* Desgruda o texto das bordas */
-                },
-                p: { 
-                    "color": "var(--text-color)", 
-                    "line-height": "1.6", 
-                    "font-size": "110%" /* Aumenta um pouquinho a letra para celular */
-                },
-                h1: { "color": "#2c221b" },
-                h2: { "color": "#2c221b" }
+                body: { "background": "transparent", "padding": "40px 30px !important" },
+                p: { "color": "var(--text-color)", "line-height": "1.7", "font-size": "18px" }
             });
 
-            const storageKey = 'minimundo_leitura_' + bookParam;
-            const paginaSalva = localStorage.getItem(storageKey);
-
-            book.opened.then(() => {
+            // Lógica de Persistência Robusta
+            Promise.all([book.ready, book.opened]).then(() => {
+                const savedLoc = localStorage.getItem(storageKey);
                 document.getElementById('loading').style.display = 'none';
-                
-                if (paginaSalva) {
-                    rendition.display(paginaSalva);
-                } else {
-                    rendition.display();
-                }
+                rendition.display(savedLoc || undefined);
             });
 
-            rendition.on("relocated", function(location) {
-                if (location && location.start) {
-                    localStorage.setItem(storageKey, location.start.cfi);
-                }
+            // Salva apenas quando a página estabilizar
+            rendition.on("relocated", (loc) => {
+                if (loc && loc.start) localStorage.setItem(storageKey, loc.start.cfi);
             });
 
-            // Animação 3D aplicada APENAS no Wrapper
+            // Botão de Reset
+            document.getElementById('reset-btn').onclick = () => {
+                if(confirm("Deseja voltar para a primeira página?")) {
+                    localStorage.removeItem(storageKey);
+                    location.reload();
+                }
+            };
+
             const turnPage = (dir) => {
-                viewerWrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
-                viewerWrapper.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
-                viewerWrapper.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.95)" : "rotateY(90deg) scale(0.95)";
-                viewerWrapper.style.filter = "brightness(0.85)";
+                wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
+                wrapper.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
+                wrapper.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.98)" : "rotateY(90deg) scale(0.98)";
+                wrapper.style.filter = "brightness(0.9)";
 
                 setTimeout(() => {
-                    if (dir === 'next') rendition.next();
-                    else rendition.prev();
-
-                    viewerWrapper.style.transition = "none";
-                    viewerWrapper.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.95)" : "rotateY(-90deg) scale(0.95)";
-                    
-                    void viewerWrapper.offsetWidth; 
-
-                    viewerWrapper.style.transition = "transform var(--speed) ease-out, filter var(--speed) ease-out";
-                    viewerWrapper.style.transform = "rotateY(0deg) scale(1)";
-                    viewerWrapper.style.filter = "brightness(1)";
-                }, 350); 
+                    if (dir === 'next') rendition.next(); else rendition.prev();
+                    wrapper.style.transition = "none";
+                    wrapper.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.98)" : "rotateY(-90deg) scale(0.98)";
+                    void wrapper.offsetWidth; 
+                    wrapper.style.transition = "transform var(--speed) ease-out, filter var(--speed) ease-out";
+                    wrapper.style.transform = "rotateY(0deg) scale(1)";
+                    wrapper.style.filter = "brightness(1)";
+                }, 350);
             };
 
             document.getElementById('zone-next').onclick = () => turnPage('next');
             document.getElementById('zone-prev').onclick = () => turnPage('prev');
-
-            let xDown = null;
-            document.addEventListener('touchstart', e => xDown = e.touches[0].clientX);
-            document.addEventListener('touchmove', e => {
-                if (!xDown) return;
-                let xDiff = xDown - e.touches[0].clientX;
-                if (Math.abs(xDiff) > 40) {
-                    turnPage(xDiff > 0 ? 'next' : 'prev');
-                    xDown = null;
-                }
-            });
         };
     </script>
 </body>
