@@ -20,7 +20,7 @@
 
         body { 
             margin: 0; background-color: var(--bg-color); 
-            height: 100vh; overflow-y: auto; overflow-x: hidden;
+            height: 100vh; overflow: hidden; /* Tiramos o scroll do body para gerenciar nas telas */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             color: var(--text-color);
         }
@@ -28,27 +28,41 @@
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
         /* =========================================
-           TELA INICIAL (HUB)
+           SISTEMA DE TELAS EMPILHADAS (O FIM DO BUG)
            ========================================= */
-        #home-screen {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px 15px 40px; min-height: 100vh; animation: fadeIn 0.4s ease;
+        .app-screen {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
+        #home-screen {
+            z-index: 20; background: var(--bg-color); overflow-y: auto; overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center; padding: 20px 15px 40px;
+        }
+
+        #reader-screen {
+            z-index: 10; background: var(--bg-color); opacity: 0; visibility: hidden; pointer-events: none;
+        }
+
+        /* Classes mágicas que trocam de tela sem esmagar o livro */
+        #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #reader-screen.active { opacity: 1; visibility: visible; pointer-events: all; }
+
+
+        /* =========================================
+           ESTILOS DA TELA INICIAL (HUB)
+           ========================================= */
         .welcome-header { text-align: center; margin-bottom: 25px; width: 100%; max-width: 420px; }
         .welcome-header img { max-width: 140px; mix-blend-mode: multiply; margin-bottom: 10px; }
         .welcome-title { font-size: 1.2rem; font-weight: 900; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px; }
         .welcome-text { font-size: 0.85rem; font-style: italic; color: #7a6b5d; line-height: 1.4; margin: 0 0 20px; }
 
         .hub-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; padding: 0 10px; box-sizing: border-box; }
-        
         .btn-ler { background: var(--accent); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 var(--accent-dark), 0 10px 20px rgba(139, 90, 43, 0.2); transition: transform 0.1s, box-shadow 0.1s; }
         .btn-ler:active { transform: translateY(6px); box-shadow: 0 0 0 var(--accent-dark); }
-        
         .btn-reset { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
-        /* SEÇÕES (LOJA E ANÚNCIOS) */
         .hub-section { width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box; }
         .section-title { color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
         .section-subtitle { font-size: 0.8rem; color: #7a6b5d; margin-top: -10px; margin-bottom: 15px; }
@@ -83,18 +97,11 @@
         /* =========================================
            TELA DE LEITURA (LIVRO)
            ========================================= */
-        #reader-screen { display: none; height: 100vh; overflow: hidden; position: relative; animation: fadeIn 0.4s ease; background: var(--bg-color); }
-        
         #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
         #brand-header img { max-height: 40px; mix-blend-mode: multiply; }
         
-        /* A BARRA DE PROGRESSO AGORA É UM BOTÃO CLICÁVEL! */
-        .progress-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px;
-            cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: 0.2s;
-        }
+        .progress-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px; cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: 0.2s; }
         .progress-container:active { background: #f2ebd9; }
-        
         .progress-text { font-size: 0.8rem; font-weight: 800; color: var(--accent-dark); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;}
         .progress-bar-bg { width: 100%; height: 6px; background: #eadecb; border-radius: 10px; overflow: hidden;}
         .progress-bar-fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.3s ease; }
@@ -113,22 +120,21 @@
         #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold;}
 
         /* =========================================
-           MODAIS (RESET, PULO, PRODUTO, ANÚNCIO)
+           MODAIS GERAIS
            ========================================= */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(61, 52, 45, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(61, 52, 45, 0.7); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px); }
         .modal-bottom { align-items: flex-end; }
         .modal-content { background: var(--page-bg); border-radius: 12px; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center; width: 85%; max-width: 320px; animation: slideUp 0.3s ease; position: relative; border: 1px solid #eadecb; }
         .modal-bottom .modal-content { border-radius: 20px 20px 0 0; width: 100%; max-width: 420px; padding: 0; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
         .btn-fechar { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: var(--text-color); cursor: pointer; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
 
+        /* Modal Pular e Reset */
         .modal-icon-reset { width: 36px; height: 36px; margin-bottom: 15px; stroke: var(--accent); fill: none; }
         .modal-buttons { display: flex; gap: 15px; width: 100%; margin-top: 20px; }
         .modal-buttons button { padding: 12px 0; flex: 1; border-radius: 25px; border: none; font-weight: bold; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.2s;}
-        
         #btn-cancel { background: transparent; border: 1px solid #b5a99f; color: #8a7c71; }
         #btn-confirm { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25); }
 
-        /* Modal Pular Porcentagem */
         .input-pagina { width: 100%; padding: 15px; border-radius: 8px; border: 2px solid #eadecb; text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--accent-dark); box-sizing: border-box; margin-top: 15px; outline: none;}
         .input-pagina:focus { border-color: var(--accent); }
 
@@ -161,7 +167,7 @@
 </head>
 <body>
 
-    <div id="home-screen">
+    <div id="home-screen" class="app-screen">
         <div class="welcome-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             <h2 class="welcome-title">Bem-Vindo à Experiência</h2>
@@ -199,14 +205,12 @@
         </div>
     </div>
 
-    <div id="reader-screen">
+    <div id="reader-screen" class="app-screen">
         <div id="brand-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             
             <div class="progress-container" onclick="mostrarModalPular()">
-                <span id="progress-text" class="progress-text">
-                    Calculando...
-                </span>
+                <span id="progress-text" class="progress-text">Calculando...</span>
                 <div class="progress-bar-bg">
                     <div id="progress-bar-fill" class="progress-bar-fill"></div>
                 </div>
@@ -254,7 +258,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="modal-produto" class="modal-overlay modal-bottom">
         <div class="modal-content">
             <button class="btn-fechar" onclick="fecharModalProduto()">×</button>
@@ -299,7 +303,7 @@
 
         let catalogoGlobal = []; let anunciosGlobal = [];
         let livroIniciado = false; let book, rendition; 
-        let locacoesGeradas = false; // Flag para saber se já calculou o tamanho do livro
+        let locacoesGeradas = false;
         
         const urlParams = new URLSearchParams(window.location.search);
         const bookParam = urlParams.get('books');
@@ -324,20 +328,25 @@
             }
         }
 
+        // ALTERAÇÃO CRÍTICA AQUI: Ocultar as telas via classe sem o "display: none"
         function abrirLeitor() {
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('reader-screen').style.display = 'block';
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('reader-screen').classList.add('active');
 
             if (!livroIniciado && bookParam) {
                 document.getElementById('loading').style.display = 'block';
                 iniciarEpubEngine();
                 livroIniciado = true;
+            } else if (livroIniciado && rendition) {
+                // Força o livro a relembrar exatamente onde estava ao abrir a tela
+                const savedLoc = localStorage.getItem(storageKey);
+                if (savedLoc) rendition.display(savedLoc);
             }
         }
 
         function voltarHome() {
-            document.getElementById('reader-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
+            document.getElementById('reader-screen').classList.remove('active');
+            document.getElementById('home-screen').classList.remove('hidden');
             verificarStatusLeitura();
         }
 
@@ -358,15 +367,12 @@
                 ]);
             });
 
-            // Motor de Cálculo Silencioso
+            // Ajuste de Precisão: 1024 divide o livro em fatias menores e mais precisas
             book.ready.then(() => {
-                return book.locations.generate(1600); // 1600 caracteres = 1 bloco de tela
+                return book.locations.generate(1024); 
             }).then(() => {
                 locacoesGeradas = true;
-                // Força atualização da barra se já tiver página aberta
-                if (rendition.location) {
-                    atualizarProgresso(rendition.location.start.cfi);
-                }
+                if (rendition.location) atualizarProgresso(rendition.location.start.cfi);
             });
 
             Promise.all([book.ready, book.opened]).then(() => {
@@ -375,21 +381,18 @@
                 rendition.display(savedLoc || undefined);
             });
 
-            // O SEGREDO DO SALVAMENTO PERFEITO: Atraso de 50ms para pegar o local exato após o render
+            // SALVAMENTO BLINDADO: Pega a exata posição atual após o fim de qualquer transição
             rendition.on("relocated", function(location) {
-                setTimeout(() => {
-                    if (rendition.location && rendition.location.start) {
-                        const exatoCFI = rendition.location.start.cfi;
-                        localStorage.setItem(storageKey, exatoCFI);
-                        atualizarProgresso(exatoCFI);
-                    }
-                }, 50);
+                if (location && location.start) {
+                    const exatoCFI = location.start.cfi;
+                    localStorage.setItem(storageKey, exatoCFI);
+                    atualizarProgresso(exatoCFI);
+                }
             });
 
             function atualizarProgresso(cfi) {
                 if (locacoesGeradas) {
                     let progresso = book.locations.percentageFromCfi(cfi);
-                    // Arredonda e impede que apareça 0%
                     let porcentagem = Math.max(1, Math.round(progresso * 100)); 
                     document.getElementById('progress-text').innerHTML = `${porcentagem}% <span style="font-size:0.6rem; color:#7a6b5d;">Lido</span>`;
                     document.getElementById('progress-bar-fill').style.width = `${porcentagem}%`;
@@ -431,7 +434,7 @@
                 document.getElementById('modal-pular').style.display = 'flex';
                 setTimeout(() => document.getElementById('input-pct').focus(), 100);
             } else {
-                alert("Aguarde um instante. O livro está mapeando as páginas.");
+                alert("Aguarde um instante. O livro está mapeando o seu progresso.");
             }
         }
         function fecharModalPular() { document.getElementById('modal-pular').style.display = 'none'; }
@@ -454,7 +457,7 @@
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
-        // --- LOJA E ANÚNCIOS (Mantido idêntico) ---
+        // --- LOJA E ANÚNCIOS ---
         function formatarPreco(val) {
             if(!val) return "";
             let v = String(val).trim();
