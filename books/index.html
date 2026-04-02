@@ -30,15 +30,22 @@
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        /* TELA INICIAL (HUB) */
+        /* =========================================
+           TELA INICIAL (HUB)
+           ========================================= */
         #home-screen {
             z-index: 20; background: var(--bg-color); overflow-y: auto; overflow-x: hidden;
             display: flex; flex-direction: column; align-items: center; padding: 30px 15px 60px;
             min-height: 100vh; box-sizing: border-box;
         }
+        
+        /* CORREÇÃO DO ERRO DA TELA BRANCA AQUI: Sem display none! */
         #reader-screen {
-            z-index: 10; background: var(--bg-color); opacity: 0; visibility: hidden; pointer-events: none;
+            z-index: 10; background: var(--bg-color); 
+            opacity: 0; visibility: hidden; pointer-events: none; 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; overflow: hidden;
         }
+        
         #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         #reader-screen.active { opacity: 1; visibility: visible; pointer-events: all; }
 
@@ -53,11 +60,16 @@
         .btn-reset { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
+        /* SEÇÕES (LOJA E ANÚNCIOS) */
         .hub-section { width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box; }
         .section-title { color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
         .section-subtitle { font-size: 0.8rem; color: #7a6b5d; margin-top: -10px; margin-bottom: 15px; }
 
         .carrossel { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scroll-snap-type: x mandatory; }
+        .carrossel::-webkit-scrollbar { height: 4px; }
+        .carrossel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .carrossel::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
         .card-mini { min-width: 140px; max-width: 140px; background: #faf8f2; border: 1px solid #eadecb; border-radius: 12px; scroll-snap-align: start; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .card-mini:active { transform: scale(0.96); }
         .card-img { width: 100%; height: 130px; object-fit: cover; background: #fff; border-bottom: 1px solid #eadecb; }
@@ -81,13 +93,8 @@
         .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
 
         /* =========================================
-           TELA DE LEITURA (PDF COM ZOOM)
+           TELA DE LEITURA (PDF)
            ========================================= */
-        #reader-screen { 
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
-            background: var(--bg-color); z-index: 1000; overflow: hidden; animation: fadeIn 0.4s ease; 
-        }
-        
         #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
         #brand-header img { max-height: 40px; mix-blend-mode: multiply; }
         
@@ -102,20 +109,18 @@
         .btn-voltar:hover, .btn-voltar:active { background: var(--accent); color: white; }
 
         #viewer-container { 
-            flex: 1; height: calc(100dvh - 60px); /* Desconta o espaço da barra de zoom no fundo */
+            flex: 1; height: calc(100dvh - 60px); 
             perspective: 1500px; display: flex; justify-content: center; align-items: center; position: relative; 
         }
         
         #viewer-wrapper { 
             width: 92%; height: 75%; margin-top: 20px; background: var(--page-bg); border-radius: 4px; 
             box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); z-index: 5; border: 1px solid #eadecb; 
-            position: relative; overflow: hidden; /* Overflow hidden no wrapper, canvas rola lá dentro */
-            display: flex; justify-content: center; align-items: flex-start;
+            position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
         #pdf-canvas {
-            mix-blend-mode: multiply; transform-origin: top center;
-            /* Transição suave ao dar zoom pelo slider */
+            flex-shrink: 0; mix-blend-mode: multiply; transform-origin: top center;
             transition: width 0.1s, height 0.1s; 
         }
 
@@ -124,20 +129,15 @@
         #zone-next { right: 0; }
         #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 50;}
 
-        /* A BARRA DE ZOOM INFERIOR */
+        /* A BARRA DE ZOOM */
         #zoom-bar {
             position: absolute; bottom: 0; width: 100%; height: 60px; background: var(--bg-color);
             display: flex; justify-content: center; align-items: center; gap: 15px;
             border-top: 1px solid #eadecb; z-index: 100;
         }
         .zoom-icon { font-size: 1.2rem; font-weight: bold; color: var(--accent-dark); }
-        #zoom-slider {
-            width: 60%; -webkit-appearance: none; height: 6px; background: #eadecb; border-radius: 5px; outline: none;
-        }
-        #zoom-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 20px; height: 20px;
-            border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
+        #zoom-slider { width: 60%; -webkit-appearance: none; height: 6px; background: #eadecb; border-radius: 5px; outline: none; }
+        #zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
         /* =========================================
            MODAIS GERAIS
@@ -170,8 +170,13 @@
         .titulo-modal { font-size: 1.3rem; font-weight: 900; margin: 0; color: var(--accent-dark);}
         .preco-modal { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin: 0;}
         .desc-modal { font-size: 0.85rem; color: #7a6b5d; line-height: 1.5; white-space: pre-wrap;}
+        .ad-cupom-box { background: #f2ebd9; color: var(--accent-dark); padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed var(--accent); display: inline-block; margin-bottom: 5px; }
+        .ad-endereco-box { background: #fdfaf2; border: 1px solid #eadecb; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(61,52,45,0.05); }
+        .ad-endereco-text { font-size: 0.85rem; font-weight: 700; flex-grow: 1; line-height: 1.3; color: var(--text-color); }
+        .ad-endereco-btn { font-size: 0.7rem; font-weight: 900; color: var(--accent); text-transform: uppercase; background: white; padding: 4px 8px; border-radius: 6px; border: 1px solid #eadecb; }
         .btn-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a; transition: transform 0.1s; text-decoration: none; margin-top: 10px; }
         .btn-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a; }
+        .btn-call { background: #f2ebd9; color: var(--text-color); border: 1px solid #eadecb; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0;} to { transform: translateY(0); opacity: 1;} }
@@ -220,7 +225,7 @@
         <div id="brand-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             <div class="progress-container" onclick="mostrarModalPular()">
-                <span id="progress-text" class="progress-text">Carregando...</span>
+                <span id="progress-text" class="progress-text">Gerando...</span>
                 <div class="progress-bar-bg"><div id="progress-bar-fill" class="progress-bar-fill"></div></div>
                 <div class="progress-hint">Pular Página ▾</div>
             </div>
@@ -273,32 +278,16 @@
     <div id="modal-produto" class="modal-overlay modal-bottom">
         <div class="modal-content">
             <button class="btn-fechar" onclick="fecharModalProduto()">×</button>
-            <div class="galeria-produto">
-                <img id="modal-prod-foto-principal" src="" class="foto-principal">
-                <div id="modal-prod-miniaturas" class="miniaturas-container"></div>
-            </div>
-            <div class="info-completa">
-                <span id="modal-prod-tag" class="card-tag">CATEGORIA</span>
-                <h3 id="modal-prod-titulo" class="titulo-modal">Título</h3>
-                <h2 id="modal-prod-preco" class="preco-modal">R$ 00,00</h2>
-                <p id="modal-prod-desc" class="desc-modal">Descrição...</p>
-                <a id="modal-prod-zap" href="#" target="_blank" class="btn-zap">🛒 Fazer Pedido no WhatsApp</a>
-            </div>
+            <div class="galeria-produto"><img id="modal-prod-foto-principal" src="" class="foto-principal"><div id="modal-prod-miniaturas" class="miniaturas-container"></div></div>
+            <div class="info-completa"><span id="modal-prod-tag" class="card-tag">CATEGORIA</span><h3 id="modal-prod-titulo" class="titulo-modal">Título</h3><h2 id="modal-prod-preco" class="preco-modal">R$ 00,00</h2><p id="modal-prod-desc" class="desc-modal">Descrição...</p><a id="modal-prod-zap" href="#" target="_blank" class="btn-zap">🛒 Fazer Pedido no WhatsApp</a></div>
         </div>
     </div>
 
     <div id="modal-anuncio" class="modal-overlay modal-bottom">
         <div class="modal-content">
             <button class="btn-fechar" onclick="fecharModalAnuncio()">×</button>
-            <div class="modal-ad-header-imgs">
-                <img id="modal-ad-banner" src="" class="modal-ad-banner">
-                <img id="modal-ad-logo" src="" class="ad-logo">
-            </div>
-            <div class="info-completa" style="padding-top: 30px;">
-                <h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3>
-                <p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p>
-                <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="margin-top: 20px;">💬 Chamar Parceiro</a>
-            </div>
+            <div class="modal-ad-header-imgs"><img id="modal-ad-banner" src="" class="modal-ad-banner"><img id="modal-ad-logo" src="" class="ad-logo"></div>
+            <div class="info-completa" style="padding-top: 30px;"><h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3><h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2><p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p><div id="modal-ad-cupom-container" style="display:none;"><div id="modal-ad-cupom" class="ad-cupom-box">🎟️ Cupom</div></div><a id="modal-ad-endereco-box" href="#" target="_blank" class="ad-endereco-box" style="display:none;"><span id="modal-ad-endereco-text" class="ad-endereco-text">Endereço</span><span class="ad-endereco-btn">Mapa</span></a><div style="display: flex; gap: 10px;"><a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="flex: 2; font-size: 0.9rem;">💬 WhatsApp</a><a id="modal-ad-call" href="#" class="btn-call" style="flex: 1; display:none; font-size: 0.9rem;">📞 Ligar</a></div></div>
         </div>
     </div>
 
@@ -314,33 +303,28 @@
         let canvas = document.getElementById('pdf-canvas'), ctx = canvas.getContext('2d');
         let pdfCarregado = false, isAnimating = false;
 
-        // Variaveis de Zoom
         let currentZoom = 1;
         let baseCanvasWidth = 0;
         let baseCanvasHeight = 0;
 
         const urlParams = new URLSearchParams(window.location.search);
         const bookParam = urlParams.get('books') || 'cavaleiro'; 
-        const storageKey = 'minimundo_pdf_v3_' + bookParam;
+        const storageKey = 'minimundo_pdf_v4_' + bookParam;
 
-        window.onload = function() {
-            carregarVitrine(); carregarAnuncios(); verificarStatusLeitura();
-        };
+        window.onload = function() { carregarVitrine(); carregarAnuncios(); verificarStatusLeitura(); };
 
         function verificarStatusLeitura() {
             const savedPage = localStorage.getItem(storageKey);
             const btnText = document.getElementById("texto-btn-ler");
             const btnReset = document.getElementById("btn-reset-hub");
-            if (savedPage && savedPage > 1) { 
-                btnText.innerText = "Continuar Leitura"; btnReset.style.display = "block"; 
-            } else { 
-                btnText.innerText = "Iniciar Leitura"; btnReset.style.display = "none"; 
-            }
+            if (savedPage && savedPage > 1) { btnText.innerText = "Continuar Leitura"; btnReset.style.display = "block"; } 
+            else { btnText.innerText = "Iniciar Leitura"; btnReset.style.display = "none"; }
         }
 
         function abrirLeitor() {
             document.getElementById('home-screen').classList.add('hidden');
             document.getElementById('reader-screen').classList.add('active');
+            
             if (!pdfCarregado) {
                 document.getElementById('loading').style.display = 'block';
                 setTimeout(() => { iniciarPdfEngine(); }, 100);
@@ -369,7 +353,7 @@
                 
                 renderPage(pageNum);
             }).catch(function(error) {
-                document.getElementById('loading').innerHTML = "Erro ao carregar arquivo PDF.";
+                document.getElementById('loading').innerHTML = "Erro ao carregar arquivo. Atualize a página.";
             });
         }
 
@@ -377,13 +361,10 @@
             pageRendering = true;
             pdfDoc.getPage(num).then(function(page) {
                 const container = document.getElementById('viewer-wrapper');
-                
                 let containerWidth = container.clientWidth || window.innerWidth * 0.92;
                 let containerHeight = container.clientHeight || window.innerHeight * 0.75;
                 
                 const unscaledViewport = page.getViewport({scale: 1});
-                
-                // Encaixa o PDF perfeitamente na caixa
                 const scaleX = containerWidth / unscaledViewport.width;
                 const scaleY = containerHeight / unscaledViewport.height;
                 const baseScale = Math.min(scaleX, scaleY);
@@ -394,7 +375,6 @@
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
                 
-                // Salva a base original para multiplicar pelo zoom depois
                 baseCanvasWidth = viewport.width / pixelRatio;
                 baseCanvasHeight = viewport.height / pixelRatio;
 
@@ -402,11 +382,8 @@
                 
                 page.render(renderContext).promise.then(function() {
                     pageRendering = false;
-                    aplicarZoom(false); // Aplica o zoom atual (se houver) na nova página
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
+                    aplicarZoom(false);
+                    if (pageNumPending !== null) { renderPage(pageNumPending); pageNumPending = null; }
                 });
 
                 document.getElementById('progress-text').innerHTML = `${num} <span style="font-size:0.65rem; color:#7a6b5d; font-weight:bold;">de ${pdfDoc.numPages}</span>`;
@@ -415,206 +392,90 @@
             });
         }
 
-        function queueRenderPage(num) {
-            if (pageRendering) { pageNumPending = num; } else { renderPage(num); }
-        }
+        function queueRenderPage(num) { if (pageRendering) { pageNumPending = num; } else { renderPage(num); } }
 
-        // ==========================================
-        // SISTEMA DE ZOOM E PINÇA (NOVO)
-        // ==========================================
         const zoomSlider = document.getElementById('zoom-slider');
         const wrapper = document.getElementById('viewer-wrapper');
 
         function aplicarZoom(resetScroll = true) {
             if(!baseCanvasWidth) return;
-            
-            // Aplica a escala na largura e altura do canvas
             canvas.style.width = `${baseCanvasWidth * currentZoom}px`;
             canvas.style.height = `${baseCanvasHeight * currentZoom}px`;
 
-            if (currentZoom > 1) {
-                // Se tem zoom, libera a rolagem com o dedo
-                wrapper.style.overflow = 'auto';
-            } else {
-                // Se não tem zoom, trava a rolagem
+            if (currentZoom > 1) { wrapper.style.overflow = 'auto'; } 
+            else {
                 wrapper.style.overflow = 'hidden';
-                if(resetScroll) {
-                    wrapper.scrollTop = 0;
-                    wrapper.scrollLeft = 0;
-                }
+                if(resetScroll) { wrapper.scrollTop = 0; wrapper.scrollLeft = 0; }
             }
         }
 
-        // Zoom pelo Slider
-        zoomSlider.addEventListener('input', (e) => {
-            currentZoom = parseFloat(e.target.value);
-            aplicarZoom();
-        });
+        zoomSlider.addEventListener('input', (e) => { currentZoom = parseFloat(e.target.value); aplicarZoom(); });
 
-        // Zoom por Pinça (2 dedos na tela)
         let initialPinchDist = null;
         wrapper.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2) {
-                initialPinchDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-            }
+            if (e.touches.length === 2) { initialPinchDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); }
         }, {passive: false});
 
         wrapper.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2 && initialPinchDist) {
-                e.preventDefault(); // Impede o celular de dar zoom na página toda do navegador
+                e.preventDefault(); 
                 const currentDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
-                const diff = currentDist - initialPinchDist;
-                
-                currentZoom = currentZoom + (diff * 0.01);
-                currentZoom = Math.max(1, Math.min(currentZoom, 3)); // Limita entre 1x e 3x
-                
-                zoomSlider.value = currentZoom;
-                aplicarZoom(false);
-                initialPinchDist = currentDist;
+                currentZoom = currentZoom + ((currentDist - initialPinchDist) * 0.01);
+                currentZoom = Math.max(1, Math.min(currentZoom, 3));
+                zoomSlider.value = currentZoom; aplicarZoom(false); initialPinchDist = currentDist;
             }
         }, {passive: false});
 
-
-        // ==========================================
-        // VIRADA DE PÁGINA COM EFEITO CURVO (SKEWY)
-        // ==========================================
-        function onPrevPage() {
-            if (pageNum <= 1 || isAnimating || currentZoom > 1) return; // Bloqueia virada se estiver com zoom!
-            animarTrocaDePagina('prev', () => { pageNum--; queueRenderPage(pageNum); });
-        }
-
-        function onNextPage() {
-            if (pageNum >= pdfDoc.numPages || isAnimating || currentZoom > 1) return; // Bloqueia virada se estiver com zoom!
-            animarTrocaDePagina('next', () => { pageNum++; queueRenderPage(pageNum); });
-        }
+        function onPrevPage() { if (pageNum <= 1 || isAnimating || currentZoom > 1) return; animarTrocaDePagina('prev', () => { pageNum--; queueRenderPage(pageNum); }); }
+        function onNextPage() { if (pageNum >= pdfDoc.numPages || isAnimating || currentZoom > 1) return; animarTrocaDePagina('next', () => { pageNum++; queueRenderPage(pageNum); }); }
 
         function animarTrocaDePagina(dir, callback) {
-            isAnimating = true;
-            const speed = "0.35s";
-            
-            // O EFEITO REALISTA: O SkewY faz o papel parecer que está dobrando
+            isAnimating = true; const speed = "0.35s";
             wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
             wrapper.style.transition = `transform ${speed} ease-in, filter ${speed} ease-in`;
-            
-            const giro = dir === 'next' ? "-90deg" : "90deg";
-            const curva = dir === 'next' ? "5deg" : "-5deg"; // Inclinação do papel
-            
+            const giro = dir === 'next' ? "-90deg" : "90deg"; const curva = dir === 'next' ? "5deg" : "-5deg";
             wrapper.style.transform = `rotateY(${giro}) skewY(${curva}) scale(0.98)`;
-            wrapper.style.filter = "brightness(0.7) contrast(1.1)"; // Cria sombra
+            wrapper.style.filter = "brightness(0.7) contrast(1.1)";
 
             setTimeout(() => {
                 callback();
-                
                 wrapper.style.transition = "none";
-                const giroVolta = dir === 'next' ? "90deg" : "-90deg";
-                wrapper.style.transform = `rotateY(${giroVolta}) skewY(${curva}) scale(0.98)`;
-                
+                wrapper.style.transform = `rotateY(${dir === 'next' ? "90deg" : "-90deg"}) skewY(${curva}) scale(0.98)`;
                 void wrapper.offsetWidth; 
-                
                 wrapper.style.transition = `transform ${speed} ease-out, filter ${speed} ease-out`;
                 wrapper.style.transform = "rotateY(0deg) skewY(0deg) scale(1)";
                 wrapper.style.filter = "brightness(1) contrast(1)";
-
                 setTimeout(() => { isAnimating = false; }, 350);
             }, 350);
         }
 
-        document.getElementById('zone-next').onclick = onNextPage;
-        document.getElementById('zone-prev').onclick = onPrevPage;
+        document.getElementById('zone-next').onclick = onNextPage; document.getElementById('zone-prev').onclick = onPrevPage;
 
-        // Deslizar o dedo (Só funciona se o Zoom for 1x)
         let xDown = null;
-        wrapper.addEventListener('touchstart', e => {
-            if (e.touches.length === 1 && currentZoom == 1) {
-                xDown = e.touches[0].clientX;
-            }
-        }, {passive: true});
-        
+        wrapper.addEventListener('touchstart', e => { if (e.touches.length === 1 && currentZoom == 1) { xDown = e.touches[0].clientX; } }, {passive: true});
         wrapper.addEventListener('touchmove', e => {
-            if (!xDown || currentZoom > 1) return; // Se tem zoom, o dedo vai rolar a tela, não passar a página
+            if (!xDown || currentZoom > 1) return;
             let xDiff = xDown - e.touches[0].clientX;
-            if (Math.abs(xDiff) > 50) { 
-                if(xDiff > 0) onNextPage(); else onPrevPage();
-                xDown = null; 
-            }
+            if (Math.abs(xDiff) > 50) { if(xDiff > 0) onNextPage(); else onPrevPage(); xDown = null; }
         }, {passive: true});
 
-        // PULAR PÁGINA
-        function mostrarModalPular() {
-            if(pdfDoc) {
-                document.getElementById('modal-pular').style.display = 'flex';
-                setTimeout(() => document.getElementById('input-pagina').focus(), 100);
-            }
-        }
+        function mostrarModalPular() { if(pdfDoc) { document.getElementById('modal-pular').style.display = 'flex'; setTimeout(() => document.getElementById('input-pagina').focus(), 100); } }
         function fecharModalPular() { document.getElementById('modal-pular').style.display = 'none'; }
-        function irParaPagina() {
-            let num = parseInt(document.getElementById('input-pagina').value);
-            if (num >= 1 && num <= pdfDoc.numPages) {
-                pageNum = num; queueRenderPage(pageNum); fecharModalPular(); document.getElementById('input-pagina').value = ""; 
-            } else { alert(`Digite uma página entre 1 e ${pdfDoc.numPages}`); }
-        }
+        function irParaPagina() { let num = parseInt(document.getElementById('input-pagina').value); if (num >= 1 && num <= pdfDoc.numPages) { pageNum = num; queueRenderPage(pageNum); fecharModalPular(); document.getElementById('input-pagina').value = ""; } else { alert(`Digite uma página entre 1 e ${pdfDoc.numPages}`); } }
 
-        // RESET
         function mostrarModalReset() { document.getElementById('modal-reset').style.display = 'flex'; }
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
-        // LOJA E ANÚNCIOS
         function formatarPreco(val) { if(!val) return ""; let v = String(val).trim(); if(v.toUpperCase().includes("R$")) return v; if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ','); return "R$ " + v; }
-        
-        async function carregarVitrine() {
-            try {
-                const res = await fetch(API_CATALOGO); const dados = await res.json();
-                if(dados.sucesso && dados.vitrine.length > 0) {
-                    catalogoGlobal = dados.vitrine; let html = "";
-                    catalogoGlobal.forEach((p, i) => {
-                        const foto = p.foto.split(',')[0].trim();
-                        html += `<div class="card-mini" onclick="abrirModalProduto(${i})"><img src="${foto}" class="card-img" onerror="this.src='logo.jpg'"><div class="card-info"><span class="card-tag">${p.categoria}</span><h4 class="card-nome">${p.nome}</h4><div class="card-preco">${formatarPreco(p.preco)}</div></div></div>`;
-                    });
-                    document.getElementById("vitrine-produtos").innerHTML = html; document.getElementById("secao-loja").style.display = "block";
-                }
-            } catch(e) {}
-        }
+        async function carregarVitrine() { try { const res = await fetch(API_CATALOGO); const dados = await res.json(); if(dados.sucesso && dados.vitrine.length > 0) { catalogoGlobal = dados.vitrine; let html = ""; catalogoGlobal.forEach((p, i) => { const foto = p.foto.split(',')[0].trim(); html += `<div class="card-mini" onclick="abrirModalProduto(${i})"><img src="${foto}" class="card-img" onerror="this.src='logo.jpg'"><div class="card-info"><span class="card-tag">${p.categoria}</span><h4 class="card-nome">${p.nome}</h4><div class="card-preco">${formatarPreco(p.preco)}</div></div></div>`; }); document.getElementById("vitrine-produtos").innerHTML = html; document.getElementById("secao-loja").style.display = "block"; } } catch(e) {} }
+        async function carregarAnuncios() { document.getElementById("secao-anuncios").style.display = "block"; const divCarrossel = document.getElementById("carrossel-anuncios"); try { const res = await fetch(API_ANUNCIOS); const dados = await res.json(); if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) { anunciosGlobal = dados.anuncios; let html = ""; anunciosGlobal.forEach((ad, i) => { html += `<div class="card-mini" onclick="abrirModalAnuncio(${i})"><div class="ad-img-wrapper"><img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'"><img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'"></div><div class="card-info"><h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4><p class="ad-desc">${ad.descricao}</p></div></div>`; }); divCarrossel.innerHTML = html; divCarrossel.style.display = "flex"; } else { divCarrossel.style.display = "none"; } } catch(e) { divCarrossel.style.display = "none"; } }
 
-        async function carregarAnuncios() {
-            document.getElementById("secao-anuncios").style.display = "block"; 
-            const divCarrossel = document.getElementById("carrossel-anuncios");
-            try {
-                const res = await fetch(API_ANUNCIOS); const dados = await res.json();
-                if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) {
-                    anunciosGlobal = dados.anuncios; let html = "";
-                    anunciosGlobal.forEach((ad, i) => {
-                        html += `<div class="card-mini" onclick="abrirModalAnuncio(${i})"><div class="ad-img-wrapper"><img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'"><img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'"></div><div class="card-info"><h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4><p class="ad-desc">${ad.descricao}</p></div></div>`;
-                    });
-                    divCarrossel.innerHTML = html; divCarrossel.style.display = "flex";
-                } else { divCarrossel.style.display = "none"; }
-            } catch(e) { divCarrossel.style.display = "none"; }
-        }
+        function abrirModalProduto(index) { const p = catalogoGlobal[index]; if(!p) return; const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== ""); const imgPrincipal = document.getElementById("modal-prod-foto-principal"); imgPrincipal.src = arrayFotos[0] || 'logo.jpg'; const divMiniaturas = document.getElementById("modal-prod-miniaturas"); divMiniaturas.innerHTML = ""; if (arrayFotos.length > 1) { arrayFotos.forEach((linkFoto, i) => { const imgMini = document.createElement("img"); imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura"; imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); }; divMiniaturas.appendChild(imgMini); }); divMiniaturas.style.display = "flex"; } else { divMiniaturas.style.display = "none"; } document.getElementById("modal-prod-tag").innerText = p.categoria; document.getElementById("modal-prod-titulo").innerText = p.nome; document.getElementById("modal-prod-preco").innerText = formatarPreco(p.preco); document.getElementById("modal-prod-desc").innerText = p.descricao; document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`)}`; document.getElementById("modal-produto").style.display = "flex"; }
+        function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; } document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
-        function abrirModalProduto(index) {
-            const p = catalogoGlobal[index]; if(!p) return;
-            const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
-            const imgPrincipal = document.getElementById("modal-prod-foto-principal"); imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
-            const divMiniaturas = document.getElementById("modal-prod-miniaturas"); divMiniaturas.innerHTML = "";
-            if (arrayFotos.length > 1) {
-                arrayFotos.forEach((linkFoto, i) => {
-                    const imgMini = document.createElement("img"); imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
-                    imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); };
-                    divMiniaturas.appendChild(imgMini);
-                }); divMiniaturas.style.display = "flex";
-            } else { divMiniaturas.style.display = "none"; }
-            document.getElementById("modal-prod-tag").innerText = p.categoria; document.getElementById("modal-prod-titulo").innerText = p.nome; document.getElementById("modal-prod-preco").innerText = formatarPreco(p.preco); document.getElementById("modal-prod-desc").innerText = p.descricao; document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`)}`; document.getElementById("modal-produto").style.display = "flex";
-        }
-        function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
-        document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
-
-        function abrirModalAnuncio(index) {
-            const ad = anunciosGlobal[index]; if(!ad) return;
-            document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg'; document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg'; document.getElementById("modal-ad-empresa").innerText = ad.empresa; document.getElementById("modal-ad-desc").innerText = ad.descricao; document.getElementById("modal-anuncio").style.display = "flex";
-        }
-        function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
-        document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
-
+        function abrirModalAnuncio(index) { const ad = anunciosGlobal[index]; if(!ad) return; document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg'; document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg'; document.getElementById("modal-ad-empresa").innerText = ad.empresa; document.getElementById("modal-ad-desc").innerText = ad.descricao; const precoEl = document.getElementById("modal-ad-preco"); if(ad.preco_oferta) { precoEl.innerText = formatarPreco(ad.preco_oferta); precoEl.style.display = "block"; } else { precoEl.style.display = "none"; } const cupomContainer = document.getElementById("modal-ad-cupom-container"); if(ad.cupom) { document.getElementById("modal-ad-cupom").innerText = `🎟️ Cupom: ${ad.cupom}`; cupomContainer.style.display = "block"; } else { cupomContainer.style.display = "none"; } const endEl = document.getElementById("modal-ad-endereco-box"); if(ad.endereco) { document.getElementById("modal-ad-endereco-text").innerText = ad.endereco; endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; } document.getElementById("modal-ad-zap").href = ad.link_zap || '#'; const btnCall = document.getElementById("modal-ad-call"); if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; } document.getElementById("modal-anuncio").style.display = "flex"; }
+        function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; } document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
     </script>
 </body>
 </html>
