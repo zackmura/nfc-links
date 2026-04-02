@@ -16,7 +16,7 @@
             --text-color: #3d342d;  
             --accent: #8b5a2b;      
             --accent-dark: #5c3e1c;
-            --pdf-zoom: 1; /* A Tesoura Virtual de Margens */
+            --pdf-zoom: 1; /* Controlador de Corte de Margens */
         }
 
         body { 
@@ -87,7 +87,7 @@
         .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
 
         /* =========================================
-           TELA DE LEITURA (O NOVO LIVRO REALISTA)
+           TELA DE LEITURA (O NOVO LIVRO FÍSICO)
            ========================================= */
         #brand-header { 
             width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; 
@@ -111,30 +111,36 @@
         }
 
         #book {
-            /* Sombra maravilhosa que fica atrás do livro inteiro */
-            box-shadow: 0 10px 40px rgba(61, 52, 45, 0.15);
+            box-shadow: 0 10px 40px rgba(61, 52, 45, 0.15); /* Sombra do livro todo */
         }
 
         /* Cada página do livro virtual */
         .page {
             background-color: var(--page-bg);
             border: 1px solid #eadecb;
-            overflow: hidden; /* A MÁGICA: Corta o excesso das margens brancas */
+            overflow: hidden; 
             display: flex; justify-content: center; align-items: flex-start;
         }
 
         .page-wrapper {
             width: 100%; height: 100%;
-            /* O ZOOM AGE AQUI EMBAIXO: Cresce e corta as sobras fora da div .page */
+            /* A Tesoura Virtual (Zoom) */
             transform: scale(var(--pdf-zoom));
             transform-origin: center 10%; 
             transition: transform 0.2s ease-out;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .page-canvas {
+        /* A MÁGICA: Não é mais um Canvas quebrável, é uma Foto (IMG) estática! */
+        .page-image {
             width: 100%; height: 100%;
-            object-fit: contain; /* Encaixa o PDF renderizado em Alta Definição */
-            mix-blend-mode: multiply; /* Apaga o branco nativo do PDF */
+            object-fit: contain; 
+            mix-blend-mode: multiply; /* Remove o fundo branco do PDF */
+            pointer-events: none; /* Impede o dedo de "segurar" a imagem sem querer */
+        }
+
+        .loading-page {
+            color: #b5a99f; font-size: 0.8rem; font-weight: bold; font-style: italic; margin-top: 50%;
         }
 
         #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 50;}
@@ -239,7 +245,7 @@
             </button>
         </div>
 
-        <div id="loading" style="display: none;">Montando Livro Realista...</div>
+        <div id="loading" style="display: none;">Montando Livro Realista...<br><span style="font-size: 0.7rem; font-weight: normal;">Arraste a tela para virar a folha</span></div>
 
         <div id="book-container">
             <div id="book">
@@ -248,7 +254,7 @@
 
         <div id="zoom-bar">
             <span class="zoom-icon">Aa -</span>
-            <input type="range" id="zoom-slider" min="1.0" max="1.8" step="0.05" value="1.0">
+            <input type="range" id="zoom-slider" min="1.0" max="2.0" step="0.05" value="1.0">
             <span class="zoom-icon">Aa +</span>
         </div>
     </div>
@@ -257,10 +263,9 @@
     <div id="modal-pular" class="modal-overlay"><div class="modal-content"><p style="color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0;">PULAR PÁGINA</p><p style="color: #7a6b5d; font-size: 0.85rem; margin-top: 5px;">Escolha uma página entre 1 e <span id="total-paginas-modal">...</span></p><input type="number" id="input-pagina" class="input-pagina" placeholder="Ex: 10"><div class="modal-buttons"><button id="btn-cancel" onclick="fecharModalPular()">Cancelar</button><button id="btn-confirm" onclick="irParaPagina()">Avançar ➡️</button></div></div></div>
     
     <div id="modal-produto" class="modal-overlay modal-bottom"><div class="modal-content"><button class="btn-fechar" onclick="fecharModalProduto()">×</button><div class="galeria-produto"><img id="modal-prod-foto-principal" src="" class="foto-principal"><div id="modal-prod-miniaturas" class="miniaturas-container"></div></div><div class="info-completa"><span id="modal-prod-tag" class="card-tag">CATEGORIA</span><h3 id="modal-prod-titulo" class="titulo-modal">Título</h3><h2 id="modal-prod-preco" class="preco-modal">R$ 00,00</h2><p id="modal-prod-desc" class="desc-modal">Descrição...</p><a id="modal-prod-zap" href="#" target="_blank" class="btn-zap">🛒 Fazer Pedido no WhatsApp</a></div></div></div>
-    <div id="modal-anuncio" class="modal-overlay modal-bottom"><div class="modal-content"><button class="btn-fechar" onclick="fecharModalAnuncio()">×</button><div class="modal-ad-header-imgs"><img id="modal-ad-banner" src="" class="modal-ad-banner"><img id="modal-ad-logo" src="" class="ad-logo"></div><div class="info-completa" style="padding-top: 30px;"><h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3><h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2><p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p><div id="modal-ad-cupom-container" style="display:none;"><div id="modal-ad-cupom" class="ad-cupom-box">🎟️ Cupom</div></div><a id="modal-ad-endereco-box" href="#" target="_blank" class="ad-endereco-box" style="display:none;"><span id="modal-ad-endereco-text" class="ad-endereco-text">Endereço</span><span class="ad-endereco-btn">Mapa</span></a><div style="display: flex; gap: 10px;"><a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="flex: 2; font-size: 0.9rem;">💬 WhatsApp</a><a id="modal-ad-call" href="#" class="btn-call" style="flex: 1; display:none; font-size: 0.9rem;">📞 Ligar</a></div></div></div></div>
+    <div id="modal-anuncio" class="modal-overlay modal-bottom"><div class="modal-content"><button class="btn-fechar" onclick="fecharModalAnuncio()">×</button><div class="modal-ad-header-imgs"><img id="modal-ad-banner" src="" class="modal-ad-banner"></div><div class="info-completa" style="padding-top: 30px;"><h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3><p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p><a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="margin-top: 20px;">💬 Chamar Parceiro</a></div></div></div>
 
     <script>
-        // Carrega as bibliotecas
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
         const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
@@ -297,7 +302,6 @@
             
             if (!pdfCarregado) {
                 document.getElementById('loading').style.display = 'block';
-                // Espera 300ms para a tela esticar completamente, e então tira a medida exata
                 setTimeout(() => { iniciarMotorRealista(); }, 300);
             }
         }
@@ -311,7 +315,7 @@
         }
 
         // ==========================================
-        // MOTOR DE PÁGINAS REALISTAS + PDF.JS
+        // MOTOR DE PÁGINAS REALISTAS + PDF.JS (CORRIGIDO)
         // ==========================================
         function iniciarMotorRealista() {
             const urlPdf = `./books/${bookParam}.pdf`;
@@ -325,38 +329,35 @@
                 const container = document.getElementById('book-container');
                 const bookEl = document.getElementById('book');
                 
-                // CRIA A ESTRUTURA DO LIVRO VAZIO: Leve como uma pluma
+                // INJETA AS PÁGINAS COM DIVS VAZIAS PARA NÃO TRAVAR O CELULAR
                 let htmlLivro = '';
                 for(let i = 1; i <= pdfDoc.numPages; i++) {
-                    htmlLivro += `<div class="page"><div class="page-wrapper" data-page-num="${i}" id="wrapper-${i}"></div></div>`;
+                    htmlLivro += `<div class="page"><div class="page-wrapper" data-page-num="${i}" id="wrapper-${i}"><div class="loading-page">Aguarde...</div></div></div>`;
                 }
                 bookEl.innerHTML = htmlLivro;
 
-                // INICIA A FÍSICA DE PAPEL (Idêntico ao Google Books)
+                // INICIA A FÍSICA
                 pageFlip = new St.PageFlip(bookEl, {
-                    width: container.clientWidth * 0.95, // 95% para deixar a bordinha elegante de sombra
+                    width: container.clientWidth * 0.95, 
                     height: container.clientHeight * 0.95,
-                    size: "fixed", // Prende a página para ela não desconfigurar no celular
+                    size: "stretch", 
                     showCover: false, 
-                    usePortrait: true, // FORÇA 1 PÁGINA por vez no celular! Adeus folha dupla.
+                    usePortrait: true, // Força 1 página no celular
                     maxShadowOpacity: 0.5,
-                    flippingTime: 800, // Tempo de queda da folha mais lento e majestoso
-                    swipeDistance: 30
+                    flippingTime: 700, 
+                    swipeDistance: 30,
+                    // O SEGREDO DO "GRUDAR NO DEDO": Desliga a virada por toque simples. O usuário é OBRIGADO a arrastar a folha!
+                    disableFlipByClick: true 
                 });
 
                 pageFlip.loadFromHTML(document.querySelectorAll('.page'));
 
-                // Lê a página salva ou começa na 1
-                let savedPage = parseInt(localStorage.getItem(storageKey));
-                if (!savedPage || savedPage < 1) savedPage = 1;
-                
-                // O StPageFlip conta do Zero (Página 1 = Index 0)
+                let savedPage = parseInt(localStorage.getItem(storageKey)) || 1;
                 pageFlip.turnToPage(savedPage - 1);
                 
                 gerenciarMemoria(savedPage);
                 atualizarBarra(savedPage);
 
-                // O SALVAMENTO: Cada vez que a folha vira, ele salva!
                 pageFlip.on('flip', (e) => {
                     const paginaAtual = e.data + 1; 
                     localStorage.setItem(storageKey, paginaAtual);
@@ -365,7 +366,6 @@
                 });
 
             }).catch(function(error) {
-                console.error(error);
                 document.getElementById('loading').innerHTML = "Erro ao carregar o livro PDF.";
             });
         }
@@ -376,32 +376,30 @@
         }
 
         // ==========================================
-        // GESTÃO DE MEMÓRIA (Impede o celular de travar)
+        // O FOTÓGRAFO INVISÍVEL (Fim das páginas brancas)
         // ==========================================
         function gerenciarMemoria(currentPage) {
-            // Renderiza 4 páginas (a anterior, a atual e as duas próximas) para não engasgar o dedo
+            // Renderiza 4 páginas no buffer para não dar lag quando arrastar o dedo
             const paginasNecessarias = [currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
             
             paginasNecessarias.forEach(p => {
-                if (p > 0 && p <= pdfDoc.numPages) renderizarPaginaPDF(p);
+                if (p > 0 && p <= pdfDoc.numPages) renderizarPaginaEmFoto(p);
             });
 
-            // LIMPEZA: Destrói todas as outras páginas invisíveis para o celular não fritar
+            // Limpa as muito distantes da memória
             document.querySelectorAll('.page-wrapper').forEach(wrapper => {
                 const p = parseInt(wrapper.dataset.pageNum);
-                if (Math.abs(p - currentPage) > 3) {
-                    if (wrapper.innerHTML !== '') wrapper.innerHTML = ''; 
+                if (Math.abs(p - currentPage) > 4) {
+                    wrapper.innerHTML = '<div class="loading-page">...</div>'; 
+                    wrapper.classList.remove('loaded');
                 }
             });
         }
 
-        function renderizarPaginaPDF(num) {
+        function renderizarPaginaEmFoto(num) {
             const wrapper = document.getElementById(`wrapper-${num}`);
-            if (wrapper.innerHTML !== '') return; // Se já desenhou, pula
-            
-            const canvas = document.createElement('canvas');
-            canvas.className = 'page-canvas';
-            wrapper.appendChild(canvas);
+            if (wrapper.classList.contains('loaded')) return; 
+            wrapper.classList.add('loaded'); // Marca como gerada para não duplicar
             
             pdfDoc.getPage(num).then(page => {
                 const unscaledViewport = page.getViewport({scale: 1});
@@ -409,28 +407,40 @@
                 const scaleY = wrapper.clientHeight / unscaledViewport.height;
                 const baseScale = Math.min(scaleX, scaleY);
                 
-                // Renderização em ALTA DEFINIÇÃO
-                const pixelRatio = window.devicePixelRatio || 1;
-                const hdScale = baseScale * pixelRatio * 2; // Qualidade 2x nativa
-                const viewport = page.getViewport({scale: hdScale}); 
+                // Multiplica por 1.5 a 2 para ficar super nítido na tela Retina do celular
+                const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+                const viewport = page.getViewport({scale: baseScale * pixelRatio * 1.5}); 
                 
+                // Cria um Canvas Escondido
+                const canvas = document.createElement('canvas');
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
+                const ctx = canvas.getContext('2d');
                 
-                page.render({canvasContext: canvas.getContext('2d'), viewport: viewport});
+                // Pinta o fundo do canvas de cor de areia (Evita fundo preto na foto)
+                ctx.fillStyle = "#fcfaf5";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                page.render({canvasContext: ctx, viewport: viewport}).promise.then(() => {
+                    // A MÁGICA: Tira a foto (JPEG) do PDF! JPEGs podem ser clonados pela física 3D perfeitamente.
+                    const img = document.createElement('img');
+                    img.src = canvas.toDataURL('image/jpeg', 0.85); 
+                    img.className = 'page-image';
+                    wrapper.innerHTML = '';
+                    wrapper.appendChild(img);
+                });
             });
         }
 
         // ==========================================
-        // SMART CROP (A Tesoura de Margens)
+        // SMART CROP / ZOOM BAR
         // ==========================================
         const zoomSlider = document.getElementById('zoom-slider');
         zoomSlider.addEventListener('input', (e) => {
-            // Isso envia o comando de zoom para o CSS em milissegundos sem travar o navegador
             document.documentElement.style.setProperty('--pdf-zoom', e.target.value);
         });
 
-        // MODAIS GERAIS E LOJA
+        // MODAIS GERAIS
         function mostrarModalPular() { if(pdfCarregado) { document.getElementById('modal-pular').style.display = 'flex'; setTimeout(() => document.getElementById('input-pagina').focus(), 100); } }
         function fecharModalPular() { document.getElementById('modal-pular').style.display = 'none'; }
         function irParaPagina() {
@@ -446,9 +456,10 @@
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.setItem(storageKey, 1); location.reload(); }
 
+        // LOJA E ANÚNCIOS
         function formatarPreco(val) { if(!val) return ""; let v = String(val).trim(); if(v.toUpperCase().includes("R$")) return v; if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ','); return "R$ " + v; }
         async function carregarVitrine() { try { const res = await fetch(API_CATALOGO); const dados = await res.json(); if(dados.sucesso && dados.vitrine.length > 0) { catalogoGlobal = dados.vitrine; let html = ""; catalogoGlobal.forEach((p, i) => { const foto = p.foto.split(',')[0].trim(); html += `<div class="card-mini" onclick="abrirModalProduto(${i})"><img src="${foto}" class="card-img" onerror="this.src='logo.jpg'"><div class="card-info"><span class="card-tag">${p.categoria}</span><h4 class="card-nome">${p.nome}</h4><div class="card-preco">${formatarPreco(p.preco)}</div></div></div>`; }); document.getElementById("vitrine-produtos").innerHTML = html; document.getElementById("secao-loja").style.display = "block"; } } catch(e) {} }
-        async function carregarAnuncios() { document.getElementById("secao-anuncios").style.display = "block"; const divCarrossel = document.getElementById("carrossel-anuncios"); try { const res = await fetch(API_ANUNCIOS); const dados = await res.json(); if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) { anunciosGlobal = dados.anuncios; let html = ""; anunciosGlobal.forEach((ad, i) => { html += `<div class="card-mini" onclick="abrirModalAnuncio(${i})"><div class="ad-img-wrapper"><img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'"><img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'"></div><div class="card-info"><h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4><p class="ad-desc">${ad.descricao}</p></div></div>`; }); divCarrossel.innerHTML = html; divCarrossel.style.display = "flex"; } else { divCarrossel.style.display = "none"; } } catch(e) {} }
+        async function carregarAnuncios() { document.getElementById("secao-anuncios").style.display = "block"; const divCarrossel = document.getElementById("carrossel-anuncios"); try { const res = await fetch(API_ANUNCIOS); const dados = await res.json(); if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) { anunciosGlobal = dados.anuncios; let html = ""; anunciosGlobal.forEach((ad, i) => { html += `<div class="card-mini" onclick="abrirModalAnuncio(${i})"><div class="ad-img-wrapper"><img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'"></div><div class="card-info"><h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4><p class="ad-desc">${ad.descricao}</p></div></div>`; }); divCarrossel.innerHTML = html; divCarrossel.style.display = "flex"; } else { divCarrossel.style.display = "none"; } } catch(e) {} }
         
         function abrirModalProduto(index) { const p = catalogoGlobal[index]; if(!p) return; const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== ""); const imgPrincipal = document.getElementById("modal-prod-foto-principal"); imgPrincipal.src = arrayFotos[0] || 'logo.jpg'; const divMiniaturas = document.getElementById("modal-prod-miniaturas"); divMiniaturas.innerHTML = ""; if (arrayFotos.length > 1) { arrayFotos.forEach((linkFoto, i) => { const imgMini = document.createElement("img"); imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura"; imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); }; divMiniaturas.appendChild(imgMini); }); divMiniaturas.style.display = "flex"; } else { divMiniaturas.style.display = "none"; } document.getElementById("modal-prod-tag").innerText = p.categoria; document.getElementById("modal-prod-titulo").innerText = p.nome; document.getElementById("modal-prod-preco").innerText = formatarPreco(p.preco); document.getElementById("modal-prod-desc").innerText = p.descricao; document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`)}`; document.getElementById("modal-produto").style.display = "flex"; }
         function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; } document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
