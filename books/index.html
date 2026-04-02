@@ -8,111 +8,127 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 
-   <style>
-    :root {
-        --bg-color: #0f0f0f;
-        --page-bg: #ffffff;
-        --speed: 0.7s; /* Velocidade da dobra */
-    }
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --page-bg: #ffffff;
+            --speed: 0.6s; 
+        }
 
-    body { 
-        margin: 0; background-color: var(--bg-color); 
-        display: flex; flex-direction: column; height: 100vh; overflow: hidden; 
-    }
+        body { 
+            margin: 0; background-color: var(--bg-color); 
+            display: flex; flex-direction: column; height: 100vh; overflow: hidden; 
+            font-family: sans-serif;
+        }
 
-    #viewer-container {
-        flex: 1; perspective: 2000px; /* Profundidade 3D acentuada */
-        display: flex; justify-content: center; align-items: center;
-        position: relative;
-    }
+        #viewer-container {
+            flex: 1; perspective: 2000px; 
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+        }
 
-    #viewer { 
-        width: 90%; height: 85%; 
-        background: var(--page-bg); 
-        box-shadow: 0 10px 50px rgba(0,0,0,0.6);
-        border-radius: 2px 10px 10px 2px;
-        transform-origin: left center; /* Fixa a "lombada" na esquerda */
-        transition: transform var(--speed) ease-in-out, filter var(--speed);
-        backface-visibility: hidden;
-    }
+        #viewer { 
+            width: 90%; height: 85%; 
+            background: var(--page-bg); 
+            box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+            border-radius: 2px 10px 10px 2px;
+            transform-origin: left center; 
+            transition: transform var(--speed) ease-in-out, filter var(--speed), opacity 0.3s;
+            backface-visibility: hidden;
+            z-index: 5;
+        }
 
-    /* Efeito de Dobra Realista */
-    .flip-next {
-        transform: rotateY(-110deg) scale(0.95); /* A página "levanta" e gira */
-        filter: brightness(0.4); /* Escurece a página enquanto dobra */
-        pointer-events: none;
-    }
+        .flip-next {
+            transform: rotateY(-110deg) scale(0.95); 
+            filter: brightness(0.3); 
+            pointer-events: none;
+        }
 
-    /* Zonas de toque */
-    .touch-zone {
-        position: absolute; top: 0; bottom: 0; width: 30%; z-index: 100;
-    }
-    #zone-prev { left: 0; }
-    #zone-next { right: 0; }
+        .touch-zone {
+            position: absolute; top: 0; bottom: 0; width: 35%; z-index: 100;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #zone-prev { left: 0; }
+        #zone-next { right: 0; }
 
-    #loading { position: absolute; color: #555; width: 100%; text-align: center; top: 20px; }
-</style>
+        #loading { 
+            position: absolute; color: #fff; width: 100%; text-align: center; 
+            top: 50%; transform: translateY(-50%); font-weight: bold;
+        }
+    </style>
+</head>
+<body>
 
-<script>
-    window.onload = function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookParam = urlParams.get('books');
-        const viewer = document.getElementById('viewer');
+    <div id="loading">Carregando livro Mini Mundo...</div>
 
-        if (!bookParam) return;
+    <div id="viewer-container">
+        <div id="zone-prev" class="touch-zone"></div>
+        <div id="viewer"></div>
+        <div id="zone-next" class="touch-zone"></div>
+    </div>
 
-        const book = ePub("./books/" + bookParam + ".epub");
-        const rendition = book.renderTo("viewer", {
-            width: "100%", height: "100%", flow: "paginated"
-        });
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookParam = urlParams.get('books');
+            const viewer = document.getElementById('viewer');
+            const loading = document.getElementById('loading');
 
-        book.opened.then(() => {
-            document.getElementById('loading').style.display = 'none';
-            rendition.display();
-        });
-
-        // Lógica de Dobra 3D
-        const turnPage = (dir) => {
-            if (dir === 'next') {
-                viewer.classList.add('flip-next');
-                
-                // No meio da animação (quando a página está "em pé"), trocamos o conteúdo
-                setTimeout(() => {
-                    rendition.next();
-                    // Pequeno truque: removemos a animação para a página "voltar" com o novo conteúdo
-                    viewer.style.transition = "none";
-                    viewer.classList.remove('flip-next');
-                    
-                    // Forçamos um reflow e devolvemos a transição
-                    void viewer.offsetWidth; 
-                    viewer.style.transition = "transform var(--speed) ease-in-out, filter var(--speed)";
-                }, 400); 
-            } else {
-                // Para o "Anterior", fazemos o efeito inverso se desejar, 
-                // ou apenas um fade rápido para simplificar
-                viewer.style.opacity = "0";
-                setTimeout(() => {
-                    rendition.prev();
-                    viewer.style.opacity = "1";
-                }, 200);
+            if (!bookParam) {
+                loading.innerHTML = "Aguardando Tag NFC...";
+                return;
             }
+
+            // Tenta o caminho que funcionou anteriormente
+            const bookPath = "./books/" + bookParam + ".epub";
+            const book = ePub(bookPath);
+            const rendition = book.renderTo("viewer", {
+                width: "100%", height: "100%", flow: "paginated", manager: "default"
+            });
+
+            book.opened.then(() => {
+                loading.style.display = 'none';
+                rendition.display();
+            }).catch(err => {
+                loading.innerHTML = "Erro ao carregar arquivo .epub";
+                console.error(err);
+            });
+
+            const turnPage = (dir) => {
+                if (dir === 'next') {
+                    viewer.classList.add('flip-next');
+                    setTimeout(() => {
+                        rendition.next();
+                        viewer.style.transition = "none";
+                        viewer.classList.remove('flip-next');
+                        void viewer.offsetWidth; 
+                        viewer.style.transition = "transform var(--speed) ease-in-out, filter var(--speed)";
+                    }, 450); 
+                } else {
+                    viewer.style.opacity = "0.3";
+                    setTimeout(() => {
+                        rendition.prev();
+                        viewer.style.opacity = "1";
+                    }, 250);
+                }
+            };
+
+            // Eventos de clique nas zonas de toque
+            document.getElementById('zone-next').onclick = () => turnPage('next');
+            document.getElementById('zone-prev').onclick = () => turnPage('prev');
+            
+            // Suporte a Swipe (Deslizar)
+            let xDown = null;
+            document.addEventListener('touchstart', e => xDown = e.touches[0].clientX);
+            document.addEventListener('touchmove', e => {
+                if (!xDown) return;
+                let xDiff = xDown - e.touches[0].clientX;
+                if (Math.abs(xDiff) > 50) {
+                    turnPage(xDiff > 0 ? 'next' : 'prev');
+                    xDown = null;
+                }
+            });
         };
-
-        document.getElementById('zone-next').onclick = () => turnPage('next');
-        document.getElementById('zone-prev').onclick = () => turnPage('prev');
-        
-        // Suporte a Swipe
-        let xDown = null;
-        document.addEventListener('touchstart', e => xDown = e.touches[0].clientX);
-        document.addEventListener('touchmove', e => {
-            if (!xDown) return;
-            let xDiff = xDown - e.touches[0].clientX;
-            if (Math.abs(xDiff) > 50) {
-                turnPage(xDiff > 0 ? 'next' : 'prev');
-                xDown = null;
-            }
-        });
-    };
-</script>
+    </script>
 </body>
 </html>
