@@ -593,7 +593,7 @@
         return html;
     }
 
-    async function carregarDoMeuServidor() {
+   async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
         carregarVitrine();
@@ -605,7 +605,8 @@
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-            const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal });
+            // 🔥 AQUI ESTÁ A LINHA MÁGICA DO ANTI-CACHE 🔥
+            const resposta = await fetch(MINHA_API_GOOGLE + "?t=" + new Date().getTime(), { signal: controller.signal });
             clearTimeout(timeoutId);
 
             const dados = await resposta.json();
@@ -624,6 +625,7 @@
             resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center;'>Sem dados recentes.</p>";
 
+            // === A MÁGICA DA TABELA ===
             areaTabelas.innerHTML = "";
             botoesCamp.innerHTML = "";
 
@@ -659,8 +661,8 @@
             if (err.name === 'AbortError') {
                 msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!";
             }
-            resDiv.innerHTML = `<div style='padding:20px; color:#cc0000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
-            areaTabelas.innerHTML = `<div style='padding:20px; color:#cc0000; text-align:center; font-weight:800; font-size:0.85rem; line-height:1.4;'>${msgErro}</div>`;
+            resDiv.innerHTML = `<div style='padding:20px; color:#000000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
+            areaTabelas.innerHTML = `<div style='padding:20px; color:#000000; text-align:center; font-weight:800; font-size:0.85rem; line-height:1.4;'>${msgErro}</div>`;
             ageDiv.innerHTML = "";
             newsDiv.innerHTML = "";
             statusUpdate.innerText = "VAR revisando conexão...";
