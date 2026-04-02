@@ -291,51 +291,82 @@
         return html;
     }
 
-    async function carregarDoMeuServidor() {
+   async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
-        carregarVitrine(); carregarAnuncios();
+
+        carregarVitrine();
+        carregarAnuncios();
+
         const resDiv = document.getElementById("resultados"), ageDiv = document.getElementById("agenda"), newsDiv = document.getElementById("noticias"), statusUpdate = document.getElementById("status-update"), areaTabelas = document.getElementById("area-tabelas"), areaSeletor = document.getElementById("area-seletor"), botoesCamp = document.getElementById("botoes-campeonato"), tituloClass = document.getElementById("titulo-classificacao");
 
         try {
-            const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 15000);
-            const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal }); clearTimeout(timeoutId);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+            // 🔥 AQUI ESTÁ A LINHA MÁGICA DO ANTI-CACHE 🔥
+            const resposta = await fetch(MINHA_API_GOOGLE + "?t=" + new Date().getTime(), { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             const dados = await resposta.json();
 
             checarJogoAoVivo(dados);
-            if (dados.quiz && dados.quiz.length > 0) { bancoDePerguntas = dados.quiz; document.getElementById("quiz-box").style.display = "block"; document.getElementById("q-recorde").innerText = recorde; }
-            const d = new Date(dados.lastUpdate); statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
+
+            if (dados.quiz && dados.quiz.length > 0) {
+                bancoDePerguntas = dados.quiz;
+                document.getElementById("quiz-box").style.display = "block";
+                document.getElementById("q-recorde").innerText = recorde;
+            }
+
+            const d = new Date(dados.lastUpdate);
+            statusUpdate.innerText = `Atualizado: ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
 
             resDiv.innerHTML = "";
-            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center; font-size: 0.85rem;'>Sem dados recentes.</p>";
+            if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center;'>Sem dados recentes.</p>";
 
             // === A MÁGICA DA TABELA ===
-            areaTabelas.innerHTML = ""; botoesCamp.innerHTML = "";
+            areaTabelas.innerHTML = "";
+            botoesCamp.innerHTML = "";
+
             if (dados.campeonatos && dados.campeonatos.length > 0) {
                 areaSeletor.style.display = "block"; document.querySelector('.instrucao-tabela').style.display = "block"; botoesCamp.style.display = "flex";
                 tituloClass.innerText = "CLASSIFICAÇÃO";
+                
                 dados.campeonatos.forEach((camp, index) => {
-                    const idTab = "tab-camp-" + index; const isAtiva = index === 0;
+                    const idTab = "tab-camp-" + index;
+                    const isAtiva = index === 0;
                     botoesCamp.innerHTML += `<button class="btn-camp ${isAtiva ? 'ativo' : ''}" onclick="mudarTabela(event, '${idTab}')">${camp.nome}</button>`;
                     areaTabelas.innerHTML += renderizarTabelaHTML(camp.table, idTab, isAtiva);
                 });
             } else if (dados.table && dados.table.length > 0) {
-                areaSeletor.style.display = "none"; tituloClass.innerText = "CLASSIFICAÇÃO DO CAMPEONATO";
+                areaSeletor.style.display = "none";
+                tituloClass.innerText = "CLASSIFICAÇÃO DO CAMPEONATO";
                 areaTabelas.innerHTML = renderizarTabelaHTML(dados.table, 'tab-unica', true);
             } else {
-                areaSeletor.style.display = "none"; areaTabelas.innerHTML = "<div style='padding:20px; text-align:center; color:#999; background:#fff; border-radius:15px;'>Classificação indisponível no momento.</div>";
+                areaSeletor.style.display = "none";
+                areaTabelas.innerHTML = "<div style='padding:20px; text-align:center; color:#999; background:#fff; border-radius:15px;'>Classificação indisponível no momento.</div>";
             }
 
             ageDiv.innerHTML = "";
             if (dados.next && dados.next.length > 0) dados.next.forEach(e => ageDiv.innerHTML += criarCard(e, false));
 
             newsDiv.innerHTML = "";
-            if (dados.news && dados.news.length > 0) { dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; }); }
+            if (dados.news && dados.news.length > 0) {
+                dados.news.forEach(n => { newsDiv.innerHTML += `<a href="${n.link}" target="_blank" class="news-card"><div class="news-source"><span>📰 ${n.source}</span></div><h3 class="news-title">${n.title}</h3></a>`; });
+            }
         } catch (err) {
-            console.error("Erro na API de Futebol:", err); let msgErro = "Erro de conexão com o servidor."; if (err.name === 'AbortError') { msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!"; }
-            resDiv.innerHTML = `<div style='padding:20px; color:#c90000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`; ageDiv.innerHTML = ""; newsDiv.innerHTML = ""; statusUpdate.innerText = "VAR revisando conexão...";
+            console.error(err); 
+            let msgErro = "Erro de conexão com o servidor.";
+            if (err.name === 'AbortError') {
+                msgErro = "⚽ Ops! O sinal com o estádio está fraco agora. Recarregue a página ou confira nossas ofertas abaixo enquanto o VAR revisa a conexão!";
+            }
+            resDiv.innerHTML = `<div style='padding:20px; color:#000000; text-align:center; font-weight:800; font-size:0.9rem; line-height:1.4;'>${msgErro}</div>`;
+            areaTabelas.innerHTML = `<div style='padding:20px; color:#000000; text-align:center; font-weight:800; font-size:0.85rem; line-height:1.4;'>${msgErro}</div>`;
+            ageDiv.innerHTML = "";
+            newsDiv.innerHTML = "";
+            statusUpdate.innerText = "VAR revisando conexão...";
         }
     }
-
+    
     function criarCard(e, isFinished) {
         const dataObj = new Date(e.date); const dataF = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}); const horaF = dataObj.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
         const infoPlacar = isFinished ? `${e.homeScore} - ${e.awayScore}` : horaF;
