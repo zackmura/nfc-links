@@ -3,171 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mini Mundo 3D - Immersive Reader</title>
+    <title>Mini Mundo 3D - Experience</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 
     <style>
         :root {
-            --primary: #ff4757;
-            --bg: #121212;
-            --paper: #ffffff;
+            --bg-color: #121212;
+            --page-bg: #fff;
         }
 
         body { 
             margin: 0; padding: 0; 
-            background-color: var(--bg); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color); 
+            font-family: sans-serif;
             display: flex; flex-direction: column; 
             height: 100vh; width: 100vw;
             overflow: hidden; 
-            color: white;
         }
 
-        /* Contêiner principal ajustado para Mobile */
+        /* Área do Livro */
         #viewer-container {
             flex: 1;
+            width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
-            box-sizing: border-box;
-            perspective: 1000px; /* Prepara para efeitos 3D */
+            position: relative;
+            background: #000;
         }
 
         #viewer { 
-            width: 100%; 
-            max-width: 800px; /* Limita largura no desktop */
-            height: 100%; 
-            background: var(--paper); 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-            border-radius: 8px;
-            transition: transform 0.5s ease; /* Transição suave */
+            width: 95%; 
+            height: 90%; 
+            background: var(--page-bg); 
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            border-radius: 4px;
+            transition: all 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transform-origin: left center;
         }
 
-        /* Controles flutuantes na parte inferior */
-        .controls { 
-            height: 80px;
-            display: flex; 
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            width: 100%;
+        /* Camadas de interação invisíveis (Clique nas laterais) */
+        .touch-zone {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 25%;
+            z-index: 10;
+            cursor: pointer;
+        }
+        #zone-prev { left: 0; }
+        #zone-next { right: 0; }
+
+        /* Indicador de carregamento */
+        #loading {
+            position: absolute; color: white; text-align: center; width: 100%;
         }
 
-        button { 
-            padding: 12px 28px; 
-            cursor: pointer; 
-            background-color: var(--primary); 
-            color: white; 
-            border: none; 
-            border-radius: 50px; 
-            font-size: 14px; 
-            font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
-            transition: 0.2s;
-            -webkit-tap-highlight-color: transparent;
+        /* Animação de Virada de Página (Simulada) */
+        .page-flip-next {
+            transform: rotateY(-20deg) translateX(-100%) scale(0.9);
+            opacity: 0;
         }
-
-        button:active { transform: scale(0.9); }
-
-        #loading { 
-            position: fixed; top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); 
-            text-align: center; z-index: 100;
-        }
-
-        /* Ajuste específico para o conteúdo do ePub ficar legível no celular */
-        .epub-view {
-            display: flex;
-            justify-content: center;
+        .page-flip-prev {
+            transform: rotateY(20deg) translateX(100%) scale(0.9);
+            opacity: 0;
         }
     </style>
 </head>
 <body>
 
-    <div id="loading">
-        <h2 id="status-msg">Carregando Experiência...</h2>
-    </div>
+    <div id="loading">Preparando sua leitura Mini Mundo...</div>
 
     <div id="viewer-container">
+        <div id="zone-prev" class="touch-zone"></div>
         <div id="viewer"></div>
-    </div>
-
-    <div class="controls">
-        <button id="prev">Anterior</button>
-        <button id="next">Próxima</button>
+        <div id="zone-next" class="touch-zone"></div>
     </div>
 
     <script>
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const bookParam = urlParams.get('books');
-            const status = document.getElementById('status-msg');
+            const viewer = document.getElementById('viewer');
 
             if (!bookParam) {
-                status.innerHTML = "Aproxime a Tag NFC Mini Mundo";
+                document.getElementById('loading').innerHTML = "Aguardando comando NFC...";
                 return;
             }
 
-            // Testamos os caminhos (GitHub Pages costuma usar o primeiro)
             const paths = ["./books/" + bookParam + ".epub", "./" + bookParam + ".epub"];
             let pathIdx = 0;
 
             function loadBook(url) {
                 const book = ePub(url);
-                
-                // Rendition ajustado para Mobile
                 const rendition = book.renderTo("viewer", {
                     width: "100%",
                     height: "100%",
                     flow: "paginated",
-                    manager: "default",
-                    allowScriptedContent: true // Tenta contornar alguns erros de console
+                    manager: "default"
                 });
 
                 book.opened.then(() => {
                     document.getElementById('loading').style.display = 'none';
                     rendition.display();
-                }).catch(err => {
-                    if(pathIdx < paths.length - 1) {
-                        pathIdx++;
-                        loadBook(paths[pathIdx]);
-                    } else {
-                        status.innerHTML = "Erro ao localizar livro.";
-                    }
+                }).catch(() => {
+                    if(pathIdx < paths.length - 1) { pathIdx++; loadBook(paths[pathIdx]); }
                 });
 
-                // Lógica de navegação com animação simples
-                const navigate = (dir) => {
-                    const v = document.getElementById('viewer');
-                    v.style.opacity = "0.5";
-                    v.style.transform = dir === 'next' ? "translateX(-10px)" : "translateX(10px)";
+                // Função Mágica de Virar Página
+                const turnPage = (dir) => {
+                    const animationClass = dir === 'next' ? 'page-flip-next' : 'page-flip-prev';
+                    
+                    // 1. Inicia animação visual
+                    viewer.classList.add(animationClass);
                     
                     setTimeout(() => {
+                        // 2. Troca o conteúdo no meio da animação
                         if(dir === 'next') rendition.next();
                         else rendition.prev();
-                        v.style.opacity = "1";
-                        v.style.transform = "translateX(0)";
-                    }, 150);
+                        
+                        // 3. Volta a página
+                        viewer.classList.remove(animationClass);
+                    }, 300);
                 };
 
-                document.getElementById('prev').onclick = () => navigate('prev');
-                document.getElementById('next').onclick = () => navigate('next');
-                
-                // Swipe para celular
-                let touchstartX = 0;
-                let touchendX = 0;
-                document.addEventListener('touchstart', e => touchstartX = e.changedTouches[0].screenX);
-                document.addEventListener('touchend', e => {
-                    touchendX = e.changedTouches[0].screenX;
-                    if (touchstartX - touchendX > 50) navigate('next');
-                    if (touchendX - touchstartX > 50) navigate('prev');
-                });
+                // Eventos de Clique nas laterais
+                document.getElementById('zone-next').onclick = () => turnPage('next');
+                document.getElementById('zone-prev').onclick = () => turnPage('prev');
+
+                // Suporte a Teclado
+                document.onkeyup = (e) => {
+                    if (e.key === "ArrowRight") turnPage('next');
+                    if (e.key === "ArrowLeft") turnPage('prev');
+                };
+
+                // Suporte a Swipe (Celular)
+                let xDown = null;                                                        
+                document.addEventListener('touchstart', (e) => xDown = e.touches[0].clientX, false);        
+                document.addEventListener('touchmove', (e) => {
+                    if (!xDown) return;
+                    let xUp = e.touches[0].clientX;
+                    let xDiff = xDown - xUp;
+                    if (Math.abs(xDiff) > 50) {
+                        if (xDiff > 0) turnPage('next'); else turnPage('prev');
+                        xDown = null;
+                    }
+                }, false);
             }
 
             loadBook(paths[0]);
