@@ -25,22 +25,12 @@
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        .app-screen {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100dvh;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-
         /* TELA INICIAL (HUB) */
         #home-screen {
-            z-index: 20; background: var(--bg-color); overflow-y: auto; overflow-x: hidden;
-            display: flex; flex-direction: column; align-items: center; padding: 30px 15px 60px;
-            min-height: 100vh; box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 30px 15px 80px; min-height: 100vh; box-sizing: border-box;
+            background: var(--bg-color); width: 100vw;
         }
-        #reader-screen {
-            z-index: 10; background: var(--bg-color); opacity: 0; visibility: hidden; pointer-events: none;
-        }
-        #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #reader-screen.active { opacity: 1; visibility: visible; pointer-events: all; }
 
         .welcome-header { text-align: center; margin-bottom: 25px; width: 100%; max-width: 420px; }
         .welcome-header img { max-width: 150px; mix-blend-mode: multiply; margin-bottom: 10px; }
@@ -53,6 +43,7 @@
         .btn-reset { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
+        /* SEÇÕES DA LOJA E ANÚNCIOS */
         .hub-section { width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box; }
         .section-title { color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
         .section-subtitle { font-size: 0.8rem; color: #7a6b5d; margin-top: -10px; margin-bottom: 15px; }
@@ -80,11 +71,16 @@
         .premium-footer p { font-size: 0.8rem; color: #7a6b5d; line-height: 1.5; margin: 0; font-style: italic; }
         .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
 
-        /* TELA DE LEITURA (PDF) */
+        /* =========================================
+           TELA DE LEITURA (PDF BLINDADO)
+           ========================================= */
         #reader-screen { 
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
-            background: var(--bg-color); z-index: 1000; overflow: hidden; animation: fadeIn 0.4s ease; 
+            display: none; /* Agora controlado corretamente pelo JS */
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
+            background: var(--bg-color); z-index: 1000; overflow: hidden; 
+            opacity: 0; transition: opacity 0.4s ease; 
         }
+        #reader-screen.active { opacity: 1; }
         
         #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
         #brand-header img { max-height: 40px; mix-blend-mode: multiply; }
@@ -108,11 +104,10 @@
         }
 
         #pdf-canvas {
-            mix-blend-mode: multiply; 
-            max-width: 100%; max-height: 100%;
+            flex-shrink: 0; mix-blend-mode: multiply; max-width: 100%; max-height: 100%;
         }
 
-        .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10;}
+        .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10; -webkit-tap-highlight-color: transparent;}
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
         #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 50;}
@@ -152,7 +147,6 @@
         .ad-endereco-btn { font-size: 0.7rem; font-weight: 900; color: var(--accent); text-transform: uppercase; background: white; padding: 4px 8px; border-radius: 6px; border: 1px solid #eadecb; }
         .btn-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a; transition: transform 0.1s; text-decoration: none; margin-top: 10px; }
         .btn-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a; }
-        .btn-call { background: #f2ebd9; color: var(--text-color); border: 1px solid #eadecb; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0;} to { transform: translateY(0); opacity: 1;} }
@@ -197,14 +191,12 @@
         </div>
     </div>
 
-    <div id="reader-screen" class="app-screen">
+    <div id="reader-screen">
         <div id="brand-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             <div class="progress-container" onclick="mostrarModalPular()">
                 <span id="progress-text" class="progress-text">Carregando...</span>
-                <div class="progress-bar-bg">
-                    <div id="progress-bar-fill" class="progress-bar-fill"></div>
-                </div>
+                <div class="progress-bar-bg"><div id="progress-bar-fill" class="progress-bar-fill"></div></div>
                 <div class="progress-hint">Pular Página ▾</div>
             </div>
             <button class="btn-voltar" onclick="voltarHome()">
@@ -247,37 +239,8 @@
         </div>
     </div>
 
-    <div id="modal-produto" class="modal-overlay modal-bottom">
-        <div class="modal-content">
-            <button class="btn-fechar" onclick="fecharModalProduto()">×</button>
-            <div class="galeria-produto">
-                <img id="modal-prod-foto-principal" src="" class="foto-principal">
-                <div id="modal-prod-miniaturas" class="miniaturas-container"></div>
-            </div>
-            <div class="info-completa">
-                <span id="modal-prod-tag" class="card-tag">CATEGORIA</span>
-                <h3 id="modal-prod-titulo" class="titulo-modal">Título</h3>
-                <h2 id="modal-prod-preco" class="preco-modal">R$ 00,00</h2>
-                <p id="modal-prod-desc" class="desc-modal">Descrição...</p>
-                <a id="modal-prod-zap" href="#" target="_blank" class="btn-zap">🛒 Fazer Pedido no WhatsApp</a>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-anuncio" class="modal-overlay modal-bottom">
-        <div class="modal-content">
-            <button class="btn-fechar" onclick="fecharModalAnuncio()">×</button>
-            <div class="modal-ad-header-imgs">
-                <img id="modal-ad-banner" src="" class="modal-ad-banner">
-                <img id="modal-ad-logo" src="" class="ad-logo">
-            </div>
-            <div class="info-completa" style="padding-top: 30px;">
-                <h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3>
-                <p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p>
-                <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="margin-top: 20px;">💬 Chamar Parceiro</a>
-            </div>
-        </div>
-    </div>
+    <div id="modal-produto" class="modal-overlay modal-bottom"><div class="modal-content"><button class="btn-fechar" onclick="fecharModalProduto()">×</button><div class="galeria-produto"><img id="modal-prod-foto-principal" src="" class="foto-principal"><div id="modal-prod-miniaturas" class="miniaturas-container"></div></div><div class="info-completa"><span id="modal-prod-tag" class="card-tag">CATEGORIA</span><h3 id="modal-prod-titulo" class="titulo-modal">Título</h3><h2 id="modal-prod-preco" class="preco-modal">R$ 00,00</h2><p id="modal-prod-desc" class="desc-modal">Descrição...</p><a id="modal-prod-zap" href="#" target="_blank" class="btn-zap">🛒 Fazer Pedido no WhatsApp</a></div></div></div>
+    <div id="modal-anuncio" class="modal-overlay modal-bottom"><div class="modal-content"><button class="btn-fechar" onclick="fecharModalAnuncio()">×</button><div class="modal-ad-header-imgs"><img id="modal-ad-banner" src="" class="modal-ad-banner"><img id="modal-ad-logo" src="" class="ad-logo"></div><div class="info-completa" style="padding-top: 30px;"><h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3><h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2><p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p><div id="modal-ad-cupom-container" style="display:none;"><div id="modal-ad-cupom" class="ad-cupom-box">🎟️ Cupom</div></div><a id="modal-ad-endereco-box" href="#" target="_blank" class="ad-endereco-box" style="display:none;"><span id="modal-ad-endereco-text" class="ad-endereco-text">Endereço</span><span class="ad-endereco-btn">Mapa</span></a><div style="display: flex; gap: 10px;"><a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="flex: 2; font-size: 0.9rem;">💬 WhatsApp</a></div></div></div></div>
 
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
@@ -293,7 +256,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const bookParam = urlParams.get('books') || 'cavaleiro'; 
-        const storageKey = 'minimundo_pdf_v1_' + bookParam;
+        const storageKey = 'minimundo_pdf_v2_' + bookParam;
 
         window.onload = function() {
             carregarVitrine(); carregarAnuncios(); verificarStatusLeitura();
@@ -310,19 +273,32 @@
             }
         }
 
+        // CORREÇÃO MESTRA: O livro agora ganha "display: block" para ter largura real calculada pelo celular
         function abrirLeitor() {
-            document.getElementById('home-screen').classList.add('hidden');
-            document.getElementById('reader-screen').classList.add('active');
-            if (!pdfCarregado) {
-                document.getElementById('loading').style.display = 'block';
-                iniciarPdfEngine();
-            }
+            document.getElementById('home-screen').style.display = 'none';
+            const reader = document.getElementById('reader-screen');
+            reader.style.display = 'block'; 
+            
+            // Um leve atraso (50ms) garante que a tela "esticou" completamente antes de desenhar o PDF
+            setTimeout(() => {
+                reader.classList.add('active');
+                if (!pdfCarregado) {
+                    document.getElementById('loading').style.display = 'block';
+                    iniciarPdfEngine();
+                }
+            }, 50);
         }
 
         function voltarHome() {
-            document.getElementById('reader-screen').classList.remove('active');
-            document.getElementById('home-screen').classList.remove('hidden');
-            verificarStatusLeitura();
+            const reader = document.getElementById('reader-screen');
+            reader.classList.remove('active');
+            
+            // Espera a animação de sumir terminar para devolver a tela inicial
+            setTimeout(() => {
+                reader.style.display = 'none';
+                document.getElementById('home-screen').style.display = 'flex';
+                verificarStatusLeitura();
+            }, 400);
         }
 
         function iniciarPdfEngine() {
@@ -339,7 +315,8 @@
                 
                 renderPage(pageNum);
             }).catch(function(error) {
-                document.getElementById('loading').innerHTML = "Erro ao carregar. Certifique-se que o arquivo está na pasta books.";
+                console.error("Erro PDF:", error);
+                document.getElementById('loading').innerHTML = "Erro ao carregar o arquivo. Atualize a página.";
             });
         }
 
@@ -348,25 +325,28 @@
             pdfDoc.getPage(num).then(function(page) {
                 const container = document.getElementById('viewer-wrapper');
                 
-                // MÁGICA 1: Pega o tamanho real do container para encaixar certinho
-                const containerWidth = container.clientWidth;
-                const containerHeight = container.clientHeight;
+                // Medida infalível para celulares
+                let containerWidth = container.clientWidth;
+                let containerHeight = container.clientHeight;
+                
+                // Fallback de segurança se o celular der lag
+                if(containerWidth === 0) containerWidth = window.innerWidth * 0.92;
+                if(containerHeight === 0) containerHeight = window.innerHeight * 0.80;
 
                 const unscaledViewport = page.getViewport({scale: 1});
                 
-                // Calcula a escala exata para caber na caixa (sem cortar margens)
+                // Ajuste de zoom (0.95) garante que as bordas do texto respirem e não sejam comidas
                 const scaleX = containerWidth / unscaledViewport.width;
                 const scaleY = containerHeight / unscaledViewport.height;
-                const baseScale = Math.min(scaleX, scaleY) * 0.95; // 0.95 para dar um respiro
+                const baseScale = Math.min(scaleX, scaleY) * 0.95;
 
-                // MÁGICA 2: Renderização em ALTA DEFINIÇÃO para celulares (Retina)
+                // ALTA DEFINIÇÃO (RETINA DISPLAY): O segredo das letras nítidas
                 const pixelRatio = window.devicePixelRatio || 1;
                 const viewport = page.getViewport({scale: baseScale * pixelRatio});
 
-                // Tamanho físico (resolução)
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
-                // Tamanho visual no CSS (espremido para garantir nitidez)
+                // Força o canvas a espremer os pixels extras dentro do espaço, gerando nitidez absurda
                 canvas.style.width = `${viewport.width / pixelRatio}px`;
                 canvas.style.height = `${viewport.height / pixelRatio}px`;
 
@@ -383,6 +363,8 @@
                 document.getElementById('progress-text').innerHTML = `${num} <span style="font-size:0.65rem; color:#7a6b5d; font-weight:bold;">de ${pdfDoc.numPages}</span>`;
                 document.getElementById('progress-bar-fill').style.width = `${(num / pdfDoc.numPages) * 100}%`;
                 localStorage.setItem(storageKey, num);
+            }).catch(err => {
+                console.error("Erro ao renderizar:", err);
             });
         }
 
@@ -426,25 +408,25 @@
         document.getElementById('zone-next').onclick = onNextPage;
         document.getElementById('zone-prev').onclick = onPrevPage;
 
+        // PULAR PÁGINA E RESET
         function mostrarModalPular() {
-            if(pdfDoc) {
+            if(pdfCarregado) {
                 document.getElementById('modal-pular').style.display = 'flex';
                 setTimeout(() => document.getElementById('input-pagina').focus(), 100);
             }
         }
         function fecharModalPular() { document.getElementById('modal-pular').style.display = 'none'; }
-        
         function irParaPagina() {
             let num = parseInt(document.getElementById('input-pagina').value);
             if (num >= 1 && num <= pdfDoc.numPages) {
                 pageNum = num; queueRenderPage(pageNum); fecharModalPular(); document.getElementById('input-pagina').value = ""; 
             } else { alert(`Digite uma página entre 1 e ${pdfDoc.numPages}`); }
         }
-
         function mostrarModalReset() { document.getElementById('modal-reset').style.display = 'flex'; }
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
+        // LOJA E ANÚNCIOS (Mantidos com a mesma lógica do Palmeiras)
         function formatarPreco(val) { if(!val) return ""; let v = String(val).trim(); if(v.toUpperCase().includes("R$")) return v; if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ','); return "R$ " + v; }
         
         async function carregarVitrine() {
