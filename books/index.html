@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mini Mundo 3D - Hub Imersivo</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
     <style>
         :root {
@@ -18,9 +17,9 @@
             --speed: 0.35s; 
         }
 
-        /* CORREÇÃO 1: Fundo rolável normal para não cortar botões */
         body { 
             margin: 0; background-color: var(--bg-color); 
+            height: 100dvh; overflow: hidden; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             color: var(--text-color);
             -webkit-tap-highlight-color: transparent;
@@ -28,13 +27,21 @@
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        /* =========================================
-           TELA INICIAL (HUB)
-           ========================================= */
-        #home-screen {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px 15px 60px; min-height: 100vh; box-sizing: border-box;
+        .app-screen {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100dvh;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
+
+        /* TELA INICIAL (HUB) */
+        #home-screen {
+            z-index: 20; background: var(--bg-color); overflow-y: auto; overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center; padding: 20px 15px 100px;
+        }
+        #reader-screen {
+            z-index: 10; background: var(--bg-color); opacity: 0; visibility: hidden; pointer-events: none;
+        }
+        #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #reader-screen.active { opacity: 1; visibility: visible; pointer-events: all; }
 
         .welcome-header { text-align: center; margin-bottom: 25px; width: 100%; max-width: 420px; }
         .welcome-header img { max-width: 140px; mix-blend-mode: multiply; margin-bottom: 10px; }
@@ -42,19 +49,20 @@
         .welcome-text { font-size: 0.85rem; font-style: italic; color: #7a6b5d; line-height: 1.4; margin: 0 0 20px; }
 
         .hub-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; padding: 0 10px; box-sizing: border-box; }
-        
         .btn-ler { background: var(--accent); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 var(--accent-dark), 0 10px 20px rgba(139, 90, 43, 0.2); transition: transform 0.1s, box-shadow 0.1s; }
         .btn-ler:active { transform: translateY(6px); box-shadow: 0 0 0 var(--accent-dark); }
-        
         .btn-reset { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
-        /* SEÇÕES (LOJA E ANÚNCIOS) */
         .hub-section { width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box; }
         .section-title { color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
         .section-subtitle { font-size: 0.8rem; color: #7a6b5d; margin-top: -10px; margin-bottom: 15px; }
 
         .carrossel { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scroll-snap-type: x mandatory; }
+        .carrossel::-webkit-scrollbar { height: 4px; }
+        .carrossel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .carrossel::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
         .card-mini { min-width: 140px; max-width: 140px; background: #faf8f2; border: 1px solid #eadecb; border-radius: 12px; scroll-snap-align: start; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .card-mini:active { transform: scale(0.96); }
         .card-img { width: 100%; height: 130px; object-fit: cover; background: #fff; border-bottom: 1px solid #eadecb; }
@@ -78,17 +86,11 @@
         .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
 
         /* =========================================
-           TELA DE LEITURA (LIVRO)
+           TELA DE LEITURA (LIVRO EM PDF)
            ========================================= */
-        #reader-screen { 
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
-            background: var(--bg-color); z-index: 1000; overflow: hidden; animation: fadeIn 0.4s ease; 
-        }
-        
         #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
         #brand-header img { max-height: 40px; mix-blend-mode: multiply; }
         
-        /* Contador de Páginas Renovado */
         .progress-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px; cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: 0.2s; }
         .progress-container:active { background: #f2ebd9; }
         .progress-text { font-size: 1rem; font-weight: 900; color: var(--accent-dark); margin-bottom: 4px; display: flex; align-items: baseline; gap: 4px;}
@@ -101,18 +103,27 @@
 
         #viewer-container { flex: 1; height: 100dvh; perspective: 1500px; display: flex; justify-content: center; align-items: center; position: relative; }
         
-        /* CORREÇÃO 2: Bloqueio do tamanho do livro */
-        #viewer-wrapper { width: 90%; height: 80%; margin-top: 40px; background: var(--page-bg); border-radius: 4px; box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); z-index: 5; border: 1px solid #eadecb; position: relative; overflow: visible;}
-        #epub-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; border-radius: 4px;}
+        /* Ajustes para o PDF Render */
+        #viewer-wrapper { 
+            width: 92%; height: 80%; margin-top: 40px; 
+            background: var(--page-bg); border-radius: 4px; box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); 
+            z-index: 5; border: 1px solid #eadecb; position: relative; 
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
+        }
+
+        /* O TRUQUE DE MESTRE: Apaga o fundo branco do PDF e mescla com a cor de areia */
+        #pdf-canvas {
+            max-width: 100%;
+            max-height: 100%;
+            mix-blend-mode: multiply;
+        }
 
         .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10;}
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
         #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 50;}
 
-        /* =========================================
-           MODAIS GERAIS
-           ========================================= */
+        /* MODAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: rgba(61, 52, 45, 0.7); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px); }
         .modal-bottom { align-items: flex-end; }
         .modal-content { background: var(--page-bg); border-radius: 12px; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center; width: 85%; max-width: 320px; animation: slideUp 0.3s ease; position: relative; border: 1px solid #eadecb; }
@@ -122,7 +133,6 @@
         .modal-icon-reset { width: 36px; height: 36px; margin-bottom: 15px; stroke: var(--accent); fill: none; }
         .modal-buttons { display: flex; gap: 15px; width: 100%; margin-top: 20px; }
         .modal-buttons button { padding: 12px 0; flex: 1; border-radius: 25px; border: none; font-weight: bold; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.2s;}
-        
         #btn-cancel { background: transparent; border: 1px solid #b5a99f; color: #8a7c71; }
         #btn-confirm { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25); }
 
@@ -143,17 +153,20 @@
         .titulo-modal { font-size: 1.3rem; font-weight: 900; margin: 0; color: var(--accent-dark);}
         .preco-modal { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin: 0;}
         .desc-modal { font-size: 0.85rem; color: #7a6b5d; line-height: 1.5; white-space: pre-wrap;}
+        .ad-cupom-box { background: #f2ebd9; color: var(--accent-dark); padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed var(--accent); display: inline-block; margin-bottom: 5px; }
+        .ad-endereco-box { background: #fdfaf2; border: 1px solid #eadecb; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(61,52,45,0.05); }
+        .ad-endereco-text { font-size: 0.85rem; font-weight: 700; flex-grow: 1; line-height: 1.3; color: var(--text-color); }
+        .ad-endereco-btn { font-size: 0.7rem; font-weight: 900; color: var(--accent); text-transform: uppercase; background: white; padding: 4px 8px; border-radius: 6px; border: 1px solid #eadecb; }
         .btn-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a; transition: transform 0.1s; text-decoration: none; margin-top: 10px; }
         .btn-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0;} to { transform: translateY(0); opacity: 1;} }
-
     </style>
 </head>
 <body>
 
-    <div id="home-screen">
+    <div id="home-screen" class="app-screen">
         <div class="welcome-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             <h2 class="welcome-title">Bem-Vindo à Experiência</h2>
@@ -178,7 +191,6 @@
             <h3 class="section-title">⭐ Nossos Parceiros</h3>
             <p class="section-subtitle">Aproveite as ofertas exclusivas para nossos leitores.</p>
             <div class="carrossel" id="carrossel-anuncios"></div>
-
             <div class="anuncie-aqui-banner">
                 <h4 class="anuncie-title">🚀 Sua marca vista por todos!</h4>
                 <p class="anuncie-desc">Anuncie seu negócio ou serviço diretamente no Chaveiro Inteligente.</p>
@@ -187,16 +199,16 @@
         </div>
 
         <div class="premium-footer">
-            <p>Este chaveiro é mais que um objeto, é um <strong>portal literário exclusivo</strong> impresso em 3D. Obrigado por apoiar a inovação da <strong>Mini Mundo</strong>!</p>
+            <p>Este chaveiro é mais que um portal literário exclusivo impresso em 3D. Obrigado por apoiar a inovação da <strong>Mini Mundo</strong>!</p>
         </div>
     </div>
 
-    <div id="reader-screen">
+    <div id="reader-screen" class="app-screen">
         <div id="brand-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             
             <div class="progress-container" onclick="mostrarModalPular()">
-                <span id="progress-text" class="progress-text">Gerando...</span>
+                <span id="progress-text" class="progress-text">Carregando...</span>
                 <div class="progress-bar-bg">
                     <div id="progress-bar-fill" class="progress-bar-fill"></div>
                 </div>
@@ -209,13 +221,15 @@
             </button>
         </div>
 
-        <div id="loading" style="display: none;">Sincronizando a página...</div>
+        <div id="loading" style="display: none;">Carregando arquivo...</div>
 
         <div id="viewer-container">
             <div id="zone-prev" class="touch-zone"></div>
+            
             <div id="viewer-wrapper">
-                <div id="epub-container"></div>
+                <canvas id="pdf-canvas"></canvas>
             </div>
+            
             <div id="zone-next" class="touch-zone"></div>
         </div>
     </div>
@@ -235,7 +249,7 @@
         <div class="modal-content">
             <p style="color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0;">PULAR PÁGINA</p>
             <p style="color: #7a6b5d; font-size: 0.85rem; margin-top: 5px;">Escolha uma página entre 1 e <span id="total-paginas-modal">...</span></p>
-            <input type="number" id="input-pagina" class="input-pagina" placeholder="Ex: 50">
+            <input type="number" id="input-pagina" class="input-pagina" placeholder="Ex: 10">
             <div class="modal-buttons">
                 <button id="btn-cancel" onclick="fecharModalPular()">Cancelar</button>
                 <button id="btn-confirm" onclick="irParaPagina()">Avançar ➡️</button>
@@ -269,6 +283,7 @@
             </div>
             <div class="info-completa" style="padding-top: 30px;">
                 <h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3>
+                <h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2>
                 <p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p>
                 <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="margin-top: 20px;">💬 Chamar Parceiro</a>
             </div>
@@ -276,145 +291,172 @@
     </div>
 
     <script>
+        // Configuração do Worker do PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
         const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
         const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
 
         let catalogoGlobal = []; let anunciosGlobal = [];
-        let livroIniciado = false; let book, rendition; 
-        let locacoesGeradas = false; let totalDePaginas = 0; let isAnimating = false;
         
+        // VARIÁVEIS DO PDF
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let canvas = document.getElementById('pdf-canvas');
+        let ctx = canvas.getContext('2d');
+        let pdfCarregado = false;
+        let isAnimating = false;
+
         const urlParams = new URLSearchParams(window.location.search);
-        const bookParam = urlParams.get('books');
-        const storageKey = 'minimundo_v2_' + bookParam;
+        // Ajustado para buscar automaticamente cavaleiro.pdf se não houver parâmetro
+        const bookParam = urlParams.get('books') || 'cavaleiro'; 
+        const storageKey = 'minimundo_pdf_' + bookParam;
 
         window.onload = function() {
             carregarVitrine(); carregarAnuncios(); verificarStatusLeitura();
         };
 
         function verificarStatusLeitura() {
-            const savedLoc = localStorage.getItem(storageKey);
+            const savedPage = localStorage.getItem(storageKey);
             const btnText = document.getElementById("texto-btn-ler");
             const btnReset = document.getElementById("btn-reset-hub");
-            if (savedLoc) { btnText.innerText = "Continuar Leitura"; btnReset.style.display = "block"; } 
-            else { btnText.innerText = "Iniciar Leitura"; btnReset.style.display = "none"; }
+            if (savedPage && savedPage > 1) { 
+                btnText.innerText = "Continuar Leitura"; 
+                btnReset.style.display = "block"; 
+            } else { 
+                btnText.innerText = "Iniciar Leitura"; 
+                btnReset.style.display = "none"; 
+            }
         }
 
         function abrirLeitor() {
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('reader-screen').style.display = 'block';
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('reader-screen').classList.add('active');
 
-            if (!livroIniciado && bookParam) {
+            if (!pdfCarregado) {
                 document.getElementById('loading').style.display = 'block';
-                setTimeout(() => { iniciarEpubEngine(); livroIniciado = true; }, 50);
-            } else if (livroIniciado && rendition) {
-                const savedLoc = localStorage.getItem(storageKey);
-                if (savedLoc) rendition.display(savedLoc);
+                iniciarPdfEngine();
             }
         }
 
         function voltarHome() {
-            document.getElementById('reader-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
+            document.getElementById('reader-screen').classList.remove('active');
+            document.getElementById('home-screen').classList.remove('hidden');
             verificarStatusLeitura();
         }
 
-        function iniciarEpubEngine() {
-            const wrapper = document.getElementById('viewer-wrapper');
-            const container = document.getElementById('epub-container');
-            
-            // CORREÇÃO 2: Bloqueamos o tamanho do Container em pixels fixos para ele NUNCA encolher durante a animação
-            const w = container.clientWidth;
-            const h = container.clientHeight;
+        // MOTOR PDF
+        function iniciarPdfEngine() {
+            const urlPdf = `./books/${bookParam}.pdf`;
 
-            book = ePub("./books/" + bookParam + ".epub");
-            
-            rendition = book.renderTo("epub-container", {
-                width: w, height: h, flow: "paginated", manager: "default", spread: "none"
-            });
-
-            rendition.hooks.content.register(function(contents) {
-                contents.addStylesheetRules([
-                    ["body", ["background-color", "transparent", "padding", "8% 6% !important"]],
-                    ["p", ["color", "#3d342d !important", "line-height", "1.6 !important", "font-size", "115% !important"]],
-                    ["h1, h2, h3", ["color", "#5c412b !important"]],
-                    ["span, div", ["color", "#3d342d !important"]]
-                ]);
-            });
-
-            // Geração de Páginas Reais e Fatiadas
-            book.ready.then(() => {
-                return book.locations.generate(800); // 800 gera uma divisão mais fiel à virada de tela
-            }).then(() => {
-                locacoesGeradas = true;
-                totalDePaginas = book.locations.total;
-                document.getElementById("total-paginas-modal").innerText = totalDePaginas;
-                if (rendition.location) atualizarProgresso(rendition.location.start.cfi);
-            });
-
-            Promise.all([book.ready, book.opened]).then(() => {
-                const savedLoc = localStorage.getItem(storageKey);
+            pdfjsLib.getDocument(urlPdf).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                pdfCarregado = true;
+                document.getElementById("total-paginas-modal").innerText = pdfDoc.numPages;
                 document.getElementById('loading').style.display = 'none';
-                rendition.display(savedLoc || undefined);
-            });
-
-            rendition.on("relocated", function(location) {
-                if (isAnimating) return; // Se a folha tá virando, ignora pra não salvar errado
                 
-                if (location && location.start) {
-                    const exatoCFI = location.start.cfi;
-                    localStorage.setItem(storageKey, exatoCFI);
-                    atualizarProgresso(exatoCFI);
+                // Verifica se tem página salva
+                const savedPage = parseInt(localStorage.getItem(storageKey));
+                if (savedPage && savedPage >= 1 && savedPage <= pdfDoc.numPages) {
+                    pageNum = savedPage;
+                } else {
+                    pageNum = 1;
                 }
-            });
-
-            function atualizarProgresso(cfi) {
-                if (locacoesGeradas && totalDePaginas > 0) {
-                    const paginaAtual = book.locations.locationFromCfi(cfi);
-                    const porcentagem = Math.round(book.locations.percentageFromCfi(cfi) * 100);
-                    
-                    document.getElementById('progress-text').innerHTML = `${paginaAtual} <span style="font-size:0.65rem; color:#7a6b5d; font-weight:bold;">de ${totalDePaginas}</span>`;
-                    document.getElementById('progress-bar-fill').style.width = `${porcentagem}%`;
-                }
-            }
-
-            const turnPage = (dir) => {
-                if (isAnimating) return;
-                isAnimating = true;
-
-                const speed = "0.35s";
-                wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
-                wrapper.style.transition = `transform ${speed} ease-in, filter ${speed} ease-in`;
-                wrapper.style.transform = dir === 'next' ? "rotateY(-90deg)" : "rotateY(90deg)"; // Removido o Scale que causava o recálculo maluco
-                wrapper.style.filter = "brightness(0.9)";
-
-                setTimeout(() => {
-                    if (dir === 'next') rendition.next(); else rendition.prev();
-                    wrapper.style.transition = "none";
-                    wrapper.style.transform = dir === 'next' ? "rotateY(90deg)" : "rotateY(-90deg)";
-                    void wrapper.offsetWidth; 
-                    wrapper.style.transition = `transform ${speed} ease-out, filter ${speed} ease-out`;
-                    wrapper.style.transform = "rotateY(0deg)";
-                    wrapper.style.filter = "brightness(1)";
-
-                    setTimeout(() => { isAnimating = false; }, 350);
-                }, 350);
-            };
-
-            document.getElementById('zone-next').onclick = () => turnPage('next');
-            document.getElementById('zone-prev').onclick = () => turnPage('prev');
-
-            let xDown = null;
-            document.getElementById('viewer-container').addEventListener('touchstart', e => xDown = e.touches[0].clientX);
-            document.getElementById('viewer-container').addEventListener('touchmove', e => {
-                if (!xDown) return;
-                let xDiff = xDown - e.touches[0].clientX;
-                if (Math.abs(xDiff) > 40) { turnPage(xDiff > 0 ? 'next' : 'prev'); xDown = null; }
+                
+                renderPage(pageNum);
+            }).catch(function(error) {
+                document.getElementById('loading').innerHTML = "Erro ao carregar o PDF. Verifique se o arquivo cavaleiro.pdf está na pasta books.";
+                console.error(error);
             });
         }
 
-        // --- LÓGICA DE PULAR PÁGINA ---
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                const container = document.getElementById('viewer-wrapper');
+                const unscaledViewport = page.getViewport({scale: 1});
+                
+                // Calcula o zoom exato para caber na tela do celular perfeitamente
+                const scaleX = (container.clientWidth - 10) / unscaledViewport.width;
+                const scaleY = (container.clientHeight - 10) / unscaledViewport.height;
+                const finalScale = Math.min(scaleX, scaleY);
+                
+                const viewport = page.getViewport({scale: finalScale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = { canvasContext: ctx, viewport: viewport };
+                
+                page.render(renderContext).promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+
+                // Atualiza Interface Visual e Salva (Perfeição absoluta)
+                document.getElementById('progress-text').innerHTML = `${num} <span style="font-size:0.65rem; color:#7a6b5d; font-weight:bold;">de ${pdfDoc.numPages}</span>`;
+                document.getElementById('progress-bar-fill').style.width = `${(num / pdfDoc.numPages) * 100}%`;
+                localStorage.setItem(storageKey, num);
+            });
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) { pageNumPending = num; } 
+            else { renderPage(num); }
+        }
+
+        function onPrevPage() {
+            if (pageNum <= 1 || isAnimating) return;
+            animarTrocaDePagina('prev', () => {
+                pageNum--;
+                queueRenderPage(pageNum);
+            });
+        }
+
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages || isAnimating) return;
+            animarTrocaDePagina('next', () => {
+                pageNum++;
+                queueRenderPage(pageNum);
+            });
+        }
+
+        // Mantemos a Animação 3D Elegante
+        function animarTrocaDePagina(dir, callback) {
+            const wrapper = document.getElementById('viewer-wrapper');
+            isAnimating = true;
+            const speed = "0.35s";
+            
+            wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
+            wrapper.style.transition = `transform ${speed} ease-in, filter ${speed} ease-in`;
+            wrapper.style.transform = dir === 'next' ? "rotateY(-90deg)" : "rotateY(90deg)";
+            wrapper.style.filter = "brightness(0.9)";
+
+            setTimeout(() => {
+                callback(); // Troca a imagem do PDF enquanto ele está de lado
+                
+                wrapper.style.transition = "none";
+                wrapper.style.transform = dir === 'next' ? "rotateY(90deg)" : "rotateY(-90deg)";
+                void wrapper.offsetWidth; 
+                
+                wrapper.style.transition = `transform ${speed} ease-out, filter ${speed} ease-out`;
+                wrapper.style.transform = "rotateY(0deg)";
+                wrapper.style.filter = "brightness(1)";
+
+                setTimeout(() => { isAnimating = false; }, 350);
+            }, 350);
+        }
+
+        document.getElementById('zone-next').onclick = onNextPage;
+        document.getElementById('zone-prev').onclick = onPrevPage;
+
+        // LÓGICA DE PULAR PÁGINA
         function mostrarModalPular() {
-            if(locacoesGeradas) {
+            if(pdfDoc) {
                 document.getElementById('modal-pular').style.display = 'flex';
                 setTimeout(() => document.getElementById('input-pagina').focus(), 100);
             }
@@ -423,33 +465,28 @@
         
         function irParaPagina() {
             let num = parseInt(document.getElementById('input-pagina').value);
-            if (num >= 1 && num <= totalDePaginas) {
-                let targetCfi = book.locations.cfiFromLocation(num);
-                rendition.display(targetCfi);
+            if (num >= 1 && num <= pdfDoc.numPages) {
+                pageNum = num;
+                queueRenderPage(pageNum);
                 fecharModalPular();
                 document.getElementById('input-pagina').value = ""; 
-            } else { alert(`Digite uma página entre 1 e ${totalDePaginas}`); }
+            } else { alert(`Digite uma página entre 1 e ${pdfDoc.numPages}`); }
         }
 
+        // LÓGICA DE RESET
         function mostrarModalReset() { document.getElementById('modal-reset').style.display = 'flex'; }
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
-        function formatarPreco(val) {
-            if(!val) return "";
-            let v = String(val).trim();
-            if(v.toUpperCase().includes("R$")) return v;
-            if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ',');
-            return "R$ " + v;
-        }
-
+        // LOJA E ANÚNCIOS (Mantidos iguais)
+        function formatarPreco(val) { if(!val) return ""; let v = String(val).trim(); if(v.toUpperCase().includes("R$")) return v; if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ','); return "R$ " + v; }
+        
         async function carregarVitrine() {
             try {
                 const res = await fetch(API_CATALOGO);
                 const dados = await res.json();
                 if(dados.sucesso && dados.vitrine.length > 0) {
-                    catalogoGlobal = dados.vitrine;
-                    let html = "";
+                    catalogoGlobal = dados.vitrine; let html = "";
                     catalogoGlobal.forEach((p, i) => {
                         const foto = p.foto.split(',')[0].trim();
                         html += `<div class="card-mini" onclick="abrirModalProduto(${i})"><img src="${foto}" class="card-img" onerror="this.src='logo.jpg'"><div class="card-info"><span class="card-tag">${p.categoria}</span><h4 class="card-nome">${p.nome}</h4><div class="card-preco">${formatarPreco(p.preco)}</div></div></div>`;
@@ -467,55 +504,35 @@
                 const res = await fetch(API_ANUNCIOS);
                 const dados = await res.json();
                 if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) {
-                    anunciosGlobal = dados.anuncios;
-                    let html = "";
+                    anunciosGlobal = dados.anuncios; let html = "";
                     anunciosGlobal.forEach((ad, i) => {
                         html += `<div class="card-mini" onclick="abrirModalAnuncio(${i})"><div class="ad-img-wrapper"><img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'"><img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'"></div><div class="card-info"><h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4><p class="ad-desc">${ad.descricao}</p></div></div>`;
                     });
-                    divCarrossel.innerHTML = html;
-                    divCarrossel.style.display = "flex";
+                    divCarrossel.innerHTML = html; divCarrossel.style.display = "flex";
                 } else { divCarrossel.style.display = "none"; }
             } catch(e) { divCarrossel.style.display = "none"; }
         }
 
         function abrirModalProduto(index) {
-            const p = catalogoGlobal[index];
-            if(!p) return;
+            const p = catalogoGlobal[index]; if(!p) return;
             const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
-            const imgPrincipal = document.getElementById("modal-prod-foto-principal");
-            imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
-
-            const divMiniaturas = document.getElementById("modal-prod-miniaturas");
-            divMiniaturas.innerHTML = "";
+            const imgPrincipal = document.getElementById("modal-prod-foto-principal"); imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
+            const divMiniaturas = document.getElementById("modal-prod-miniaturas"); divMiniaturas.innerHTML = "";
             if (arrayFotos.length > 1) {
                 arrayFotos.forEach((linkFoto, i) => {
-                    const imgMini = document.createElement("img");
-                    imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
+                    const imgMini = document.createElement("img"); imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
                     imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); };
                     divMiniaturas.appendChild(imgMini);
-                });
-                divMiniaturas.style.display = "flex";
+                }); divMiniaturas.style.display = "flex";
             } else { divMiniaturas.style.display = "none"; }
-
-            document.getElementById("modal-prod-tag").innerText = p.categoria;
-            document.getElementById("modal-prod-titulo").innerText = p.nome;
-            document.getElementById("modal-prod-preco").innerText = formatarPreco(p.preco);
-            document.getElementById("modal-prod-desc").innerText = p.descricao;
-            document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`)}`;
-            document.getElementById("modal-produto").style.display = "flex";
+            document.getElementById("modal-prod-tag").innerText = p.categoria; document.getElementById("modal-prod-titulo").innerText = p.nome; document.getElementById("modal-prod-preco").innerText = formatarPreco(p.preco); document.getElementById("modal-prod-desc").innerText = p.descricao; document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`)}`; document.getElementById("modal-produto").style.display = "flex";
         }
         function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
         document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
         function abrirModalAnuncio(index) {
-            const ad = anunciosGlobal[index];
-            if(!ad) return;
-            document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg';
-            document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg';
-            document.getElementById("modal-ad-empresa").innerText = ad.empresa;
-            document.getElementById("modal-ad-desc").innerText = ad.descricao;
-            document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
-            document.getElementById("modal-anuncio").style.display = "flex";
+            const ad = anunciosGlobal[index]; if(!ad) return;
+            document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg'; document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg'; document.getElementById("modal-ad-empresa").innerText = ad.empresa; document.getElementById("modal-ad-desc").innerText = ad.descricao; document.getElementById("modal-ad-zap").href = ad.link_zap || '#'; document.getElementById("modal-anuncio").style.display = "flex";
         }
         function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
         document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
