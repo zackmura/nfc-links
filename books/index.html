@@ -10,20 +10,19 @@
 
     <style>
         :root {
-            --bg-color: #efead9;    /* Fundo suave (Areia) */
-            --page-bg: #fdfaf2;     /* Papel (Pergaminho claro) */
-            --text-color: #3d342d;  /* Texto (Marrom terroso escuro) */
-            --accent: #8b5a2b;      /* Cor de destaque para o botão */
+            --bg-color: #efead9;    
+            --page-bg: #fdfaf2;     
+            --text-color: #3d342d;  
+            --accent: #8b5a2b;      
             --speed: 0.35s; 
         }
 
         body { 
             margin: 0; background-color: var(--bg-color); 
             height: 100vh; overflow: hidden; 
-            font-family: 'Georgia', serif; /* Fonte mais literária */
+            font-family: 'Georgia', serif; 
         }
 
-        /* Cabeçalho de Identidade Visual */
         #brand-header {
             position: absolute; top: 0; width: 100%; height: 70px;
             display: flex; justify-content: space-between; align-items: center;
@@ -34,15 +33,54 @@
             max-height: 40px; mix-blend-mode: multiply;
         }
 
-        /* Botão Recomeçar Estilizado */
         #reset-btn {
             background: none; border: 1px solid var(--accent);
-            color: var(--accent); padding: 6px 12px; border-radius: 20px;
-            font-size: 12px; cursor: pointer; font-family: sans-serif;
+            color: var(--accent); padding: 8px 16px; border-radius: 20px;
+            font-size: 11px; cursor: pointer; font-family: sans-serif;
             text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
-            transition: all 0.3s;
+            transition: all 0.3s ease; outline: none;
         }
         #reset-btn:hover { background: var(--accent); color: white; }
+
+        /* --- NOVO: MODAL CUSTOMIZADO E ELEGANTE --- */
+        #custom-modal {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(61, 52, 45, 0.6); /* Fundo escurecido no tom da marca */
+            backdrop-filter: blur(5px); /* Desfoca o livro atrás */
+            z-index: 1000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+
+        #custom-modal.show { opacity: 1; pointer-events: all; }
+
+        .modal-content {
+            background: var(--page-bg); padding: 30px; border-radius: 12px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center;
+            border: 1px solid #e3dec6; width: 80%; max-width: 320px;
+            transform: translateY(20px); transition: transform 0.3s ease;
+            font-family: sans-serif;
+        }
+
+        #custom-modal.show .modal-content { transform: translateY(0); }
+
+        .modal-content p {
+            color: var(--text-color); font-size: 16px; margin-bottom: 25px; line-height: 1.5;
+        }
+
+        .modal-buttons { display: flex; gap: 15px; justify-content: center; }
+
+        .modal-buttons button {
+            padding: 10px 0; flex: 1; border-radius: 20px; border: none; cursor: pointer;
+            font-weight: bold; text-transform: uppercase; font-size: 12px; transition: 0.2s;
+        }
+
+        #btn-cancel { 
+            background: transparent; border: 1px solid #b5a99f; color: #8a7c71; 
+        }
+        #btn-confirm { 
+            background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(139, 90, 43, 0.3);
+        }
+        /* ------------------------------------------ */
 
         #viewer-container {
             flex: 1; height: 100vh; perspective: 1500px;
@@ -74,7 +112,17 @@
 
     <div id="brand-header">
         <img src="logo.jpg" alt="Mini Mundo">
-        <button id="reset-btn" title="Voltar ao Início">Recomeçar</button>
+        <button id="reset-btn">Recomeçar</button>
+    </div>
+
+    <div id="custom-modal">
+        <div class="modal-content">
+            <p>Deseja reiniciar a leitura e voltar para a primeira página?</p>
+            <div class="modal-buttons">
+                <button id="btn-cancel">Cancelar</button>
+                <button id="btn-confirm">Sim</button>
+            </div>
+        </div>
     </div>
 
     <div id="loading">Sincronizando sua leitura...</div>
@@ -101,32 +149,40 @@
                 width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "none"
             });
 
-            // Configuração do Tema (Conforto Visual)
+            // CORREÇÃO DAS CORES: Usando Hexadecimal direto e !important no "curinga" (*)
             rendition.themes.default({
-                body: { "background": "transparent", "padding": "40px 30px !important" },
-                p: { "color": "var(--text-color)", "line-height": "1.7", "font-size": "18px" }
+                "body": { "background": "transparent", "padding": "40px 30px !important" },
+                "*": { "color": "#3d342d !important" }, // Força a cor terrosa em tudo
+                "p": { "line-height": "1.7 !important", "font-size": "18px !important" }
             });
 
-            // Lógica de Persistência Robusta
             Promise.all([book.ready, book.opened]).then(() => {
                 const savedLoc = localStorage.getItem(storageKey);
                 document.getElementById('loading').style.display = 'none';
                 rendition.display(savedLoc || undefined);
             });
 
-            // Salva apenas quando a página estabilizar
             rendition.on("relocated", (loc) => {
                 if (loc && loc.start) localStorage.setItem(storageKey, loc.start.cfi);
             });
 
-            // Botão de Reset
+            // LÓGICA DO NOVO MODAL
+            const modal = document.getElementById('custom-modal');
+            
             document.getElementById('reset-btn').onclick = () => {
-                if(confirm("Deseja voltar para a primeira página?")) {
-                    localStorage.removeItem(storageKey);
-                    location.reload();
-                }
+                modal.classList.add('show'); // Exibe o modal suavemente
             };
 
+            document.getElementById('btn-cancel').onclick = () => {
+                modal.classList.remove('show'); // Esconde se cancelar
+            };
+
+            document.getElementById('btn-confirm').onclick = () => {
+                localStorage.removeItem(storageKey);
+                location.reload(); // Recarrega a página ao confirmar
+            };
+
+            // Animação da Página
             const turnPage = (dir) => {
                 wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
                 wrapper.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
