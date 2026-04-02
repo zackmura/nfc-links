@@ -10,10 +10,10 @@
 
     <style>
         :root {
-            --bg-color: #efead9;    
-            --page-bg: #fdfaf2;     
-            --text-color: #3d342d;  
-            --accent: #8b5a2b;      
+            --bg-color: #efead9;    /* Fundo externo (areia escuro) */
+            --page-bg: #fdfaf2;     /* Fundo da página (pergaminho claro) */
+            --text-color: #3d342d;  /* Texto marrom terroso */
+            --accent: #375b82;      /* Azul moderno inspirado no globo do seu logo */
             --speed: 0.35s; 
         }
 
@@ -23,30 +23,31 @@
             font-family: 'Georgia', serif; 
         }
 
+        /* --- CABEÇALHO --- */
         #brand-header {
             position: absolute; top: 0; width: 100%; height: 70px;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 25px; box-sizing: border-box; z-index: 100;
+            padding: 0 20px; box-sizing: border-box; z-index: 100;
         }
 
         #brand-header img {
-            max-height: 40px; mix-blend-mode: multiply;
+            max-height: 45px; mix-blend-mode: multiply; /* Remove o fundo branco do JPG */
         }
 
         #reset-btn {
-            background: none; border: 1px solid var(--accent);
+            background: transparent; border: 1px solid var(--accent);
             color: var(--accent); padding: 8px 16px; border-radius: 20px;
-            font-size: 11px; cursor: pointer; font-family: sans-serif;
+            font-size: 11px; cursor: pointer; font-family: 'Segoe UI', sans-serif;
             text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
             transition: all 0.3s ease; outline: none;
         }
         #reset-btn:hover { background: var(--accent); color: white; }
 
-        /* --- NOVO: MODAL CUSTOMIZADO E ELEGANTE --- */
+        /* --- MODAL CUSTOMIZADO (POPUP) --- */
         #custom-modal {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(61, 52, 45, 0.6); /* Fundo escurecido no tom da marca */
-            backdrop-filter: blur(5px); /* Desfoca o livro atrás */
+            background: rgba(61, 52, 45, 0.5); /* Fundo escuro terroso */
+            backdrop-filter: blur(4px); /* Desfoque elegante */
             z-index: 1000; display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
@@ -55,22 +56,22 @@
 
         .modal-content {
             background: var(--page-bg); padding: 30px; border-radius: 12px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center;
-            border: 1px solid #e3dec6; width: 80%; max-width: 320px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2); text-align: center;
+            border: 1px solid #e3dec6; width: 85%; max-width: 320px;
             transform: translateY(20px); transition: transform 0.3s ease;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         #custom-modal.show .modal-content { transform: translateY(0); }
 
         .modal-content p {
-            color: var(--text-color); font-size: 16px; margin-bottom: 25px; line-height: 1.5;
+            color: var(--text-color); font-size: 16px; margin-bottom: 25px; line-height: 1.5; font-weight: 500;
         }
 
         .modal-buttons { display: flex; gap: 15px; justify-content: center; }
 
         .modal-buttons button {
-            padding: 10px 0; flex: 1; border-radius: 20px; border: none; cursor: pointer;
+            padding: 12px 0; flex: 1; border-radius: 25px; border: none; cursor: pointer;
             font-weight: bold; text-transform: uppercase; font-size: 12px; transition: 0.2s;
         }
 
@@ -78,18 +79,19 @@
             background: transparent; border: 1px solid #b5a99f; color: #8a7c71; 
         }
         #btn-confirm { 
-            background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(139, 90, 43, 0.3);
+            background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(55, 91, 130, 0.3);
         }
-        /* ------------------------------------------ */
 
+        /* --- ÁREA DO LIVRO --- */
         #viewer-container {
             flex: 1; height: 100vh; perspective: 1500px;
             display: flex; justify-content: center; align-items: center;
             position: relative;
         }
 
+        /* O Wrapper que faz o giro 3D */
         #viewer-wrapper {
-            width: 92%; height: 82%; margin-top: 40px;
+            width: 90%; height: 80%; margin-top: 40px;
             background: var(--page-bg); border-radius: 4px;
             box-shadow: 0 10px 40px rgba(61, 52, 45, 0.15);
             z-index: 5; border: 1px solid #e3dec6;
@@ -97,21 +99,21 @@
 
         #viewer { width: 100%; height: 100%; }
 
-        .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10; }
+        .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10; -webkit-tap-highlight-color: transparent;}
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
 
         #loading { 
             position: absolute; color: var(--text-color); width: 100%; 
             text-align: center; top: 50%; transform: translateY(-50%);
-            font-style: italic; opacity: 0.7;
+            font-style: italic; opacity: 0.7; font-family: 'Segoe UI', sans-serif;
         }
     </style>
 </head>
 <body>
 
     <div id="brand-header">
-        <img src="logo.jpg" alt="Mini Mundo">
+        <img src="logo.jpg" alt="Mini Mundo 3D">
         <button id="reset-btn">Recomeçar</button>
     </div>
 
@@ -145,17 +147,20 @@
 
             const storageKey = 'minimundo_v2_' + bookParam;
             const book = ePub("./books/" + bookParam + ".epub");
+            
+            // spread: "none" garante que conte apenas 1 página no PC e no Celular
             const rendition = book.renderTo("viewer", {
                 width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "none"
             });
 
-            // CORREÇÃO DAS CORES: Usando Hexadecimal direto e !important no "curinga" (*)
+            // A MÁGICA DA COR: O !important força o ePub a aceitar nossa cor de texto
             rendition.themes.default({
-                "body": { "background": "transparent", "padding": "40px 30px !important" },
-                "*": { "color": "#3d342d !important" }, // Força a cor terrosa em tudo
-                "p": { "line-height": "1.7 !important", "font-size": "18px !important" }
+                "body": { "background": "transparent", "padding": "8% 6% !important" },
+                "*": { "color": "var(--text-color) !important" }, // Força o marrom em tudo
+                "p": { "line-height": "1.6 !important", "font-size": "110% !important" }
             });
 
+            // Persistência Segura (Espera o livro calcular tudo antes de pular a página)
             Promise.all([book.ready, book.opened]).then(() => {
                 const savedLoc = localStorage.getItem(storageKey);
                 document.getElementById('loading').style.display = 'none';
@@ -166,34 +171,30 @@
                 if (loc && loc.start) localStorage.setItem(storageKey, loc.start.cfi);
             });
 
-            // LÓGICA DO NOVO MODAL
+            // LÓGICA DO MODAL
             const modal = document.getElementById('custom-modal');
             
-            document.getElementById('reset-btn').onclick = () => {
-                modal.classList.add('show'); // Exibe o modal suavemente
-            };
-
-            document.getElementById('btn-cancel').onclick = () => {
-                modal.classList.remove('show'); // Esconde se cancelar
-            };
-
+            document.getElementById('reset-btn').onclick = () => modal.classList.add('show');
+            document.getElementById('btn-cancel').onclick = () => modal.classList.remove('show');
             document.getElementById('btn-confirm').onclick = () => {
                 localStorage.removeItem(storageKey);
-                location.reload(); // Recarrega a página ao confirmar
+                location.reload(); 
             };
 
-            // Animação da Página
+            // Animação 3D do Wrapper
             const turnPage = (dir) => {
                 wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
                 wrapper.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
-                wrapper.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.98)" : "rotateY(90deg) scale(0.98)";
+                wrapper.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.96)" : "rotateY(90deg) scale(0.96)";
                 wrapper.style.filter = "brightness(0.9)";
 
                 setTimeout(() => {
                     if (dir === 'next') rendition.next(); else rendition.prev();
+                    
                     wrapper.style.transition = "none";
-                    wrapper.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.98)" : "rotateY(-90deg) scale(0.98)";
+                    wrapper.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.96)" : "rotateY(-90deg) scale(0.96)";
                     void wrapper.offsetWidth; 
+                    
                     wrapper.style.transition = "transform var(--speed) ease-out, filter var(--speed) ease-out";
                     wrapper.style.transform = "rotateY(0deg) scale(1)";
                     wrapper.style.filter = "brightness(1)";
@@ -202,6 +203,17 @@
 
             document.getElementById('zone-next').onclick = () => turnPage('next');
             document.getElementById('zone-prev').onclick = () => turnPage('prev');
+
+            let xDown = null;
+            document.addEventListener('touchstart', e => xDown = e.touches[0].clientX);
+            document.addEventListener('touchmove', e => {
+                if (!xDown) return;
+                let xDiff = xDown - e.touches[0].clientX;
+                if (Math.abs(xDiff) > 40) {
+                    turnPage(xDiff > 0 ? 'next' : 'prev');
+                    xDown = null;
+                }
+            });
         };
     </script>
 </body>
