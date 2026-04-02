@@ -18,57 +18,43 @@
             --speed: 0.35s; 
         }
 
-        /* CORREÇÃO 1: Uso do 100dvh para não cortar os botões no celular */
+        /* CORREÇÃO 1: Fundo rolável normal para não cortar botões */
         body { 
             margin: 0; background-color: var(--bg-color); 
-            height: 100dvh; overflow: hidden; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             color: var(--text-color);
+            -webkit-tap-highlight-color: transparent;
         }
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        .app-screen {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100dvh;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-
-        /* CORREÇÃO 2: Padding inferior generoso para a tela inicial rolar livremente */
-        #home-screen {
-            z-index: 20; background: var(--bg-color); overflow-y: auto; overflow-x: hidden;
-            display: flex; flex-direction: column; align-items: center; padding: 20px 15px 100px;
-        }
-
-        #reader-screen {
-            z-index: 10; background: var(--bg-color); opacity: 0; visibility: hidden; pointer-events: none;
-        }
-
-        #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        #reader-screen.active { opacity: 1; visibility: visible; pointer-events: all; }
-
         /* =========================================
-           ESTILOS DA TELA INICIAL (HUB)
+           TELA INICIAL (HUB)
            ========================================= */
+        #home-screen {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 20px 15px 60px; min-height: 100vh; box-sizing: border-box;
+        }
+
         .welcome-header { text-align: center; margin-bottom: 25px; width: 100%; max-width: 420px; }
         .welcome-header img { max-width: 140px; mix-blend-mode: multiply; margin-bottom: 10px; }
         .welcome-title { font-size: 1.2rem; font-weight: 900; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px; }
         .welcome-text { font-size: 0.85rem; font-style: italic; color: #7a6b5d; line-height: 1.4; margin: 0 0 20px; }
 
         .hub-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; padding: 0 10px; box-sizing: border-box; }
+        
         .btn-ler { background: var(--accent); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 var(--accent-dark), 0 10px 20px rgba(139, 90, 43, 0.2); transition: transform 0.1s, box-shadow 0.1s; }
         .btn-ler:active { transform: translateY(6px); box-shadow: 0 0 0 var(--accent-dark); }
+        
         .btn-reset { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
+        /* SEÇÕES (LOJA E ANÚNCIOS) */
         .hub-section { width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box; }
         .section-title { color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
         .section-subtitle { font-size: 0.8rem; color: #7a6b5d; margin-top: -10px; margin-bottom: 15px; }
 
         .carrossel { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scroll-snap-type: x mandatory; }
-        .carrossel::-webkit-scrollbar { height: 4px; }
-        .carrossel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .carrossel::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-
         .card-mini { min-width: 140px; max-width: 140px; background: #faf8f2; border: 1px solid #eadecb; border-radius: 12px; scroll-snap-align: start; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .card-mini:active { transform: scale(0.96); }
         .card-img { width: 100%; height: 130px; object-fit: cover; background: #fff; border-bottom: 1px solid #eadecb; }
@@ -94,13 +80,19 @@
         /* =========================================
            TELA DE LEITURA (LIVRO)
            ========================================= */
+        #reader-screen { 
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
+            background: var(--bg-color); z-index: 1000; overflow: hidden; animation: fadeIn 0.4s ease; 
+        }
+        
         #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
         #brand-header img { max-height: 40px; mix-blend-mode: multiply; }
         
-        .progress-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px; cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: 0.2s; }
+        /* Contador de Páginas Renovado */
+        .progress-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px; cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: 0.2s; }
         .progress-container:active { background: #f2ebd9; }
-        .progress-text { font-size: 0.8rem; font-weight: 800; color: var(--accent-dark); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;}
-        .progress-bar-bg { width: 100%; height: 6px; background: #eadecb; border-radius: 10px; overflow: hidden;}
+        .progress-text { font-size: 1rem; font-weight: 900; color: var(--accent-dark); margin-bottom: 4px; display: flex; align-items: baseline; gap: 4px;}
+        .progress-bar-bg { width: 100%; height: 5px; background: #eadecb; border-radius: 10px; overflow: hidden;}
         .progress-bar-fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.3s ease; }
         .progress-hint { font-size: 0.6rem; color: #7a6b5d; font-weight: bold; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px;}
 
@@ -108,13 +100,15 @@
         .btn-voltar:hover, .btn-voltar:active { background: var(--accent); color: white; }
 
         #viewer-container { flex: 1; height: 100dvh; perspective: 1500px; display: flex; justify-content: center; align-items: center; position: relative; }
-        #viewer-wrapper { width: 90%; height: 80%; margin-top: 40px; background: var(--page-bg); border-radius: 4px; box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); z-index: 5; border: 1px solid #eadecb; position: relative;}
-        #epub-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; }
+        
+        /* CORREÇÃO 2: Bloqueio do tamanho do livro */
+        #viewer-wrapper { width: 90%; height: 80%; margin-top: 40px; background: var(--page-bg); border-radius: 4px; box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); z-index: 5; border: 1px solid #eadecb; position: relative; overflow: visible;}
+        #epub-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; border-radius: 4px;}
 
-        .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10; -webkit-tap-highlight-color: transparent;}
+        .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10;}
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
-        #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 200;}
+        #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 50;}
 
         /* =========================================
            MODAIS GERAIS
@@ -128,6 +122,7 @@
         .modal-icon-reset { width: 36px; height: 36px; margin-bottom: 15px; stroke: var(--accent); fill: none; }
         .modal-buttons { display: flex; gap: 15px; width: 100%; margin-top: 20px; }
         .modal-buttons button { padding: 12px 0; flex: 1; border-radius: 25px; border: none; font-weight: bold; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.2s;}
+        
         #btn-cancel { background: transparent; border: 1px solid #b5a99f; color: #8a7c71; }
         #btn-confirm { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25); }
 
@@ -148,13 +143,8 @@
         .titulo-modal { font-size: 1.3rem; font-weight: 900; margin: 0; color: var(--accent-dark);}
         .preco-modal { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin: 0;}
         .desc-modal { font-size: 0.85rem; color: #7a6b5d; line-height: 1.5; white-space: pre-wrap;}
-        .ad-cupom-box { background: #f2ebd9; color: var(--accent-dark); padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed var(--accent); display: inline-block; margin-bottom: 5px; }
-        .ad-endereco-box { background: #fdfaf2; border: 1px solid #eadecb; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(61,52,45,0.05); }
-        .ad-endereco-text { font-size: 0.85rem; font-weight: 700; flex-grow: 1; line-height: 1.3; color: var(--text-color); }
-        .ad-endereco-btn { font-size: 0.7rem; font-weight: 900; color: var(--accent); text-transform: uppercase; background: white; padding: 4px 8px; border-radius: 6px; border: 1px solid #eadecb; }
         .btn-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a; transition: transform 0.1s; text-decoration: none; margin-top: 10px; }
         .btn-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a; }
-        .btn-call { background: #f2ebd9; color: var(--text-color); border: 1px solid #eadecb; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0;} to { transform: translateY(0); opacity: 1;} }
@@ -163,7 +153,7 @@
 </head>
 <body>
 
-    <div id="home-screen" class="app-screen">
+    <div id="home-screen">
         <div class="welcome-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             <h2 class="welcome-title">Bem-Vindo à Experiência</h2>
@@ -201,16 +191,16 @@
         </div>
     </div>
 
-    <div id="reader-screen" class="app-screen">
+    <div id="reader-screen">
         <div id="brand-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             
             <div class="progress-container" onclick="mostrarModalPular()">
-                <span id="progress-text" class="progress-text">Calculando...</span>
+                <span id="progress-text" class="progress-text">Gerando...</span>
                 <div class="progress-bar-bg">
                     <div id="progress-bar-fill" class="progress-bar-fill"></div>
                 </div>
-                <div class="progress-hint">Pular para ▾</div>
+                <div class="progress-hint">Pular Página ▾</div>
             </div>
 
             <button class="btn-voltar" onclick="voltarHome()">
@@ -233,7 +223,7 @@
     <div id="modal-reset" class="modal-overlay">
         <div class="modal-content">
             <svg class="modal-icon-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-            <p style="color: var(--text-color); font-weight: 600;">Deseja apagar o progresso e voltar para o início do livro?</p>
+            <p style="color: var(--text-color); font-weight: 600;">Deseja apagar o progresso e voltar para a página 1?</p>
             <div class="modal-buttons">
                 <button id="btn-cancel" onclick="fecharModalReset()">Cancelar</button>
                 <button id="btn-confirm" onclick="confirmarReset()">Sim</button>
@@ -243,14 +233,12 @@
 
     <div id="modal-pular" class="modal-overlay">
         <div class="modal-content">
-            <p style="color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0;">AVANÇAR NA LEITURA</p>
-            <p style="color: #7a6b5d; font-size: 0.85rem; margin-top: 5px;">Para qual porcentagem (%) do livro você deseja ir?</p>
-            
-            <input type="number" id="input-pct" class="input-pagina" placeholder="Ex: 50" min="1" max="100">
-            
+            <p style="color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0;">PULAR PÁGINA</p>
+            <p style="color: #7a6b5d; font-size: 0.85rem; margin-top: 5px;">Escolha uma página entre 1 e <span id="total-paginas-modal">...</span></p>
+            <input type="number" id="input-pagina" class="input-pagina" placeholder="Ex: 50">
             <div class="modal-buttons">
                 <button id="btn-cancel" onclick="fecharModalPular()">Cancelar</button>
-                <button id="btn-confirm" onclick="irParaPorcentagem()">Avançar ➡️</button>
+                <button id="btn-confirm" onclick="irParaPagina()">Avançar ➡️</button>
             </div>
         </div>
     </div>
@@ -281,14 +269,8 @@
             </div>
             <div class="info-completa" style="padding-top: 30px;">
                 <h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3>
-                <h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2>
                 <p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p>
-                <div id="modal-ad-cupom-container" style="display:none;"><div id="modal-ad-cupom" class="ad-cupom-box">🎟️ Cupom</div></div>
-                <a id="modal-ad-endereco-box" href="#" target="_blank" class="ad-endereco-box" style="display:none;"><span id="modal-ad-endereco-text" class="ad-endereco-text">Endereço</span><span class="ad-endereco-btn">Mapa</span></a>
-                <div style="display: flex; gap: 10px;">
-                    <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="flex: 2; font-size: 0.9rem;">💬 WhatsApp</a>
-                    <a id="modal-ad-call" href="#" class="btn-call" style="flex: 1; display:none; font-size: 0.9rem;">📞 Ligar</a>
-                </div>
+                <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="margin-top: 20px;">💬 Chamar Parceiro</a>
             </div>
         </div>
     </div>
@@ -299,64 +281,55 @@
 
         let catalogoGlobal = []; let anunciosGlobal = [];
         let livroIniciado = false; let book, rendition; 
-        let locacoesGeradas = false;
-        let isAnimating = false; // CORREÇÃO 3: Trava de segurança para não enlouquecer o Epub.js
+        let locacoesGeradas = false; let totalDePaginas = 0; let isAnimating = false;
         
         const urlParams = new URLSearchParams(window.location.search);
         const bookParam = urlParams.get('books');
         const storageKey = 'minimundo_v2_' + bookParam;
 
         window.onload = function() {
-            carregarVitrine();
-            carregarAnuncios();
-            verificarStatusLeitura();
+            carregarVitrine(); carregarAnuncios(); verificarStatusLeitura();
         };
 
         function verificarStatusLeitura() {
             const savedLoc = localStorage.getItem(storageKey);
             const btnText = document.getElementById("texto-btn-ler");
             const btnReset = document.getElementById("btn-reset-hub");
-            if (savedLoc) {
-                btnText.innerText = "Continuar Leitura";
-                btnReset.style.display = "block";
-            } else {
-                btnText.innerText = "Iniciar Leitura";
-                btnReset.style.display = "none";
-            }
+            if (savedLoc) { btnText.innerText = "Continuar Leitura"; btnReset.style.display = "block"; } 
+            else { btnText.innerText = "Iniciar Leitura"; btnReset.style.display = "none"; }
         }
 
         function abrirLeitor() {
-            // CORREÇÃO 1: Usa classes CSS no lugar de display:none para o livro não ser "esmagado"
-            document.getElementById('home-screen').classList.add('hidden');
-            document.getElementById('reader-screen').classList.add('active');
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('reader-screen').style.display = 'block';
 
             if (!livroIniciado && bookParam) {
                 document.getElementById('loading').style.display = 'block';
-                
-                // Aguarda 100ms para garantir que a tela de leitura assumiu o tamanho total do celular
-                setTimeout(() => {
-                    iniciarEpubEngine();
-                    livroIniciado = true;
-                }, 100);
+                setTimeout(() => { iniciarEpubEngine(); livroIniciado = true; }, 50);
             } else if (livroIniciado && rendition) {
-                // Se já estava lendo e voltou, apenas carrega a última página salva
                 const savedLoc = localStorage.getItem(storageKey);
                 if (savedLoc) rendition.display(savedLoc);
             }
         }
 
         function voltarHome() {
-            document.getElementById('reader-screen').classList.remove('active');
-            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('reader-screen').style.display = 'none';
+            document.getElementById('home-screen').style.display = 'flex';
             verificarStatusLeitura();
         }
 
         function iniciarEpubEngine() {
             const wrapper = document.getElementById('viewer-wrapper');
+            const container = document.getElementById('epub-container');
+            
+            // CORREÇÃO 2: Bloqueamos o tamanho do Container em pixels fixos para ele NUNCA encolher durante a animação
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+
             book = ePub("./books/" + bookParam + ".epub");
             
             rendition = book.renderTo("epub-container", {
-                width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "none"
+                width: w, height: h, flow: "paginated", manager: "default", spread: "none"
             });
 
             rendition.hooks.content.register(function(contents) {
@@ -368,22 +341,24 @@
                 ]);
             });
 
-            // CORREÇÃO 2: O Epub.js só pode medir o livro DEPOIS que a primeira página for exibida
-            Promise.all([book.ready, book.opened]).then(() => {
-                const savedLoc = localStorage.getItem(storageKey);
-                document.getElementById('loading').style.display = 'none';
-                return rendition.display(savedLoc || undefined);
-            }).then(() => {
-                // Só agora, com o livro na tela, nós pedimos para ele calcular a porcentagem
-                return book.locations.generate(1024);
+            // Geração de Páginas Reais e Fatiadas
+            book.ready.then(() => {
+                return book.locations.generate(800); // 800 gera uma divisão mais fiel à virada de tela
             }).then(() => {
                 locacoesGeradas = true;
+                totalDePaginas = book.locations.total;
+                document.getElementById("total-paginas-modal").innerText = totalDePaginas;
                 if (rendition.location) atualizarProgresso(rendition.location.start.cfi);
             });
 
+            Promise.all([book.ready, book.opened]).then(() => {
+                const savedLoc = localStorage.getItem(storageKey);
+                document.getElementById('loading').style.display = 'none';
+                rendition.display(savedLoc || undefined);
+            });
+
             rendition.on("relocated", function(location) {
-                // Se a página estiver fazendo cambalhota, ele IGNORA o falso cálculo do epub.js
-                if (isAnimating) return; 
+                if (isAnimating) return; // Se a folha tá virando, ignora pra não salvar errado
                 
                 if (location && location.start) {
                     const exatoCFI = location.start.cfi;
@@ -393,36 +368,34 @@
             });
 
             function atualizarProgresso(cfi) {
-                if (locacoesGeradas) {
-                    let progresso = book.locations.percentageFromCfi(cfi);
-                    let porcentagem = Math.max(1, Math.round(progresso * 100)); 
-                    document.getElementById('progress-text').innerHTML = `${porcentagem}% <span style="font-size:0.6rem; color:#7a6b5d;">Lido</span>`;
+                if (locacoesGeradas && totalDePaginas > 0) {
+                    const paginaAtual = book.locations.locationFromCfi(cfi);
+                    const porcentagem = Math.round(book.locations.percentageFromCfi(cfi) * 100);
+                    
+                    document.getElementById('progress-text').innerHTML = `${paginaAtual} <span style="font-size:0.65rem; color:#7a6b5d; font-weight:bold;">de ${totalDePaginas}</span>`;
                     document.getElementById('progress-bar-fill').style.width = `${porcentagem}%`;
                 }
             }
 
             const turnPage = (dir) => {
-                if (isAnimating) return; // Evita que o usuário passe duas páginas de uma vez e bugue tudo
+                if (isAnimating) return;
                 isAnimating = true;
 
                 const speed = "0.35s";
                 wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
                 wrapper.style.transition = `transform ${speed} ease-in, filter ${speed} ease-in`;
-                wrapper.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.96)" : "rotateY(90deg) scale(0.96)";
+                wrapper.style.transform = dir === 'next' ? "rotateY(-90deg)" : "rotateY(90deg)"; // Removido o Scale que causava o recálculo maluco
                 wrapper.style.filter = "brightness(0.9)";
 
                 setTimeout(() => {
                     if (dir === 'next') rendition.next(); else rendition.prev();
-                    
                     wrapper.style.transition = "none";
-                    wrapper.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.96)" : "rotateY(-90deg) scale(0.96)";
+                    wrapper.style.transform = dir === 'next' ? "rotateY(90deg)" : "rotateY(-90deg)";
                     void wrapper.offsetWidth; 
-                    
                     wrapper.style.transition = `transform ${speed} ease-out, filter ${speed} ease-out`;
-                    wrapper.style.transform = "rotateY(0deg) scale(1)";
+                    wrapper.style.transform = "rotateY(0deg)";
                     wrapper.style.filter = "brightness(1)";
 
-                    // Libera a trava de animação quando a página termina de descer
                     setTimeout(() => { isAnimating = false; }, 350);
                 }, 350);
             };
@@ -439,36 +412,29 @@
             });
         }
 
-        // --- LÓGICA DE PULAR PORCENTAGEM ---
+        // --- LÓGICA DE PULAR PÁGINA ---
         function mostrarModalPular() {
             if(locacoesGeradas) {
                 document.getElementById('modal-pular').style.display = 'flex';
-                setTimeout(() => document.getElementById('input-pct').focus(), 100);
-            } else {
-                alert("Aguarde um instante. O livro está mapeando o seu progresso.");
+                setTimeout(() => document.getElementById('input-pagina').focus(), 100);
             }
         }
         function fecharModalPular() { document.getElementById('modal-pular').style.display = 'none'; }
         
-        function irParaPorcentagem() {
-            let pct = parseInt(document.getElementById('input-pct').value);
-            if (pct >= 1 && pct <= 100) {
-                let decimal = pct / 100;
-                let targetCfi = book.locations.cfiFromPercentage(decimal);
+        function irParaPagina() {
+            let num = parseInt(document.getElementById('input-pagina').value);
+            if (num >= 1 && num <= totalDePaginas) {
+                let targetCfi = book.locations.cfiFromLocation(num);
                 rendition.display(targetCfi);
                 fecharModalPular();
-                document.getElementById('input-pct').value = ""; 
-            } else {
-                alert("Digite um número entre 1 e 100.");
-            }
+                document.getElementById('input-pagina').value = ""; 
+            } else { alert(`Digite uma página entre 1 e ${totalDePaginas}`); }
         }
 
-        // --- LÓGICA DE RESET ---
         function mostrarModalReset() { document.getElementById('modal-reset').style.display = 'flex'; }
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
-        // --- LOJA E ANÚNCIOS (Idêntico) ---
         function formatarPreco(val) {
             if(!val) return "";
             let v = String(val).trim();
@@ -548,20 +514,7 @@
             document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg';
             document.getElementById("modal-ad-empresa").innerText = ad.empresa;
             document.getElementById("modal-ad-desc").innerText = ad.descricao;
-            
-            const precoEl = document.getElementById("modal-ad-preco");
-            if(ad.preco_oferta) { precoEl.innerText = formatarPreco(ad.preco_oferta); precoEl.style.display = "block"; } else { precoEl.style.display = "none"; }
-            
-            const cupomContainer = document.getElementById("modal-ad-cupom-container");
-            if(ad.cupom) { document.getElementById("modal-ad-cupom").innerText = `🎟️ Cupom: ${ad.cupom}`; cupomContainer.style.display = "block"; } else { cupomContainer.style.display = "none"; }
-            
-            const endEl = document.getElementById("modal-ad-endereco-box");
-            if(ad.endereco) { document.getElementById("modal-ad-endereco-text").innerText = ad.endereco; endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; }
-            
             document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
-            const btnCall = document.getElementById("modal-ad-call");
-            if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; }
-            
             document.getElementById("modal-anuncio").style.display = "flex";
         }
         function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
