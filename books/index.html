@@ -30,15 +30,21 @@
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        /* TELA INICIAL (HUB) */
+        /* =========================================
+           TELA INICIAL (HUB)
+           ========================================= */
         #home-screen {
             z-index: 20; background: var(--bg-color); overflow-y: auto; overflow-x: hidden;
-            display: flex; flex-direction: column; align-items: center; padding: 30px 15px 60px;
-            min-height: 100vh; box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center; padding: 30px 15px 80px;
+            min-height: 100vh; box-sizing: border-box; width: 100vw;
         }
+        
         #reader-screen {
-            z-index: 10; background: var(--bg-color); opacity: 0; visibility: hidden; pointer-events: none;
+            z-index: 10; background: var(--bg-color); 
+            opacity: 0; visibility: hidden; pointer-events: none; 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; overflow: hidden;
         }
+        
         #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         #reader-screen.active { opacity: 1; visibility: visible; pointer-events: all; }
 
@@ -81,13 +87,8 @@
         .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
 
         /* =========================================
-           TELA DE LEITURA (PDF E FÍSICA)
+           TELA DE LEITURA E FÍSICA
            ========================================= */
-        #reader-screen { 
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
-            background: var(--bg-color); z-index: 1000; overflow: hidden; animation: fadeIn 0.4s ease; 
-        }
-        
         #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
         #brand-header img { max-height: 40px; mix-blend-mode: multiply; }
         
@@ -101,23 +102,21 @@
         .btn-voltar { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
         .btn-voltar:hover, .btn-voltar:active { background: var(--accent); color: white; }
 
-        /* O CONTAINER DA FÍSICA */
         #viewer-container { 
             flex: 1; height: calc(100dvh - 60px); 
             perspective: 2000px; display: flex; justify-content: center; align-items: center; position: relative; 
         }
         
-        /* O PAPEL (Quem sofre o Zoom e o Giro) */
         #viewer-wrapper { 
             width: 92%; height: 80%; margin-top: 20px; background: var(--page-bg); border-radius: 4px; 
             box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); z-index: 5; border: 1px solid #eadecb; 
             position: relative; overflow: hidden; display: flex; justify-content: flex-start; align-items: flex-start;
-            will-change: transform;
+            will-change: transform; transform-style: preserve-3d;
         }
 
         #pdf-canvas {
-            mix-blend-mode: multiply; transform-origin: top left;
-            /* Isso é crítico para não pixelar. O JS vai injetar a largura certa aqui */
+            transform-origin: top left;
+            transition: width 0.1s, height 0.1s; 
         }
 
         #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 50;}
@@ -132,7 +131,7 @@
         #zoom-slider { width: 60%; -webkit-appearance: none; height: 6px; background: #eadecb; border-radius: 5px; outline: none; }
         #zoom-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        /* MODAIS GERAIS */
+        /* MODAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: rgba(61, 52, 45, 0.7); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px); }
         .modal-bottom { align-items: flex-end; }
         .modal-content { background: var(--page-bg); border-radius: 12px; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center; width: 85%; max-width: 320px; animation: slideUp 0.3s ease; position: relative; border: 1px solid #eadecb; }
@@ -223,7 +222,7 @@
             </button>
         </div>
 
-        <div id="loading" style="display: none;">Carregando arquivo...</div>
+        <div id="loading" style="display: none;">Preparando Leitura...</div>
 
         <div id="viewer-container">
             <div id="viewer-wrapper">
@@ -262,7 +261,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const bookParam = urlParams.get('books') || 'cavaleiro'; 
-        const storageKey = 'minimundo_pdf_v5_' + bookParam;
+        const storageKey = 'minimundo_pdf_v6_' + bookParam;
 
         window.onload = function() {
             carregarVitrine(); carregarAnuncios(); verificarStatusLeitura();
@@ -285,7 +284,8 @@
             
             if (!pdfCarregado) {
                 document.getElementById('loading').style.display = 'block';
-                setTimeout(() => { iniciarPdfEngine(); }, 100);
+                // O segredo contra a tela branca: espera 150ms para garantir que a tela 'esticou' no CSS
+                setTimeout(() => { iniciarPdfEngine(); }, 150);
             }
         }
 
@@ -325,17 +325,19 @@
                 const scaleY = containerHeight / unscaledViewport.height;
                 const baseScale = Math.min(scaleX, scaleY);
 
-                // MÁGICA DE RESOLUÇÃO: Desenha o PDF sempre com 3x mais pixels (Super HD)
-                const MAX_ZOOM = 3; 
-                const pixelRatio = window.devicePixelRatio || 1;
-                const viewport = page.getViewport({scale: baseScale * pixelRatio * MAX_ZOOM});
+                // LIMITADOR ANTI-CRASH: Limita o pixelRatio a 2 para não estourar a memória RAM do celular
+                const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+                const viewport = page.getViewport({scale: baseScale * pixelRatio});
 
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
                 
-                // Salva a base original sem o multiplicador de zoom máximo para o CSS encolher a imagem
-                baseCanvasWidth = (viewport.width / pixelRatio) / MAX_ZOOM;
-                baseCanvasHeight = (viewport.height / pixelRatio) / MAX_ZOOM;
+                baseCanvasWidth = viewport.width / pixelRatio;
+                baseCanvasHeight = viewport.height / pixelRatio;
+
+                // Garante que o fundo seja cor de areia sólida antes de desenhar o PDF por cima
+                ctx.fillStyle = "#fcfaf5";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 const renderContext = { canvasContext: ctx, viewport: viewport };
                 
@@ -354,7 +356,7 @@
         function queueRenderPage(num) { if (pageRendering) { pageNumPending = num; } else { renderPage(num); } }
 
         // ====================================================
-        // NOVO MOTOR DE FÍSICA (TÁTIL) E ZOOM
+        // MOTOR DE FÍSICA E ZOOM
         // ====================================================
         const zoomSlider = document.getElementById('zoom-slider');
         const wrapper = document.getElementById('viewer-wrapper');
@@ -365,35 +367,32 @@
 
         function aplicarZoom(resetScroll = true) {
             if(!baseCanvasWidth) return;
-            // O canvas css cresce, mas a imagem dentro dele tem pixels de sobra (não borra)
             canvas.style.width = `${baseCanvasWidth * currentZoom}px`;
             canvas.style.height = `${baseCanvasHeight * currentZoom}px`;
 
             if (currentZoom > 1) { 
-                wrapper.style.overflow = 'auto'; // Libera arrastar a página com o dedo para ler
+                wrapper.style.overflow = 'auto'; // Zoom = Arrasta pra ler
             } else {
-                wrapper.style.overflow = 'hidden'; // Prende a página para a física funcionar
+                wrapper.style.overflow = 'hidden'; // Sem Zoom = Arrasta pra virar a página
                 if(resetScroll) { wrapper.scrollTop = 0; wrapper.scrollLeft = 0; }
             }
         }
 
         zoomSlider.addEventListener('input', (e) => { currentZoom = parseFloat(e.target.value); aplicarZoom(); });
 
-        // Movimento de Pinça
         let initialPinchDist = null;
         wrapper.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) { 
                 initialPinchDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); 
             } else if (e.touches.length === 1 && currentZoom === 1) {
-                // Inicia o Drag Tátil da página se o zoom for 1x
+                // Inicia o arrasto (física tátil)
                 startX = e.touches[0].clientX;
                 isDraggingPage = true;
-                wrapper.style.transition = 'none'; // Desliga a animação padrão para colar no dedo
+                wrapper.style.transition = 'none';
             }
         }, {passive: false});
 
         wrapper.addEventListener('touchmove', (e) => {
-            // Pinça
             if (e.touches.length === 2 && initialPinchDist) {
                 e.preventDefault(); 
                 const currentDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
@@ -401,25 +400,21 @@
                 currentZoom = Math.max(1, Math.min(currentZoom, 3));
                 zoomSlider.value = currentZoom; aplicarZoom(false); initialPinchDist = currentDist;
             } 
-            // Drag (Puxar a folha)
             else if (isDraggingPage && e.touches.length === 1 && currentZoom === 1) {
                 currentX = e.touches[0].clientX;
                 let diff = currentX - startX;
                 
-                // Puxando da direita pra esquerda (Avançar)
+                // Calculo de Mola 3D
                 if (diff < 0 && pageNum < pdfDoc.numPages) {
                     wrapper.style.transformOrigin = "left center";
-                    let deg = Math.max(-90, (diff / window.innerWidth) * 180); // Calcula o ângulo pelo dedo
-                    let skew = deg / 10; // Curvatura realista
-                    wrapper.style.transform = `rotateY(${deg}deg) skewY(${-skew}deg)`;
+                    let deg = Math.max(-90, (diff / window.innerWidth) * 120); 
+                    wrapper.style.transform = `rotateY(${deg}deg)`;
                     wrapper.style.filter = `brightness(${1 - Math.abs(diff)/window.innerWidth}) contrast(1.1)`;
                 } 
-                // Puxando da esquerda pra direita (Voltar)
                 else if (diff > 0 && pageNum > 1) {
                     wrapper.style.transformOrigin = "right center";
-                    let deg = Math.min(90, (diff / window.innerWidth) * 180);
-                    let skew = deg / 10;
-                    wrapper.style.transform = `rotateY(${deg}deg) skewY(${-skew}deg)`;
+                    let deg = Math.min(90, (diff / window.innerWidth) * 120);
+                    wrapper.style.transform = `rotateY(${deg}deg)`;
                     wrapper.style.filter = `brightness(${1 - Math.abs(diff)/window.innerWidth}) contrast(1.1)`;
                 }
             }
@@ -430,85 +425,41 @@
             isDraggingPage = false;
             let diff = currentX - startX;
             
-            wrapper.style.transition = 'transform 0.4s ease-out, filter 0.4s ease-out';
+            wrapper.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.4s ease';
             
-            // Se foi apenas um tap/clique rápido
-            if (Math.abs(diff) < 10) {
-                wrapper.style.transform = 'rotateY(0deg) skewY(0deg)';
-                wrapper.style.filter = 'brightness(1)';
-                if (startX > window.innerWidth * 0.6 && pageNum < pdfDoc.numPages) onNextPage();
-                else if (startX < window.innerWidth * 0.4 && pageNum > 1) onPrevPage();
-                return;
-            }
-
-            // Se o usuário soltou a folha depois de puxar bastante (Termina de virar)
-            if (diff < -(window.innerWidth * 0.3) && pageNum < pdfDoc.numPages) {
-                wrapper.style.transform = `rotateY(-90deg) skewY(5deg)`;
+            // Se puxou bastante, completa a volta
+            if (diff < -(window.innerWidth * 0.25) && pageNum < pdfDoc.numPages) {
+                wrapper.style.transform = `rotateY(-90deg)`;
                 setTimeout(() => { 
                     pageNum++; queueRenderPage(pageNum); 
                     wrapper.style.transition = 'none';
-                    wrapper.style.transform = `rotateY(90deg) skewY(-5deg)`;
+                    wrapper.style.transform = `rotateY(90deg)`;
                     void wrapper.offsetWidth;
                     wrapper.style.transition = 'transform 0.4s ease-out';
-                    wrapper.style.transform = 'rotateY(0deg) skewY(0deg)';
+                    wrapper.style.transform = 'rotateY(0deg)';
                     wrapper.style.filter = 'brightness(1)';
                 }, 400);
             } 
-            // Se o usuário soltou puxando pra direita (Termina de voltar)
-            else if (diff > (window.innerWidth * 0.3) && pageNum > 1) {
-                wrapper.style.transform = `rotateY(90deg) skewY(-5deg)`;
+            else if (diff > (window.innerWidth * 0.25) && pageNum > 1) {
+                wrapper.style.transform = `rotateY(90deg)`;
                 setTimeout(() => { 
                     pageNum--; queueRenderPage(pageNum); 
                     wrapper.style.transition = 'none';
-                    wrapper.style.transform = `rotateY(-90deg) skewY(5deg)`;
+                    wrapper.style.transform = `rotateY(-90deg)`;
                     void wrapper.offsetWidth;
                     wrapper.style.transition = 'transform 0.4s ease-out';
-                    wrapper.style.transform = 'rotateY(0deg) skewY(0deg)';
+                    wrapper.style.transform = 'rotateY(0deg)';
                     wrapper.style.filter = 'brightness(1)';
                 }, 400);
             } 
-            // Se soltou antes da metade (A folha volta e bate com peso)
+            // Bate com a mola de volta
             else {
-                wrapper.style.transform = 'rotateY(0deg) skewY(0deg)';
+                wrapper.style.transform = 'rotateY(0deg)';
                 wrapper.style.filter = 'brightness(1)';
             }
         });
 
-        // Animação de Botão Tap Simples
-        function onPrevPage() {
-            wrapper.style.transition = `transform 0.35s ease-in, filter 0.35s ease-in`;
-            wrapper.style.transformOrigin = "right center";
-            wrapper.style.transform = `rotateY(90deg) skewY(-5deg)`;
-            wrapper.style.filter = "brightness(0.7) contrast(1.1)";
-            setTimeout(() => {
-                pageNum--; queueRenderPage(pageNum);
-                wrapper.style.transition = "none";
-                wrapper.style.transform = `rotateY(-90deg) skewY(5deg)`;
-                void wrapper.offsetWidth; 
-                wrapper.style.transition = `transform 0.35s ease-out, filter 0.35s ease-out`;
-                wrapper.style.transform = "rotateY(0deg) skewY(0deg)";
-                wrapper.style.filter = "brightness(1) contrast(1)";
-            }, 350);
-        }
-
-        function onNextPage() {
-            wrapper.style.transition = `transform 0.35s ease-in, filter 0.35s ease-in`;
-            wrapper.style.transformOrigin = "left center";
-            wrapper.style.transform = `rotateY(-90deg) skewY(5deg)`;
-            wrapper.style.filter = "brightness(0.7) contrast(1.1)";
-            setTimeout(() => {
-                pageNum++; queueRenderPage(pageNum);
-                wrapper.style.transition = "none";
-                wrapper.style.transform = `rotateY(90deg) skewY(-5deg)`;
-                void wrapper.offsetWidth; 
-                wrapper.style.transition = `transform 0.35s ease-out, filter 0.35s ease-out`;
-                wrapper.style.transform = "rotateY(0deg) skewY(0deg)";
-                wrapper.style.filter = "brightness(1) contrast(1)";
-            }, 350);
-        }
-
-
-        // MODAIS
+        // MODAIS E FERRAMENTAS
         function mostrarModalPular() { if(pdfDoc) { document.getElementById('modal-pular').style.display = 'flex'; setTimeout(() => document.getElementById('input-pagina').focus(), 100); } }
         function fecharModalPular() { document.getElementById('modal-pular').style.display = 'none'; }
         function irParaPagina() { let num = parseInt(document.getElementById('input-pagina').value); if (num >= 1 && num <= pdfDoc.numPages) { pageNum = num; queueRenderPage(pageNum); fecharModalPular(); document.getElementById('input-pagina').value = ""; } else { alert(`Digite uma página entre 1 e ${pdfDoc.numPages}`); } }
@@ -517,7 +468,7 @@
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
-        // LOJA E ANÚNCIOS (Mantidos iguais, omitidos do JS visível apenas para focar na leitura)
+        // LOJA E ANÚNCIOS (Mantidos com a mesma lógica e IDs)
         function formatarPreco(val) { if(!val) return ""; let v = String(val).trim(); if(v.toUpperCase().includes("R$")) return v; if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ','); return "R$ " + v; }
         async function carregarVitrine() { try { const res = await fetch(API_CATALOGO); const dados = await res.json(); if(dados.sucesso && dados.vitrine.length > 0) { catalogoGlobal = dados.vitrine; let html = ""; catalogoGlobal.forEach((p, i) => { const foto = p.foto.split(',')[0].trim(); html += `<div class="card-mini" onclick="abrirModalProduto(${i})"><img src="${foto}" class="card-img" onerror="this.src='logo.jpg'"><div class="card-info"><span class="card-tag">${p.categoria}</span><h4 class="card-nome">${p.nome}</h4><div class="card-preco">${formatarPreco(p.preco)}</div></div></div>`; }); document.getElementById("vitrine-produtos").innerHTML = html; document.getElementById("secao-loja").style.display = "block"; } } catch(e) {} }
         async function carregarAnuncios() { document.getElementById("secao-anuncios").style.display = "block"; const divCarrossel = document.getElementById("carrossel-anuncios"); try { const res = await fetch(API_ANUNCIOS); const dados = await res.json(); if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) { anunciosGlobal = dados.anuncios; let html = ""; anunciosGlobal.forEach((ad, i) => { html += `<div class="card-mini" onclick="abrirModalAnuncio(${i})"><div class="ad-img-wrapper"><img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'"><img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'"></div><div class="card-info"><h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4><p class="ad-desc">${ad.descricao}</p></div></div>`; }); divCarrossel.innerHTML = html; divCarrossel.style.display = "flex"; } else { divCarrossel.style.display = "none"; } } catch(e) { divCarrossel.style.display = "none"; } }
