@@ -585,7 +585,7 @@
         return html;
     }
 
-    async function carregarDoMeuServidor() {
+async function carregarDoMeuServidor() {
         if (!verificarPasseLivre()) return; 
 
         carregarVitrine();
@@ -597,7 +597,8 @@
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-            const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal });
+            // 🔥 AQUI ESTÁ A LINHA MÁGICA DO ANTI-CACHE 🔥
+            const resposta = await fetch(MINHA_API_GOOGLE + "?t=" + new Date().getTime(), { signal: controller.signal });
             clearTimeout(timeoutId);
 
             const dados = await resposta.json();
