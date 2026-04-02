@@ -606,7 +606,8 @@
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-            const resposta = await fetch(MINHA_API_GOOGLE, { signal: controller.signal });
+            // 🔥 AQUI ESTÁ A LINHA MÁGICA DO ANTI-CACHE 🔥
+            const resposta = await fetch(MINHA_API_GOOGLE + "?t=" + new Date().getTime(), { signal: controller.signal });
             clearTimeout(timeoutId);
 
             const dados = await resposta.json();
@@ -625,6 +626,7 @@
             resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center;'>Sem dados recentes.</p>";
 
+            // === A MÁGICA DA TABELA ===
             areaTabelas.innerHTML = "";
             botoesCamp.innerHTML = "";
 
