@@ -10,42 +10,37 @@
 
     <style>
         :root {
-            /* Paleta Mini Mundo (Tons de Terra e Areia) */
-            --bg-dark: #1f1915;     /* Marrom muito escuro para as bordas */
-            --bg-light: #362c24;    /* Marrom quente para o centro */
-            --page-bg: #fcf9f2;     /* Branco areia/marfim para a página (não cansa a vista) */
-            --brand-color: #5c3e26; /* Marrom do texto Mini Mundo */
+            /* Paleta Clean / Light Mode (Baseada no fundo do seu logo) */
+            --bg-color: #ffffff;    /* Fundo branco puro do site */
+            --page-bg: #fdfcf9;     /* Cor da página: um "off-white" levíssimo para destacar do fundo */
+            --text-color: #2b2b2b;  /* Cinza muito escuro para leitura confortável */
             --speed: 0.35s; 
         }
 
         body { 
             margin: 0; 
-            background-color: var(--bg-dark); 
+            background-color: var(--bg-color); 
             height: 100vh; 
             overflow: hidden; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         }
 
-        /* Cabeçalho Elegante com o Logo */
+        /* Logo no Topo Esquerdo */
         #brand-header {
             position: absolute;
-            top: 0;
-            width: 100%;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            top: 20px;
+            left: 20px;
             z-index: 10;
-            pointer-events: none; /* Para não atrapalhar o clique nas páginas */
+            pointer-events: none; 
         }
 
         #brand-header img {
-            max-height: 40px;
-            opacity: 0.85; /* Deixa levemente transparente para ficar elegante */
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            max-height: 45px;
+            /* O comando abaixo faz o fundo branco do seu JPG sumir e se misturar com o site! */
+            mix-blend-mode: multiply; 
         }
 
-        /* Fundo com iluminação quente */
+        /* Container do Livro */
         #viewer-container {
             flex: 1; 
             height: 100vh; 
@@ -53,20 +48,23 @@
             display: flex; 
             justify-content: center; 
             align-items: center;
-            background: radial-gradient(circle at 50% 40%, var(--bg-light) 0%, var(--bg-dark) 100%);
+            background-color: var(--bg-color);
             position: relative;
-            padding-top: 20px; /* Dá espaço para o logo não colar no livro */
         }
 
         #viewer { 
             width: 90%; 
-            height: 82%; 
+            height: 80%; /* Altura ajustada para dar espaço ao logo no topo */
+            margin-top: 30px; 
             background: var(--page-bg); 
-            box-shadow: 0 5px 35px rgba(0,0,0,0.9);
-            border-radius: 3px;
+            /* Sombra mais suave já que o site agora é claro */
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            border-radius: 4px;
             z-index: 5;
+            border: 1px solid #eaeaea; /* Borda fininha para delimitar a página */
         }
 
+        /* Zonas de Toque nas laterais */
         .touch-zone { 
             position: absolute; top: 0; bottom: 0; width: 35%; 
             z-index: 100; -webkit-tap-highlight-color: transparent; 
@@ -74,9 +72,10 @@
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
 
+        /* Estilo do Loading */
         #loading { 
-            position: absolute; color: #e8dccb; width: 100%; text-align: center; 
-            top: 50%; transform: translateY(-50%); z-index: 1; font-weight: normal;
+            position: absolute; color: var(--text-color); width: 100%; text-align: center; 
+            top: 50%; transform: translateY(-50%); z-index: 1; font-weight: 500;
             font-size: 1.1rem; letter-spacing: 1px;
         }
     </style>
@@ -108,26 +107,30 @@
 
             const bookPath = "./books/" + bookParam + ".epub";
             const book = ePub(bookPath);
+            
+            // CONFIGURAÇÃO CORRIGIDA PARA PERSISTÊNCIA: spread: "none"
             const rendition = book.renderTo("viewer", {
-                width: "100%", height: "100%", flow: "paginated", manager: "default"
+                width: "100%", 
+                height: "100%", 
+                flow: "paginated", 
+                manager: "default",
+                spread: "none" // Obriga a ser 1 página por vez, resolvendo o bug do PC vs Celular
             });
 
-            // MÁGICA 1: Customizando a cor do texto do livro para combinar com a "areia"
+            // Ajuste do tema para o modo claro
             rendition.themes.default({
                 body: { "background": "transparent" },
-                p: { "color": "#2c241c" }, // Texto num marrom muito escuro, mais suave que o preto
-                h1: { "color": "#5c3e26" },
-                h2: { "color": "#5c3e26" }
+                p: { "color": "var(--text-color)", "line-height": "1.6" },
+                h1: { "color": "#000" },
+                h2: { "color": "#000" }
             });
 
-            // MÁGICA 2: Verificando se o usuário já leu este livro antes
             const storageKey = 'minimundo_leitura_' + bookParam;
             const paginaSalva = localStorage.getItem(storageKey);
 
             book.opened.then(() => {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Se tem página salva, abre nela. Se não, abre no começo.
                 if (paginaSalva) {
                     rendition.display(paginaSalva);
                 } else {
@@ -135,19 +138,19 @@
                 }
             });
 
-            // MÁGICA 3: Salvando a página toda vez que ele vira
+            // Salva a página exata toda vez que muda
             rendition.on("relocated", function(location) {
                 if (location && location.start) {
-                    localStorage.setItem(storageKey, location.start.cfi); // Salva no celular do cliente
+                    localStorage.setItem(storageKey, location.start.cfi);
                 }
             });
 
-            // MÁGICA 4: O Efeito 3D da folha (mantido igual ao anterior)
+            // Efeito 3D (Ajustado para o fundo claro)
             const turnPage = (dir) => {
                 viewer.style.transformOrigin = dir === 'next' ? "left center" : "right center";
                 viewer.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
                 viewer.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.95)" : "rotateY(90deg) scale(0.95)";
-                viewer.style.filter = "brightness(0.6) sepia(0.3)"; // Um leve sépia para combinar com a folha de areia
+                viewer.style.filter = "brightness(0.85)"; // Escurece um pouco menos no fundo branco
 
                 setTimeout(() => {
                     if (dir === 'next') rendition.next();
@@ -160,7 +163,7 @@
 
                     viewer.style.transition = "transform var(--speed) ease-out, filter var(--speed) ease-out";
                     viewer.style.transform = "rotateY(0deg) scale(1)";
-                    viewer.style.filter = "brightness(1) sepia(0)";
+                    viewer.style.filter = "brightness(1)";
                 }, 350); 
             };
 
