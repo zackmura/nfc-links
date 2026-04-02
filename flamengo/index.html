@@ -259,7 +259,7 @@
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}`); const json = await res.json();
+            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}&_t=${new Date().getTime()}`); const json = await res.json();
             const header = json.header.competitions[0], timeInfo = header.status.displayClock ? `${header.status.displayClock}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
             const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
             const boxscore = json.boxscore?.teams || []; let statsHTML = '';
