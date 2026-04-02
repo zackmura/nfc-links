@@ -10,7 +10,6 @@
 
     <style>
         :root {
-            /* PALETA MINI MUNDO PREMIUM */
             --bg-color: #fcfaf5;    
             --page-bg: #fcfaf5;     
             --text-color: #3d342d;  
@@ -42,8 +41,10 @@
         .welcome-text { font-size: 0.85rem; font-style: italic; color: #7a6b5d; line-height: 1.4; margin: 0 0 20px; }
 
         .hub-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; padding: 0 10px; box-sizing: border-box; }
+        
         .btn-ler { background: var(--accent); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 var(--accent-dark), 0 10px 20px rgba(139, 90, 43, 0.2); transition: transform 0.1s, box-shadow 0.1s; }
         .btn-ler:active { transform: translateY(6px); box-shadow: 0 0 0 var(--accent-dark); }
+        
         .btn-reset { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
@@ -77,7 +78,6 @@
         .btn-anuncie { background: #fdfaf2; color: var(--accent-dark); text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #d9cbb8; transition: transform 0.2s; }
         .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #d9cbb8; }
 
-        /* Rodapé de Agradecimento */
         .premium-footer { margin-top: 30px; text-align: center; padding: 20px; border-top: 1px dashed #eadecb; width: 100%; max-width: 420px; box-sizing: border-box; }
         .premium-footer p { font-size: 0.8rem; color: #7a6b5d; line-height: 1.5; margin: 0; font-style: italic; }
         .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
@@ -86,8 +86,20 @@
            TELA DE LEITURA (LIVRO)
            ========================================= */
         #reader-screen { display: none; height: 100vh; overflow: hidden; position: relative; animation: fadeIn 0.4s ease; background: var(--bg-color); }
+        
         #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
-        #brand-header img { max-height: 45px; mix-blend-mode: multiply; }
+        #brand-header img { max-height: 40px; mix-blend-mode: multiply; }
+        
+        /* NOVO: Contador de Páginas Centralizado */
+        .page-counter-box { 
+            position: absolute; left: 50%; transform: translateX(-50%); 
+            text-align: center; cursor: pointer; padding: 5px 15px; border-radius: 20px;
+            transition: 0.2s;
+        }
+        .page-counter-box:active { background: #f2ebd9; }
+        #page-counter-text { font-size: 0.95rem; font-weight: 900; color: var(--accent-dark); display: block; }
+        .page-counter-hint { font-size: 0.65rem; color: #7a6b5d; text-transform: uppercase; font-weight: bold; margin-top: 2px;}
+
         .btn-voltar { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
         .btn-voltar:hover, .btn-voltar:active { background: var(--accent); color: white; }
 
@@ -97,10 +109,10 @@
         .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10; -webkit-tap-highlight-color: transparent;}
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
-        #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; }
+        #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold;}
 
         /* =========================================
-           MODAIS (RESET, PRODUTO E ANÚNCIO)
+           MODAIS (RESET, PRODUTO, ANÚNCIO E PÁGINA)
            ========================================= */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(61, 52, 45, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
         .modal-bottom { align-items: flex-end; }
@@ -109,21 +121,24 @@
 
         .btn-fechar { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: var(--text-color); cursor: pointer; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
 
-        /* Modal Reset */
+        /* Modal Reset & Pagina */
         .modal-icon-reset { width: 36px; height: 36px; margin-bottom: 15px; stroke: var(--accent); fill: none; }
         .modal-buttons { display: flex; gap: 15px; width: 100%; margin-top: 20px; }
         .modal-buttons button { padding: 12px 0; flex: 1; border-radius: 25px; border: none; font-weight: bold; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.2s;}
+        
+        .input-pagina { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #eadecb; text-align: center; font-size: 1.2rem; font-weight: bold; color: var(--accent-dark); box-sizing: border-box; margin-top: 15px; outline: none;}
+        .input-pagina:focus { border-color: var(--accent); }
+
         #btn-cancel { background: transparent; border: 1px solid #b5a99f; color: #8a7c71; }
         #btn-confirm { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25); }
 
-        /* Modal Produto (Com Galeria!) */
+        /* Restante dos modais da loja (Mantidos iguais) */
         .galeria-produto { width: 100%; background: #faf8f2; }
         .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
         .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: var(--page-bg); border-bottom: 1px solid #eadecb; }
         .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s; }
         .miniatura.ativa { border-color: var(--accent); opacity: 1; }
 
-        /* Modal Anúncio */
         .modal-ad-header-imgs { position: relative; height: 180px; width: 100%; background: #f0f0f0; }
         .modal-ad-banner { width: 100%; height: 100%; object-fit: cover; }
         .modal-ad-logo { position: absolute; bottom: -30px; left: 20px; width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
@@ -140,7 +155,6 @@
 
         .btn-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a; transition: transform 0.1s; text-decoration: none; margin-top: 10px; }
         .btn-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a; }
-        
         .btn-call { background: #f2ebd9; color: var(--text-color); border: 1px solid #eadecb; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -160,26 +174,21 @@
         <div class="hub-buttons">
             <button class="btn-ler" onclick="abrirLeitor()">
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                Continuar Leitura
+                <span id="texto-btn-ler">Iniciar Leitura</span>
             </button>
-            <button class="btn-reset" onclick="mostrarModalReset()">🔄 Apagar progresso e Recomeçar</button>
+            <button class="btn-reset" id="btn-reset-hub" onclick="mostrarModalReset()">🔄 Apagar progresso e Recomeçar</button>
         </div>
 
         <div class="hub-section" id="secao-loja" style="display: none;">
             <h3 class="section-title">🛍️ Loja Mini Mundo 3D</h3>
             <p class="section-subtitle">Conheça nossos produtos exclusivos feitos sob medida.</p>
-            <div class="carrossel" id="vitrine-produtos">
-                <p style="font-size: 0.8rem; color: #888;">Carregando vitrine...</p>
-            </div>
+            <div class="carrossel" id="vitrine-produtos"></div>
         </div>
 
         <div class="hub-section" id="secao-anuncios" style="display: none;">
             <h3 class="section-title">⭐ Nossos Parceiros</h3>
             <p class="section-subtitle">Aproveite as ofertas exclusivas para nossos leitores.</p>
-            
-            <div class="carrossel" id="carrossel-anuncios">
-                <p style="font-size: 0.8rem; color: #888;">Procurando ofertas...</p>
-            </div>
+            <div class="carrossel" id="carrossel-anuncios"></div>
 
             <div class="anuncie-aqui-banner">
                 <h4 class="anuncie-title">🚀 Sua marca vista por todos!</h4>
@@ -196,6 +205,12 @@
     <div id="reader-screen">
         <div id="brand-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
+            
+            <div class="page-counter-box" onclick="mostrarModalPagina()">
+                <span id="page-counter-text">Calculando...</span>
+                <div class="page-counter-hint">Ir para página ▾</div>
+            </div>
+
             <button class="btn-voltar" onclick="voltarHome()">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                 Voltar
@@ -215,13 +230,25 @@
 
     <div id="modal-reset" class="modal-overlay">
         <div class="modal-content">
-            <svg class="modal-icon-reset" viewBox="0 0 24 24">
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
-            </svg>
+            <svg class="modal-icon-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             <p style="color: var(--text-color); font-weight: 600;">Deseja apagar o progresso e voltar para a primeira página?</p>
             <div class="modal-buttons">
                 <button id="btn-cancel" onclick="fecharModalReset()">Cancelar</button>
                 <button id="btn-confirm" onclick="confirmarReset()">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-pagina" class="modal-overlay">
+        <div class="modal-content">
+            <p style="color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0;">PULAR PARA A PÁGINA</p>
+            <p style="color: #7a6b5d; font-size: 0.85rem; margin-top: 5px;">Escolha um número entre 1 e <span id="total-paginas-modal">...</span></p>
+            
+            <input type="number" id="input-pagina" class="input-pagina" placeholder="Ex: 15">
+            
+            <div class="modal-buttons">
+                <button id="btn-cancel" onclick="fecharModalPagina()">Cancelar</button>
+                <button id="btn-confirm" onclick="irParaPagina()">Avançar ➡️</button>
             </div>
         </div>
     </div>
@@ -254,16 +281,8 @@
                 <h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3>
                 <h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2>
                 <p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p>
-                
-                <div id="modal-ad-cupom-container" style="display:none;">
-                    <div id="modal-ad-cupom" class="ad-cupom-box">🎟️ Cupom</div>
-                </div>
-
-                <a id="modal-ad-endereco-box" href="#" target="_blank" class="ad-endereco-box" style="display:none;">
-                    <span id="modal-ad-endereco-text" class="ad-endereco-text">Endereço</span>
-                    <span class="ad-endereco-btn">Mapa</span>
-                </a>
-
+                <div id="modal-ad-cupom-container" style="display:none;"><div id="modal-ad-cupom" class="ad-cupom-box">🎟️ Cupom</div></div>
+                <a id="modal-ad-endereco-box" href="#" target="_blank" class="ad-endereco-box" style="display:none;"><span id="modal-ad-endereco-text" class="ad-endereco-text">Endereço</span><span class="ad-endereco-btn">Mapa</span></a>
                 <div style="display: flex; gap: 10px;">
                     <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="flex: 2; font-size: 0.9rem;">💬 WhatsApp</a>
                     <a id="modal-ad-call" href="#" class="btn-call" style="flex: 1; display:none; font-size: 0.9rem;">📞 Ligar</a>
@@ -276,10 +295,8 @@
         const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
         const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
 
-        let catalogoGlobal = [];
-        let anunciosGlobal = [];
-        let livroIniciado = false;
-        let book, rendition;
+        let catalogoGlobal = []; let anunciosGlobal = [];
+        let livroIniciado = false; let book, rendition; let totalDePaginas = 0;
         
         const urlParams = new URLSearchParams(window.location.search);
         const bookParam = urlParams.get('books');
@@ -288,9 +305,24 @@
         window.onload = function() {
             carregarVitrine();
             carregarAnuncios();
+            verificarStatusLeitura();
         };
 
-        // --- NAVEGAÇÃO DE TELAS ---
+        // Lógica do Botão Inteligente (Iniciar vs Continuar)
+        function verificarStatusLeitura() {
+            const savedLoc = localStorage.getItem(storageKey);
+            const btnText = document.getElementById("texto-btn-ler");
+            const btnReset = document.getElementById("btn-reset-hub");
+
+            if (savedLoc) {
+                btnText.innerText = "Continuar Leitura";
+                btnReset.style.display = "block"; // Mostra recomeçar
+            } else {
+                btnText.innerText = "Iniciar Leitura";
+                btnReset.style.display = "none";  // Esconde recomeçar
+            }
+        }
+
         function abrirLeitor() {
             document.getElementById('home-screen').style.display = 'none';
             document.getElementById('reader-screen').style.display = 'block';
@@ -305,9 +337,9 @@
         function voltarHome() {
             document.getElementById('reader-screen').style.display = 'none';
             document.getElementById('home-screen').style.display = 'flex';
+            verificarStatusLeitura(); // Atualiza os botões ao voltar
         }
 
-        // --- ENGINE DO EPUB.JS ---
         function iniciarEpubEngine() {
             const wrapper = document.getElementById('viewer-wrapper');
             book = ePub("./books/" + bookParam + ".epub");
@@ -325,14 +357,33 @@
                 ]);
             });
 
+            // 1. Gera as localizações para contar as páginas antes de abrir
+            book.ready.then(() => {
+                // 1600 caracteres = 1 página virtual (padrão Kindle)
+                return book.locations.generate(1600); 
+            }).then((locations) => {
+                totalDePaginas = book.locations.total;
+                document.getElementById("total-paginas-modal").innerText = totalDePaginas;
+            });
+
+            // 2. Abre a página correta
             Promise.all([book.ready, book.opened]).then(() => {
                 const savedLoc = localStorage.getItem(storageKey);
                 document.getElementById('loading').style.display = 'none';
                 rendition.display(savedLoc || undefined);
             });
 
+            // 3. Atualiza Contador e Salva Progresso
             rendition.on("relocated", (loc) => {
-                if (loc && loc.start) localStorage.setItem(storageKey, loc.start.cfi);
+                if (loc && loc.start) {
+                    localStorage.setItem(storageKey, loc.start.cfi);
+                    
+                    // Atualiza o textinho 20 de 500 no topo
+                    if(totalDePaginas > 0) {
+                        const paginaAtual = book.locations.locationFromCfi(loc.start.cfi);
+                        document.getElementById("page-counter-text").innerText = `${paginaAtual} de ${totalDePaginas}`;
+                    }
+                }
             });
 
             const turnPage = (dir) => {
@@ -365,15 +416,33 @@
             });
         }
 
+        // --- LÓGICA DE PULAR PÁGINA ---
+        function mostrarModalPagina() {
+            if(totalDePaginas > 0) {
+                document.getElementById('modal-pagina').style.display = 'flex';
+                // Foca no input automaticamente
+                setTimeout(() => document.getElementById('input-pagina').focus(), 100);
+            }
+        }
+        function fecharModalPagina() { document.getElementById('modal-pagina').style.display = 'none'; }
+        
+        function irParaPagina() {
+            const num = parseInt(document.getElementById('input-pagina').value);
+            if (num > 0 && num <= totalDePaginas) {
+                const cfi = book.locations.cfiFromLocation(num);
+                rendition.display(cfi);
+                fecharModalPagina();
+                document.getElementById('input-pagina').value = ""; // limpa pro próximo uso
+            } else {
+                alert(`Por favor, insira um número entre 1 e ${totalDePaginas}`);
+            }
+        }
+
         // --- LÓGICA DE RESET ---
         function mostrarModalReset() { document.getElementById('modal-reset').style.display = 'flex'; }
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
-        function confirmarReset() {
-            localStorage.removeItem(storageKey);
-            location.reload(); 
-        }
+        function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
-        // --- DADOS DA LOJA E ANÚNCIOS ---
         function formatarPreco(val) {
             if(!val) return "";
             let v = String(val).trim();
@@ -382,7 +451,6 @@
             return "R$ " + v;
         }
 
-        // Carrega a Loja
         async function carregarVitrine() {
             try {
                 const res = await fetch(API_CATALOGO);
@@ -392,141 +460,85 @@
                     let html = "";
                     catalogoGlobal.forEach((p, i) => {
                         const foto = p.foto.split(',')[0].trim();
-                        html += `
-                        <div class="card-mini" onclick="abrirModalProduto(${i})">
-                            <img src="${foto}" class="card-img" onerror="this.src='logo.jpg'">
-                            <div class="card-info">
-                                <span class="card-tag">${p.categoria}</span>
-                                <h4 class="card-nome">${p.nome}</h4>
-                                <div class="card-preco">${formatarPreco(p.preco)}</div>
-                            </div>
-                        </div>`;
+                        html += `<div class="card-mini" onclick="abrirModalProduto(${i})"><img src="${foto}" class="card-img" onerror="this.src='logo.jpg'"><div class="card-info"><span class="card-tag">${p.categoria}</span><h4 class="card-nome">${p.nome}</h4><div class="card-preco">${formatarPreco(p.preco)}</div></div></div>`;
                     });
                     document.getElementById("vitrine-produtos").innerHTML = html;
                     document.getElementById("secao-loja").style.display = "block";
                 }
-            } catch(e) { console.error(e); }
+            } catch(e) {}
         }
 
-        // Carrega Anúncios (Sempre exibe a seção para mostrar o banner Anuncie Aqui)
         async function carregarAnuncios() {
-            document.getElementById("secao-anuncios").style.display = "block"; // Seção mãe sempre visível
+            document.getElementById("secao-anuncios").style.display = "block"; 
             const divCarrossel = document.getElementById("carrossel-anuncios");
-
             try {
                 const res = await fetch(API_ANUNCIOS);
                 const dados = await res.json();
-                
                 if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) {
                     anunciosGlobal = dados.anuncios;
                     let html = "";
                     anunciosGlobal.forEach((ad, i) => {
-                        html += `
-                        <div class="card-mini" onclick="abrirModalAnuncio(${i})">
-                            <div class="ad-img-wrapper">
-                                <img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'">
-                                <img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'">
-                            </div>
-                            <div class="card-info">
-                                <h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4>
-                                <p class="ad-desc">${ad.descricao}</p>
-                            </div>
-                        </div>`;
+                        html += `<div class="card-mini" onclick="abrirModalAnuncio(${i})"><div class="ad-img-wrapper"><img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'"><img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'"></div><div class="card-info"><h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4><p class="ad-desc">${ad.descricao}</p></div></div>`;
                     });
                     divCarrossel.innerHTML = html;
                     divCarrossel.style.display = "flex";
-                } else {
-                    divCarrossel.style.display = "none"; // Esconde apenas o carrossel vazio
-                }
-            } catch(e) { 
-                console.error(e); 
-                divCarrossel.style.display = "none";
-            }
+                } else { divCarrossel.style.display = "none"; }
+            } catch(e) { divCarrossel.style.display = "none"; }
         }
 
-        // Abre Modal do Produto (Com Lógica da Galeria)
         function abrirModalProduto(index) {
             const p = catalogoGlobal[index];
             if(!p) return;
-
             const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
             const imgPrincipal = document.getElementById("modal-prod-foto-principal");
             imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
 
             const divMiniaturas = document.getElementById("modal-prod-miniaturas");
             divMiniaturas.innerHTML = "";
-            
             if (arrayFotos.length > 1) {
                 arrayFotos.forEach((linkFoto, i) => {
                     const imgMini = document.createElement("img");
-                    imgMini.src = linkFoto;
-                    imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
-                    imgMini.onclick = function() {
-                        imgPrincipal.src = linkFoto;
-                        document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa"));
-                        imgMini.classList.add("ativa");
-                    };
+                    imgMini.src = linkFoto; imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
+                    imgMini.onclick = function() { imgPrincipal.src = linkFoto; document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa")); imgMini.classList.add("ativa"); };
                     divMiniaturas.appendChild(imgMini);
                 });
                 divMiniaturas.style.display = "flex";
-            } else { 
-                divMiniaturas.style.display = "none"; 
-            }
+            } else { divMiniaturas.style.display = "none"; }
 
             document.getElementById("modal-prod-tag").innerText = p.categoria;
             document.getElementById("modal-prod-titulo").innerText = p.nome;
             document.getElementById("modal-prod-preco").innerText = formatarPreco(p.preco);
             document.getElementById("modal-prod-desc").innerText = p.descricao;
-
-            const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
-            document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
-
+            document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`)}`;
             document.getElementById("modal-produto").style.display = "flex";
         }
 
         function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
         document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
 
-        // Abre Modal do Anúncio
         function abrirModalAnuncio(index) {
             const ad = anunciosGlobal[index];
             if(!ad) return;
-
             document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg';
             document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg';
             document.getElementById("modal-ad-empresa").innerText = ad.empresa;
             document.getElementById("modal-ad-desc").innerText = ad.descricao;
             
             const precoEl = document.getElementById("modal-ad-preco");
-            if(ad.preco_oferta) { 
-                precoEl.innerText = formatarPreco(ad.preco_oferta); 
-                precoEl.style.display = "block"; 
-            } else { precoEl.style.display = "none"; }
+            if(ad.preco_oferta) { precoEl.innerText = formatarPreco(ad.preco_oferta); precoEl.style.display = "block"; } else { precoEl.style.display = "none"; }
             
             const cupomContainer = document.getElementById("modal-ad-cupom-container");
-            if(ad.cupom) { 
-                document.getElementById("modal-ad-cupom").innerText = `🎟️ Cupom: ${ad.cupom}`; 
-                cupomContainer.style.display = "block"; 
-            } else { cupomContainer.style.display = "none"; }
+            if(ad.cupom) { document.getElementById("modal-ad-cupom").innerText = `🎟️ Cupom: ${ad.cupom}`; cupomContainer.style.display = "block"; } else { cupomContainer.style.display = "none"; }
             
             const endEl = document.getElementById("modal-ad-endereco-box");
-            if(ad.endereco) { 
-                document.getElementById("modal-ad-endereco-text").innerText = ad.endereco; 
-                endEl.href = `http://maps.google.com/maps?q=${encodeURIComponent(ad.endereco)}`;
-                endEl.style.display = "flex"; 
-            } else { endEl.style.display = "none"; }
+            if(ad.endereco) { document.getElementById("modal-ad-endereco-text").innerText = ad.endereco; endEl.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ad.endereco)}`; endEl.style.display = "flex"; } else { endEl.style.display = "none"; }
             
             document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
-            
             const btnCall = document.getElementById("modal-ad-call");
-            if(ad.telefone) { 
-                btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; 
-                btnCall.style.display = "flex"; 
-            } else { btnCall.style.display = "none"; }
-
+            if(ad.telefone) { btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; btnCall.style.display = "flex"; } else { btnCall.style.display = "none"; }
+            
             document.getElementById("modal-anuncio").style.display = "flex";
         }
-
         function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
         document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
 
