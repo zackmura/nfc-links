@@ -6,60 +6,20 @@
     <title>Mini Mundo 3D - Reader</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/epub.js/0.3.88/epub.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        #viewer {
-            width: 90vw;
-            height: 80vh;
-            background: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            margin-top: 20px;
-        }
-
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #555;
-        }
-
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+        body { margin: 0; padding: 0; background-color: #f4f4f4; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
+        #viewer { width: 90vw; height: 80vh; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.2); margin-top: 20px; }
+        .controls { margin-top: 20px; display: flex; gap: 20px; }
+        button { padding: 10px 20px; cursor: pointer; background-color: #333; color: white; border: none; border-radius: 5px; font-size: 16px; }
+        button:hover { background-color: #555; }
+        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="loading">Carregando livro...</div>
+    <div id="loading">Carregando motor de leitura...</div>
     <div id="viewer"></div>
 
     <div class="controls">
@@ -68,43 +28,54 @@
     </div>
 
     <script>
-        // 1. Captura o nome do livro da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        let bookName = urlParams.get('books'); // Pegando o parâmetro 'books' que você usou na imagem
+        window.onload = function() {
+            // 1. Verifica se a biblioteca carregou
+            if (typeof ePub === 'undefined') {
+                document.getElementById('loading').innerHTML = "Erro: Biblioteca ePub não carregada. Verifique sua conexão.";
+                return;
+            }
 
-        // 2. Ajuste do caminho: Como seu index está dentro de /books, 
-        // e o EPUB está na pasta /books/books/, precisamos ajustar:
-        const bookPath = `./books/${bookName}.epub`;
+            document.getElementById('loading').innerHTML = "Buscando arquivo do livro...";
 
-        const book = ePub(bookPath);
-        const rendition = book.renderTo("viewer", {
-            width: "100%",
-            height: "100%",
-            flow: "paginated",
-            manager: "default"
-        });
+            // 2. Captura o nome do livro
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookParam = urlParams.get('books');
 
-        // Exibe o livro e esconde o "Carregando"
-        book.opened.then(() => {
-            document.getElementById('loading').style.display = 'none';
-        });
+            if (!bookParam) {
+                document.getElementById('loading').innerHTML = "Erro: Nenhum livro especificado na URL (?books=...)";
+                return;
+            }
 
-        rendition.display();
+            // 3. AJUSTE DE CAMINHO: 
+            // Se o index está em /books/ e o epub em /books/books/
+            const bookPath = "./books/" + bookParam + ".epub";
 
-        // Controles de navegação
-        document.getElementById('prev').addEventListener('click', () => {
-            rendition.prev();
-        });
+            const book = ePub(bookPath);
+            const rendition = book.renderTo("viewer", {
+                width: "100%",
+                height: "100%",
+                flow: "paginated",
+                manager: "default"
+            });
 
-        document.getElementById('next').addEventListener('click', () => {
-            rendition.next();
-        });
+            book.opened.then(() => {
+                document.getElementById('loading').style.display = 'none';
+            }).catch(err => {
+                document.getElementById('loading').innerHTML = "Erro ao abrir o arquivo .epub. Verifique se o nome está correto.";
+                console.error(err);
+            });
 
-        // Navegação por teclado
-        document.addEventListener("keyup", (e) => {
-            if (e.key === "ArrowLeft") rendition.prev();
-            if (e.key === "ArrowRight") rendition.next();
-        });
+            rendition.display();
+
+            // Controles
+            document.getElementById('prev').onclick = () => rendition.prev();
+            document.getElementById('next').onclick = () => rendition.next();
+            
+            document.addEventListener("keyup", (e) => {
+                if (e.key === "ArrowLeft") rendition.prev();
+                if (e.key === "ArrowRight") rendition.next();
+            });
+        };
     </script>
 </body>
 </html>
