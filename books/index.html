@@ -26,7 +26,6 @@
             color: var(--text-color);
         }
 
-        /* Oculta scrollbar para ficar mais parecido com App */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
         /* =========================================
@@ -37,141 +36,112 @@
             padding: 20px 15px 40px; min-height: 100vh; animation: fadeIn 0.4s ease;
         }
 
-        .welcome-header {
-            text-align: center; margin-bottom: 25px; width: 100%; max-width: 420px;
-        }
+        .welcome-header { text-align: center; margin-bottom: 25px; width: 100%; max-width: 420px; }
+        .welcome-header img { max-width: 140px; mix-blend-mode: multiply; margin-bottom: 10px; }
+        .welcome-title { font-size: 1.2rem; font-weight: 900; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px; }
+        .welcome-text { font-size: 0.85rem; font-style: italic; color: #7a6b5d; line-height: 1.4; margin: 0 0 20px; }
 
-        .welcome-header img {
-            max-width: 140px; mix-blend-mode: multiply; margin-bottom: 10px;
-        }
-
-        .welcome-title {
-            font-size: 1.2rem; font-weight: 900; color: var(--accent-dark); 
-            text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;
-        }
-
-        .welcome-text {
-            font-size: 0.85rem; font-style: italic; color: #7a6b5d; line-height: 1.4; margin: 0 0 20px;
-        }
-
-        .hub-buttons {
-            display: flex; flex-direction: column; gap: 12px; width: 100%; padding: 0 10px; box-sizing: border-box;
-        }
-
-        .btn-ler {
-            background: var(--accent); color: white; border: none; padding: 16px; border-radius: 12px;
-            font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;
-            box-shadow: 0 6px 0 var(--accent-dark), 0 10px 20px rgba(139, 90, 43, 0.2); transition: transform 0.1s, box-shadow 0.1s;
-        }
+        .hub-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; padding: 0 10px; box-sizing: border-box; }
+        .btn-ler { background: var(--accent); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1.05rem; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 var(--accent-dark), 0 10px 20px rgba(139, 90, 43, 0.2); transition: transform 0.1s, box-shadow 0.1s; }
         .btn-ler:active { transform: translateY(6px); box-shadow: 0 0 0 var(--accent-dark); }
-
-        .btn-reset {
-            background: transparent; color: var(--accent); border: 1px solid var(--accent);
-            padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s;
-        }
+        .btn-reset { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
-        /* === SEÇÃO VITRINE E ANÚNCIOS (Adaptado do Palmeiras para Mini Mundo) === */
-        .hub-section {
-            width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px;
-            border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box;
-        }
-
-        .section-title {
-            color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px;
-            text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
-        }
+        /* SEÇÕES (LOJA E ANÚNCIOS) */
+        .hub-section { width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box; }
+        .section-title { color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+        .section-subtitle { font-size: 0.8rem; color: #7a6b5d; margin-top: -10px; margin-bottom: 15px; }
 
         .carrossel { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scroll-snap-type: x mandatory; }
-        
-        .card-mini {
-            min-width: 140px; max-width: 140px; background: #faf8f2; border: 1px solid #eadecb;
-            border-radius: 12px; scroll-snap-align: start; display: flex; flex-direction: column; overflow: hidden; cursor: pointer;
-        }
-        .card-img { width: 100%; height: 130px; object-fit: cover; background: #fff; border-bottom: 1px solid #eadecb;}
-        .card-info { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
-        .card-tag { font-size: 0.55rem; background: #eadecb; color: var(--accent-dark); padding: 3px 6px; border-radius: 4px; font-weight: 800; align-self: flex-start; margin-bottom: 6px; text-transform: uppercase;}
-        .card-nome { font-size: 0.8rem; font-weight: 800; color: var(--text-color); margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
-        .card-preco { font-size: 0.95rem; font-weight: 900; color: var(--accent); margin-top: auto;}
+        .carrossel::-webkit-scrollbar { height: 4px; }
+        .carrossel::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .carrossel::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-        /* Anúncios Específico */
-        .ad-img-wrapper { position: relative; height: 90px; width: 100%; background: #eee;}
-        .ad-logo { position: absolute; bottom: -15px; left: 10px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-        .ad-info { padding: 22px 10px 10px; display: flex; flex-direction: column; flex-grow: 1; }
-        .ad-desc { font-size: 0.65rem; color: #7a6b5d; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3;}
+        .card-mini { min-width: 140px; max-width: 140px; background: #faf8f2; border: 1px solid #eadecb; border-radius: 12px; scroll-snap-align: start; display: flex; flex-direction: column; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+        .card-mini:active { transform: scale(0.96); }
+        .card-img { width: 100%; height: 130px; object-fit: cover; background: #fff; border-bottom: 1px solid #eadecb; }
+        .card-info { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; text-align: left; }
+        .card-tag { font-size: 0.55rem; background: #eadecb; color: var(--accent-dark); padding: 3px 6px; border-radius: 4px; font-weight: 800; align-self: flex-start; margin-bottom: 6px; text-transform: uppercase; }
+        .card-nome { font-size: 0.85rem; font-weight: 800; color: var(--text-color); margin: 0 0 6px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-preco { font-size: 0.95rem; font-weight: 900; color: var(--accent); margin-top: auto; }
+
+        /* Anúncios */
+        .ad-img-wrapper { position: relative; height: 90px; width: 100%; background: #eee; }
+        .ad-logo { position: absolute; bottom: -15px; left: 10px; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .ad-desc { font-size: 0.65rem; color: #7a6b5d; margin: 0 0 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+
+        /* Banner Anuncie Aqui */
+        .anuncie-aqui-banner { background: var(--accent); color: #fff; padding: 20px; border-radius: 12px; text-align: center; margin-top: 15px; box-shadow: 0 5px 15px rgba(139, 90, 43, 0.2); }
+        .anuncie-title { font-size: 1.1rem; font-weight: 900; margin: 0 0 5px; color: #f2ebd9; }
+        .anuncie-desc { font-size: 0.8rem; color: #fdfaf2; margin: 0 0 15px; line-height: 1.4; }
+        .btn-anuncie { background: #fdfaf2; color: var(--accent-dark); text-decoration: none; font-weight: 900; padding: 10px 20px; border-radius: 8px; display: inline-block; font-size: 0.85rem; text-transform: uppercase; box-shadow: 0 4px 0 #d9cbb8; transition: transform 0.2s; }
+        .btn-anuncie:active { transform: translateY(4px); box-shadow: 0 0 0 #d9cbb8; }
+
+        /* Rodapé de Agradecimento */
+        .premium-footer { margin-top: 30px; text-align: center; padding: 20px; border-top: 1px dashed #eadecb; width: 100%; max-width: 420px; box-sizing: border-box; }
+        .premium-footer p { font-size: 0.8rem; color: #7a6b5d; line-height: 1.5; margin: 0; font-style: italic; }
+        .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
 
         /* =========================================
            TELA DE LEITURA (LIVRO)
            ========================================= */
-        #reader-screen {
-            display: none; height: 100vh; overflow: hidden; position: relative; animation: fadeIn 0.4s ease;
-        }
-
-        #brand-header {
-            position: absolute; top: 0; width: 100%; height: 70px;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; box-sizing: border-box; z-index: 100;
-        }
+        #reader-screen { display: none; height: 100vh; overflow: hidden; position: relative; animation: fadeIn 0.4s ease; background: var(--bg-color); }
+        #brand-header { position: absolute; top: 0; width: 100%; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 100; }
         #brand-header img { max-height: 45px; mix-blend-mode: multiply; }
-
-        .btn-voltar {
-            background: transparent; border: 1px solid var(--accent); color: var(--accent);
-            padding: 8px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; 
-            text-transform: uppercase; letter-spacing: 1px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px;
-        }
+        .btn-voltar { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; border-radius: 20px; font-size: 11px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
         .btn-voltar:hover, .btn-voltar:active { background: var(--accent); color: white; }
 
-        #viewer-container {
-            flex: 1; height: 100vh; perspective: 1500px; display: flex; justify-content: center; align-items: center; position: relative;
-        }
-
-        #viewer-wrapper {
-            width: 90%; height: 80%; margin-top: 40px; background: var(--page-bg); border-radius: 4px;
-            box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); z-index: 5; border: 1px solid #eadecb;
-        }
+        #viewer-container { flex: 1; height: 100vh; perspective: 1500px; display: flex; justify-content: center; align-items: center; position: relative; }
+        #viewer-wrapper { width: 90%; height: 80%; margin-top: 40px; background: var(--page-bg); border-radius: 4px; box-shadow: 0 10px 40px rgba(61, 52, 45, 0.12); z-index: 5; border: 1px solid #eadecb; }
         #viewer { width: 100%; height: 100%; }
-
         .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10; -webkit-tap-highlight-color: transparent;}
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
-
-        #loading { 
-            position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8;
-        }
+        #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; }
 
         /* =========================================
-           MODAIS (PRODUTO, ANÚNCIO E CONFIRMAÇÃO)
+           MODAIS (RESET, PRODUTO E ANÚNCIO)
            ========================================= */
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(61, 52, 45, 0.7); 
-            display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); 
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(61, 52, 45, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-bottom { align-items: flex-end; }
+        .modal-content { background: var(--page-bg); border-radius: 12px; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center; width: 85%; max-width: 320px; animation: slideUp 0.3s ease; position: relative; border: 1px solid #eadecb; }
+        .modal-bottom .modal-content { border-radius: 20px 20px 0 0; width: 100%; max-width: 420px; padding: 0; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        .modal-bottom { align-items: flex-end; } /* Para modal de produto subir da base */
+        .btn-fechar { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: var(--text-color); cursor: pointer; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
 
-        .modal-content {
-            background: var(--page-bg); border-radius: 12px; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center; width: 85%; max-width: 320px; animation: slideUp 0.3s ease; position: relative;
-        }
-        .modal-bottom .modal-content { border-radius: 20px 20px 0 0; width: 100%; max-width: 420px; padding: 0; max-height: 90vh; }
-
-        .btn-fechar {
-            position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; color: var(--text-color); cursor: pointer; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        /* Modal Confirmação Reset */
+        /* Modal Reset */
         .modal-icon-reset { width: 36px; height: 36px; margin-bottom: 15px; stroke: var(--accent); fill: none; }
         .modal-buttons { display: flex; gap: 15px; width: 100%; margin-top: 20px; }
-        .modal-buttons button { padding: 12px 0; flex: 1; border-radius: 25px; border: none; font-weight: bold; text-transform: uppercase; font-size: 12px; cursor: pointer; }
+        .modal-buttons button { padding: 12px 0; flex: 1; border-radius: 25px; border: none; font-weight: bold; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.2s;}
         #btn-cancel { background: transparent; border: 1px solid #b5a99f; color: #8a7c71; }
         #btn-confirm { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25); }
 
-        /* Modal Loja/Anúncio Interno */
-        .foto-principal { width: 100%; height: 280px; object-fit: contain; background: #faf8f2; }
-        .info-completa { padding: 20px; text-align: left; display: flex; flex-direction: column; gap: 10px; overflow-y: auto;}
+        /* Modal Produto (Com Galeria!) */
+        .galeria-produto { width: 100%; background: #faf8f2; }
+        .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
+        .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: var(--page-bg); border-bottom: 1px solid #eadecb; }
+        .miniatura { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: 0.2s; }
+        .miniatura.ativa { border-color: var(--accent); opacity: 1; }
+
+        /* Modal Anúncio */
+        .modal-ad-header-imgs { position: relative; height: 180px; width: 100%; background: #f0f0f0; }
+        .modal-ad-banner { width: 100%; height: 100%; object-fit: cover; }
+        .modal-ad-logo { position: absolute; bottom: -30px; left: 20px; width: 70px; height: 70px; border-radius: 50%; border: 3px solid #fff; object-fit: cover; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
+
+        .info-completa { padding: 20px 20px 30px; text-align: left; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
         .titulo-modal { font-size: 1.3rem; font-weight: 900; margin: 0; color: var(--accent-dark);}
         .preco-modal { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin: 0;}
         .desc-modal { font-size: 0.85rem; color: #7a6b5d; line-height: 1.5; white-space: pre-wrap;}
-        .btn-zap { background: #25D366; color: white; text-decoration: none; padding: 16px; border-radius: 12px; font-weight: 800; text-align: center; margin-top: 10px; display: block;}
+        
+        .ad-cupom-box { background: #f2ebd9; color: var(--accent-dark); padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: 1px dashed var(--accent); display: inline-block; margin-bottom: 5px; }
+        .ad-endereco-box { background: #fdfaf2; border: 1px solid #eadecb; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(61,52,45,0.05); }
+        .ad-endereco-text { font-size: 0.85rem; font-weight: 700; flex-grow: 1; line-height: 1.3; color: var(--text-color); }
+        .ad-endereco-btn { font-size: 0.7rem; font-weight: 900; color: var(--accent); text-transform: uppercase; background: white; padding: 4px 8px; border-radius: 6px; border: 1px solid #eadecb; }
+
+        .btn-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a; transition: transform 0.1s; text-decoration: none; margin-top: 10px; }
+        .btn-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a; }
+        
+        .btn-call { background: #f2ebd9; color: var(--text-color); border: 1px solid #eadecb; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0;} to { transform: translateY(0); opacity: 1;} }
@@ -184,7 +154,7 @@
         <div class="welcome-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             <h2 class="welcome-title">Bem-Vindo à Experiência</h2>
-            <p class="welcome-text">Obrigado por adquirir um produto oficial Mini Mundo 3D. Sua leitura imersiva e ofertas exclusivas estão aqui.</p>
+            <p class="welcome-text">Obrigado por adquirir um produto oficial Mini Mundo 3D. Acesse sua leitura imersiva e ofertas exclusivas abaixo.</p>
         </div>
 
         <div class="hub-buttons">
@@ -192,11 +162,12 @@
                 <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                 Continuar Leitura
             </button>
-            <button class="btn-reset" onclick="mostrarModalReset()">🔄 Recomeçar Livro</button>
+            <button class="btn-reset" onclick="mostrarModalReset()">🔄 Apagar progresso e Recomeçar</button>
         </div>
 
         <div class="hub-section" id="secao-loja" style="display: none;">
             <h3 class="section-title">🛍️ Loja Mini Mundo 3D</h3>
+            <p class="section-subtitle">Conheça nossos produtos exclusivos feitos sob medida.</p>
             <div class="carrossel" id="vitrine-produtos">
                 <p style="font-size: 0.8rem; color: #888;">Carregando vitrine...</p>
             </div>
@@ -204,9 +175,21 @@
 
         <div class="hub-section" id="secao-anuncios" style="display: none;">
             <h3 class="section-title">⭐ Nossos Parceiros</h3>
+            <p class="section-subtitle">Aproveite as ofertas exclusivas para nossos leitores.</p>
+            
             <div class="carrossel" id="carrossel-anuncios">
                 <p style="font-size: 0.8rem; color: #888;">Procurando ofertas...</p>
             </div>
+
+            <div class="anuncie-aqui-banner">
+                <h4 class="anuncie-title">🚀 Sua marca vista por todos!</h4>
+                <p class="anuncie-desc">Anuncie seu negócio ou serviço diretamente no Chaveiro Inteligente.</p>
+                <a href="https://diario.vivainteligente.net/anuncios/" class="btn-anuncie">Anunciar Agora</a>
+            </div>
+        </div>
+
+        <div class="premium-footer">
+            <p>Este chaveiro é mais que um objeto, é um <strong>portal literário exclusivo</strong> impresso em 3D. Obrigado por apoiar a inovação da <strong>Mini Mundo</strong>!</p>
         </div>
     </div>
 
@@ -219,7 +202,7 @@
             </button>
         </div>
 
-        <div id="loading" style="display: none;">Preparando a página...</div>
+        <div id="loading" style="display: none;">Sincronizando a página...</div>
 
         <div id="viewer-container">
             <div id="zone-prev" class="touch-zone"></div>
@@ -232,7 +215,7 @@
 
     <div id="modal-reset" class="modal-overlay">
         <div class="modal-content">
-            <svg class="modal-icon-reset" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="modal-icon-reset" viewBox="0 0 24 24">
                 <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
             </svg>
             <p style="color: var(--text-color); font-weight: 600;">Deseja apagar o progresso e voltar para a primeira página?</p>
@@ -243,31 +226,61 @@
         </div>
     </div>
 
-    <div id="modal-info" class="modal-overlay modal-bottom">
+    <div id="modal-produto" class="modal-overlay modal-bottom">
         <div class="modal-content">
-            <button class="btn-fechar" onclick="fecharModalInfo()">×</button>
-            <img id="modal-foto" src="" class="foto-principal">
+            <button class="btn-fechar" onclick="fecharModalProduto()">×</button>
+            <div class="galeria-produto">
+                <img id="modal-prod-foto-principal" src="" class="foto-principal">
+                <div id="modal-prod-miniaturas" class="miniaturas-container"></div>
+            </div>
             <div class="info-completa">
-                <span id="modal-tag" class="card-tag">CATEGORIA</span>
-                <h3 id="modal-titulo" class="titulo-modal">Título</h3>
-                <h2 id="modal-preco" class="preco-modal">R$ 00,00</h2>
-                <p id="modal-desc" class="desc-modal">Descrição...</p>
-                <a id="modal-link" href="#" target="_blank" class="btn-zap">💬 Chamar no WhatsApp</a>
+                <span id="modal-prod-tag" class="card-tag">CATEGORIA</span>
+                <h3 id="modal-prod-titulo" class="titulo-modal">Título</h3>
+                <h2 id="modal-prod-preco" class="preco-modal">R$ 00,00</h2>
+                <p id="modal-prod-desc" class="desc-modal">Descrição...</p>
+                <a id="modal-prod-zap" href="#" target="_blank" class="btn-zap">🛒 Fazer Pedido no WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-anuncio" class="modal-overlay modal-bottom">
+        <div class="modal-content">
+            <button class="btn-fechar" onclick="fecharModalAnuncio()">×</button>
+            <div class="modal-ad-header-imgs">
+                <img id="modal-ad-banner" src="" class="modal-ad-banner">
+                <img id="modal-ad-logo" src="" class="ad-logo">
+            </div>
+            <div class="info-completa" style="padding-top: 30px;">
+                <h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3>
+                <h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2>
+                <p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p>
+                
+                <div id="modal-ad-cupom-container" style="display:none;">
+                    <div id="modal-ad-cupom" class="ad-cupom-box">🎟️ Cupom</div>
+                </div>
+
+                <a id="modal-ad-endereco-box" href="#" target="_blank" class="ad-endereco-box" style="display:none;">
+                    <span id="modal-ad-endereco-text" class="ad-endereco-text">Endereço</span>
+                    <span class="ad-endereco-btn">Mapa</span>
+                </a>
+
+                <div style="display: flex; gap: 10px;">
+                    <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="flex: 2; font-size: 0.9rem;">💬 WhatsApp</a>
+                    <a id="modal-ad-call" href="#" class="btn-call" style="flex: 1; display:none; font-size: 0.9rem;">📞 Ligar</a>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // APIs do Google Script (Fornecidas pelo Cliente)
         const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
         const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
 
         let catalogoGlobal = [];
         let anunciosGlobal = [];
-        
-        // Variáveis do Livro
         let livroIniciado = false;
         let book, rendition;
+        
         const urlParams = new URLSearchParams(window.location.search);
         const bookParam = urlParams.get('books');
         const storageKey = 'minimundo_v2_' + bookParam;
@@ -303,7 +316,6 @@
                 width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "none"
             });
 
-            // Força a Cor Terrosa da Mini Mundo no texto
             rendition.hooks.content.register(function(contents) {
                 contents.addStylesheetRules([
                     ["body", ["background-color", "transparent", "padding", "8% 6% !important"]],
@@ -323,7 +335,6 @@
                 if (loc && loc.start) localStorage.setItem(storageKey, loc.start.cfi);
             });
 
-            // Animação 3D do Livro
             const turnPage = (dir) => {
                 const speed = "0.35s";
                 wrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
@@ -336,7 +347,6 @@
                     wrapper.style.transition = "none";
                     wrapper.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.96)" : "rotateY(-90deg) scale(0.96)";
                     void wrapper.offsetWidth; 
-                    
                     wrapper.style.transition = `transform ${speed} ease-out, filter ${speed} ease-out`;
                     wrapper.style.transform = "rotateY(0deg) scale(1)";
                     wrapper.style.filter = "brightness(1)";
@@ -346,7 +356,6 @@
             document.getElementById('zone-next').onclick = () => turnPage('next');
             document.getElementById('zone-prev').onclick = () => turnPage('prev');
 
-            // Swipe no leitor
             let xDown = null;
             document.getElementById('viewer-container').addEventListener('touchstart', e => xDown = e.touches[0].clientX);
             document.getElementById('viewer-container').addEventListener('touchmove', e => {
@@ -373,6 +382,7 @@
             return "R$ " + v;
         }
 
+        // Carrega a Loja
         async function carregarVitrine() {
             try {
                 const res = await fetch(API_CATALOGO);
@@ -383,7 +393,7 @@
                     catalogoGlobal.forEach((p, i) => {
                         const foto = p.foto.split(',')[0].trim();
                         html += `
-                        <div class="card-mini" onclick="abrirModalDetalhe('loja', ${i})">
+                        <div class="card-mini" onclick="abrirModalProduto(${i})">
                             <img src="${foto}" class="card-img" onerror="this.src='logo.jpg'">
                             <div class="card-info">
                                 <span class="card-tag">${p.categoria}</span>
@@ -398,62 +408,128 @@
             } catch(e) { console.error(e); }
         }
 
+        // Carrega Anúncios (Sempre exibe a seção para mostrar o banner Anuncie Aqui)
         async function carregarAnuncios() {
+            document.getElementById("secao-anuncios").style.display = "block"; // Seção mãe sempre visível
+            const divCarrossel = document.getElementById("carrossel-anuncios");
+
             try {
                 const res = await fetch(API_ANUNCIOS);
                 const dados = await res.json();
-                if(dados.sucesso && dados.anuncios.length > 0) {
+                
+                if(dados.sucesso && dados.anuncios && dados.anuncios.length > 0) {
                     anunciosGlobal = dados.anuncios;
                     let html = "";
                     anunciosGlobal.forEach((ad, i) => {
                         html += `
-                        <div class="card-mini" onclick="abrirModalDetalhe('ad', ${i})">
+                        <div class="card-mini" onclick="abrirModalAnuncio(${i})">
                             <div class="ad-img-wrapper">
                                 <img src="${ad.foto}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='logo.jpg'">
                                 <img src="${ad.logo}" class="ad-logo" onerror="this.src='logo.jpg'">
                             </div>
-                            <div class="ad-info">
+                            <div class="card-info">
                                 <h4 class="card-nome" style="margin-bottom:2px;">${ad.empresa}</h4>
                                 <p class="ad-desc">${ad.descricao}</p>
                             </div>
                         </div>`;
                     });
-                    document.getElementById("carrossel-anuncios").innerHTML = html;
-                    document.getElementById("secao-anuncios").style.display = "block";
+                    divCarrossel.innerHTML = html;
+                    divCarrossel.style.display = "flex";
+                } else {
+                    divCarrossel.style.display = "none"; // Esconde apenas o carrossel vazio
                 }
-            } catch(e) { console.error(e); }
-        }
-
-        function abrirModalDetalhe(tipo, index) {
-            const modal = document.getElementById("modal-info");
-            const data = tipo === 'loja' ? catalogoGlobal[index] : anunciosGlobal[index];
-            if(!data) return;
-
-            document.getElementById("modal-foto").src = tipo === 'loja' ? data.foto.split(',')[0].trim() : (data.foto || 'logo.jpg');
-            
-            document.getElementById("modal-tag").innerText = tipo === 'loja' ? data.categoria : "OFERTA EXCLUSIVA";
-            document.getElementById("modal-titulo").innerText = tipo === 'loja' ? data.nome : data.empresa;
-            
-            const preco = tipo === 'loja' ? data.preco : data.preco_oferta;
-            document.getElementById("modal-preco").innerText = preco ? formatarPreco(preco) : "";
-            document.getElementById("modal-preco").style.display = preco ? "block" : "none";
-            
-            document.getElementById("modal-desc").innerText = data.descricao;
-
-            let linkZap = "";
-            if (tipo === 'loja') {
-                const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${data.nome}*.`);
-                linkZap = `https://wa.me/5511992279009?text=${textoZap}`;
-            } else {
-                linkZap = data.link_zap || '#';
+            } catch(e) { 
+                console.error(e); 
+                divCarrossel.style.display = "none";
             }
-            document.getElementById("modal-link").href = linkZap;
-
-            modal.style.display = "flex";
         }
 
-        function fecharModalInfo() { document.getElementById("modal-info").style.display = "none"; }
-        document.getElementById("modal-info").addEventListener('click', function(e) { if (e.target === this) fecharModalInfo(); });
+        // Abre Modal do Produto (Com Lógica da Galeria)
+        function abrirModalProduto(index) {
+            const p = catalogoGlobal[index];
+            if(!p) return;
+
+            const arrayFotos = p.foto.split(',').map(f => f.trim()).filter(f => f !== "");
+            const imgPrincipal = document.getElementById("modal-prod-foto-principal");
+            imgPrincipal.src = arrayFotos[0] || 'logo.jpg';
+
+            const divMiniaturas = document.getElementById("modal-prod-miniaturas");
+            divMiniaturas.innerHTML = "";
+            
+            if (arrayFotos.length > 1) {
+                arrayFotos.forEach((linkFoto, i) => {
+                    const imgMini = document.createElement("img");
+                    imgMini.src = linkFoto;
+                    imgMini.className = i === 0 ? "miniatura ativa" : "miniatura";
+                    imgMini.onclick = function() {
+                        imgPrincipal.src = linkFoto;
+                        document.querySelectorAll(".miniatura").forEach(m => m.classList.remove("ativa"));
+                        imgMini.classList.add("ativa");
+                    };
+                    divMiniaturas.appendChild(imgMini);
+                });
+                divMiniaturas.style.display = "flex";
+            } else { 
+                divMiniaturas.style.display = "none"; 
+            }
+
+            document.getElementById("modal-prod-tag").innerText = p.categoria;
+            document.getElementById("modal-prod-titulo").innerText = p.nome;
+            document.getElementById("modal-prod-preco").innerText = formatarPreco(p.preco);
+            document.getElementById("modal-prod-desc").innerText = p.descricao;
+
+            const textoZap = encodeURIComponent(`Olá! Tenho interesse no produto: *${p.nome}*. Como faço para pedir?`);
+            document.getElementById("modal-prod-zap").href = `https://wa.me/5511992279009?text=${textoZap}`;
+
+            document.getElementById("modal-produto").style.display = "flex";
+        }
+
+        function fecharModalProduto() { document.getElementById("modal-produto").style.display = "none"; }
+        document.getElementById("modal-produto").addEventListener('click', function(e) { if (e.target === this) fecharModalProduto(); });
+
+        // Abre Modal do Anúncio
+        function abrirModalAnuncio(index) {
+            const ad = anunciosGlobal[index];
+            if(!ad) return;
+
+            document.getElementById("modal-ad-banner").src = ad.foto || 'logo.jpg';
+            document.getElementById("modal-ad-logo").src = ad.logo || 'logo.jpg';
+            document.getElementById("modal-ad-empresa").innerText = ad.empresa;
+            document.getElementById("modal-ad-desc").innerText = ad.descricao;
+            
+            const precoEl = document.getElementById("modal-ad-preco");
+            if(ad.preco_oferta) { 
+                precoEl.innerText = formatarPreco(ad.preco_oferta); 
+                precoEl.style.display = "block"; 
+            } else { precoEl.style.display = "none"; }
+            
+            const cupomContainer = document.getElementById("modal-ad-cupom-container");
+            if(ad.cupom) { 
+                document.getElementById("modal-ad-cupom").innerText = `🎟️ Cupom: ${ad.cupom}`; 
+                cupomContainer.style.display = "block"; 
+            } else { cupomContainer.style.display = "none"; }
+            
+            const endEl = document.getElementById("modal-ad-endereco-box");
+            if(ad.endereco) { 
+                document.getElementById("modal-ad-endereco-text").innerText = ad.endereco; 
+                endEl.href = `http://maps.google.com/maps?q=${encodeURIComponent(ad.endereco)}`;
+                endEl.style.display = "flex"; 
+            } else { endEl.style.display = "none"; }
+            
+            document.getElementById("modal-ad-zap").href = ad.link_zap || '#';
+            
+            const btnCall = document.getElementById("modal-ad-call");
+            if(ad.telefone) { 
+                btnCall.href = `tel:${ad.telefone.replace(/\D/g, '')}`; 
+                btnCall.style.display = "flex"; 
+            } else { btnCall.style.display = "none"; }
+
+            document.getElementById("modal-anuncio").style.display = "flex";
+        }
+
+        function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
+        document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
+
     </script>
 </body>
 </html>
