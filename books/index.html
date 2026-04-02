@@ -10,10 +10,10 @@
 
     <style>
         :root {
-            /* Paleta Clean / Light Mode (Baseada no fundo do seu logo) */
-            --bg-color: #ffffff;    /* Fundo branco puro do site */
-            --page-bg: #fdfcf9;     /* Cor da página: um "off-white" levíssimo para destacar do fundo */
-            --text-color: #2b2b2b;  /* Cinza muito escuro para leitura confortável */
+            /* Paleta Sépia / Descanso Visual */
+            --bg-color: #f5f2eb;    /* Fundo da tela: um off-white muito suave */
+            --page-bg: #f9eed7;     /* Papel: tom de areia/pergaminho quente */
+            --text-color: #3b2f27;  /* Texto: marrom escuro quente (sem usar preto puro) */
             --speed: 0.35s; 
         }
 
@@ -36,11 +36,10 @@
 
         #brand-header img {
             max-height: 45px;
-            /* O comando abaixo faz o fundo branco do seu JPG sumir e se misturar com o site! */
-            mix-blend-mode: multiply; 
+            mix-blend-mode: multiply; /* Apaga o fundo branco do logo */
         }
 
-        /* Container do Livro */
+        /* Container Principal */
         #viewer-container {
             flex: 1; 
             height: 100vh; 
@@ -48,20 +47,26 @@
             display: flex; 
             justify-content: center; 
             align-items: center;
-            background-color: var(--bg-color);
             position: relative;
         }
 
-        #viewer { 
+        /* O WRAPPER: É ele quem sofre as animações 3D agora */
+        #viewer-wrapper {
             width: 90%; 
-            height: 80%; /* Altura ajustada para dar espaço ao logo no topo */
+            height: 80%; 
             margin-top: 30px; 
             background: var(--page-bg); 
-            /* Sombra mais suave já que o site agora é claro */
-            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
             border-radius: 4px;
             z-index: 5;
-            border: 1px solid #eaeaea; /* Borda fininha para delimitar a página */
+            border: 1px solid #e8dec7; /* Borda fininha e elegante */
+        }
+
+        /* O LEITOR: Fica estático, sem se confundir com animações */
+        #viewer { 
+            width: 100%; 
+            height: 100%; 
+            overflow: hidden;
         }
 
         /* Zonas de Toque nas laterais */
@@ -72,7 +77,6 @@
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
 
-        /* Estilo do Loading */
         #loading { 
             position: absolute; color: var(--text-color); width: 100%; text-align: center; 
             top: 50%; transform: translateY(-50%); z-index: 1; font-weight: 500;
@@ -90,7 +94,11 @@
 
     <div id="viewer-container">
         <div id="zone-prev" class="touch-zone"></div>
-        <div id="viewer"></div>
+        
+        <div id="viewer-wrapper">
+            <div id="viewer"></div>
+        </div>
+        
         <div id="zone-next" class="touch-zone"></div>
     </div>
 
@@ -98,7 +106,9 @@
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const bookParam = urlParams.get('books');
-            const viewer = document.getElementById('viewer');
+            
+            // Agora a animação acontece no wrapper
+            const viewerWrapper = document.getElementById('viewer-wrapper'); 
 
             if (!bookParam) {
                 document.getElementById('loading').innerHTML = "Aproxime a Tag NFC Mini Mundo";
@@ -108,21 +118,27 @@
             const bookPath = "./books/" + bookParam + ".epub";
             const book = ePub(bookPath);
             
-            // CONFIGURAÇÃO CORRIGIDA PARA PERSISTÊNCIA: spread: "none"
             const rendition = book.renderTo("viewer", {
                 width: "100%", 
                 height: "100%", 
                 flow: "paginated", 
                 manager: "default",
-                spread: "none" // Obriga a ser 1 página por vez, resolvendo o bug do PC vs Celular
+                spread: "none"
             });
 
-            // Ajuste do tema para o modo claro
+            // Tema de Leitura Confortável (Sépia)
             rendition.themes.default({
-                body: { "background": "transparent" },
-                p: { "color": "var(--text-color)", "line-height": "1.6" },
-                h1: { "color": "#000" },
-                h2: { "color": "#000" }
+                body: { 
+                    "background": "transparent", 
+                    "padding": "4% 6% !important" /* Desgruda o texto das bordas */
+                },
+                p: { 
+                    "color": "var(--text-color)", 
+                    "line-height": "1.6", 
+                    "font-size": "110%" /* Aumenta um pouquinho a letra para celular */
+                },
+                h1: { "color": "#2c221b" },
+                h2: { "color": "#2c221b" }
             });
 
             const storageKey = 'minimundo_leitura_' + bookParam;
@@ -138,32 +154,31 @@
                 }
             });
 
-            // Salva a página exata toda vez que muda
             rendition.on("relocated", function(location) {
                 if (location && location.start) {
                     localStorage.setItem(storageKey, location.start.cfi);
                 }
             });
 
-            // Efeito 3D (Ajustado para o fundo claro)
+            // Animação 3D aplicada APENAS no Wrapper
             const turnPage = (dir) => {
-                viewer.style.transformOrigin = dir === 'next' ? "left center" : "right center";
-                viewer.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
-                viewer.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.95)" : "rotateY(90deg) scale(0.95)";
-                viewer.style.filter = "brightness(0.85)"; // Escurece um pouco menos no fundo branco
+                viewerWrapper.style.transformOrigin = dir === 'next' ? "left center" : "right center";
+                viewerWrapper.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
+                viewerWrapper.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.95)" : "rotateY(90deg) scale(0.95)";
+                viewerWrapper.style.filter = "brightness(0.85)";
 
                 setTimeout(() => {
                     if (dir === 'next') rendition.next();
                     else rendition.prev();
 
-                    viewer.style.transition = "none";
-                    viewer.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.95)" : "rotateY(-90deg) scale(0.95)";
+                    viewerWrapper.style.transition = "none";
+                    viewerWrapper.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.95)" : "rotateY(-90deg) scale(0.95)";
                     
-                    void viewer.offsetWidth; 
+                    void viewerWrapper.offsetWidth; 
 
-                    viewer.style.transition = "transform var(--speed) ease-out, filter var(--speed) ease-out";
-                    viewer.style.transform = "rotateY(0deg) scale(1)";
-                    viewer.style.filter = "brightness(1)";
+                    viewerWrapper.style.transition = "transform var(--speed) ease-out, filter var(--speed) ease-out";
+                    viewerWrapper.style.transform = "rotateY(0deg) scale(1)";
+                    viewerWrapper.style.filter = "brightness(1)";
                 }, 350); 
             };
 
