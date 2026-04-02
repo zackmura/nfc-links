@@ -9,72 +9,135 @@
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 
     <style>
-        body { margin: 0; padding: 0; background-color: #f4f4f4; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
-        #viewer { width: 90vw; height: 80vh; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.2); margin-top: 20px; }
-        .controls { margin-top: 20px; display: flex; gap: 20px; }
-        button { padding: 10px 20px; cursor: pointer; background-color: #333; color: white; border: none; border-radius: 5px; font-size: 16px; }
-        button:hover { background-color: #555; }
-        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; }
+        body { 
+            margin: 0; padding: 0; 
+            background-color: #1a1a1a; /* Escuro para destacar o livro */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; flex-direction: column; align-items: center; 
+            height: 100vh; overflow: hidden; 
+            color: white;
+        }
+
+        #viewer { 
+            width: 95vw; 
+            height: 80vh; 
+            background: white; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        .controls { 
+            margin-top: 20px; 
+            display: flex; 
+            gap: 15px; 
+        }
+
+        button { 
+            padding: 12px 25px; 
+            cursor: pointer; 
+            background-color: #ff4757; /* Cor de destaque */
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            font-size: 16px; 
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #ff6b81; transform: scale(1.05); }
+
+        #loading { 
+            position: absolute; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); 
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Estilo para o conteúdo dentro do iframe do ePub */
+        .epub-container { padding: 20px; }
     </style>
 </head>
 <body>
 
-    <div id="loading">Carregando motor de leitura...</div>
+    <div id="loading">
+        <h2 id="status-msg">Iniciando Mini Mundo Reader...</h2>
+    </div>
+
     <div id="viewer"></div>
 
     <div class="controls">
-        <button id="prev">Anterior</button>
-        <button id="next">Próxima</button>
+        <button id="prev">⬅ Anterior</button>
+        <button id="next">Próxima ➡</button>
     </div>
 
     <script>
         window.onload = function() {
-            // 1. Verifica se a biblioteca carregou
+            const status = document.getElementById('status-msg');
+            
+            // 1. Verifica bibliotecas
             if (typeof ePub === 'undefined') {
-                document.getElementById('loading').innerHTML = "Erro: Biblioteca ePub não carregada. Verifique sua conexão.";
+                status.innerHTML = "Erro: Biblioteca ePub não carregada.";
                 return;
             }
 
-            document.getElementById('loading').innerHTML = "Buscando arquivo do livro...";
-
-            // 2. Captura o nome do livro
+            // 2. Pega o nome do livro da URL (?books=nome)
             const urlParams = new URLSearchParams(window.location.search);
             const bookParam = urlParams.get('books');
 
             if (!bookParam) {
-                document.getElementById('loading').innerHTML = "Erro: Nenhum livro especificado na URL (?books=...)";
+                status.innerHTML = "Aguardando Tag NFC...<br><small>(URL precisa de ?books=nome)</small>";
                 return;
             }
 
-            // 3. AJUSTE DE CAMINHO: 
-            // Se o index está em /books/ e o epub em /books/books/
-            const bookPath = "./books/" + bookParam + ".epub";
+            // 3. Função de carregamento com "Fallback" (Tenta vários caminhos)
+            // Isso resolve o erro 404 se a pasta estiver duplicada
+            const caminhosParaTestar = [
+                "./books/" + bookParam + ".epub", // Caminho 1
+                "./" + bookParam + ".epub",        // Caminho 2 (se estiver na mesma pasta)
+                "books/" + bookParam + ".epub"     // Caminho 3
+            ];
 
-            const book = ePub(bookPath);
-            const rendition = book.renderTo("viewer", {
-                width: "100%",
-                height: "100%",
-                flow: "paginated",
-                manager: "default"
-            });
+            let tentativaAtual = 0;
 
-            book.opened.then(() => {
-                document.getElementById('loading').style.display = 'none';
-            }).catch(err => {
-                document.getElementById('loading').innerHTML = "Erro ao abrir o arquivo .epub. Verifique se o nome está correto.";
-                console.error(err);
-            });
+            function tentarCarregar(caminho) {
+                console.log("Tentando: " + caminho);
+                status.innerHTML = "Abrindo: " + bookParam + ".epub...";
+                
+                const book = ePub(caminho);
+                const rendition = book.renderTo("viewer", {
+                    width: "100%",
+                    height: "100%",
+                    flow: "paginated", // Estilo livro
+                    manager: "default"
+                });
 
-            rendition.display();
+                book.opened.then(() => {
+                    console.log("Sucesso ao carregar: " + caminho);
+                    document.getElementById('loading').style.display = 'none';
+                    rendition.display();
+                }).catch(err => {
+                    console.warn("Falha no caminho: " + caminho);
+                    tentativaAtual++;
+                    if (tentativaAtual < caminhosParaTestar.length) {
+                        tentarCarregar(caminhosParaTestar[tentativaAtual]);
+                    } else {
+                        status.innerHTML = "Erro 404: Arquivo não encontrado.<br>Certifique-se que o nome no GitHub está igual ao da URL.";
+                    }
+                });
 
-            // Controles
-            document.getElementById('prev').onclick = () => rendition.prev();
-            document.getElementById('next').onclick = () => rendition.next();
-            
-            document.addEventListener("keyup", (e) => {
-                if (e.key === "ArrowLeft") rendition.prev();
-                if (e.key === "ArrowRight") rendition.next();
-            });
+                // Reatribui os botões ao novo 'rendition'
+                document.getElementById('prev').onclick = () => rendition.prev();
+                document.getElementById('next').onclick = () => rendition.next();
+
+                // Setas do teclado
+                document.onkeyup = function(e) {
+                    if (e.key === "ArrowLeft") rendition.prev();
+                    if (e.key === "ArrowRight") rendition.next();
+                };
+            }
+
+            tentarCarregar(caminhosParaTestar[0]);
         };
     </script>
 </body>
