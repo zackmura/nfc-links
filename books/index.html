@@ -10,120 +10,164 @@
 
     <style>
         :root {
-            --bg-color: #0f0f0f;
+            --bg-color: #050505;
             --page-bg: #ffffff;
-            --speed: 0.6s; 
+            --speed: 0.8s; /* Controle de velocidade da animação */
         }
 
         body { 
-            margin: 0; background-color: var(--bg-color); 
-            display: flex; flex-direction: column; height: 100vh; overflow: hidden; 
-            font-family: sans-serif;
+            margin: 0; 
+            background-color: var(--bg-color); 
+            height: 100vh; 
+            overflow: hidden; 
+            font-family: sans-serif; 
         }
 
+        /* Fundo com iluminação central para dar profundidade 3D */
         #viewer-container {
-            flex: 1; perspective: 2000px; 
-            display: flex; justify-content: center; align-items: center;
+            flex: 1; 
+            height: 100vh; 
+            perspective: 3000px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            background: radial-gradient(circle, #222 0%, #050505 100%);
             position: relative;
         }
 
+        /* O Livro Base */
         #viewer { 
-            width: 90%; height: 85%; 
+            width: 90%; 
+            height: 85%; 
             background: var(--page-bg); 
-            box-shadow: 0 10px 50px rgba(0,0,0,0.8);
-            border-radius: 2px 10px 10px 2px;
+            box-shadow: 0 10px 60px rgba(0,0,0,0.9);
+            border-radius: 2px 5px 5px 2px;
             transform-origin: left center; 
-            transition: transform var(--speed) ease-in-out, filter var(--speed), opacity 0.3s;
-            backface-visibility: hidden;
+            transition: transform var(--speed) cubic-bezier(0.645, 0.045, 0.355, 1), 
+                        filter var(--speed), 
+                        box-shadow var(--speed);
             z-index: 5;
         }
 
+        /* EFEITO DE DOBRA REALISTA (Giro + Inclinação + Sombra) */
         .flip-next {
-            transform: rotateY(-110deg) scale(0.95); 
-            filter: brightness(0.3); 
+            transform: rotateY(-120deg) skewY(5deg) scale(0.9); 
+            filter: brightness(0.2) contrast(1.2); 
+            box-shadow: 20px 10px 50px rgba(0,0,0,0.5);
             pointer-events: none;
         }
 
-        .touch-zone {
-            position: absolute; top: 0; bottom: 0; width: 35%; z-index: 100;
-            -webkit-tap-highlight-color: transparent;
+        /* Zonas Invisíveis para toque (Laterais da tela) */
+        .touch-zone { 
+            position: absolute; 
+            top: 0; 
+            bottom: 0; 
+            width: 35%; 
+            z-index: 100; 
+            -webkit-tap-highlight-color: transparent; 
         }
         #zone-prev { left: 0; }
         #zone-next { right: 0; }
 
+        /* Estilo do Loading */
         #loading { 
-            position: absolute; color: #fff; width: 100%; text-align: center; 
-            top: 50%; transform: translateY(-50%); font-weight: bold;
+            position: absolute; 
+            color: #fff; 
+            width: 100%; 
+            text-align: center; 
+            top: 50%; 
+            transform: translateY(-50%);
+            z-index: 1; 
+            font-weight: bold;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
 
-    <div id="loading">Carregando livro Mini Mundo...</div>
+    <div id="loading">Preparando experiência imersiva...</div>
 
     <div id="viewer-container">
         <div id="zone-prev" class="touch-zone"></div>
+        
         <div id="viewer"></div>
+        
         <div id="zone-next" class="touch-zone"></div>
     </div>
 
     <script>
         window.onload = function() {
+            // Pega o nome do livro na URL
             const urlParams = new URLSearchParams(window.location.search);
             const bookParam = urlParams.get('books');
             const viewer = document.getElementById('viewer');
-            const loading = document.getElementById('loading');
 
             if (!bookParam) {
-                loading.innerHTML = "Aguardando Tag NFC...";
+                document.getElementById('loading').innerHTML = "Aguardando Tag NFC...";
                 return;
             }
 
-            // Tenta o caminho que funcionou anteriormente
+            // Inicia o leitor de Epub
             const bookPath = "./books/" + bookParam + ".epub";
             const book = ePub(bookPath);
             const rendition = book.renderTo("viewer", {
                 width: "100%", height: "100%", flow: "paginated", manager: "default"
             });
 
+            // Tira o loading quando estiver pronto
             book.opened.then(() => {
-                loading.style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
                 rendition.display();
             }).catch(err => {
-                loading.innerHTML = "Erro ao carregar arquivo .epub";
+                document.getElementById('loading').innerHTML = "Erro ao carregar o livro. Verifique o arquivo.";
                 console.error(err);
             });
 
+            // Lógica Central de Passar Página
             const turnPage = (dir) => {
                 if (dir === 'next') {
+                    // Adiciona a classe que faz a dobra extrema 3D
                     viewer.classList.add('flip-next');
+                    
                     setTimeout(() => {
+                        // Troca o texto enquanto a página está escura/dobrada
                         rendition.next();
+                        
+                        // Reseta a página para a posição inicial sem o usuário ver
                         viewer.style.transition = "none";
                         viewer.classList.remove('flip-next');
+                        
+                        // Força o navegador a recalcular a tela
                         void viewer.offsetWidth; 
-                        viewer.style.transition = "transform var(--speed) ease-in-out, filter var(--speed)";
+                        
+                        // Devolve a animação para o próximo clique
+                        viewer.style.transition = "transform var(--speed) cubic-bezier(0.645, 0.045, 0.355, 1), filter var(--speed)";
                     }, 450); 
                 } else {
-                    viewer.style.opacity = "0.3";
+                    // Efeito de deslizar rápido para voltar a página
+                    viewer.style.transition = "0.4s";
+                    viewer.style.transform = "translateX(50px)";
+                    viewer.style.opacity = "0";
                     setTimeout(() => {
                         rendition.prev();
+                        viewer.style.transform = "translateX(0)";
                         viewer.style.opacity = "1";
-                    }, 250);
+                    }, 300);
                 }
             };
 
-            // Eventos de clique nas zonas de toque
+            // Associa os cliques nas laterais
             document.getElementById('zone-next').onclick = () => turnPage('next');
             document.getElementById('zone-prev').onclick = () => turnPage('prev');
-            
-            // Suporte a Swipe (Deslizar)
+
+            // Lógica de Swipe (Deslizar o dedo na tela)
             let xDown = null;
             document.addEventListener('touchstart', e => xDown = e.touches[0].clientX);
             document.addEventListener('touchmove', e => {
                 if (!xDown) return;
                 let xDiff = xDown - e.touches[0].clientX;
-                if (Math.abs(xDiff) > 50) {
+                
+                if (Math.abs(xDiff) > 50) { // Precisa deslizar pelo menos 50px
                     turnPage(xDiff > 0 ? 'next' : 'prev');
                     xDown = null;
                 }
