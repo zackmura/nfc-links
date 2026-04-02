@@ -16,7 +16,6 @@
             --accent-dark: #5c3e1c;
         }
 
-        /* CORREÇÃO 1: Tela liberada para rolar livremente, botões nunca mais serão comidos! */
         body { 
             margin: 0; background-color: var(--bg-color); 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -26,15 +25,22 @@
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        /* =========================================
-           TELA INICIAL (HUB)
-           ========================================= */
-        #home-screen {
-            display: flex; flex-direction: column; align-items: center; 
-            padding: 30px 15px 60px; /* Mais espaço no topo e no fundo */
-            min-height: 100vh; box-sizing: border-box;
-            background: var(--bg-color);
+        .app-screen {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100dvh;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
+
+        /* TELA INICIAL (HUB) */
+        #home-screen {
+            z-index: 20; background: var(--bg-color); overflow-y: auto; overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center; padding: 30px 15px 60px;
+            min-height: 100vh; box-sizing: border-box;
+        }
+        #reader-screen {
+            z-index: 10; background: var(--bg-color); opacity: 0; visibility: hidden; pointer-events: none;
+        }
+        #home-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        #reader-screen.active { opacity: 1; visibility: visible; pointer-events: all; }
 
         .welcome-header { text-align: center; margin-bottom: 25px; width: 100%; max-width: 420px; }
         .welcome-header img { max-width: 150px; mix-blend-mode: multiply; margin-bottom: 10px; }
@@ -47,7 +53,6 @@
         .btn-reset { background: transparent; color: var(--accent); border: 2px solid var(--accent); padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .btn-reset:active { background: #f2ebd9; }
 
-        /* SEÇÕES (LOJA E ANÚNCIOS) */
         .hub-section { width: 100%; max-width: 420px; background: #ffffff; padding: 25px 15px; margin-top: 25px; border-radius: 16px; box-shadow: 0 5px 20px rgba(61, 52, 45, 0.08); border: 1px solid #f2ebd9; box-sizing: border-box; }
         .section-title { color: var(--accent-dark); font-weight: 900; font-size: 1.1rem; margin: 0 0 15px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
         .section-subtitle { font-size: 0.8rem; color: #7a6b5d; margin-top: -10px; margin-bottom: 15px; }
@@ -75,11 +80,9 @@
         .premium-footer p { font-size: 0.8rem; color: #7a6b5d; line-height: 1.5; margin: 0; font-style: italic; }
         .premium-footer strong { color: var(--accent-dark); font-weight: 800; }
 
-        /* =========================================
-           TELA DE LEITURA (O LEITOR EM PDF)
-           ========================================= */
+        /* TELA DE LEITURA (PDF) */
         #reader-screen { 
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; 
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
             background: var(--bg-color); z-index: 1000; overflow: hidden; animation: fadeIn 0.4s ease; 
         }
         
@@ -104,12 +107,9 @@
             position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
-        /* CORREÇÃO 2: A LUPA MÁGICA DO PDF! 
-           Esse flex-shrink proíbe o canvas de espremer, forçando o corte das margens brancas */
         #pdf-canvas {
-            flex-shrink: 0;
-            mix-blend-mode: multiply; /* Apaga o fundo branco do PDF */
-            transform-origin: center center;
+            mix-blend-mode: multiply; 
+            max-width: 100%; max-height: 100%;
         }
 
         .touch-zone { position: absolute; top: 0; bottom: 0; width: 35%; z-index: 10;}
@@ -117,9 +117,7 @@
         #zone-next { right: 0; }
         #loading { position: absolute; color: var(--text-color); width: 100%; text-align: center; top: 50%; transform: translateY(-50%); font-style: italic; opacity: 0.8; font-weight: bold; z-index: 50;}
 
-        /* =========================================
-           MODAIS GERAIS
-           ========================================= */
+        /* MODAIS GERAIS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: rgba(61, 52, 45, 0.7); display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px); }
         .modal-bottom { align-items: flex-end; }
         .modal-content { background: var(--page-bg); border-radius: 12px; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.3); text-align: center; width: 85%; max-width: 320px; animation: slideUp 0.3s ease; position: relative; border: 1px solid #eadecb; }
@@ -129,14 +127,12 @@
         .modal-icon-reset { width: 36px; height: 36px; margin-bottom: 15px; stroke: var(--accent); fill: none; }
         .modal-buttons { display: flex; gap: 15px; width: 100%; margin-top: 20px; }
         .modal-buttons button { padding: 12px 0; flex: 1; border-radius: 25px; border: none; font-weight: bold; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: 0.2s;}
-        
         #btn-cancel { background: transparent; border: 1px solid #b5a99f; color: #8a7c71; }
         #btn-confirm { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(139, 90, 43, 0.25); }
 
         .input-pagina { width: 100%; padding: 15px; border-radius: 8px; border: 2px solid #eadecb; text-align: center; font-size: 1.5rem; font-weight: bold; color: var(--accent-dark); box-sizing: border-box; margin-top: 15px; outline: none;}
         .input-pagina:focus { border-color: var(--accent); }
 
-        /* Modais da Loja e Anúncios */
         .galeria-produto { width: 100%; background: #faf8f2; }
         .foto-principal { width: 100%; height: 280px; object-fit: contain; display: block; }
         .miniaturas-container { display: flex; gap: 8px; padding: 10px 15px; overflow-x: auto; background: var(--page-bg); border-bottom: 1px solid #eadecb; }
@@ -156,6 +152,7 @@
         .ad-endereco-btn { font-size: 0.7rem; font-weight: 900; color: var(--accent); text-transform: uppercase; background: white; padding: 4px 8px; border-radius: 6px; border: 1px solid #eadecb; }
         .btn-zap { background: #25D366; color: white; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; width: 100%; box-sizing: border-box; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 6px 0 #1b9b4a; transition: transform 0.1s; text-decoration: none; margin-top: 10px; }
         .btn-zap:active { transform: translateY(6px); box-shadow: 0 0 0 #1b9b4a; }
+        .btn-call { background: #f2ebd9; color: var(--text-color); border: 1px solid #eadecb; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 10px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0;} to { transform: translateY(0); opacity: 1;} }
@@ -163,7 +160,7 @@
 </head>
 <body>
 
-    <div id="home-screen">
+    <div id="home-screen" class="app-screen">
         <div class="welcome-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
             <h2 class="welcome-title">Bem-Vindo à Experiência</h2>
@@ -200,18 +197,16 @@
         </div>
     </div>
 
-    <div id="reader-screen">
+    <div id="reader-screen" class="app-screen">
         <div id="brand-header">
             <img src="logo.jpg" alt="Mini Mundo 3D">
-            
             <div class="progress-container" onclick="mostrarModalPular()">
-                <span id="progress-text" class="progress-text">Gerando...</span>
+                <span id="progress-text" class="progress-text">Carregando...</span>
                 <div class="progress-bar-bg">
                     <div id="progress-bar-fill" class="progress-bar-fill"></div>
                 </div>
                 <div class="progress-hint">Pular Página ▾</div>
             </div>
-
             <button class="btn-voltar" onclick="voltarHome()">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
                 Voltar
@@ -222,11 +217,9 @@
 
         <div id="viewer-container">
             <div id="zone-prev" class="touch-zone"></div>
-            
             <div id="viewer-wrapper">
                 <canvas id="pdf-canvas"></canvas>
             </div>
-            
             <div id="zone-next" class="touch-zone"></div>
         </div>
     </div>
@@ -280,7 +273,6 @@
             </div>
             <div class="info-completa" style="padding-top: 30px;">
                 <h3 id="modal-ad-empresa" class="titulo-modal">Empresa</h3>
-                <h2 id="modal-ad-preco" class="preco-modal" style="display:none;">R$ 00,00</h2>
                 <p id="modal-ad-desc" class="desc-modal">Descrição da oferta...</p>
                 <a id="modal-ad-zap" href="#" target="_blank" class="btn-zap" style="margin-top: 20px;">💬 Chamar Parceiro</a>
             </div>
@@ -288,7 +280,6 @@
     </div>
 
     <script>
-        // PDF.js Worker Configuration
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
         const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
@@ -296,7 +287,6 @@
 
         let catalogoGlobal = []; let anunciosGlobal = [];
         
-        // VARIÁVEIS PDF
         let pdfDoc = null, pageNum = 1, pageRendering = false, pageNumPending = null;
         let canvas = document.getElementById('pdf-canvas'), ctx = canvas.getContext('2d');
         let pdfCarregado = false, isAnimating = false;
@@ -321,9 +311,8 @@
         }
 
         function abrirLeitor() {
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('reader-screen').style.display = 'block';
-
+            document.getElementById('home-screen').classList.add('hidden');
+            document.getElementById('reader-screen').classList.add('active');
             if (!pdfCarregado) {
                 document.getElementById('loading').style.display = 'block';
                 iniciarPdfEngine();
@@ -331,12 +320,11 @@
         }
 
         function voltarHome() {
-            document.getElementById('reader-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
+            document.getElementById('reader-screen').classList.remove('active');
+            document.getElementById('home-screen').classList.remove('hidden');
             verificarStatusLeitura();
         }
 
-        // MOTOR PDF.JS
         function iniciarPdfEngine() {
             const urlPdf = `./books/${bookParam}.pdf`;
 
@@ -359,16 +347,28 @@
             pageRendering = true;
             pdfDoc.getPage(num).then(function(page) {
                 const container = document.getElementById('viewer-wrapper');
+                
+                // MÁGICA 1: Pega o tamanho real do container para encaixar certinho
+                const containerWidth = container.clientWidth;
+                const containerHeight = container.clientHeight;
+
                 const unscaledViewport = page.getViewport({scale: 1});
                 
-                // A LUPA MÁGICA: Aumenta a imagem em 45% para cortar as margens do papel sulfite A4
-                const ZOOM_MULTIPLIER = 1.45; 
-                const baseScale = container.clientWidth / unscaledViewport.width;
-                const finalScale = baseScale * ZOOM_MULTIPLIER;
-                
-                const viewport = page.getViewport({scale: finalScale});
-                canvas.height = viewport.height;
+                // Calcula a escala exata para caber na caixa (sem cortar margens)
+                const scaleX = containerWidth / unscaledViewport.width;
+                const scaleY = containerHeight / unscaledViewport.height;
+                const baseScale = Math.min(scaleX, scaleY) * 0.95; // 0.95 para dar um respiro
+
+                // MÁGICA 2: Renderização em ALTA DEFINIÇÃO para celulares (Retina)
+                const pixelRatio = window.devicePixelRatio || 1;
+                const viewport = page.getViewport({scale: baseScale * pixelRatio});
+
+                // Tamanho físico (resolução)
                 canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                // Tamanho visual no CSS (espremido para garantir nitidez)
+                canvas.style.width = `${viewport.width / pixelRatio}px`;
+                canvas.style.height = `${viewport.height / pixelRatio}px`;
 
                 const renderContext = { canvasContext: ctx, viewport: viewport };
                 
@@ -426,7 +426,6 @@
         document.getElementById('zone-next').onclick = onNextPage;
         document.getElementById('zone-prev').onclick = onPrevPage;
 
-        // PULAR PÁGINA
         function mostrarModalPular() {
             if(pdfDoc) {
                 document.getElementById('modal-pular').style.display = 'flex';
@@ -442,12 +441,10 @@
             } else { alert(`Digite uma página entre 1 e ${pdfDoc.numPages}`); }
         }
 
-        // RESET
         function mostrarModalReset() { document.getElementById('modal-reset').style.display = 'flex'; }
         function fecharModalReset() { document.getElementById('modal-reset').style.display = 'none'; }
         function confirmarReset() { localStorage.removeItem(storageKey); location.reload(); }
 
-        // LOJA E ANÚNCIOS
         function formatarPreco(val) { if(!val) return ""; let v = String(val).trim(); if(v.toUpperCase().includes("R$")) return v; if(!isNaN(v.replace(',','.'))) return "R$ " + parseFloat(v.replace(',','.')).toFixed(2).replace('.', ','); return "R$ " + v; }
         
         async function carregarVitrine() {
