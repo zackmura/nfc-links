@@ -3,48 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mini Mundo 3D - Experience</title>
+    <title>Mini Mundo 3D - Leitor Imersivo</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
 
     <style>
         :root {
-            --bg-color: #0a0a0a;
-            --page-bg: #ffffff;
-            --speed: 0.35s; /* Metade do tempo da animação total */
+            /* Paleta Mini Mundo (Tons de Terra e Areia) */
+            --bg-dark: #1f1915;     /* Marrom muito escuro para as bordas */
+            --bg-light: #362c24;    /* Marrom quente para o centro */
+            --page-bg: #fcf9f2;     /* Branco areia/marfim para a página (não cansa a vista) */
+            --brand-color: #5c3e26; /* Marrom do texto Mini Mundo */
+            --speed: 0.35s; 
         }
 
         body { 
             margin: 0; 
-            background-color: var(--bg-color); 
+            background-color: var(--bg-dark); 
             height: 100vh; 
             overflow: hidden; 
-            font-family: sans-serif; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         }
 
+        /* Cabeçalho Elegante com o Logo */
+        #brand-header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none; /* Para não atrapalhar o clique nas páginas */
+        }
+
+        #brand-header img {
+            max-height: 40px;
+            opacity: 0.85; /* Deixa levemente transparente para ficar elegante */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        /* Fundo com iluminação quente */
         #viewer-container {
             flex: 1; 
             height: 100vh; 
-            perspective: 1500px; /* Câmera 3D */
+            perspective: 1500px; 
             display: flex; 
             justify-content: center; 
             align-items: center;
-            background: radial-gradient(circle, #2a2a2a 0%, #000000 100%);
+            background: radial-gradient(circle at 50% 40%, var(--bg-light) 0%, var(--bg-dark) 100%);
             position: relative;
+            padding-top: 20px; /* Dá espaço para o logo não colar no livro */
         }
 
         #viewer { 
             width: 90%; 
-            height: 85%; 
+            height: 82%; 
             background: var(--page-bg); 
-            box-shadow: 0 5px 30px rgba(0,0,0,0.8);
-            border-radius: 4px;
+            box-shadow: 0 5px 35px rgba(0,0,0,0.9);
+            border-radius: 3px;
             z-index: 5;
-            /* A transição será controlada 100% pelo JavaScript agora */
         }
 
-        /* Zonas Invisíveis para toque */
         .touch-zone { 
             position: absolute; top: 0; bottom: 0; width: 35%; 
             z-index: 100; -webkit-tap-highlight-color: transparent; 
@@ -53,14 +75,19 @@
         #zone-next { right: 0; }
 
         #loading { 
-            position: absolute; color: #fff; width: 100%; text-align: center; 
-            top: 50%; transform: translateY(-50%); z-index: 1; font-weight: bold;
+            position: absolute; color: #e8dccb; width: 100%; text-align: center; 
+            top: 50%; transform: translateY(-50%); z-index: 1; font-weight: normal;
+            font-size: 1.1rem; letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div id="loading">Conectando ao Mini Mundo...</div>
+    <div id="brand-header">
+        <img src="logo.jpg" alt="Mini Mundo Impressão 3D">
+    </div>
+
+    <div id="loading">Abrindo seu livro...</div>
 
     <div id="viewer-container">
         <div id="zone-prev" class="touch-zone"></div>
@@ -75,7 +102,7 @@
             const viewer = document.getElementById('viewer');
 
             if (!bookParam) {
-                document.getElementById('loading').innerHTML = "Aguardando Tag NFC...";
+                document.getElementById('loading').innerHTML = "Aproxime a Tag NFC Mini Mundo";
                 return;
             }
 
@@ -85,55 +112,67 @@
                 width: "100%", height: "100%", flow: "paginated", manager: "default"
             });
 
-            book.opened.then(() => {
-                document.getElementById('loading').style.display = 'none';
-                rendition.display();
-            }).catch(err => {
-                document.getElementById('loading').innerHTML = "Erro ao carregar o livro.";
+            // MÁGICA 1: Customizando a cor do texto do livro para combinar com a "areia"
+            rendition.themes.default({
+                body: { "background": "transparent" },
+                p: { "color": "#2c241c" }, // Texto num marrom muito escuro, mais suave que o preto
+                h1: { "color": "#5c3e26" },
+                h2: { "color": "#5c3e26" }
             });
 
-            // Lógica de Dobra 3D Simétrica (Funciona perfeito para ir e voltar)
-            const turnPage = (dir) => {
-                // 1. Define onde fica a lombada (esquerda para avançar, direita para voltar)
-                viewer.style.transformOrigin = dir === 'next' ? "left center" : "right center";
+            // MÁGICA 2: Verificando se o usuário já leu este livro antes
+            const storageKey = 'minimundo_leitura_' + bookParam;
+            const paginaSalva = localStorage.getItem(storageKey);
+
+            book.opened.then(() => {
+                document.getElementById('loading').style.display = 'none';
                 
-                // 2. Inicia o giro da página para "fechar"
+                // Se tem página salva, abre nela. Se não, abre no começo.
+                if (paginaSalva) {
+                    rendition.display(paginaSalva);
+                } else {
+                    rendition.display();
+                }
+            });
+
+            // MÁGICA 3: Salvando a página toda vez que ele vira
+            rendition.on("relocated", function(location) {
+                if (location && location.start) {
+                    localStorage.setItem(storageKey, location.start.cfi); // Salva no celular do cliente
+                }
+            });
+
+            // MÁGICA 4: O Efeito 3D da folha (mantido igual ao anterior)
+            const turnPage = (dir) => {
+                viewer.style.transformOrigin = dir === 'next' ? "left center" : "right center";
                 viewer.style.transition = "transform var(--speed) ease-in, filter var(--speed) ease-in";
                 viewer.style.transform = dir === 'next' ? "rotateY(-90deg) scale(0.95)" : "rotateY(90deg) scale(0.95)";
-                viewer.style.filter = "brightness(0.5)"; // Escurece enquanto gira
+                viewer.style.filter = "brightness(0.6) sepia(0.3)"; // Um leve sépia para combinar com a folha de areia
 
-                // 3. Espera a página ficar exatamente de lado (90 graus)
                 setTimeout(() => {
-                    // Troca o texto do Epub.js
                     if (dir === 'next') rendition.next();
                     else rendition.prev();
 
-                    // Prepara a nova página do lado oposto, pronta para "abrir"
                     viewer.style.transition = "none";
                     viewer.style.transform = dir === 'next' ? "rotateY(90deg) scale(0.95)" : "rotateY(-90deg) scale(0.95)";
                     
-                    // Força o navegador a renderizar o pulo invisível
                     void viewer.offsetWidth; 
 
-                    // 4. Anima a página nova "caindo" de volta para o centro
                     viewer.style.transition = "transform var(--speed) ease-out, filter var(--speed) ease-out";
                     viewer.style.transform = "rotateY(0deg) scale(1)";
-                    viewer.style.filter = "brightness(1)";
-
-                }, 350); // Deve ser exatamente o tempo definido na variável --speed (0.35s)
+                    viewer.style.filter = "brightness(1) sepia(0)";
+                }, 350); 
             };
 
-            // Controles de Clique
             document.getElementById('zone-next').onclick = () => turnPage('next');
             document.getElementById('zone-prev').onclick = () => turnPage('prev');
 
-            // Controles de Deslize (Swipe)
             let xDown = null;
             document.addEventListener('touchstart', e => xDown = e.touches[0].clientX);
             document.addEventListener('touchmove', e => {
                 if (!xDown) return;
                 let xDiff = xDown - e.touches[0].clientX;
-                if (Math.abs(xDiff) > 40) { // Sensibilidade do swipe
+                if (Math.abs(xDiff) > 40) {
                     turnPage(xDiff > 0 ? 'next' : 'prev');
                     xDown = null;
                 }
