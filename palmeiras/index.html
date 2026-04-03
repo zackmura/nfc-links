@@ -489,24 +489,40 @@
         return nomeOuSlug;
     }
 
-    function checarJogoAoVivo(dados) {
+function checarJogoAoVivo(dados) {
         const jogoAoVivo = [...(dados.past || []), ...(dados.next || [])].find(j => j.status === 'in');
         if (jogoAoVivo && jogoAoVivo.id) {
             document.getElementById("live-match-container").style.display = "block";
-            atualizarRadarESPN(jogoAoVivo.id); 
-            if(radarInterval) clearInterval(radarInterval);
-            radarInterval = setInterval(() => { atualizarRadarESPN(jogoAoVivo.id); }, 30000);
+            // Inicia o loop inteligente que burla o bloqueio de bateria do celular
+            loopRadar(jogoAoVivo.id);
         } else { 
             document.getElementById("live-match-container").style.display = "none"; 
-            if(radarInterval) clearInterval(radarInterval);
+            if(radarInterval) clearTimeout(radarInterval);
         }
+    }
+
+    // Função de Loop à prova de falhas e economia de bateria
+    async function loopRadar(idPartida) {
+        await atualizarRadarESPN(idPartida);
+        if (radarInterval) clearTimeout(radarInterval);
+        radarInterval = setTimeout(() => loopRadar(idPartida), 25000); // Atualiza a cada 25 segundos
     }
 
     async function atualizarRadarESPN(idPartida) {
         try {
-           const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}&_t=${new Date().getTime()}`);
+            // Anti-cache NÍVEL MÁXIMO absoluto
+            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}&_t=${new Date().getTime()}`, {
+                cache: "no-store",
+                headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
+            });
             const json = await res.json();
-            const header = json.header.competitions[0], timeInfo = header.status.displayClock ? `${header.status.displayClock}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
+            
+            const header = json.header.competitions[0];
+            
+            // Corrige o bug dos dois risquinhos no tempo (16'' 1ºT -> 16' 1ºT)
+            let tempoLimpo = header.status.displayClock ? header.status.displayClock.replace(/'/g, '') : "";
+            const timeInfo = tempoLimpo ? `${tempoLimpo}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
+            
             const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
             const boxscore = json.boxscore?.teams || [];
             let statsHTML = '';
@@ -542,8 +558,11 @@
                 `}).join('');
             }
             
+            // Placar blindado com "botão de pânico" embutido no título para atualizar no toque
             document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header"><span class="live-dot"></span> TEMPO REAL - ${timeInfo}</div>
+                <div class="live-header" onclick="atualizarRadarESPN('${idPartida}')" style="cursor:pointer;" title="Toque para forçar atualização">
+                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo} 🔄
+                </div>
                 <div class="live-scoreboard">
                     <div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation}</span></div>
                     <div class="live-score">${home.score || 0} - ${away.score || 0}</div>
