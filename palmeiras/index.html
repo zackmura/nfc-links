@@ -493,7 +493,6 @@ function checarJogoAoVivo(dados) {
         const jogoAoVivo = [...(dados.past || []), ...(dados.next || [])].find(j => j.status === 'in');
         if (jogoAoVivo && jogoAoVivo.id) {
             document.getElementById("live-match-container").style.display = "block";
-            // Inicia o loop inteligente que burla o bloqueio de bateria do celular
             loopRadar(jogoAoVivo.id);
         } else { 
             document.getElementById("live-match-container").style.display = "none"; 
@@ -501,25 +500,21 @@ function checarJogoAoVivo(dados) {
         }
     }
 
-    // Função de Loop à prova de falhas e economia de bateria
     async function loopRadar(idPartida) {
         await atualizarRadarESPN(idPartida);
         if (radarInterval) clearTimeout(radarInterval);
-        radarInterval = setTimeout(() => loopRadar(idPartida), 25000); // Atualiza a cada 25 segundos
+        radarInterval = setTimeout(() => loopRadar(idPartida), 25000); // Atualiza a cada 25 seg cravados
     }
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            // Anti-cache NÍVEL MÁXIMO absoluto
-            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}&_t=${new Date().getTime()}`, {
-                cache: "no-store",
-                headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
-            });
+            // Apenas o parâmetro de tempo já quebra o cache perfeitamente.
+            // Removemos os 'headers' agressivos para a ESPN não bloquear a gente (CORS).
+            const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}&_t=${new Date().getTime()}`);
             const json = await res.json();
             
             const header = json.header.competitions[0];
             
-            // Corrige o bug dos dois risquinhos no tempo (16'' 1ºT -> 16' 1ºT)
             let tempoLimpo = header.status.displayClock ? header.status.displayClock.replace(/'/g, '') : "";
             const timeInfo = tempoLimpo ? `${tempoLimpo}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
             
@@ -558,7 +553,6 @@ function checarJogoAoVivo(dados) {
                 `}).join('');
             }
             
-            // Placar blindado com "botão de pânico" embutido no título para atualizar no toque
             document.getElementById("live-match-container").innerHTML = `
                 <div class="live-header" onclick="atualizarRadarESPN('${idPartida}')" style="cursor:pointer;" title="Toque para forçar atualização">
                     <span class="live-dot"></span> TEMPO REAL - ${timeInfo} 🔄
