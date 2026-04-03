@@ -503,29 +503,42 @@ function checarJogoAoVivo(dados) {
     async function loopRadar(idPartida) {
         await atualizarRadarESPN(idPartida);
         if (radarInterval) clearTimeout(radarInterval);
-        radarInterval = setTimeout(() => loopRadar(idPartida), 25000); // Atualiza a cada 25 seg cravados
+        radarInterval = setTimeout(() => loopRadar(idPartida), 25000); 
     }
 
     async function atualizarRadarESPN(idPartida) {
         try {
-            // Apenas o parâmetro de tempo já quebra o cache perfeitamente.
-            // Removemos os 'headers' agressivos para a ESPN não bloquear a gente (CORS).
             const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/all/summary?event=${idPartida}&_t=${new Date().getTime()}`);
             const json = await res.json();
             
             const header = json.header.competitions[0];
             
-            let tempoLimpo = header.status.displayClock ? header.status.displayClock.replace(/'/g, '') : "";
-            const timeInfo = tempoLimpo ? `${tempoLimpo}' ${header.status.period > 1 ? "2ºT" : "1ºT"}` : "Aguardando Apito";
+            // 🔥 TRATAMENTO INTELIGENTE DE TEMPO E INTERVALO 🔥
+            const statusGeral = header.status.type.name; // Ex: STATUS_HALFTIME, STATUS_IN_PROGRESS
+            let timeInfo = "Aguardando...";
+            
+            if (statusGeral === "STATUS_HALFTIME") {
+                timeInfo = "INTERVALO";
+            } else if (statusGeral === "STATUS_FULL_TIME") {
+                timeInfo = "FIM DE JOGO";
+            } else {
+                let tempoLimpo = header.status.displayClock ? header.status.displayClock.replace(/'/g, '') : "";
+                if (tempoLimpo) {
+                    let periodo = header.status.period;
+                    let labelPeriodo = periodo === 1 ? "1ºT" : (periodo === 2 ? "2ºT" : (periodo === 3 ? "PRO" : (periodo === 4 ? "PÊN" : periodo+"ºT")));
+                    timeInfo = `${tempoLimpo}' ${labelPeriodo}`;
+                }
+            }
             
             const home = header.competitors.find(c => c.homeAway === 'home'), away = header.competitors.find(c => c.homeAway === 'away');
             const boxscore = json.boxscore?.teams || [];
             let statsHTML = '';
 
             if (boxscore.length === 2) {
-                const getStat = (teamStats, statName) => {
+                // 🔥 BUSCA FLEXÍVEL DE ESTATÍSTICAS (Pega os nomes diferentes que a ESPN manda) 🔥
+                const getStat = (teamStats, chavesPossiveis) => {
                     if (!teamStats.statistics) return "0";
-                    const s = teamStats.statistics.find(x => x.name === statName);
+                    const s = teamStats.statistics.find(x => chavesPossiveis.includes(x.name));
                     return s ? s.displayValue : "0";
                 };
                 
@@ -533,29 +546,30 @@ function checarJogoAoVivo(dados) {
                 const awayStats = boxscore.find(b => b.team.id === away.id) || boxscore[1];
 
                 const estatisticas = [
-                    { label: "Posse de Bola", key: "possession" },
-                    { label: "Finalizações", key: "shotsTotal" },
-                    { label: "No Gol", key: "shotsOnTarget" },
-                    { label: "Escanteios", key: "wonCorners" },
-                    { label: "Faltas", key: "foulsCommitted" },
-                    { label: "🟨 Amarelos", key: "yellowCards", color: "#b8860b" },
-                    { label: "🟥 Vermelhos", key: "redCards", color: "#cc0000" }
+                    { label: "Posse de Bola", keys: ["possessionPct", "possession"] },
+                    { label: "Finalizações", keys: ["totalShots", "shotsTotal", "shots"] },
+                    { label: "No Gol", keys: ["shotsOnTarget"] },
+                    { label: "Escanteios", keys: ["wonCorners", "corners"] },
+                    { label: "Faltas", keys: ["foulsCommitted", "fouls"] },
+                    { label: "🟨 Amarelos", keys: ["yellowCards"], color: "#b8860b" },
+                    { label: "🟥 Vermelhos", keys: ["redCards"], color: "#cc0000" }
                 ];
 
                 statsHTML = estatisticas.map(stat => {
                     const colorStyle = stat.color ? `style="color:${stat.color};"` : "";
                     return `
                     <div class="stat-row">
-                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.key)}</span>
+                        <span class="stat-val" ${colorStyle}>${getStat(homeStats, stat.keys)}</span>
                         <span class="stat-label">${stat.label}</span>
-                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.key)}</span>
+                        <span class="stat-val" ${colorStyle}>${getStat(awayStats, stat.keys)}</span>
                     </div>
                 `}).join('');
             }
             
             document.getElementById("live-match-container").innerHTML = `
-                <div class="live-header" onclick="atualizarRadarESPN('${idPartida}')" style="cursor:pointer;" title="Toque para forçar atualização">
-                    <span class="live-dot"></span> TEMPO REAL - ${timeInfo} 🔄
+                <div class="live-header" onclick="atualizarRadarESPN('${idPartida}')" style="cursor:pointer;" title="Toque para atualizar">
+                    <span class="live-dot" style="${statusGeral === 'STATUS_HALFTIME' ? 'animation:none; opacity:0.5;' : ''}"></span> 
+                    TEMPO REAL - ${timeInfo} 🔄
                 </div>
                 <div class="live-scoreboard">
                     <div class="live-team"><img src="${home.team.logos[0].href}" onerror="this.src='${svgFallback}'"><span>${home.team.abbreviation}</span></div>
