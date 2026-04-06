@@ -5,39 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novera Scent | ERP</title>
     <style>
-        /* Fontes: Montserrat (corpo) e Playfair Display (título) */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
         
         :root { 
-            --primary: #B87C96; 
-            --primary-dark: #966178;
-            --brand-dark: #2C2A2B;
-            --logo-text: rgb(164, 125, 159);
-            --bg-color: #Fdfbfb;
-            --card-bg: #ffffff;
-            --text-main: #4A4A4A;
-            --border-color: #E8DDE1;
+            --primary: #B87C96; --primary-dark: #966178; --brand-dark: #2C2A2B;
+            --logo-text: rgb(164, 125, 159); --bg-color: #Fdfbfb; --card-bg: #ffffff;
+            --text-main: #4A4A4A; --border-color: #E8DDE1;
         }
         
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; color: var(--text-main); padding-bottom: 50px; }
         .app-container { width: 100%; max-width: 600px; }
         .card { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); }
         
-        /* HEADER */
         .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
         .header img.logo { width: 150px; height: auto; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
         .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.9rem; text-transform: uppercase; letter-spacing: 3px; }
-        .header p { margin: 5px 0 0; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary-dark);}
         
-        .section-title { font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        /* MENU DE ABAS */
+        .tabs-container { display: flex; gap: 10px; margin-bottom: 25px; background: #fdf5f7; padding: 8px; border-radius: 16px; border: 1px solid var(--border-color);}
+        .tab-btn { flex: 1; padding: 12px 5px; text-align: center; font-weight: 700; font-size: 0.8rem; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; border: none; background: transparent; color: var(--primary-dark); text-transform: uppercase; letter-spacing: 0.5px;}
+        .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(184, 124, 150, 0.3); }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        
+        .section-title { font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; display: flex; justify-content: space-between; align-items: center;}
         
         .row { display: flex; gap: 15px; margin-bottom: 15px; } .col { flex: 1; }
         @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } }
 
         .input-group { margin-bottom: 15px; }
         label { font-weight: 600; font-size: 0.75rem; display: block; margin-bottom: 6px; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.5px;}
-        input { width: 100%; padding: 12px 14px; border: 2px solid var(--border-color); border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; box-sizing: border-box; background: #fafafa; transition: 0.3s; font-weight: 600; color: var(--brand-dark);}
-        input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(184, 124, 150, 0.1); }
+        input, select { width: 100%; padding: 12px 14px; border: 2px solid var(--border-color); border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; box-sizing: border-box; background: #fafafa; transition: 0.3s; font-weight: 600; color: var(--brand-dark); appearance: none;}
+        input:focus, select:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(184, 124, 150, 0.1); }
         
         .resumo-box { background: linear-gradient(135deg, var(--primary-dark) 0%, #7a4a5e 100%); color: white; padding: 25px; border-radius: 16px; margin-top: 25px; box-shadow: 0 8px 25px rgba(150, 97, 120, 0.25);}
         .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; font-weight: 500; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 8px;}
@@ -46,9 +45,7 @@
         
         .markup-area { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         @media (max-width: 480px) { .markup-area { grid-template-columns: 1fr; } }
-
         .markup-box { background: #fdf5f7; border: 2px solid #f3d8e2; padding: 18px; border-radius: 12px; transition: 0.2s; }
-        .markup-box:hover { border-color: var(--primary); transform: translateY(-3px); }
         .markup-title { color: var(--primary-dark); font-weight: 700; font-size: 0.75rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px; }
         .markup-preco { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 5px; }
         .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #7a4a5e; margin: 0; background: #E8DDE1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
@@ -58,18 +55,22 @@
         .btn-salvar:active { transform: translateY(3px); box-shadow: none; }
         .btn-salvar:disabled { background: #E8DDE1; color: #999; cursor: not-allowed; box-shadow: none; }
 
-        /* MODAL DE ALERTA COM CORES DA NOVERA SCENT */
+        /* Lista de Rótulos */
+        .rotulo-card { background: #fafafa; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .rotulo-info h4 { margin: 0 0 5px; color: var(--brand-dark); font-size: 0.95rem; }
+        .rotulo-info p { margin: 0; color: var(--text-muted); font-size: 0.75rem; }
+        .rotulo-badge { background: var(--primary-dark); color: white; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; letter-spacing: 1px;}
+
+        /* MODAL */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
         .modal-box-alert { background: #fff; width: 90%; max-width: 360px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
-        .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block; animation: pulseIcon 1s infinite alternate;}
+        .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block;}
         .modal-title-alert { font-size: 1.3rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 10px; text-transform: uppercase;}
         .modal-text-alert { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
-        .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; transition: transform 0.1s; font-family: 'Montserrat', sans-serif;}
-        .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
+        .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes pulseIcon { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
@@ -79,54 +80,100 @@
         <div class="header">
             <img src="logo.png" alt="Novera Scent Logo" class="logo" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
-            <p>Laboratório de Precificação</p>
         </div>
 
-        <div class="section-title">🧪 Fórmula & Rendimento do Lote</div>
-        <div class="input-group">
-            <label>Nome do Produto / Referência do Lote</label>
-            <input type="text" id="n-produto" placeholder="Ex: N013 Daslu Lavanda - Lote A">
-        </div>
-        
-        <div class="row">
-            <div class="col"><label>Custo Fragrância (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div>
-            <div class="col"><label>Qtd. Fragrância (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div>
-        </div>
-        
-        <div class="row">
-            <div class="col"><label>Custo Base 1L (R$)</label><input type="number" id="n-custo-base" value="18.40" step="0.01" oninput="calcularNovera()"></div>
-            <div class="col"><label>Qtd. Base Usada (ml)</label><input type="number" id="n-qtd-base" value="1000" oninput="calcularNovera()"></div>
-        </div>
-        
-        <div class="row">
-            <div class="col"><label>Vol. Frasco Venda (ml)</label><input type="number" id="n-ml-venda" value="250" oninput="calcularNovera()"></div>
-            <div class="col"><label>Custo Embalagem/un (R$)</label><input type="number" id="n-insumos" value="4.00" step="0.01" oninput="calcularNovera()"></div>
+        <div class="tabs-container">
+            <button class="tab-btn active" id="btn-rotulos" onclick="switchTab('rotulos')">🏷️ Rótulos & Bases</button>
+            <button class="tab-btn" id="btn-precificar" onclick="switchTab('precificar')">🧪 Laboratório</button>
         </div>
 
-        <div class="resumo-box">
-            <div class="resumo-linha"><span>Custo por ml da Fragrância</span> <span id="r-ml-frag">R$ 0,00</span></div>
-            <div class="resumo-linha"><span>Custo por ml da Base</span> <span id="r-ml-base">R$ 0,00</span></div>
-            <div class="resumo-linha"><span>Total Líquido Produzido</span> <span id="r-vol-total">0 ml</span></div>
-            <div class="resumo-linha"><span>Rendimento (Frascos Cheios)</span> <span id="r-frascos">0,0</span></div>
-            <div class="resumo-linha"><span>Custo do Líquido / Unidade</span> <span id="r-liquido">R$ 0,00</span></div>
-            <div class="custo-total"><span>Custo Total Unitário</span> <span id="r-custo-total">R$ 0,00</span></div>
-        </div>
-
-        <div class="section-title">💰 Sugestão de Venda (Markup)</div>
-        <div class="markup-area">
-            <div class="markup-box">
-                <p class="markup-title">Venda Simples (2x)</p>
-                <p class="markup-preco" id="m-preco-2x">R$ 0,00</p>
-                <p class="markup-lucro" id="m-lucro-2x">Lucro Limpo: R$ 0,00</p>
+        <div id="tab-rotulos" class="tab-content active">
+            <div class="section-title">✨ Registrar Nova Essência</div>
+            
+            <div class="input-group">
+                <label>Essência Original (Inspiração)</label>
+                <input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal...">
             </div>
-            <div class="markup-box">
-                <p class="markup-title">Venda Premium (4x)</p>
-                <p class="markup-preco" id="m-preco-4x">R$ 0,00</p>
-                <p class="markup-lucro" id="m-lucro-4x">Lucro Limpo: R$ 0,00</p>
+            
+            <div class="row">
+                <div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn" placeholder="Ex: 4953"></div>
+                <div class="col"><label>Marca Fornecedor</label><input type="text" id="r-marca" placeholder="Ex: Wanny"></div>
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Tipo de Produto</label>
+                    <select id="r-tipo">
+                        <option value="Essência">Essência</option>
+                        <option value="Perfume">Perfume</option>
+                        <option value="Home Spray">Home Spray</option>
+                        <option value="Vela">Vela</option>
+                    </select>
+                </div>
+                <div class="col"><label>Lote de Fabricação</label><input type="text" id="r-lote" placeholder="Ex: Lote 1" value="Lote 1"></div>
+            </div>
+
+            <button class="btn-salvar" id="btn-salvar-rotulo" onclick="salvarRotulo()">Gerar Código Novera</button>
+
+            <div class="section-title">
+                📋 Essências Cadastradas
+                <span id="loading-rotulos" style="font-size: 0.7rem; display: none;">⏳ Atualizando...</span>
+            </div>
+            <div id="lista-rotulos-cadastrados">
+                <p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando banco de dados...</p>
             </div>
         </div>
 
-        <button class="btn-salvar" id="btn-salvar" onclick="salvarLote()">Salvar Lote no Sistema</button>
+        <div id="tab-precificar" class="tab-content">
+            <div class="section-title">🧪 Fórmula & Rendimento</div>
+            
+            <div class="input-group">
+                <label>Selecione a Essência Base (Lote)</label>
+                <select id="n-produto">
+                    <option value="">Carregando essências...</option>
+                </select>
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Custo Fragrância (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div>
+                <div class="col"><label>Qtd. Fragrância (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div>
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Custo Base 1L (R$)</label><input type="number" id="n-custo-base" value="18.40" step="0.01" oninput="calcularNovera()"></div>
+                <div class="col"><label>Qtd. Base Usada (ml)</label><input type="number" id="n-qtd-base" value="1000" oninput="calcularNovera()"></div>
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Vol. Frasco Venda (ml)</label><input type="number" id="n-ml-venda" value="250" oninput="calcularNovera()"></div>
+                <div class="col"><label>Custo Embalagem/un (R$)</label><input type="number" id="n-insumos" value="4.00" step="0.01" oninput="calcularNovera()"></div>
+            </div>
+
+            <div class="resumo-box">
+                <div class="resumo-linha"><span>Custo por ml da Fragrância</span> <span id="r-ml-frag">R$ 0,00</span></div>
+                <div class="resumo-linha"><span>Custo por ml da Base</span> <span id="r-ml-base">R$ 0,00</span></div>
+                <div class="resumo-linha"><span>Total Líquido Produzido</span> <span id="r-vol-total">0 ml</span></div>
+                <div class="resumo-linha"><span>Rendimento (Frascos Cheios)</span> <span id="r-frascos">0,0</span></div>
+                <div class="resumo-linha"><span>Custo do Líquido / Unidade</span> <span id="r-liquido">R$ 0,00</span></div>
+                <div class="custo-total"><span>Custo Total Unitário</span> <span id="r-custo-total">R$ 0,00</span></div>
+            </div>
+
+            <div class="section-title">💰 Sugestão de Venda (Markup)</div>
+            <div class="markup-area">
+                <div class="markup-box">
+                    <p class="markup-title">Venda Simples (2x)</p>
+                    <p class="markup-preco" id="m-preco-2x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-2x">Lucro Limpo: R$ 0,00</p>
+                </div>
+                <div class="markup-box">
+                    <p class="markup-title">Venda Premium (4x)</p>
+                    <p class="markup-preco" id="m-preco-4x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-4x">Lucro Limpo: R$ 0,00</p>
+                </div>
+            </div>
+
+            <button class="btn-salvar" id="btn-salvar-lote" onclick="salvarLotePrecificacao()">Salvar Lote no Sistema</button>
+        </div>
+
     </div>
 </div>
 
@@ -140,16 +187,112 @@
 </div>
 
 <script>
-    // URL OFICIAL DA SUA API
+    // 🔥 COLE A URL DO SEU WEB APP AQUI:
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
 
-    let custoLiquidoGlobal = 0;
-    let custoInsumosGlobal = 0;
-    let custoTotalGlobal = 0;
+    let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0;
 
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('btn-' + tabId).classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    function mostrarAlerta(titulo, texto, tipo) { 
+        const modal = document.getElementById("custom-modal");
+        const icone = document.getElementById("modal-icone-alert");
+        const btnEl = document.getElementById("btn-modal-ok"); 
+        const tituloEl = document.getElementById("modal-titulo-alert");
+        
+        tituloEl.innerText = titulo; 
+        document.getElementById("modal-texto-alert").innerText = texto; 
+        
+        if(tipo === "success") { 
+            icone.innerText = "✨"; tituloEl.style.color = "var(--primary-dark)";
+            btnEl.style.background = "var(--primary-dark)"; btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; 
+        } else if (tipo === "warning") { 
+            icone.innerText = "⚠️"; tituloEl.style.color = "#D4A373";
+            btnEl.style.background = "#D4A373"; btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; 
+        } else { 
+            icone.innerText = "❌"; tituloEl.style.color = "#A05252";
+            btnEl.style.background = "#A05252"; btnEl.style.boxShadow = "0 4px 0 #803f3f"; 
+        } 
+        modal.style.display = "flex"; 
+        if ("vibrate" in navigator) navigator.vibrate(50); 
+    }
+
+    // === ABA 1: ROTULOS ===
+    async function carregarRotulos() {
+        document.getElementById("loading-rotulos").style.display = "inline";
+        try {
+            const res = await fetch(API_NOVERA + "?acao=listar_rotulos");
+            const dados = await res.json();
+            
+            if (dados.sucesso) {
+                const lista = document.getElementById("lista-rotulos-cadastrados");
+                const select = document.getElementById("n-produto");
+                
+                if (dados.rotulos.length === 0) {
+                    lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum rótulo cadastrado.</p>";
+                    select.innerHTML = '<option value="">Cadastre um rótulo primeiro...</option>';
+                    return;
+                }
+
+                let htmlLista = "";
+                let htmlSelect = '<option value="">Selecione o Lote / Essência...</option>';
+
+                dados.rotulos.forEach(r => {
+                    const nomeCompleto = `${r.codigo} ${r.essencia} - ${r.lote}`;
+                    htmlLista += `
+                    <div class="rotulo-card">
+                        <div class="rotulo-info">
+                            <h4>${r.essencia} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4>
+                            <p>${r.tipo} • ${r.lote}</p>
+                        </div>
+                        <div class="rotulo-badge">${r.codigo}</div>
+                    </div>`;
+                    htmlSelect += `<option value="${nomeCompleto}">${nomeCompleto}</option>`;
+                });
+
+                lista.innerHTML = htmlLista;
+                select.innerHTML = htmlSelect;
+            }
+        } catch(e) { console.error(e); } finally { document.getElementById("loading-rotulos").style.display = "none"; }
+    }
+
+    async function salvarRotulo() {
+        const essencia = document.getElementById('r-essencia').value.trim();
+        const codForn = document.getElementById('r-codigo-forn').value.trim();
+        const marca = document.getElementById('r-marca').value.trim();
+        const tipo = document.getElementById('r-tipo').value;
+        const lote = document.getElementById('r-lote').value.trim();
+
+        if (!essencia || !lote) return mostrarAlerta("Atenção", "Preencha a Essência e o Lote.", "warning");
+
+        const btn = document.getElementById('btn-salvar-rotulo');
+        btn.disabled = true; btn.innerText = "⏳ GERANDO CÓDIGO...";
+
+        try {
+            const payload = { acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, tipo: tipo, lote: lote };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(payload) });
+            const resultado = await res.json();
+
+            if (resultado.sucesso) {
+                mostrarAlerta("Rótulo Criado!", `O código ${resultado.novo_codigo} foi gerado e salvo no sistema.`, "success");
+                document.getElementById('r-essencia').value = "";
+                document.getElementById('r-codigo-forn').value = "";
+                document.getElementById('r-marca').value = "";
+                document.getElementById('r-lote').value = "Lote 1";
+                carregarRotulos();
+            } else throw new Error(resultado.erro);
+        } catch (e) { mostrarAlerta("Erro", "Falha: " + e.message, "error"); } finally { btn.disabled = false; btn.innerText = "GERAR CÓDIGO NOVERA"; }
+    }
+
+    // === ABA 2: PRECIFICAÇÃO ===
     function calcularNovera() {
         const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0;
         const qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0;
@@ -163,13 +306,10 @@
         const qtdMlProducao = qBase + qFrag;
         const qtdFrascos = qtdMlProducao / mlVenda;
 
-        const custoIngredientesTotal = cFrag + (valorMlBase * qBase);
-        const custoLiquidoUni = qtdFrascos > 0 ? custoIngredientesTotal / qtdFrascos : 0;
+        const custoLiquidoUni = qtdFrascos > 0 ? (cFrag + (valorMlBase * qBase)) / qtdFrascos : 0;
         const custoTotalUni = custoLiquidoUni + cInsumos;
 
-        custoLiquidoGlobal = custoLiquidoUni;
-        custoInsumosGlobal = cInsumos;
-        custoTotalGlobal = custoTotalUni;
+        custoLiquidoGlobal = custoLiquidoUni; custoInsumosGlobal = cInsumos; custoTotalGlobal = custoTotalUni;
 
         document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag);
         document.getElementById('r-ml-base').innerText = fmt(valorMlBase);
@@ -178,90 +318,37 @@
         document.getElementById('r-liquido').innerText = fmt(custoLiquidoUni);
         document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
 
-        const preco2x = custoTotalUni * 2;
-        const preco4x = custoTotalUni * 4;
-        
-        document.getElementById('m-preco-2x').innerText = fmt(preco2x);
-        document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt(preco2x - custoTotalUni);
-        document.getElementById('m-preco-4x').innerText = fmt(preco4x);
-        document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(preco4x - custoTotalUni);
+        document.getElementById('m-preco-2x').innerText = fmt(custoTotalUni * 2);
+        document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt((custoTotalUni * 2) - custoTotalUni);
+        document.getElementById('m-preco-4x').innerText = fmt(custoTotalUni * 4);
+        document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt((custoTotalUni * 4) - custoTotalUni);
     }
 
-    function mostrarAlerta(titulo, texto, tipo) { 
-        const modal = document.getElementById("custom-modal");
-        const icone = document.getElementById("modal-icone-alert");
-        const btnEl = document.getElementById("btn-modal-ok"); 
-        const tituloEl = document.getElementById("modal-titulo-alert");
-        
-        tituloEl.innerText = titulo; 
-        document.getElementById("modal-texto-alert").innerText = texto; 
-        
-        // Cores ajustadas para a Novera Scent (Elegantes e pastéis)
-        if(tipo === "success") { 
-            icone.innerText = "✨"; 
-            tituloEl.style.color = "var(--primary-dark)";
-            btnEl.style.background = "var(--primary-dark)"; 
-            btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; 
-        } else if (tipo === "warning") { 
-            icone.innerText = "⚠️"; 
-            tituloEl.style.color = "#D4A373"; // Dourado suave/Areia
-            btnEl.style.background = "#D4A373"; 
-            btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; 
-        } else { 
-            icone.innerText = "❌"; 
-            tituloEl.style.color = "#A05252"; // Vermelho bordô
-            btnEl.style.background = "#A05252"; 
-            btnEl.style.boxShadow = "0 4px 0 #803f3f"; 
-        } 
-        
-        modal.style.display = "flex"; 
-        if ("vibrate" in navigator) navigator.vibrate(50); 
-    }
+    async function salvarLotePrecificacao() {
+        const modelo = document.getElementById('n-produto').value;
+        if (!modelo) return mostrarAlerta("Atenção", "Selecione uma Essência Base (Lote) na lista antes de salvar.", "warning");
 
-    async function salvarLote() {
-        const modelo = document.getElementById('n-produto').value.trim();
-        
-        if (!modelo) {
-            return mostrarAlerta("Atenção", "Digite o Nome do Produto ou do Lote antes de salvar no sistema.", "warning");
-        }
-
-        const btn = document.getElementById('btn-salvar');
-        btn.disabled = true;
-        btn.innerText = "⏳ ENVIANDO PARA O BANCO DE DADOS...";
+        const btn = document.getElementById('btn-salvar-lote');
+        btn.disabled = true; btn.innerText = "⏳ ENVIANDO PARA O BANCO...";
 
         try {
-            const payload = {
-                acao: "salvar_custo",
-                modelo: modelo,
-                valor_liquido: fmtPlanilha(custoLiquidoGlobal),
-                valor_insumos: fmtPlanilha(custoInsumosGlobal),
-                custo_total: fmtPlanilha(custoTotalGlobal)
-            };
-
-            const resposta = await fetch(API_NOVERA, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            });
-
+            const payload = { acao: "salvar_custo", modelo: modelo, valor_liquido: fmtPlanilha(custoLiquidoGlobal), valor_insumos: fmtPlanilha(custoInsumosGlobal), custo_total: fmtPlanilha(custoTotalGlobal) };
+            const resposta = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(payload) });
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                mostrarAlerta("Lote Registrado!", `O produto "${modelo}" foi salvo com sucesso no banco de dados da Novera.`, "success");
-                document.getElementById('n-produto').value = ""; // Limpa para o próximo
+                mostrarAlerta("Precificação Registrada!", `Os custos do lote "${modelo}" foram salvos no banco.`, "success");
+                document.getElementById('n-produto').value = ""; 
             } else if (resultado.erro === "DUPLICADO") {
-                mostrarAlerta("Produto Duplicado", `O modelo "${modelo}" já existe no banco de dados. Tente usar Lote B, C, ou outro identificador.`, "warning");
-            } else {
-                throw new Error(resultado.erro);
-            }
-        } catch (erro) {
-            mostrarAlerta("Erro de Conexão", "Falha ao salvar no sistema: " + erro.message, "error");
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "SALVAR LOTE NO SISTEMA";
-        }
+                mostrarAlerta("Produto Duplicado", `A precificação para "${modelo}" já existe no banco de dados.`, "warning");
+            } else throw new Error(resultado.erro);
+        } catch (erro) { mostrarAlerta("Erro de Conexão", "Falha ao salvar no sistema: " + erro.message, "error"); } finally { btn.disabled = false; btn.innerText = "SALVAR LOTE NO SISTEMA"; }
     }
 
-    window.onload = calcularNovera;
+    window.onload = () => {
+        carregarRotulos();
+        calcularNovera();
+    };
 </script>
 
 </body>
