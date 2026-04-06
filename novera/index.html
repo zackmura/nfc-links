@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novera Scent | ERP</title>
     <style>
+        /* Fontes: Montserrat (corpo) e Playfair Display (título) */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
         
         :root { 
             --primary: #B87C96; 
             --primary-dark: #966178;
             --brand-dark: #2C2A2B;
-            --logo-text: rgb(164, 125, 159); /* Nova cor exata da logo */
+            --logo-text: rgb(164, 125, 159);
             --bg-color: #Fdfbfb;
             --card-bg: #ffffff;
             --text-main: #4A4A4A;
@@ -22,27 +23,10 @@
         .app-container { width: 100%; max-width: 600px; }
         .card { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); }
         
-        /* === HEADER COM LOGO E TÍTULO ELEGANTE === */
+        /* HEADER */
         .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
-        
-        .header img.logo { 
-            width: 150px; 
-            height: auto; 
-            margin-bottom: 10px; 
-            object-fit: contain;
-            filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));
-        }
-
-        .header h1 { 
-            margin: 0; 
-            color: var(--logo-text); 
-            font-family: 'Playfair Display', serif; 
-            font-weight: 700; 
-            font-size: 1.9rem; 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-        }
-        
+        .header img.logo { width: 150px; height: auto; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
+        .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.9rem; text-transform: uppercase; letter-spacing: 3px; }
         .header p { margin: 5px 0 0; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary-dark);}
         
         .section-title { font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
@@ -67,20 +51,20 @@
         .markup-box:hover { border-color: var(--primary); transform: translateY(-3px); }
         .markup-title { color: var(--primary-dark); font-weight: 700; font-size: 0.75rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px; }
         .markup-preco { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 5px; }
-        .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #2e7d32; margin: 0; background: #e8f5e9; display: inline-block; padding: 2px 6px; border-radius: 4px; }
+        .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #7a4a5e; margin: 0; background: #E8DDE1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
         
         .btn-salvar { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif;}
         .btn-salvar:hover { background: var(--primary-dark); }
         .btn-salvar:active { transform: translateY(3px); box-shadow: none; }
         .btn-salvar:disabled { background: #E8DDE1; color: #999; cursor: not-allowed; box-shadow: none; }
 
-        /* MODAL DE ALERTA */
-        .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
+        /* MODAL DE ALERTA COM CORES DA NOVERA SCENT */
+        .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
         .modal-box-alert { background: #fff; width: 90%; max-width: 360px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
         .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block; animation: pulseIcon 1s infinite alternate;}
         .modal-title-alert { font-size: 1.3rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 10px; text-transform: uppercase;}
         .modal-text-alert { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
-        .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; transition: transform 0.1s;}
+        .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; transition: transform 0.1s; font-family: 'Montserrat', sans-serif;}
         .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -156,13 +140,12 @@
 </div>
 
 <script>
-    // 🔥 COLE A URL DO SEU NOVO WEB APP AQUI:
+    // URL OFICIAL DA SUA API
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
 
-    // Variáveis globais para armazenar o valor exato no momento do clique
     let custoLiquidoGlobal = 0;
     let custoInsumosGlobal = 0;
     let custoTotalGlobal = 0;
@@ -184,7 +167,6 @@
         const custoLiquidoUni = qtdFrascos > 0 ? custoIngredientesTotal / qtdFrascos : 0;
         const custoTotalUni = custoLiquidoUni + cInsumos;
 
-        // Salva nas globais para jogar no banco de dados depois
         custoLiquidoGlobal = custoLiquidoUni;
         custoInsumosGlobal = cInsumos;
         custoTotalGlobal = custoTotalUni;
@@ -213,12 +195,19 @@
         document.getElementById("modal-titulo-alert").innerText = titulo; 
         document.getElementById("modal-texto-alert").innerText = texto; 
         
+        // Cores ajustadas para a Novera Scent (Elegantes e pastéis)
         if(tipo === "success") { 
-            icone.innerText = "✅"; btnEl.style.background = "#B87C96"; btnEl.style.boxShadow = "0 6px 0 #966178"; 
+            icone.innerText = "✨"; // Troquei o check por um brilho mais elegante
+            btnEl.style.background = "var(--primary-dark)"; 
+            btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; 
         } else if (tipo === "warning") { 
-            icone.innerText = "⚠️"; btnEl.style.background = "#f59e0b"; btnEl.style.boxShadow = "0 6px 0 #d97706"; 
+            icone.innerText = "⚠️"; 
+            btnEl.style.background = "#D4A373"; // Dourado suave/Areia
+            btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; 
         } else { 
-            icone.innerText = "❌"; btnEl.style.background = "#ef4444"; btnEl.style.boxShadow = "0 6px 0 #b91c1c"; 
+            icone.innerText = "❌"; 
+            btnEl.style.background = "#A05252"; // Vermelho bordô
+            btnEl.style.boxShadow = "0 4px 0 #803f3f"; 
         } 
         
         modal.style.display = "flex"; 
@@ -253,8 +242,10 @@
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                mostrarAlerta("Lote Registrado!", `O produto ${modelo} foi salvo com sucesso na sua planilha!`, "success");
-                document.getElementById('n-produto').value = ""; // Limpa para o próximo
+                mostrarAlerta("Lote Registrado!", `O produto "${modelo}" foi salvo com sucesso na sua planilha.`, "success");
+                document.getElementById('n-produto').value = "";
+            } else if (resultado.erro === "DUPLICADO") {
+                mostrarAlerta("Produto Duplicado", `O modelo "${modelo}" já existe no banco de dados. Tente usar Lote B, C, etc.`, "warning");
             } else {
                 throw new Error(resultado.erro);
             }
