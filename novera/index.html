@@ -58,11 +58,11 @@
         .rotulo-card { background: #fafafa; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
         .rotulo-card:hover { border-color: var(--primary); background: #fff; box-shadow: 0 4px 10px rgba(184, 124, 150, 0.08);}
         .rotulo-info h4 { margin: 0 0 5px; color: var(--brand-dark); font-size: 0.95rem; }
-        .rotulo-info p { margin: 0; color: var(--text-muted); font-size: 0.75rem; }
+        .rotulo-info p { margin: 0; color: #888; font-size: 0.75rem; }
         .rotulo-badge { background: var(--primary-dark); color: white; padding: 5px 10px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px;}
         .custo-val { font-weight: 800; color: var(--primary-dark); font-size: 1.1rem; }
         
-        .btn-acao { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; transition: 0.2s; border-radius: 50%; padding: 4px; display: flex; justify-content: center; align-items: center;}
+        .btn-acao { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; transition: 0.2s; border-radius: 50%; padding: 6px; display: flex; justify-content: center; align-items: center;}
         .btn-acao:active { transform: scale(0.9); }
         .btn-acao:hover { background: var(--border-color); }
         
@@ -87,7 +87,7 @@
         .modal-box-alert { background: #fff; width: 90%; max-width: 380px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto;}
         .modal-icon-alert { font-size: 3.5rem; margin-bottom: 10px; display: inline-block;}
         .modal-title-alert { font-size: 1.3rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 10px; text-transform: uppercase;}
-        .modal-text-alert { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
+        .modal-text-alert { font-size: 0.9rem; color: #666; margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
         .btn-modal-ok { color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; transition: transform 0.1s;}
         .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
         .btn-modal-cancel { flex: 1; background: #fdf5f7; color: var(--primary-dark); border: 1px solid #f3d8e2; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
@@ -157,11 +157,31 @@
             <div class="section-title">🛍️ Registrar Venda</div>
             <div class="row"><div class="col"><label>Data da Venda</label><input type="date" id="v-data"></div><div class="col"><label>Cliente</label><input type="text" id="v-cliente" list="lista-clientes" placeholder="Nome do Cliente"></div></div>
             <div class="input-group"><label>Produto Vendido</label><select id="v-produto"><option value="">Carregando produtos...</option></select></div>
-            <div class="row"><div class="col"><label>Lucro da Venda p/</label><input type="text" id="v-socio" list="lista-socios" placeholder="Sócio (Ex: Natália)"></div><div class="col"><label>Quantidade</label><input type="number" id="v-qtd" value="1"></div></div>
+            
+            <div class="row">
+                <div class="col"><label>Lucro da Venda p/</label><input type="text" id="v-socio" list="lista-socios-dinamica" placeholder="Sócio (Ex: Natália)"></div>
+                <div class="col"><label>Quantidade</label><input type="number" id="v-qtd" value="1"></div>
+            </div>
+            
             <div class="row"><div class="col"><label>Valor Total da Venda</label><input type="text" id="v-valor" class="mask-money" placeholder="R$ 0,00"></div><div class="col"><label>Status PG</label><select id="v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div>
             <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()">Registrar Venda</button>
 
-            <div class="section-title" style="margin-top: 35px;">📊 Dashboard de Vendas <span id="loading-vendas" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span></div>
+            <div class="filtro-box" style="background: #fff9e6; border-color: #ffeeba; margin-top: 35px;">
+                <div class="section-title" style="margin-top:0; border-left-color: #ffc107; color: #b45309;">📱 Cobrança Rápida</div>
+                <div class="row" style="align-items: flex-end; margin-bottom: 0;">
+                    <div class="col">
+                        <label style="color: #b45309;">Selecione o Cliente Devedor</label>
+                        <select id="cobranca-cliente">
+                            <option value="">Nenhum devedor encontrado...</option>
+                        </select>
+                    </div>
+                    <div class="col" style="flex: 0.6;">
+                        <button class="btn-salvar" style="margin-top: 0; background: #25D366; color: white; padding: 12px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="copiarPendenciasWhats()">📋 Copiar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">📊 Dashboard de Vendas <span id="loading-vendas" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span></div>
             <div class="filtro-box">
                 <div class="row">
                     <div class="col"><label>Mês</label><select id="f-v-mes" onchange="filtrarVendas()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
@@ -179,13 +199,14 @@
 
             <div id="lista-vendas-cadastradas"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando histórico...</p></div>
             <datalist id="lista-clientes"></datalist>
+            <datalist id="lista-socios-dinamica"></datalist>
         </div>
 
     </div>
 </div>
 
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
-<div id="modal-confirmar" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">🗑️</span><h3 class="modal-title-alert" style="color: #A05252;">Excluir?</h3><p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p><div style="display: flex; gap: 10px; margin-top: 15px;"><button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button><button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Apagar</button></div></div></div>
+<div id="modal-confirmar" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">❓</span><h3 class="modal-title-alert" style="color: var(--brand-dark);">Atenção</h3><p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p><div style="display: flex; gap: 10px; margin-top: 15px;"><button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button><button class="btn-modal-confirm" id="btn-confirmar-acao">Sim, Confirmar</button></div></div></div>
 
 <div id="modal-editar-venda" class="modal-overlay-alert">
     <div class="modal-box-alert" style="padding-top: 40px;">
@@ -193,7 +214,7 @@
         <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3>
         <input type="hidden" id="edit-v-linha">
         <div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div>
-        <div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios"></div>
+        <div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div>
         <div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div>
         <div class="input-group" style="text-align: left;"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div>
         <button class="btn-salvar" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
@@ -201,6 +222,7 @@
 </div>
 
 <script>
+    // --- COLAR AQUI O SEU LINK DA API (O QUE VOCÊ ME PASSOU) ---
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -215,7 +237,7 @@
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
             let val = e.target.value.replace(/\D/g, ''); if(val === "") { e.target.value = ""; return; }
             val = (parseInt(val) / 100).toFixed(2) + ''; val = val.replace(".", ","); val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); val = val.replace(/(\d)(\d{3}),/g, "$1.$2,"); e.target.value = "R$ " + val;
-            if(e.target.id === 'g-valor') setTimeout(calcularTotalGasto, 10);
+            if(e.target.id === 'g-valor' && typeof calcularTotalGasto === 'function') setTimeout(calcularTotalGasto, 10);
         }
     });
 
@@ -225,10 +247,11 @@
         document.getElementById('btn-' + tabId).classList.add('active');
         document.getElementById('tab-' + tabId).classList.add('active');
         if(tabId === 'precificar') carregarCustos();
-        if(tabId === 'gastos') { carregarGastos(); document.getElementById('g-data').valueAsDate = new Date(); }
+        if(tabId === 'gastos') { if(typeof carregarGastos === 'function') carregarGastos(); document.getElementById('g-data').valueAsDate = new Date(); }
         if(tabId === 'vendas') { carregarVendas(); document.getElementById('v-data').valueAsDate = new Date(); }
     }
 
+    // MODAL DE ALERTA PERSONALIZADO
     function mostrarAlerta(titulo, texto, tipo) { 
         const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
         tituloEl.innerText = titulo; document.getElementById("modal-texto-alert").innerText = texto; 
@@ -238,12 +261,22 @@
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-    function abrirConfirmacao(texto, callback) { document.getElementById('texto-confirmar').innerText = texto; acaoConfirmada = callback; document.getElementById('modal-confirmar').style.display = 'flex'; }
-    document.getElementById('btn-confirmar-acao').onclick = () => { if (acaoConfirmada) acaoConfirmada(); document.getElementById('modal-confirmar').style.display = 'none'; };
+    // MODAL DE CONFIRMAÇÃO PERSONALIZADO
+    function abrirConfirmacao(texto, callback) { 
+        document.getElementById('texto-confirmar').innerText = texto; 
+        acaoConfirmada = callback; 
+        document.getElementById('modal-confirmar').style.display = 'flex'; 
+    }
+    
+    document.getElementById('btn-confirmar-acao').onclick = () => { 
+        if (acaoConfirmada) acaoConfirmada(); 
+        document.getElementById('modal-confirmar').style.display = 'none'; 
+    };
 
     // --- FUNÇÕES BASICAS OMITIDAS AQUI PARA ESPAÇO, MANTENHA AS DOS ROTULOS E GASTOS IGUAIS ---
-    // (As funções carregarRotulos, salvarRotulo, carregarCustos, salvarLotePrecificacao, carregarGastos, calcularTotalGasto são idênticas ao código anterior)
+    // (Pode colar aqui suas funções originais de carregarRotulos, salvarRotulo, carregarGastos, etc.)
 
+    // ================= CUSTOS / PRODUTOS =================
     async function carregarCustos() {
         document.getElementById("loading-custos").style.display = "inline";
         try {
@@ -251,13 +284,32 @@
             if (dados.sucesso) {
                 custosGlobal = dados.custos;
                 
-                // MÁGICA: Preenche o select de Vendas com os produtos já precificados
+                // MÁGICA 1: Preenche o select de Vendas com os produtos
                 const selectVendas = document.getElementById("v-produto");
                 let htmlVendas = '<option value="">Selecione o Lote Vendido...</option>';
+                
+                // CORREÇÃO: Renderiza a lista visual na aba de Custos que não estava aparecendo
+                let htmlListaCustos = '';
+
                 custosGlobal.forEach(c => {
-                    htmlVendas += `<option value="${c.modelo}" data-custo="${parseDinheiro(c.custo_total)}">${c.modelo} (Custo: ${safeFmt(c.custo_total)})</option>`;
+                    // Garantia de pegar o nome mesmo se a coluna mudar o titulo na planilha
+                    const nomeProduto = c.modelo || c.produto || c.nome || "Produto sem nome"; 
+                    
+                    htmlVendas += `<option value="${nomeProduto}" data-custo="${parseDinheiro(c.custo_total)}">${nomeProduto} (Custo: ${safeFmt(c.custo_total)})</option>`;
+                    
+                    // Desenha o cartão na aba de Produção
+                    htmlListaCustos += `
+                    <div class="rotulo-card">
+                        <div class="rotulo-info">
+                            <h4>${nomeProduto}</h4>
+                            <p>Custo Unitário: <b>${safeFmt(c.custo_total)}</b></p>
+                        </div>
+                    </div>`;
                 });
                 if(selectVendas) selectVendas.innerHTML = htmlVendas;
+                
+                const divLista = document.getElementById("lista-custos-cadastrados");
+                if(divLista) divLista.innerHTML = htmlListaCustos || "<p style='text-align:center;'>Nenhum custo registrado ainda.</p>";
             }
         } catch(e) {} finally { document.getElementById("loading-custos").style.display = "none"; }
     }
@@ -271,12 +323,11 @@
         if(!data || !cliente || !produtoNome || valorVendaStr === "") return mostrarAlerta("Atenção", "Preencha Data, Cliente, Produto e Valor.", "warning");
         
         const valorVenda = parseDinheiro(valorVendaStr);
-        // Busca o custo unitário que ficou escondido no <option>
         const custoUnd = parseFloat(produtoSelect.options[produtoSelect.selectedIndex].getAttribute('data-custo')) || 0;
         const custoTotal = custoUnd * qtd;
         const lucro = valorVenda - custoTotal;
         const markup = custoTotal > 0 ? (lucro / custoTotal) : 1;
-        const dataPg = status === "Pago" ? data : ""; // Se pagou hoje, salva a data.
+        const dataPg = status === "Pago" ? data : ""; 
 
         const btn = document.getElementById('btn-salvar-venda'); btn.disabled = true; btn.innerText = "⏳ REGISTRANDO...";
         try {
@@ -297,6 +348,11 @@
                 const clientesSet = new Set(vendasGlobal.map(v => String(v.cliente).trim()));
                 let dlHtml = ""; clientesSet.forEach(c => dlHtml += `<option value="${c}">`);
                 document.getElementById('lista-clientes').innerHTML = dlHtml;
+
+                // MÁGICA: Aprende os nomes dos Sócios (Lucro p/)
+                const sociosSet = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s !== ''));
+                let dlSociosHtml = ""; sociosSet.forEach(s => dlSociosHtml += `<option value="${s}">`);
+                document.getElementById('lista-socios-dinamica').innerHTML = dlSociosHtml;
                 
                 filtrarVendas(); 
             }
@@ -310,8 +366,8 @@
         let filtradas = vendasGlobal.filter(v => {
             let passMes = true, passStatus = true;
             if(fMes) {
-                const mesVenda = v.dataVendaIso.split('-')[1]; // Pega o MM do YYYY-MM-DD
-                if(mesVenda !== fMes) passMes = false;
+                const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null;
+                if(mesVenda && mesVenda !== fMes) passMes = false;
             }
             if(fStatus && v.status !== fStatus) passStatus = false;
             return passMes && passStatus;
@@ -333,13 +389,13 @@
                 
                 if(v.status === 'Pago') tReceita += valVenda; else tReceber += valVenda;
 
-                const msgZap = encodeURIComponent(`Olá ${v.cliente}, tudo bem? Aqui é da Novera Scent! ✨ Seu pedido do perfume ${v.produto} já está separadinho!`);
                 const isPago = v.status === 'Pago';
 
+                // CARTÕES LIMPOS (Apenas Cifrão, Editar e Excluir)
                 html += `<div class="rotulo-card">
                     <div class="rotulo-info">
                         <h4>${v.cliente} <span class="status-badge ${isPago ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4>
-                        <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay}</p>
+                        <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p>
                         <p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p>
                         <p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>
                     </div>
@@ -347,7 +403,6 @@
                         <div class="custo-val">${safeFmt(v.valor_venda)}</div>
                         <div style="display:flex; gap:5px;">
                             ${!isPago ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32;" onclick="darBaixaVenda(${v.linha})" title="Marcar como Pago">💲</button>` : ''}
-                            <a href="https://wa.me/?text=${msgZap}" target="_blank" class="btn-acao" style="background:#e8f5e9; text-decoration:none;" title="WhatsApp">💬</a>
                             <button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>
                             <button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button>
                         </div>
@@ -361,17 +416,65 @@
         document.getElementById('dash-v-receber').innerText = fmt(tReceber);
         document.getElementById('dash-v-lucro').innerText = fmt(tLucro);
         document.getElementById('dash-v-itens').innerText = tItens;
+
+        // ATUALIZA A LISTA DE DEVEDORES PARA O BOTÃO DO WHATSAPP
+        atualizarListaCobranca();
     }
 
+    // ================= FUNÇÃO NOVA: WHATSAPP DEVEDORES =================
+    function atualizarListaCobranca() {
+        const selectCob = document.getElementById('cobranca-cliente');
+        const devedoresSet = new Set();
+        
+        vendasGlobal.forEach(v => {
+            if(v.status === 'Pendente' && v.cliente) devedoresSet.add(v.cliente.trim());
+        });
+
+        let optHtml = '<option value="">Selecione o devedor...</option>';
+        devedoresSet.forEach(c => {
+            optHtml += `<option value="${c}">${c}</option>`;
+        });
+        
+        selectCob.innerHTML = optHtml;
+    }
+
+    function copiarPendenciasWhats() {
+        const clienteNome = document.getElementById('cobranca-cliente').value;
+        if(!clienteNome) {
+            return mostrarAlerta("Aviso", "Selecione um cliente com pendência na lista.", "warning");
+        }
+
+        let pendencias = vendasGlobal.filter(p => p.cliente.trim() === clienteNome && p.status === 'Pendente');
+        
+        let textoCopia = `Olá ${clienteNome}, tudo bem? Aqui é da Novera Scent! ✨\n\nSegue o resumo dos seus pedidos em aberto:\n\n`;
+        let totalDevido = 0;
+
+        pendencias.forEach(p => {
+            const valor = parseDinheiro(p.valor_venda);
+            textoCopia += `📅 ${p.dataVendaDisplay || p.dataVendaIso} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(valor)}\n`;
+            totalDevido += valor;
+        });
+
+        textoCopia += `\n*Total em aberto: ${fmt(totalDevido)}*`;
+
+        navigator.clipboard.writeText(textoCopia).then(() => {
+            mostrarAlerta("Copiado! 📋", "As pendências foram copiadas. Agora é só abrir o WhatsApp do cliente e colar a mensagem.", "success");
+        }).catch(err => {
+            mostrarAlerta("Erro", "Não foi possível copiar automaticamente do seu navegador.", "error");
+        });
+    }
+
+    // ================= EDITAÇÕES E EXCLUSÕES =================
     async function darBaixaVenda(linha) {
-        if(confirm("Marcar esta venda como PAGA hoje?")) {
+        // Substituindo o confirm() feio pelo nosso modal bonitão
+        abrirConfirmacao("Deseja marcar o pagamento desta venda como RECEBIDO na data de hoje?", async () => {
             try {
-                const hojeStr = new Date().toLocaleDateString('pt-BR'); // Formato DD/MM/YYYY
+                const hojeStr = new Date().toLocaleDateString('pt-BR'); 
                 const py = { acao: "atualizar_status_venda", linha: linha, status: "Pago", data_pg: hojeStr };
                 const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
                 if(json.sucesso) { mostrarAlerta("Recebido!", "Baixa registrada no caixa.", "success"); carregarVendas(); } else throw new Error(json.erro);
             } catch(e) { mostrarAlerta("Erro", e.message, "error"); }
-        }
+        });
     }
 
     function abrirModalEditarVenda(linha) {
@@ -381,14 +484,12 @@
     }
 
     async function salvarEdicaoVenda() {
-        // Para simplificar a edição de vendas já feitas, recarregamos a venda original para manter a matemática do custo.
         const linha = document.getElementById('edit-v-linha').value;
         const vOriginal = vendasGlobal.find(x => x.linha == linha);
         
         const data = document.getElementById('edit-v-data').value, cliente = document.getElementById('edit-v-cliente').value, socio = document.getElementById('edit-v-socio').value, qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr = document.getElementById('edit-v-valor').value, status = document.getElementById('edit-v-status').value;
         const valorVenda = parseDinheiro(valorStr);
         
-        // Recalcula o lucro baseado no custo unitário original que estava gravado
         const custoUnd = parseDinheiro(vOriginal.custo_und);
         const custoTotal = custoUnd * qtd;
         const lucro = valorVenda - custoTotal;
@@ -399,13 +500,26 @@
         try {
             const py = { acao: "atualizar_venda", linha: linha, data: data, cliente: cliente, produto: vOriginal.produto, socio: socio, qtd: qtd, valor_venda: fmtPlanilha(valorVenda), status: status, custo_und: fmtPlanilha(custoUnd), custo_total: fmtPlanilha(custoTotal), lucro: fmtPlanilha(lucro), markup: (markup * 100).toFixed(2) + "%", data_pg: dataPg };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Venda corrigida.", "success"); carregarVendas(); } else throw new Error(json.erro);
+            if(json.sucesso) { document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Venda corrigida com sucesso.", "success"); carregarVendas(); } else throw new Error(json.erro);
         } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
 
-    function prepararExclusaoVenda(linha, cliente) { abrirConfirmacao(`Deseja apagar o registro de venda para "${cliente}"?`, async () => { try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Venda apagada.", "success"); carregarVendas(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } }); }
+    function prepararExclusaoVenda(linha, cliente) { 
+        // Substituindo o confirm() feio pelo nosso modal bonitão
+        abrirConfirmacao(`Deseja apagar permanentemente o registro de venda para "${cliente}"?`, async () => { 
+            try { 
+                const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); 
+                const json = await res.json(); 
+                if(json.sucesso) { mostrarAlerta("Excluído", "Venda apagada.", "success"); carregarVendas(); } else throw new Error(json.erro); 
+            } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        }); 
+    }
 
-    window.onload = () => { carregarRotulos(); carregarCustos(); };
+    // INICIALIZAÇÃO
+    window.onload = () => { 
+        if(typeof carregarRotulos === 'function') carregarRotulos(); 
+        carregarCustos(); 
+    };
 </script>
 
 </body>
