@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novera Scent | ERP</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#B87C96">
+    <link rel="apple-touch-icon" href="logo-192.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
@@ -1101,6 +1104,23 @@
         calcularNovera(); 
     };
 </script>
+
+    <script>
+        // Registra o Service Worker do PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('PWA: Service Worker registrado com sucesso!', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('PWA: Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
 
 </body>
 </html>
