@@ -77,7 +77,7 @@
 <div class="app-container">
     <div class="card">
         <div class="header">
-            <img src="logo.png" alt="Novera Scent Logo" class="logo" onerror="this.style.display='none'">
+            <img src="logo.png" alt="Novera Scent Logo" class="logo" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
             <p>Laboratório de Precificação</p>
         </div>
@@ -132,7 +132,7 @@
 
 <div id="custom-modal" class="modal-overlay-alert">
     <div class="modal-box-alert">
-        <span class="modal-icon-alert" id="modal-icone-alert">✅</span>
+        <span class="modal-icon-alert" id="modal-icone-alert">✨</span>
         <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
         <p class="modal-text-alert" id="modal-texto-alert">Operação realizada com sucesso!</p>
         <button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button>
@@ -191,22 +191,26 @@
         const modal = document.getElementById("custom-modal");
         const icone = document.getElementById("modal-icone-alert");
         const btnEl = document.getElementById("btn-modal-ok"); 
+        const tituloEl = document.getElementById("modal-titulo-alert");
         
-        document.getElementById("modal-titulo-alert").innerText = titulo; 
+        tituloEl.innerText = titulo; 
         document.getElementById("modal-texto-alert").innerText = texto; 
         
         // Cores ajustadas para a Novera Scent (Elegantes e pastéis)
         if(tipo === "success") { 
-            icone.innerText = "✨"; // Troquei o check por um brilho mais elegante
+            icone.innerText = "✨"; 
+            tituloEl.style.color = "var(--primary-dark)";
             btnEl.style.background = "var(--primary-dark)"; 
             btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; 
         } else if (tipo === "warning") { 
             icone.innerText = "⚠️"; 
-            btnEl.style.background = "#D4A373"; // Dourado suave/Areia
+            tituloEl.style.color = "#D4A373"; // Dourado suave/Areia
+            btnEl.style.background = "#D4A373"; 
             btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; 
         } else { 
             icone.innerText = "❌"; 
-            btnEl.style.background = "#A05252"; // Vermelho bordô
+            tituloEl.style.color = "#A05252"; // Vermelho bordô
+            btnEl.style.background = "#A05252"; 
             btnEl.style.boxShadow = "0 4px 0 #803f3f"; 
         } 
         
@@ -218,12 +222,12 @@
         const modelo = document.getElementById('n-produto').value.trim();
         
         if (!modelo) {
-            return mostrarAlerta("Atenção", "Digite o Nome do Produto / Lote antes de salvar.", "warning");
+            return mostrarAlerta("Atenção", "Digite o Nome do Produto ou do Lote antes de salvar no sistema.", "warning");
         }
 
         const btn = document.getElementById('btn-salvar');
         btn.disabled = true;
-        btn.innerText = "⏳ SALVANDO NO BANCO...";
+        btn.innerText = "⏳ ENVIANDO PARA O BANCO DE DADOS...";
 
         try {
             const payload = {
@@ -242,15 +246,15 @@
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                mostrarAlerta("Lote Registrado!", `O produto "${modelo}" foi salvo com sucesso na sua planilha.`, "success");
-                document.getElementById('n-produto').value = "";
+                mostrarAlerta("Lote Registrado!", `O produto "${modelo}" foi salvo com sucesso no banco de dados da Novera.`, "success");
+                document.getElementById('n-produto').value = ""; // Limpa para o próximo
             } else if (resultado.erro === "DUPLICADO") {
-                mostrarAlerta("Produto Duplicado", `O modelo "${modelo}" já existe no banco de dados. Tente usar Lote B, C, etc.`, "warning");
+                mostrarAlerta("Produto Duplicado", `O modelo "${modelo}" já existe no banco de dados. Tente usar Lote B, C, ou outro identificador.`, "warning");
             } else {
                 throw new Error(resultado.erro);
             }
         } catch (erro) {
-            mostrarAlerta("Erro de Conexão", "Falha ao salvar: " + erro.message, "error");
+            mostrarAlerta("Erro de Conexão", "Falha ao salvar no sistema: " + erro.message, "error");
         } finally {
             btn.disabled = false;
             btn.innerText = "SALVAR LOTE NO SISTEMA";
