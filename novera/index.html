@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novera Scent | ERP</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+        
+        :root { 
+            /* Cores baseadas na paleta sofisticada da Novera Scent */
+            --primary: #B87C96; 
+            --primary-dark: #966178;
+            --brand-dark: #2C2A2B;
+            --bg-color: #Fdfbfb;
+            --card-bg: #ffffff;
+            --text-main: #4A4A4A;
+            --border-color: #E8DDE1;
+        }
+        
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; color: var(--text-main); padding-bottom: 50px; }
+        .app-container { width: 100%; max-width: 600px; }
+        .card { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); }
+        
+        /* === HEADER COM LOGO === */
+        .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
+        
+        /* 🔥 ESTILO DO LOGO 🔥 */
+        .header img.logo { 
+            width: 90px; /* Largura elegante */
+            height: auto; 
+            margin-bottom: 15px; 
+            object-fit: contain;
+            /* Um leve brilho/sombra suave atrás do logo para dar destaque */
+            filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));
+        }
+
+        .header h1 { margin: 0; color: var(--brand-dark); font-weight: 800; letter-spacing: 1px; font-size: 1.6rem; text-transform: uppercase; }
+        .header p { margin: 5px 0 0; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; color: var(--primary-dark);}
+        
+        .section-title { font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        .row { display: flex; gap: 15px; margin-bottom: 15px; } .col { flex: 1; }
+        @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } } /* Responsivo para celular */
+
+        .input-group { margin-bottom: 15px; }
+        label { font-weight: 600; font-size: 0.75rem; display: block; margin-bottom: 6px; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.5px;}
+        input { width: 100%; padding: 12px 14px; border: 2px solid var(--border-color); border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; box-sizing: border-box; background: #fafafa; transition: 0.3s; font-weight: 600; color: var(--brand-dark);}
+        input:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(184, 124, 150, 0.1); }
+        
+        .resumo-box { background: linear-gradient(135deg, var(--primary-dark) 0%, #7a4a5e 100%); color: white; padding: 25px; border-radius: 16px; margin-top: 25px; box-shadow: 0 8px 25px rgba(150, 97, 120, 0.25);}
+        .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; font-weight: 500; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 8px;}
+        .resumo-linha:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+        .custo-total { display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.25rem; font-weight: 800; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);}
+        
+        .markup-area { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        @media (max-width: 480px) { .markup-area { grid-template-columns: 1fr; } }
+
+        .markup-box { background: #fdf5f7; border: 2px solid #f3d8e2; padding: 18px; border-radius: 12px; transition: 0.2s; }
+        .markup-box:hover { border-color: var(--primary); transform: translateY(-3px); }
+        .markup-title { color: var(--primary-dark); font-weight: 700; font-size: 0.75rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .markup-preco { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 5px; }
+        .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #2e7d32; margin: 0; background: #e8f5e9; display: inline-block; padding: 2px 6px; border-radius: 4px; }
+        
+        .btn-salvar { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif;}
+        .btn-salvar:hover { background: var(--primary-dark); }
+        .btn-salvar:active { transform: translateY(3px); box-shadow: none; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="card">
+        <div class="header">
+            <img src="logo.jpg" alt="Novera Scent Logo" class="logo" onerror="this.style.display='none'">
+            <h1>Novera Scent</h1>
+            <p>Laboratório de Precificação</p>
+        </div>
+
+        <div class="section-title">🧪 Fórmula & Rendimento do Lote</div>
+        <div class="input-group">
+            <label>Nome do Produto / Referência do Lote</label>
+            <input type="text" id="n-produto" placeholder="Ex: N013 Daslu Lavanda - Lote A">
+        </div>
+        
+        <div class="row">
+            <div class="col"><label>Custo Fragrância (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div>
+            <div class="col"><label>Qtd. Fragrância (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div>
+        </div>
+        
+        <div class="row">
+            <div class="col"><label>Custo Base 1L (R$)</label><input type="number" id="n-custo-base" value="18.40" step="0.01" oninput="calcularNovera()"></div>
+            <div class="col"><label>Qtd. Base Usada (ml)</label><input type="number" id="n-qtd-base" value="1000" oninput="calcularNovera()"></div>
+        </div>
+        
+        <div class="row">
+            <div class="col"><label>Vol. Frasco Venda (ml)</label><input type="number" id="n-ml-venda" value="250" oninput="calcularNovera()"></div>
+            <div class="col"><label>Custo Embalagem/un (R$)</label><input type="number" id="n-insumos" value="4.00" step="0.01" oninput="calcularNovera()"></div>
+        </div>
+
+        <div class="resumo-box">
+            <div class="resumo-linha"><span>Custo por ml da Fragrância</span> <span id="r-ml-frag">R$ 0,00</span></div>
+            <div class="resumo-linha"><span>Custo por ml da Base</span> <span id="r-ml-base">R$ 0,00</span></div>
+            <div class="resumo-linha"><span>Total Líquido Produzido</span> <span id="r-vol-total">0 ml</span></div>
+            <div class="resumo-linha"><span>Rendimento (Frascos Cheios)</span> <span id="r-frascos">0,0</span></div>
+            <div class="resumo-linha"><span>Custo do Líquido / Unidade</span> <span id="r-liquido">R$ 0,00</span></div>
+            <div class="custo-total"><span>Custo Total Unitário</span> <span id="r-custo-total">R$ 0,00</span></div>
+        </div>
+
+        <div class="section-title">💰 Sugestão de Venda (Markup)</div>
+        <div class="markup-area">
+            <div class="markup-box">
+                <p class="markup-title">Venda Simples (2x)</p>
+                <p class="markup-preco" id="m-preco-2x">R$ 0,00</p>
+                <p class="markup-lucro" id="m-lucro-2x">Lucro Limpo: R$ 0,00</p>
+            </div>
+            <div class="markup-box">
+                <p class="markup-title">Venda Premium (4x)</p>
+                <p class="markup-preco" id="m-preco-4x">R$ 0,00</p>
+                <p class="markup-lucro" id="m-lucro-4x">Lucro Limpo: R$ 0,00</p>
+            </div>
+        </div>
+
+        <button class="btn-salvar" onclick="alert('Conexão com Google Sheets será implementada em breve!')">Salvar Lote no Sistema</button>
+    </div>
+</div>
+
+<script>
+    // Função para formatar moeda BRL
+    const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function calcularNovera() {
+        // Pega valores dos inputs ou define 0 se vazio
+        const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0;
+        const qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0;
+        const cBase1L = parseFloat(document.getElementById('n-custo-base').value) || 0;
+        const qBase = parseFloat(document.getElementById('n-qtd-base').value) || 0;
+        const mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1; // Evita divisão por zero
+        const cInsumos = parseFloat(document.getElementById('n-insumos').value) || 0;
+
+        // --- Cálculos de Custo e Rendimento ---
+        
+        // 1. Custo por ml de cada componente
+        const valorMlFrag = qFrag > 0 ? cFrag / qFrag : 0;
+        const valorMlBase = cBase1L / 1000; // Base considerando custo de 1 Litro
+        
+        // 2. Produção Total do Lote
+        const qtdMlProducao = qBase + qFrag;
+        
+        // 3. Rendimento (Quantos frascos inteiros rende)
+        const qtdFrascos = qtdMlProducao / mlVenda;
+
+        // 4. Custo Proporcional do Líquido por Frasco
+        // (Custo Total dos Ingredientes / Total de Frascos Produzidos)
+        const custoIngredientesTotal = cFrag + (valorMlBase * qBase);
+        const custoLiquidoUni = qtdFrascos > 0 ? custoIngredientesTotal / qtdFrascos : 0;
+        
+        // 5. Custo Total da Unidade (Líquido + Embalagem)
+        const custoTotalUni = custoLiquidoUni + cInsumos;
+
+        // --- Atualiza Tela - Painel de Resumo ---
+        document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag);
+        document.getElementById('r-ml-base').innerText = fmt(valorMlBase);
+        document.getElementById('r-vol-total').innerText = qtdMlProducao + " ml";
+        document.getElementById('r-frascos').innerText = qtdFrascos.toFixed(1);
+        document.getElementById('r-liquido').innerText = fmt(custoLiquidoUni);
+        document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
+
+        // --- Atualiza Tela - Sugestão de Venda ---
+        const preco2x = custoTotalUni * 2;
+        const preco4x = custoTotalUni * 4;
+        
+        document.getElementById('m-preco-2x').innerText = fmt(preco2x);
+        document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt(preco2x - custoTotalUni);
+        
+        document.getElementById('m-preco-4x').innerText = fmt(preco4x);
+        document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(preco4x - custoTotalUni);
+    }
+
+    // Executa o cálculo inicial ao carregar a página
+    window.onload = calcularNovera;
+</script>
+
+</body>
+</html>
