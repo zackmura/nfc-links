@@ -58,19 +58,19 @@
         .rotulo-card { background: #fafafa; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
         .rotulo-card:hover { border-color: var(--primary); background: #fff; box-shadow: 0 4px 10px rgba(184, 124, 150, 0.08);}
         .rotulo-info h4 { margin: 0 0 5px; color: var(--brand-dark); font-size: 0.95rem; }
-        .rotulo-info p { margin: 0; color: #888; font-size: 0.75rem; }
+        .rotulo-info p { margin: 0; color: var(--text-muted); font-size: 0.75rem; }
         .rotulo-badge { background: var(--primary-dark); color: white; padding: 5px 10px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px;}
         .custo-val { font-weight: 800; color: var(--primary-dark); font-size: 1.1rem; }
         
         .btn-acao { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; transition: 0.2s; border-radius: 50%; padding: 6px; display: flex; justify-content: center; align-items: center;}
         .btn-acao:active { transform: scale(0.9); }
         .btn-acao:hover { background: var(--border-color); }
-        
+
         .status-badge { font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
         .status-pago { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .status-pendente { background: #fef08a; color: #b45309; border: 1px solid #fde047; }
 
-        .filtro-box { background: #fdf5f7; border: 1px dashed var(--primary); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .filtro-box { background: #f8f9fa; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
         
         .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .dash-card { background: #fff; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: center;}
@@ -87,9 +87,10 @@
         .modal-box-alert { background: #fff; width: 90%; max-width: 380px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto;}
         .modal-icon-alert { font-size: 3.5rem; margin-bottom: 10px; display: inline-block;}
         .modal-title-alert { font-size: 1.3rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 10px; text-transform: uppercase;}
-        .modal-text-alert { font-size: 0.9rem; color: #666; margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
+        .modal-text-alert { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
         .btn-modal-ok { color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; transition: transform 0.1s;}
         .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
+        
         .btn-modal-cancel { flex: 1; background: #fdf5f7; color: var(--primary-dark); border: 1px solid #f3d8e2; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
         .btn-modal-confirm { flex: 1; background: #A05252; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; box-shadow: 0 4px 0 #803f3f; font-family: 'Montserrat', sans-serif;}
         .btn-modal-confirm:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
@@ -116,41 +117,157 @@
 
         <div id="tab-rotulos" class="tab-content active">
             <div class="section-title">✨ Nova Identidade Novera</div>
-            <div class="input-group"><label>Essência Original (Inspiração)</label><input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal..."></div>
-            <div class="row"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="r-marca"></div></div>
-            <div class="input-group"><label>Tipo de Produto</label><input type="text" id="r-tipo" list="lista-tipos"><datalist id="lista-tipos"><option value="Essência"><option value="Perfume"><option value="Home Spray"><option value="Vela"><option value="Hidratante"></datalist></div>
+            
+            <div class="input-group">
+                <label>Essência Original (Inspiração)</label>
+                <input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal...">
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn" placeholder="Ex: 4953"></div>
+                <div class="col"><label>Marca Fornecedor</label><input type="text" id="r-marca" placeholder="Ex: Wanny"></div>
+            </div>
+            
+            <div class="input-group">
+                <label>Tipo de Produto</label>
+                <input type="text" id="r-tipo" list="lista-tipos" placeholder="Ex: Essência, Hidratante...">
+                <datalist id="lista-tipos">
+                    <option value="Essência">
+                    <option value="Perfume">
+                    <option value="Home Spray">
+                    <option value="Vela">
+                    <option value="Hidratante">
+                </datalist>
+            </div>
+
             <button class="btn-salvar" id="btn-salvar-rotulo" onclick="salvarRotulo()">Criar Identidade (N-XXXX)</button>
 
-            <div class="section-title">📋 Dicionário Ativo <span id="loading-rotulos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳...</span></div>
-            <div id="lista-rotulos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando...</p></div>
+            <div class="section-title">
+                📋 Dicionário Ativo
+                <span id="loading-rotulos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span>
+            </div>
+            <div id="lista-rotulos-cadastrados">
+                <p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando banco de dados...</p>
+            </div>
         </div>
 
         <div id="tab-precificar" class="tab-content">
             <div class="section-title">🧪 Custos da Produção Atual</div>
-            <div class="row"><div class="col"><label>Base Mestre</label><select id="n-produto"><option value="">Carregando...</option></select></div><div class="col"><label>Lote de Produção</label><input type="text" id="p-lote" value="Lote 1"></div></div>
-            <div class="row"><div class="col"><label>Custo Fragrância (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div><div class="col"><label>Qtd. Fragrância (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div></div>
-            <div class="row"><div class="col"><label>Custo Base 1L (R$)</label><input type="number" id="n-custo-base" value="18.40" step="0.01" oninput="calcularNovera()"></div><div class="col"><label>Qtd. Base Usada (ml)</label><input type="number" id="n-qtd-base" value="1000" oninput="calcularNovera()"></div></div>
-            <div class="row"><div class="col"><label>Vol. Frasco Venda (ml)</label><input type="number" id="n-ml-venda" value="250" oninput="calcularNovera()"></div><div class="col"><label>Custo Embalagem/un (R$)</label><input type="number" id="n-insumos" value="4.00" step="0.01" oninput="calcularNovera()"></div></div>
+            
+            <div class="row">
+                <div class="col">
+                    <label>Base Mestre (Identidade)</label>
+                    <select id="n-produto">
+                        <option value="">Carregando essências...</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Lote de Produção</label>
+                    <input type="text" id="p-lote" placeholder="Ex: Lote 2" value="Lote 1">
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Custo Fragrância (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div>
+                <div class="col"><label>Qtd. Fragrância (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div>
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Custo Base 1L (R$)</label><input type="number" id="n-custo-base" value="18.40" step="0.01" oninput="calcularNovera()"></div>
+                <div class="col"><label>Qtd. Base Usada (ml)</label><input type="number" id="n-qtd-base" value="1000" oninput="calcularNovera()"></div>
+            </div>
+            
+            <div class="row">
+                <div class="col"><label>Vol. Frasco Venda (ml)</label><input type="number" id="n-ml-venda" value="250" oninput="calcularNovera()"></div>
+                <div class="col"><label>Custo Embalagem/un (R$)</label><input type="number" id="n-insumos" value="4.00" step="0.01" oninput="calcularNovera()"></div>
+            </div>
+
             <div class="resumo-box">
-                <div class="resumo-linha"><span>Custo por ml da Fragrância</span> <span id="r-ml-frag">R$ 0,00</span></div><div class="resumo-linha"><span>Custo por ml da Base</span> <span id="r-ml-base">R$ 0,00</span></div><div class="resumo-linha"><span>Total Líquido Produzido</span> <span id="r-vol-total">0 ml</span></div><div class="resumo-linha"><span>Rendimento (Frascos Cheios)</span> <span id="r-frascos">0,0</span></div><div class="resumo-linha"><span>Custo do Líquido / Unidade</span> <span id="r-liquido">R$ 0,00</span></div>
+                <div class="resumo-linha"><span>Custo por ml da Fragrância</span> <span id="r-ml-frag">R$ 0,00</span></div>
+                <div class="resumo-linha"><span>Custo por ml da Base</span> <span id="r-ml-base">R$ 0,00</span></div>
+                <div class="resumo-linha"><span>Total Líquido Produzido</span> <span id="r-vol-total">0 ml</span></div>
+                <div class="resumo-linha"><span>Rendimento (Frascos Cheios)</span> <span id="r-frascos">0,0</span></div>
+                <div class="resumo-linha"><span>Custo do Líquido / Unidade</span> <span id="r-liquido">R$ 0,00</span></div>
                 <div class="custo-total"><span>Custo Total Unitário</span> <span id="r-custo-total">R$ 0,00</span></div>
             </div>
+
+            <div class="section-title">💰 Sugestão de Venda (Markup)</div>
+            <div class="markup-area">
+                <div class="markup-box">
+                    <p class="markup-title">Venda Simples (2x)</p>
+                    <p class="markup-preco" id="m-preco-2x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-2x">Lucro Limpo: R$ 0,00</p>
+                </div>
+                <div class="markup-box">
+                    <p class="markup-title">Venda Premium (4x)</p>
+                    <p class="markup-preco" id="m-preco-4x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-4x">Lucro Limpo: R$ 0,00</p>
+                </div>
+            </div>
+
             <button class="btn-salvar" id="btn-salvar-lote" onclick="salvarLotePrecificacao()">Registrar Custos do Lote</button>
-            <div class="section-title" style="margin-top: 35px;">📋 Lotes Produzidos <span id="loading-custos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳...</span></div>
-            <div id="lista-custos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando...</p></div>
+
+            <div class="section-title" style="margin-top: 35px;">
+                📋 Histórico de Lotes Produzidos
+                <span id="loading-custos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span>
+            </div>
+            <div id="lista-custos-cadastrados">
+                <p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando banco de dados...</p>
+            </div>
         </div>
 
         <div id="tab-gastos" class="tab-content">
             <div class="section-title">💸 Registrar Novo Gasto</div>
-            <div class="row"><div class="col"><label>Data</label><input type="date" id="g-data"></div><div class="col"><label>Local</label><input type="text" id="g-local" list="lista-locais"></div></div>
-            <div class="row"><div class="col"><label>Sócio</label><input type="text" id="g-socio" list="lista-socios"></div><div class="col"><label>Item Comprado</label><input type="text" id="g-item"></div></div>
-            <div class="row"><div class="col"><label>Quantidade</label><input type="number" id="g-qtd" value="1" oninput="calcularTotalGasto()"></div><div class="col"><label>Valor Unitário</label><input type="text" id="g-valor" class="mask-money"></div></div>
-            <div class="input-group"><label>Valor Total</label><input type="text" id="g-total" class="mask-money" readonly></div>
+            
+            <div class="row">
+                <div class="col"><label>Data da Compra</label><input type="date" id="g-data"></div>
+                <div class="col"><label>Local / Fornecedor</label><input type="text" id="g-local" list="lista-locais" placeholder="Ex: Shopee">
+                    <datalist id="lista-locais"><option value="Wanny Essências"><option value="Shopee"><option value="Mercado Livre"><option value="Embalagens"></datalist>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col"><label>Sócio / Investidor</label><input type="text" id="g-socio" list="lista-socios" placeholder="Ex: Amor, Natália...">
+                    <datalist id="lista-socios"><option value="Amor"><option value="Natália"><option value="Mãe"><option value="Amor/Mãe"><option value="Natália/Mãe"></datalist>
+                </div>
+                <div class="col"><label>Item Comprado</label><input type="text" id="g-item" placeholder="Ex: Ess. Daslu"></div>
+            </div>
+            <div class="row">
+                <div class="col"><label>Quantidade</label><input type="number" id="g-qtd" value="1" oninput="calcularTotalGasto()"></div>
+                <div class="col"><label>Valor Unitário</label><input type="text" id="g-valor" class="mask-money" oninput="calcularTotalGasto()" placeholder="R$ 0,00"></div>
+            </div>
+            <div class="input-group">
+                <label>Valor Total (Qtd x Unitário)</label>
+                <input type="text" id="g-total" class="mask-money" readonly>
+            </div>
+            
             <button class="btn-salvar" id="btn-salvar-gasto" onclick="salvarGasto()">Lançar Despesa</button>
-            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros <span id="loading-gastos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳...</span></div>
-            <div class="filtro-box"><div class="row"><div class="col"><label>Sócio</label><select id="f-socio" onchange="filtrarGastos()"><option value="">Todos</option><option value="amor">Amor</option><option value="natália">Natália</option><option value="mãe">Mãe</option></select></div></div><div class="row"><div class="col"><label>Início</label><input type="date" id="f-data-ini" onchange="filtrarGastos()"></div><div class="col"><label>Fim</label><input type="date" id="f-data-fim" onchange="filtrarGastos()"></div></div></div>
-            <div class="custo-total" style="background: var(--primary-dark); color: white; border: none; margin-bottom: 20px;"><span>Total Filtrado:</span> <span id="g-total-dashboard">R$ 0,00</span></div>
-            <div id="lista-gastos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando...</p></div>
+
+            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros <span id="loading-gastos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span></div>
+            <div class="filtro-box">
+                <div class="row">
+                    <div class="col">
+                        <label>Sócio</label>
+                        <select id="f-socio" onchange="filtrarGastos()">
+                            <option value="">Todos os Sócios</option>
+                            <option value="amor">Amor (Fernando)</option>
+                            <option value="natália">Natália</option>
+                            <option value="mãe">Mãe (Sogra)</option>
+                            <option value="amor/mãe">Amor/Mãe</option>
+                            <option value="natália/mãe">Natália/Mãe</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col"><label>Data Início</label><input type="date" id="f-data-ini" onchange="filtrarGastos()"></div>
+                    <div class="col"><label>Data Fim</label><input type="date" id="f-data-fim" onchange="filtrarGastos()"></div>
+                </div>
+            </div>
+            
+            <div class="custo-total" style="background: var(--primary-dark); color: white; border: none; box-shadow: 0 5px 15px rgba(150, 97, 120, 0.3); margin-bottom: 20px;">
+                <span>Total Filtrado:</span> <span id="g-total-dashboard">R$ 0,00</span>
+            </div>
+
+            <div id="lista-gastos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando gastos...</p></div>
         </div>
 
         <div id="tab-vendas" class="tab-content">
@@ -206,7 +323,25 @@
 </div>
 
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
-<div id="modal-confirmar" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">❓</span><h3 class="modal-title-alert" style="color: var(--brand-dark);">Atenção</h3><p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p><div style="display: flex; gap: 10px; margin-top: 15px;"><button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button><button class="btn-modal-confirm" id="btn-confirmar-acao">Sim, Confirmar</button></div></div></div>
+<div id="modal-confirmar" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">🗑️</span><h3 class="modal-title-alert" style="color: #A05252;">Excluir?</h3><p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p><div style="display: flex; gap: 10px; margin-top: 15px;"><button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button><button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Apagar</button></div></div></div>
+
+<div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><div class="input-group" style="text-align: left;"><label>Tipo de Produto</label><input type="text" id="edit-r-tipo" list="lista-tipos"></div><button class="btn-salvar" id="btn-salvar-edicao-rotulo" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+
+<div id="modal-editar-custo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-custo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Custo</h3><input type="hidden" id="edit-c-linha"><div class="input-group" style="text-align: left;"><label>Nome / Lote Produzido</label><input type="text" id="edit-c-modelo"></div><div class="row" style="text-align: left;"><div class="col"><label>Custo Líquido</label><input type="text" id="edit-c-liquido" class="mask-money"></div><div class="col"><label>Insumos</label><input type="text" id="edit-c-insumos" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Custo Total</label><input type="text" id="edit-c-total" class="mask-money"></div><button class="btn-salvar" id="btn-salvar-edicao-custo" onclick="salvarEdicaoCusto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+
+<div id="modal-editar-gasto" class="modal-overlay-alert">
+    <div class="modal-box-alert" style="padding-top: 40px;">
+        <button onclick="document.getElementById('modal-editar-gasto').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Gasto</h3>
+        <input type="hidden" id="edit-g-linha">
+        <div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div>
+        <div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div>
+        <div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div>
+        <div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div>
+        <div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div>
+        <button class="btn-salvar" id="btn-salvar-edicao-gasto" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
+    </div>
+</div>
 
 <div id="modal-editar-venda" class="modal-overlay-alert">
     <div class="modal-box-alert" style="padding-top: 40px;">
@@ -214,9 +349,7 @@
         <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3>
         <input type="hidden" id="edit-v-linha">
         <div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div>
-        
         <div class="input-group" style="text-align: left;"><label>Produto Vendido</label><select id="edit-v-produto"><option value="">Carregando produtos...</option></select></div>
-        
         <div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div>
         <div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div>
         <div class="input-group" style="text-align: left;"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div>
@@ -229,27 +362,52 @@
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
-    function safeFmt(val) { if (!val) return "R$ 0,00"; if (typeof val === 'number') return fmt(val); let num = parseFloat(String(val).replace(/[R$\s]/g, '').replace('.', '').replace(',', '.')); return isNaN(num) ? "R$ 0,00" : fmt(num); }
-    function parseDinheiro(val) { if (!val) return 0; if (typeof val === 'number') return val; let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0; return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0; }
+    
+    function safeFmt(val) {
+        if (val === "" || val === null || val === undefined) return "R$ 0,00"; 
+        if (typeof val === 'number') return fmt(val);
+        let str = String(val).replace(/[R$\s]/g, '');
+        if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str));
+        let num = parseFloat(str.replace(/\./g, '').replace(',', '.'));
+        return isNaN(num) ? "R$ 0,00" : fmt(num);
+    }
+    
+    function parseDinheiro(val) {
+        if (val === "" || val === null || val === undefined) return 0;
+        if (typeof val === 'number') return val;
+        let str = String(val).replace(/[R$\s]/g, '');
+        if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0;
+        return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+    }
 
+    // Variável vendasGlobal adicionada ao seu código base
     let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0;
     let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], vendasGlobal = [], acaoConfirmada = null; 
 
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
-            let val = e.target.value.replace(/\D/g, ''); if(val === "") { e.target.value = ""; return; }
-            val = (parseInt(val) / 100).toFixed(2) + ''; val = val.replace(".", ","); val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); val = val.replace(/(\d)(\d{3}),/g, "$1.$2,"); e.target.value = "R$ " + val;
-            if(e.target.id === 'g-valor' && typeof calcularTotalGasto === 'function') setTimeout(calcularTotalGasto, 10);
+            let val = e.target.value.replace(/\D/g, ''); 
+            if(val === "") { e.target.value = ""; return; }
+            val = (parseInt(val) / 100).toFixed(2) + ''; 
+            val = val.replace(".", ","); 
+            val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); 
+            val = val.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            e.target.value = "R$ " + val;
+            
+            if(e.target.id === 'g-valor') setTimeout(calcularTotalGasto, 10);
+            if(e.target.id === 'edit-g-valor') setTimeout(calcularEditGasto, 10);
+            if(e.target.id.startsWith('edit-c-')) setTimeout(calcularEditCusto, 10);
         }
     });
 
+    // Função atualizada para incluir a chamada da aba Vendas
     function switchTab(tabId) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.getElementById('btn-' + tabId).classList.add('active');
         document.getElementById('tab-' + tabId).classList.add('active');
         if(tabId === 'precificar') carregarCustos();
-        if(tabId === 'gastos') { if(typeof carregarGastos === 'function') carregarGastos(); document.getElementById('g-data').valueAsDate = new Date(); }
+        if(tabId === 'gastos') { carregarGastos(); document.getElementById('g-data').valueAsDate = new Date(); }
         if(tabId === 'vendas') { carregarVendas(); document.getElementById('v-data').valueAsDate = new Date(); }
     }
 
@@ -262,43 +420,212 @@
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-    function abrirConfirmacao(texto, callback) { 
-        document.getElementById('texto-confirmar').innerText = texto; 
-        acaoConfirmada = callback; 
-        document.getElementById('modal-confirmar').style.display = 'flex'; 
+    function abrirConfirmacao(texto, callback) {
+        document.getElementById('texto-confirmar').innerText = texto; acaoConfirmada = callback; document.getElementById('modal-confirmar').style.display = 'flex';
     }
     document.getElementById('btn-confirmar-acao').onclick = () => { if (acaoConfirmada) acaoConfirmada(); document.getElementById('modal-confirmar').style.display = 'none'; };
 
-    // ================= CUSTOS / PRODUTOS =================
+    // ================= ROTULOS (SEU CÓDIGO INTACTO) =================
+    async function carregarRotulos() {
+        document.getElementById("loading-rotulos").style.display = "inline";
+        try {
+            const res = await fetch(API_NOVERA + "?acao=listar_rotulos&_t=" + new Date().getTime()); const dados = await res.json();
+            if (dados.sucesso) {
+                rotulosGlobal = dados.rotulos;
+                const lista = document.getElementById("lista-rotulos-cadastrados"), select = document.getElementById("n-produto");
+                if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum rótulo cadastrado.</p>"; select.innerHTML = '<option value="">Cadastre no Dicionário primeiro...</option>'; return; }
+                let htmlLista = "", htmlSelect = '<option value="">Selecione a Identidade Base...</option>';
+                rotulosGlobal.forEach(r => {
+                    htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>${r.tipo} • Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRotulo(${r.linha}, '${r.codigo}')" title="Excluir">🗑️</button></div></div></div>`;
+                    htmlSelect += `<option value="${r.codigo} ${r.essencia}">${r.codigo} ${r.essencia}</option>`;
+                });
+                lista.innerHTML = htmlLista; select.innerHTML = htmlSelect;
+            }
+        } catch(e) {} finally { document.getElementById("loading-rotulos").style.display = "none"; }
+    }
+    async function salvarRotulo() {
+        const essencia = document.getElementById('r-essencia').value.trim(), codForn = document.getElementById('r-codigo-forn').value.trim(), marca = document.getElementById('r-marca').value.trim(), tipo = document.getElementById('r-tipo').value.trim();
+        if (!essencia || !tipo) return mostrarAlerta("Atenção", "Preencha a Essência e o Tipo.", "warning");
+        const btn = document.getElementById('btn-salvar-rotulo'); btn.disabled = true; btn.innerText = "⏳ GERANDO...";
+        try {
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, tipo: tipo }) }); const resultado = await res.json();
+            if (resultado.sucesso) { mostrarAlerta("Criado!", `Essência fixada como ${resultado.novo_codigo}.`, "success"); document.getElementById('r-essencia').value = ""; carregarRotulos(); } 
+            else if (resultado.erro === "DUPLICADO_ROTULO") { mostrarAlerta("Já Existe", `A essência "${essencia}" já possui o código ${resultado.codigo_existente}.`, "warning"); } else throw new Error(resultado.erro);
+        } catch (e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "CRIAR IDENTIDADE (N-XXXX)"; }
+    }
+    function abrirModalEditarRotulo(linha) {
+        const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return;
+        document.getElementById('edit-r-linha').value = r.linha; document.getElementById('edit-r-essencia').value = r.essencia; document.getElementById('edit-r-codigo-forn').value = r.codigo_forn; document.getElementById('edit-r-marca').value = r.marca; document.getElementById('edit-r-tipo').value = r.tipo; document.getElementById('modal-editar-rotulo').style.display = 'flex';
+    }
+    async function salvarEdicaoRotulo() {
+        const btn = document.getElementById('btn-salvar-edicao-rotulo'); btn.disabled = true; btn.innerText = "⏳...";
+        try {
+            const py = { acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: document.getElementById('edit-r-essencia').value, codigo_forn: document.getElementById('edit-r-codigo-forn').value, marca: document.getElementById('edit-r-marca').value, tipo: document.getElementById('edit-r-tipo').value };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
+            if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); carregarRotulos(); } else throw new Error(json.erro);
+        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
+    }
+    function prepararExclusaoRotulo(linha, codigo) { abrirConfirmacao(`Deseja excluir a identidade ${codigo}?`, async () => {
+        try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Identidade apagada.", "success"); carregarRotulos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } });
+    }
+
+    // ================= PRECIFICAÇÃO (SEU CÓDIGO INTACTO, MAS INJETANDO AS VENDAS) =================
+    function calcularNovera() {
+        const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0, qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0, cBase1L = parseFloat(document.getElementById('n-custo-base').value) || 0, qBase = parseFloat(document.getElementById('n-qtd-base').value) || 0, mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1, cInsumos = parseFloat(document.getElementById('n-insumos').value) || 0;
+        const valorMlFrag = qFrag > 0 ? cFrag / qFrag : 0, valorMlBase = cBase1L / 1000, qtdMlProducao = qBase + qFrag, qtdFrascos = qtdMlProducao / mlVenda, custoLiquidoUni = qtdFrascos > 0 ? (cFrag + (valorMlBase * qBase)) / qtdFrascos : 0, custoTotalUni = custoLiquidoUni + cInsumos;
+        custoLiquidoGlobal = custoLiquidoUni; custoInsumosGlobal = cInsumos; custoTotalGlobal = custoTotalUni;
+        document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag); document.getElementById('r-ml-base').innerText = fmt(valorMlBase); document.getElementById('r-vol-total').innerText = qtdMlProducao + " ml"; document.getElementById('r-frascos').innerText = qtdFrascos.toFixed(1); document.getElementById('r-liquido').innerText = fmt(custoLiquidoUni); document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
+        document.getElementById('m-preco-2x').innerText = fmt(custoTotalUni * 2); document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt(custoTotalUni); document.getElementById('m-preco-4x').innerText = fmt(custoTotalUni * 4); document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(custoTotalUni * 3);
+    }
+    function calcularEditCusto() {
+        const liq = parseDinheiro(document.getElementById('edit-c-liquido').value);
+        const ins = parseDinheiro(document.getElementById('edit-c-insumos').value);
+        document.getElementById('edit-c-total').value = fmt(liq + ins);
+    }
+    async function salvarLotePrecificacao() {
+        const ess = document.getElementById('n-produto').value, lote = document.getElementById('p-lote').value.trim(), ml = document.getElementById('n-ml-venda').value;
+        if (!ess || !lote) return mostrarAlerta("Atenção", "Preencha a Base Mestre e o Lote.", "warning");
+        const modeloFinal = `${ess} - ${lote} ${ml}ml`; const btn = document.getElementById('btn-salvar-lote'); btn.disabled = true; btn.innerText = "⏳ REGISTRANDO...";
+        try {
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_custo", modelo: modeloFinal, valor_liquido: fmtPlanilha(custoLiquidoGlobal), valor_insumos: fmtPlanilha(custoInsumosGlobal), custo_total: fmtPlanilha(custoTotalGlobal) }) }); const resultado = await res.json();
+            if (resultado.sucesso) { mostrarAlerta("Salvo!", `Lote ${modeloFinal} registrado.`, "success"); carregarCustos(); } else if (resultado.erro === "DUPLICADO") { mostrarAlerta("Duplicado", "Lote já existe.", "warning"); } else throw new Error(resultado.erro);
+        } catch (erro) { mostrarAlerta("Erro", erro.message, "error"); } finally { btn.disabled = false; btn.innerText = "REGISTRAR CUSTOS DO LOTE"; }
+    }
+    
+    // Função alterada para popular também os dropdowns de Vendas
     async function carregarCustos() {
         document.getElementById("loading-custos").style.display = "inline";
         try {
             const res = await fetch(API_NOVERA + "?acao=listar_custos&_t=" + new Date().getTime()); const dados = await res.json();
             if (dados.sucesso) {
-                custosGlobal = dados.custos;
+                custosGlobal = dados.custos; const lista = document.getElementById("lista-custos-cadastrados");
+                if (custosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; return; }
                 
+                let html = ""; 
                 const selectVendas = document.getElementById("v-produto");
-                const selectEditVendas = document.getElementById("edit-v-produto"); // Novo Select no Modal
-                
+                const selectEditVendas = document.getElementById("edit-v-produto");
                 let htmlVendas = '<option value="">Selecione o Lote Vendido...</option>';
-                let htmlListaCustos = '';
 
-                custosGlobal.forEach(c => {
+                custosGlobal.forEach(c => { 
+                    // Desenha o cartão na aba de Produção
+                    html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${c.modelo}</h4><p>Líquido: ${safeFmt(c.valor_liquido)} • Insumos: ${safeFmt(c.valor_insumos)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val">${safeFmt(c.custo_total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarCusto(${c.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoCusto(${c.linha}, '${c.modelo}')">🗑️</button></div></div></div>`; 
+                    
+                    // Alimenta o Dropdown da aba Vendas
                     const nomeProduto = c.modelo || c.produto || c.nome || "Produto sem nome"; 
                     htmlVendas += `<option value="${nomeProduto}" data-custo="${parseDinheiro(c.custo_total)}">${nomeProduto} (Custo: ${safeFmt(c.custo_total)})</option>`;
-                    htmlListaCustos += `<div class="rotulo-card"><div class="rotulo-info"><h4>${nomeProduto}</h4><p>Custo Unitário: <b>${safeFmt(c.custo_total)}</b></p></div></div>`;
-                });
+                }); 
                 
+                lista.innerHTML = html;
                 if(selectVendas) selectVendas.innerHTML = htmlVendas;
-                if(selectEditVendas) selectEditVendas.innerHTML = htmlVendas; // Abastece o select do modal de edição também
-                
-                const divLista = document.getElementById("lista-custos-cadastrados");
-                if(divLista) divLista.innerHTML = htmlListaCustos || "<p style='text-align:center;'>Nenhum custo registrado ainda.</p>";
+                if(selectEditVendas) selectEditVendas.innerHTML = htmlVendas;
             }
         } catch(e) {} finally { document.getElementById("loading-custos").style.display = "none"; }
     }
 
-    // ================= VENDAS =================
+    function abrirModalEditarCusto(linha) {
+        const c = custosGlobal.find(x => x.linha === linha); if (!c) return;
+        document.getElementById('edit-c-linha').value = c.linha; document.getElementById('edit-c-modelo').value = c.modelo; document.getElementById('edit-c-liquido').value = safeFmt(c.valor_liquido); document.getElementById('edit-c-insumos').value = safeFmt(c.valor_insumos); document.getElementById('edit-c-total').value = safeFmt(c.custo_total); document.getElementById('modal-editar-custo').style.display = 'flex';
+    }
+    async function salvarEdicaoCusto() {
+        const btn = document.getElementById('btn-salvar-edicao-custo'); btn.disabled = true; btn.innerText = "⏳...";
+        try {
+            const py = { acao: "atualizar_custo", linha: document.getElementById('edit-c-linha').value, modelo: document.getElementById('edit-c-modelo').value, valor_liquido: document.getElementById('edit-c-liquido').value, valor_insumos: document.getElementById('edit-c-insumos').value, custo_total: document.getElementById('edit-c-total').value };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
+            if(json.sucesso) { document.getElementById('modal-editar-custo').style.display = 'none'; mostrarAlerta("Atualizado!", "Editado com sucesso.", "success"); carregarCustos(); } else throw new Error(json.erro);
+        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
+    }
+    function prepararExclusaoCusto(linha, modelo) { abrirConfirmacao(`Deseja apagar o lote ${modelo}?`, async () => { try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Apagado.", "success"); carregarCustos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } }); }
+
+    // ================= GASTOS & INVESTIMENTOS (SEU CÓDIGO INTACTO) =================
+    function calcularTotalGasto() {
+        const qtd = parseFloat(document.getElementById('g-qtd').value) || 1;
+        const valUnit = parseDinheiro(document.getElementById('g-valor').value);
+        document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00";
+    }
+    function calcularEditGasto() {
+        const qtd = parseFloat(document.getElementById('edit-g-qtd').value) || 1;
+        const valUnit = parseDinheiro(document.getElementById('edit-g-valor').value);
+        document.getElementById('edit-g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00";
+    }
+    
+    async function salvarGasto() {
+        const data = document.getElementById('g-data').value, local = document.getElementById('g-local').value, socio = document.getElementById('g-socio').value, item = document.getElementById('g-item').value;
+        const qtd = document.getElementById('g-qtd').value, valor = document.getElementById('g-valor').value, total = document.getElementById('g-total').value;
+        if(!data || !item || !valor || valor === "R$ 0,00") return mostrarAlerta("Atenção", "Preencha a Data, o Item e o Valor.", "warning");
+        const btn = document.getElementById('btn-salvar-gasto'); btn.disabled = true; btn.innerText = "⏳ LANÇANDO...";
+        try {
+            const py = { acao: "salvar_gasto", data: data, local: local, socio: socio, item: item, qtd: qtd, valor: valor, total: total };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
+            if(json.sucesso) { mostrarAlerta("Sucesso", "Despesa lançada no caixa.", "success"); document.getElementById('g-item').value = ""; document.getElementById('g-valor').value = ""; document.getElementById('g-total').value = ""; carregarGastos(); } else throw new Error(json.erro);
+        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "LANÇAR DESPESA"; }
+    }
+
+    async function carregarGastos() {
+        document.getElementById("loading-gastos").style.display = "inline";
+        try {
+            const res = await fetch(API_NOVERA + "?acao=listar_gastos&_t=" + new Date().getTime()); const dados = await res.json();
+            if (dados.sucesso) { gastosGlobal = dados.gastos; filtrarGastos(); }
+        } catch(e) { console.error(e); } finally { document.getElementById("loading-gastos").style.display = "none"; }
+    }
+
+    function filtrarGastos() {
+        const fSocio = document.getElementById('f-socio').value.toLowerCase();
+        const fIni = document.getElementById('f-data-ini').value;
+        const fFim = document.getElementById('f-data-fim').value;
+        
+        let gastosFiltrados = gastosGlobal.filter(g => {
+            let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio);
+            let passData = true;
+            if(fIni && g.dataIso < fIni) passData = false;
+            if(fFim && g.dataIso > fFim) passData = false;
+            return passSocio && passData;
+        });
+
+        gastosFiltrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso));
+
+        let somaTotal = 0;
+        let html = "";
+        
+        if (gastosFiltrados.length === 0) {
+            html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum gasto encontrado nesse filtro.</p>";
+        } else {
+            gastosFiltrados.forEach(g => {
+                somaTotal += parseDinheiro(g.total);
+                html += `<div class="rotulo-card">
+                    <div class="rotulo-info">
+                        <h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4>
+                        <p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p>
+                        <p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p>
+                    </div>
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div>
+                        <div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoGasto(${g.linha}, '${g.item}')">🗑️</button></div>
+                    </div>
+                </div>`;
+            });
+        }
+        document.getElementById('lista-gastos-cadastrados').innerHTML = html;
+        document.getElementById('g-total-dashboard').innerText = fmt(somaTotal);
+    }
+
+    function abrirModalEditarGasto(linha) {
+        const g = gastosGlobal.find(x => x.linha === linha); if (!g) return;
+        document.getElementById('edit-g-linha').value = g.linha; document.getElementById('edit-g-data').value = g.dataIso; document.getElementById('edit-g-socio').value = g.socio; document.getElementById('edit-g-local').value = g.local; document.getElementById('edit-g-item').value = g.item; document.getElementById('edit-g-qtd').value = g.qtd; document.getElementById('edit-g-valor').value = safeFmt(g.valor); document.getElementById('edit-g-total').value = safeFmt(g.total);
+        document.getElementById('modal-editar-gasto').style.display = 'flex';
+    }
+
+    async function salvarEdicaoGasto() {
+        const btn = document.getElementById('btn-salvar-edicao-gasto'); btn.disabled = true; btn.innerText = "⏳...";
+        try {
+            const py = { acao: "atualizar_gasto", linha: document.getElementById('edit-g-linha').value, data: document.getElementById('edit-g-data').value, local: document.getElementById('edit-g-local').value, socio: document.getElementById('edit-g-socio').value, item: document.getElementById('edit-g-item').value, qtd: document.getElementById('edit-g-qtd').value, valor: document.getElementById('edit-g-valor').value, total: document.getElementById('edit-g-total').value };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
+            if(json.sucesso) { document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarAlerta("Atualizado!", "Gasto editado.", "success"); carregarGastos(); } else throw new Error(json.erro);
+        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
+    }
+
+    function prepararExclusaoGasto(linha, item) { abrirConfirmacao(`Deseja apagar a despesa "${item}"?`, async () => { try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Gasto apagado.", "success"); carregarGastos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } }); }
+
+    // ================= VENDAS (MÓDULO INJETADO AQUI) =================
     async function salvarVenda() {
         const data = document.getElementById('v-data').value, cliente = document.getElementById('v-cliente').value, produtoSelect = document.getElementById('v-produto'), socio = document.getElementById('v-socio').value;
         const qtd = parseInt(document.getElementById('v-qtd').value) || 1, valorVendaStr = document.getElementById('v-valor').value, status = document.getElementById('v-status').value;
@@ -429,7 +756,6 @@
         });
     }
 
-    // ================= EDITAÇÕES E EXCLUSÕES =================
     async function darBaixaVenda(linha) {
         abrirConfirmacao("Deseja marcar o pagamento desta venda como RECEBIDO na data de hoje?", async () => {
             try {
@@ -446,15 +772,11 @@
         document.getElementById('edit-v-linha').value = v.linha; 
         document.getElementById('edit-v-data').value = v.dataVendaIso; 
         document.getElementById('edit-v-cliente').value = v.cliente; 
-        
-        // Seta o produto que estava salvo na venda
         document.getElementById('edit-v-produto').value = v.produto; 
-        
         document.getElementById('edit-v-socio').value = v.socio; 
         document.getElementById('edit-v-qtd').value = v.qtd; 
         document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); 
         document.getElementById('edit-v-status').value = v.status;
-        
         document.getElementById('modal-editar-venda').style.display = 'flex';
     }
 
@@ -462,26 +784,12 @@
         const linha = document.getElementById('edit-v-linha').value;
         const vOriginal = vendasGlobal.find(x => x.linha == linha);
         
-        const data = document.getElementById('edit-v-data').value;
-        const cliente = document.getElementById('edit-v-cliente').value;
-        const produtoSelect = document.getElementById('edit-v-produto');
-        const socio = document.getElementById('edit-v-socio').value;
-        const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1;
-        const valorStr = document.getElementById('edit-v-valor').value;
-        const status = document.getElementById('edit-v-status').value;
-        
+        const data = document.getElementById('edit-v-data').value, cliente = document.getElementById('edit-v-cliente').value, produtoSelect = document.getElementById('edit-v-produto'), socio = document.getElementById('edit-v-socio').value, qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr = document.getElementById('edit-v-valor').value, status = document.getElementById('edit-v-status').value;
         const produtoNome = produtoSelect.value;
         const valorVenda = parseDinheiro(valorStr);
         
-        // Pega o custo do novo produto selecionado. Se der erro, tenta manter o antigo.
         const optionSelecionada = produtoSelect.options[produtoSelect.selectedIndex];
-        let custoUnd = 0;
-        if (optionSelecionada && optionSelecionada.hasAttribute('data-custo')) {
-            custoUnd = parseFloat(optionSelecionada.getAttribute('data-custo'));
-        } else {
-            custoUnd = parseDinheiro(vOriginal.custo_und);
-        }
-
+        let custoUnd = optionSelecionada && optionSelecionada.hasAttribute('data-custo') ? parseFloat(optionSelecionada.getAttribute('data-custo')) : parseDinheiro(vOriginal.custo_und);
         const custoTotal = custoUnd * qtd;
         const lucro = valorVenda - custoTotal;
         const markup = custoTotal > 0 ? (lucro / custoTotal) : 1;
@@ -489,23 +797,7 @@
 
         const btn = document.getElementById('btn-salvar-edicao-venda'); btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
         try {
-            // Manda o 'produtoNome' (que pode ser novo), e os novos valores de 'custo' e 'lucro'
-            const py = { 
-                acao: "atualizar_venda", 
-                linha: linha, 
-                data: data, 
-                cliente: cliente, 
-                produto: produtoNome, 
-                socio: socio, 
-                qtd: qtd, 
-                valor_venda: fmtPlanilha(valorVenda), 
-                status: status, 
-                custo_und: fmtPlanilha(custoUnd), 
-                custo_total: fmtPlanilha(custoTotal), 
-                lucro: fmtPlanilha(lucro), 
-                markup: (markup * 100).toFixed(2) + "%", 
-                data_pg: dataPg 
-            };
+            const py = { acao: "atualizar_venda", linha: linha, data: data, cliente: cliente, produto: produtoNome, socio: socio, qtd: qtd, valor_venda: fmtPlanilha(valorVenda), status: status, custo_und: fmtPlanilha(custoUnd), custo_total: fmtPlanilha(custoTotal), lucro: fmtPlanilha(lucro), markup: (markup * 100).toFixed(2) + "%", data_pg: dataPg };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
             if(json.sucesso) { document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Venda corrigida com sucesso.", "success"); carregarVendas(); } else throw new Error(json.erro);
         } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
@@ -522,9 +814,11 @@
     }
 
     // INICIALIZAÇÃO
+    // Adicionado carregarCustos() no início para alimentar silenciosamente o Select de Vendas
     window.onload = () => { 
-        if(typeof carregarRotulos === 'function') carregarRotulos(); 
-        carregarCustos(); 
+        carregarRotulos(); 
+        carregarCustos();
+        calcularNovera(); 
     };
 </script>
 
