@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novera Scent | ERP</title>
     <style>
-        /* Carregando as fontes: Montserrat (para o corpo) e Playfair Display (para o título elegante) */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
         
         :root { 
-            /* Cores baseadas na paleta sofisticada da Novera Scent */
             --primary: #B87C96; 
             --primary-dark: #966178;
             --brand-dark: #2C2A2B;
-            --logo-text: #8C6A78; /* Cor exata extraída do texto do seu logo */
+            --logo-text: rgb(164, 125, 159); /* Nova cor exata da logo */
             --bg-color: #Fdfbfb;
             --card-bg: #ffffff;
             --text-main: #4A4A4A;
@@ -27,39 +25,30 @@
         /* === HEADER COM LOGO E TÍTULO ELEGANTE === */
         .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
         
-        /* 🔥 ESTILO DO LOGO AUMENTADO 🔥 */
         .header img.logo { 
-            width: 150px; /* Aumentado de 90px para 150px */
+            width: 150px; 
             height: auto; 
             margin-bottom: 10px; 
             object-fit: contain;
             filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));
         }
 
-        /* 🔥 TÍTULO COM A COR E FONTE DA LOGO 🔥 */
         .header h1 { 
             margin: 0; 
-            color: var(--logo-text); /* Usando a cor exata da logo */
+            color: var(--logo-text); 
             font-family: 'Playfair Display', serif; 
             font-weight: 700; 
-            font-size: 1.9rem; /* Levemente maior */
+            font-size: 1.9rem; 
             text-transform: uppercase; 
-            letter-spacing: 3px; /* Espaçamento mais sofisticado */
+            letter-spacing: 3px; 
         }
         
-        .header p { 
-            margin: 5px 0 0; 
-            font-size: 0.8rem; 
-            font-weight: 500; 
-            text-transform: uppercase; 
-            letter-spacing: 1.5px; 
-            color: var(--primary-dark);
-        }
+        .header p { margin: 5px 0 0; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary-dark);}
         
         .section-title { font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
         
         .row { display: flex; gap: 15px; margin-bottom: 15px; } .col { flex: 1; }
-        @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } } /* Responsivo para celular */
+        @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } }
 
         .input-group { margin-bottom: 15px; }
         label { font-weight: 600; font-size: 0.75rem; display: block; margin-bottom: 6px; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.5px;}
@@ -83,6 +72,20 @@
         .btn-salvar { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif;}
         .btn-salvar:hover { background: var(--primary-dark); }
         .btn-salvar:active { transform: translateY(3px); box-shadow: none; }
+        .btn-salvar:disabled { background: #E8DDE1; color: #999; cursor: not-allowed; box-shadow: none; }
+
+        /* MODAL DE ALERTA */
+        .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
+        .modal-box-alert { background: #fff; width: 90%; max-width: 360px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative;}
+        .modal-icon-alert { font-size: 4rem; margin-bottom: 10px; display: inline-block; animation: pulseIcon 1s infinite alternate;}
+        .modal-title-alert { font-size: 1.3rem; font-weight: 900; color: var(--brand-dark); margin: 0 0 10px; text-transform: uppercase;}
+        .modal-text-alert { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
+        .btn-modal-ok { color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 900; font-size: 0.95rem; text-transform: uppercase; transition: transform 0.1s;}
+        .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes pulseIcon { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
@@ -139,12 +142,30 @@
             </div>
         </div>
 
-        <button class="btn-salvar" onclick="alert('Conexão com Google Sheets será implementada em breve!')">Salvar Lote no Sistema</button>
+        <button class="btn-salvar" id="btn-salvar" onclick="salvarLote()">Salvar Lote no Sistema</button>
+    </div>
+</div>
+
+<div id="custom-modal" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert" id="modal-icone-alert">✅</span>
+        <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
+        <p class="modal-text-alert" id="modal-texto-alert">Operação realizada com sucesso!</p>
+        <button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button>
     </div>
 </div>
 
 <script>
+    // 🔥 COLE A URL DO SEU NOVO WEB APP AQUI:
+    const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
+
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
+
+    // Variáveis globais para armazenar o valor exato no momento do clique
+    let custoLiquidoGlobal = 0;
+    let custoInsumosGlobal = 0;
+    let custoTotalGlobal = 0;
 
     function calcularNovera() {
         const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0;
@@ -156,14 +177,17 @@
 
         const valorMlFrag = qFrag > 0 ? cFrag / qFrag : 0;
         const valorMlBase = cBase1L / 1000; 
-        
         const qtdMlProducao = qBase + qFrag;
         const qtdFrascos = qtdMlProducao / mlVenda;
 
         const custoIngredientesTotal = cFrag + (valorMlBase * qBase);
         const custoLiquidoUni = qtdFrascos > 0 ? custoIngredientesTotal / qtdFrascos : 0;
-        
         const custoTotalUni = custoLiquidoUni + cInsumos;
+
+        // Salva nas globais para jogar no banco de dados depois
+        custoLiquidoGlobal = custoLiquidoUni;
+        custoInsumosGlobal = cInsumos;
+        custoTotalGlobal = custoTotalUni;
 
         document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag);
         document.getElementById('r-ml-base').innerText = fmt(valorMlBase);
@@ -177,9 +201,69 @@
         
         document.getElementById('m-preco-2x').innerText = fmt(preco2x);
         document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt(preco2x - custoTotalUni);
-        
         document.getElementById('m-preco-4x').innerText = fmt(preco4x);
         document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(preco4x - custoTotalUni);
+    }
+
+    function mostrarAlerta(titulo, texto, tipo) { 
+        const modal = document.getElementById("custom-modal");
+        const icone = document.getElementById("modal-icone-alert");
+        const btnEl = document.getElementById("btn-modal-ok"); 
+        
+        document.getElementById("modal-titulo-alert").innerText = titulo; 
+        document.getElementById("modal-texto-alert").innerText = texto; 
+        
+        if(tipo === "success") { 
+            icone.innerText = "✅"; btnEl.style.background = "#B87C96"; btnEl.style.boxShadow = "0 6px 0 #966178"; 
+        } else if (tipo === "warning") { 
+            icone.innerText = "⚠️"; btnEl.style.background = "#f59e0b"; btnEl.style.boxShadow = "0 6px 0 #d97706"; 
+        } else { 
+            icone.innerText = "❌"; btnEl.style.background = "#ef4444"; btnEl.style.boxShadow = "0 6px 0 #b91c1c"; 
+        } 
+        
+        modal.style.display = "flex"; 
+        if ("vibrate" in navigator) navigator.vibrate(50); 
+    }
+
+    async function salvarLote() {
+        const modelo = document.getElementById('n-produto').value.trim();
+        
+        if (!modelo) {
+            return mostrarAlerta("Atenção", "Digite o Nome do Produto / Lote antes de salvar.", "warning");
+        }
+
+        const btn = document.getElementById('btn-salvar');
+        btn.disabled = true;
+        btn.innerText = "⏳ SALVANDO NO BANCO...";
+
+        try {
+            const payload = {
+                acao: "salvar_custo",
+                modelo: modelo,
+                valor_liquido: fmtPlanilha(custoLiquidoGlobal),
+                valor_insumos: fmtPlanilha(custoInsumosGlobal),
+                custo_total: fmtPlanilha(custoTotalGlobal)
+            };
+
+            const resposta = await fetch(API_NOVERA, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            });
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                mostrarAlerta("Lote Registrado!", `O produto ${modelo} foi salvo com sucesso na sua planilha!`, "success");
+                document.getElementById('n-produto').value = ""; // Limpa para o próximo
+            } else {
+                throw new Error(resultado.erro);
+            }
+        } catch (erro) {
+            mostrarAlerta("Erro de Conexão", "Falha ao salvar: " + erro.message, "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "SALVAR LOTE NO SISTEMA";
+        }
     }
 
     window.onload = calcularNovera;
