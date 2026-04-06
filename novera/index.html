@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novera Scent | ERP</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+        /* Carregando as fontes: Montserrat (para o corpo) e Playfair Display (para o título elegante) */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
         
         :root { 
             /* Cores baseadas na paleta sofisticada da Novera Scent */
@@ -22,10 +23,10 @@
         .app-container { width: 100%; max-width: 600px; }
         .card { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); }
         
-        /* === HEADER COM LOGO === */
+        /* === HEADER COM LOGO E TÍTULO ELEGANTE === */
         .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
         
-        /* 🔥 ESTILO DO LOGO 🔥 */
+        /* 🔥 ESTILO DO LOGO ATUALIZADO 🔥 */
         .header img.logo { 
             width: 90px; /* Largura elegante */
             height: auto; 
@@ -35,8 +36,26 @@
             filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));
         }
 
-        .header h1 { margin: 0; color: var(--brand-dark); font-weight: 800; letter-spacing: 1px; font-size: 1.6rem; text-transform: uppercase; }
-        .header p { margin: 5px 0 0; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; color: var(--primary-dark);}
+        /* 🔥 TÍTULO COM A NOVA FONTE ELEGANTE (PLAYFAIR DISPLAY) 🔥 */
+        .header h1 { 
+            margin: 0; 
+            color: var(--brand-dark); 
+            font-family: 'Playfair Display', serif; /* A fonte serifada elegante */
+            font-weight: 700; 
+            font-size: 1.8rem; /* Tamanho ligeiramente maior para destaque */
+            text-transform: uppercase; /* Todo em maiúsculas */
+            letter-spacing: 2px; /* Espaçamento entre letras para sofisticação */
+        }
+        
+        /* 🔥 SUBTÍTULO COM ESTILO COMBINANDO 🔥 */
+        .header p { 
+            margin: 5px 0 0; 
+            font-size: 0.8rem; 
+            font-weight: 500; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            color: var(--primary-dark);
+        }
         
         .section-title { font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
         
@@ -72,7 +91,7 @@
 <div class="app-container">
     <div class="card">
         <div class="header">
-            <img src="logo.jpg" alt="Novera Scent Logo" class="logo" onerror="this.style.display='none'">
+            <img src="logo.jpeg" alt="Novera Scent Logo" class="logo" onerror="this.style.display='none'">
             <h1>Novera Scent</h1>
             <p>Laboratório de Precificação</p>
         </div>
