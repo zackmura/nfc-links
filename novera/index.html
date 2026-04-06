@@ -265,15 +265,27 @@
 </div>
 
 <script>
+    // URL OFICIAL DA API JÁ CONFIGURADA
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
+    // Formatadores Básicos
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
+
+    // 🔥 NOVO: Formatador Seguro (Corrige as Dízimas Gigantescas) 🔥
+    function safeFmt(val) {
+        if (!val) return "R$ 0,00";
+        if (typeof val === 'number') return fmt(val);
+        // Limpa R$, espaços e troca vírgula por ponto para garantir
+        let limpo = String(val).replace(/[R$\s]/g, '').replace(',', '.');
+        let num = parseFloat(limpo);
+        return isNaN(num) ? "R$ 0,00" : fmt(num);
+    }
 
     let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0;
     let rotulosGlobal = [];
     let custosGlobal = [];
-    let acaoConfirmada = null; // Guarda a função de exclusão a ser executada
+    let acaoConfirmada = null; 
 
     // Máscara de dinheiro para os campos de edição
     document.addEventListener('input', function (e) {
@@ -320,14 +332,13 @@
         if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-    // Função universal para abrir o modal elegante de exclusão
+    // Modal de Confirmação (Excluir)
     function abrirConfirmacao(texto, callback) {
         document.getElementById('texto-confirmar').innerText = texto;
         acaoConfirmada = callback;
         document.getElementById('modal-confirmar').style.display = 'flex';
     }
 
-    // Executa a exclusão quando o usuário clica em "Apagar" no modal
     document.getElementById('btn-confirmar-acao').onclick = () => {
         if (acaoConfirmada) acaoConfirmada();
         document.getElementById('modal-confirmar').style.display = 'none';
@@ -516,7 +527,7 @@
             } else if (resultado.erro === "DUPLICADO") {
                 mostrarAlerta("Produto Duplicado", `A precificação para "${modeloFinal}" já existe no banco.`, "warning");
             } else throw new Error(resultado.erro);
-        } catch (erro) { mostrarAlerta("Erro", "Falha ao salvar: " + erro.message, "error"); } finally { btn.disabled = false; btn.innerText = "SALVAR LOTE NO SISTEMA"; }
+        } catch (erro) { mostrarAlerta("Erro de Conexão", "Falha ao salvar no sistema: " + erro.message, "error"); } finally { btn.disabled = false; btn.innerText = "SALVAR LOTE NO SISTEMA"; }
     }
 
     async function carregarCustos() {
@@ -536,14 +547,19 @@
 
                 let htmlLista = "";
                 custosGlobal.forEach(c => {
+                    // 🔥 Passa pelo Filtro Mágico para arrumar o R$ e a Dízima Periódica 🔥
+                    let valLiq = safeFmt(c.valor_liquido);
+                    let valIns = safeFmt(c.valor_insumos);
+                    let valTot = safeFmt(c.custo_total);
+
                     htmlLista += `
                     <div class="rotulo-card">
                         <div class="rotulo-info">
                             <h4>${c.modelo}</h4>
-                            <p>Líquido: ${c.valor_liquido} • Insumos: ${c.valor_insumos}</p>
+                            <p>Líquido: ${valLiq} • Insumos: ${valIns}</p>
                         </div>
                         <div style="display:flex; gap:12px; align-items:center;">
-                            <div class="custo-val">${c.custo_total}</div>
+                            <div class="custo-val">${valTot}</div>
                             <div style="display:flex; gap:5px;">
                                 <button class="btn-acao" onclick="abrirModalEditarCusto(${c.linha})" title="Editar">✏️</button>
                                 <button class="btn-acao" onclick="prepararExclusaoCusto(${c.linha}, '${c.modelo}')" title="Excluir">🗑️</button>
@@ -561,9 +577,12 @@
         if (!c) return;
         document.getElementById('edit-c-linha').value = c.linha;
         document.getElementById('edit-c-modelo').value = c.modelo;
-        document.getElementById('edit-c-liquido').value = c.valor_liquido;
-        document.getElementById('edit-c-insumos').value = c.valor_insumos;
-        document.getElementById('edit-c-total').value = c.custo_total;
+        
+        // 🔥 Usa o Filtro Mágico para preencher os inputs de edição perfeitamente 🔥
+        document.getElementById('edit-c-liquido').value = safeFmt(c.valor_liquido);
+        document.getElementById('edit-c-insumos').value = safeFmt(c.valor_insumos);
+        document.getElementById('edit-c-total').value = safeFmt(c.custo_total);
+        
         document.getElementById('modal-editar-custo').style.display = 'flex';
     }
 
