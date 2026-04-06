@@ -22,11 +22,11 @@
         .header img.logo { width: 150px; height: auto; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
         .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.9rem; text-transform: uppercase; letter-spacing: 3px; }
         
-        /* NOVO MENU CASCATA (DROPDOWN) */
-        .menu-dropdown { position: relative; margin-bottom: 25px; }
+        /* MENU CASCATA (DROPDOWN) */
+        .menu-dropdown { position: relative; margin-bottom: 25px; z-index: 200; }
         .menu-toggle { width: 100%; background: var(--primary); color: white; padding: 16px 20px; border-radius: 12px; border: none; font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif; transition: 0.2s;}
         .menu-toggle:active { transform: translateY(2px); box-shadow: none; }
-        .menu-content { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 100; margin-top: 8px; overflow: hidden; border: 2px solid var(--border-color); animation: fadeIn 0.2s ease;}
+        .menu-content { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin-top: 8px; overflow: hidden; border: 2px solid var(--border-color); animation: fadeIn 0.2s ease;}
         .menu-content a { display: block; padding: 15px 20px; color: var(--primary-dark); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid #fdf5f7; cursor: pointer; transition: 0.2s;}
         .menu-content a:last-child { border-bottom: none; }
         .menu-content a:hover { background: #fdf5f7; padding-left: 25px; }
@@ -94,8 +94,9 @@
         .dash-lucro-card { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 25px; border-radius: 16px; text-align: center; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(46, 125, 50, 0.3); transition: background 0.3s ease;}
         .dash-lucro-card h3 { margin: 0 0 5px; font-size: 0.8rem; text-transform: uppercase; opacity: 0.9; letter-spacing: 1px; font-weight: 700;}
         .dash-lucro-card p { margin: 0; font-size: 2.2rem; font-weight: 800; }
-        /* Fica vermelho se o lucro for negativo */
         .dash-lucro-card.negativo { background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%); box-shadow: 0 8px 25px rgba(198, 40, 40, 0.3); }
+        .dash-socios-linha { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border-color); font-size: 0.9rem; }
+        .dash-socios-linha:last-child { border-bottom: none; padding-bottom: 0; }
 
         /* MODAIS */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
@@ -346,6 +347,33 @@
                 📊 Visão Global da Novera 
                 <span id="loading-dash" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Calculando...</span>
             </div>
+
+            <div class="filtro-box">
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col">
+                        <label>Mês de Análise</label>
+                        <select id="d-filtro-mes" onchange="renderizarDashboard()">
+                            <option value="">Todo o Período (Todos)</option>
+                            <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+                            <option value="03">Março</option><option value="04">Abril</option>
+                            <option value="05">Maio</option><option value="06">Junho</option>
+                            <option value="07">Julho</option><option value="08">Agosto</option>
+                            <option value="09">Setembro</option><option value="10">Outubro</option>
+                            <option value="11">Novembro</option><option value="12">Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Ano</label>
+                        <select id="d-filtro-ano" onchange="renderizarDashboard()">
+                            <option value="">Todos</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             
             <div id="card-lucro-real" class="dash-lucro-card">
                 <h3>Dinheiro Limpo (Em Caixa)</h3>
@@ -365,6 +393,23 @@
                 <div class="dash-card receber highlight" style="grid-column: span 2; background: #fff9e6; color: #b45309; box-shadow:none; border: 1px solid #ffeeba;">
                     <h5 style="color: #b45309;">A Receber (Rodando/Fiado)</h5>
                     <p id="d-receber" style="color: #b45309;">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="section-title">🚀 Métricas de Sucesso do Período</div>
+            <div class="dash-grid">
+                <div class="dash-card">
+                    <h5>🏆 Produto Campeão</h5>
+                    <p id="d-produto-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p>
+                </div>
+                <div class="dash-card">
+                    <h5>⭐ Melhor Cliente</h5>
+                    <p id="d-cliente-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p>
+                </div>
+                <div class="dash-card" style="grid-column: span 2;">
+                    <h5>🤝 Lucro por Sócio</h5>
+                    <div id="d-socios-lucro" style="margin-top: 10px;">
+                        </div>
                 </div>
             </div>
 
@@ -466,11 +511,8 @@
     }
 
     function selectMenu(tabId, nomeMenu) {
-        // Atualiza o texto do botão principal
         document.getElementById('menu-texto-atual').innerText = nomeMenu;
-        // Esconde o dropdown
         document.getElementById('menu-items').style.display = 'none';
-        // Troca a tela
         switchTab(tabId);
     }
 
@@ -478,14 +520,12 @@
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.getElementById('tab-' + tabId).classList.add('active');
         
-        // Dispara as funções certas dependendo de qual tela abriu
         if(tabId === 'precificar') carregarCustos();
         if(tabId === 'gastos') { carregarGastos(); document.getElementById('g-data').valueAsDate = new Date(); }
         if(tabId === 'vendas') { carregarVendas(); document.getElementById('v-data').valueAsDate = new Date(); }
         if(tabId === 'dashboard') { carregarDashboard(); }
     }
 
-    // Fecha o menu cascata se clicar fora dele
     window.onclick = function(event) {
         if (!event.target.closest('.menu-dropdown')) {
             document.getElementById('menu-items').style.display = "none";
@@ -891,16 +931,28 @@
     }
 
     // ================= NOVO SUPER DASHBOARD =================
+    // Função para setar a data atual ao abrir a tela pela primeira vez
+    function inicializarFiltrosDashboard() {
+        const dMes = document.getElementById('d-filtro-mes');
+        const dAno = document.getElementById('d-filtro-ano');
+        if (!dMes.value && !dAno.value) {
+            const hoje = new Date();
+            dMes.value = String(hoje.getMonth() + 1).padStart(2, '0');
+            dAno.value = String(hoje.getFullYear());
+        }
+    }
+
     async function carregarDashboard() {
         document.getElementById("loading-dash").style.display = "inline";
+        inicializarFiltrosDashboard();
+
         try {
-            // Garante que temos as vendas
+            // Garante que temos os dados antes de montar o dash
             if (vendasGlobal.length === 0) {
                 const resV = await fetch(API_NOVERA + "?acao=listar_vendas&_t=" + new Date().getTime()); 
                 const dadosV = await resV.json();
                 if(dadosV.sucesso) vendasGlobal = dadosV.vendas;
             }
-            // Garante que temos os gastos
             if (gastosGlobal.length === 0) {
                 const resG = await fetch(API_NOVERA + "?acao=listar_gastos&_t=" + new Date().getTime()); 
                 const dadosG = await resG.json();
@@ -917,44 +969,94 @@
     }
 
     function renderizarDashboard() {
-        let totalReceitaCaixa = 0; // Apenas vendas PAGAS
-        let totalPendente = 0;     // Vendas FIADO
-        let totalGastos = 0;       // Todos os GASTOS
-
-        // Varre vendas
-        vendasGlobal.forEach(v => {
-            const val = parseDinheiro(v.valor_venda);
-            if (v.status === 'Pago') totalReceitaCaixa += val;
-            else totalPendente += val;
+        const fMes = document.getElementById('d-filtro-mes').value;
+        const fAno = document.getElementById('d-filtro-ano').value;
+        
+        let prefixoData = "";
+        if (fAno && fMes) prefixoData = `${fAno}-${fMes}`;
+        else if (fAno) prefixoData = fAno; // Só ano
+        
+        // Filtra os arrays baseados no Mês e Ano
+        const vendasDash = vendasGlobal.filter(v => {
+            if(!prefixoData) return true;
+            return v.dataVendaIso && v.dataVendaIso.startsWith(prefixoData);
+        });
+        
+        const gastosDash = gastosGlobal.filter(g => {
+            if(!prefixoData) return true;
+            return g.dataIso && g.dataIso.startsWith(prefixoData);
         });
 
-        // Varre gastos
-        gastosGlobal.forEach(g => {
+        // Variáveis de Somatório
+        let totalReceitaCaixa = 0; 
+        let totalPendente = 0;     
+        let totalGastos = 0;       
+
+        // Variáveis de Ranking
+        let mapaProdutos = {};
+        let mapaClientes = {};
+        let mapaSocios = {};
+
+        // Processa as Vendas
+        vendasDash.forEach(v => {
+            const valVenda = parseDinheiro(v.valor_venda);
+            const lucroVenda = parseDinheiro(v.lucro);
+            const qtd = parseInt(v.qtd) || 1;
+
+            // Financeiro
+            if (v.status === 'Pago') totalReceitaCaixa += valVenda;
+            else totalPendente += valVenda;
+
+            // Ranking Produto (por Quantidade)
+            if(v.produto) mapaProdutos[v.produto] = (mapaProdutos[v.produto] || 0) + qtd;
+            
+            // Ranking Cliente (por Dinheiro Gasto)
+            if(v.cliente) mapaClientes[v.cliente] = (mapaClientes[v.cliente] || 0) + valVenda;
+            
+            // Ranking Sócios (por Lucro Limpo)
+            if(v.socio) mapaSocios[v.socio] = (mapaSocios[v.socio] || 0) + lucroVenda;
+        });
+
+        // Processa os Gastos
+        gastosDash.forEach(g => {
             totalGastos += parseDinheiro(g.total);
         });
 
-        // O Dinheiro Limpo que você de fato tem na mão (Receitas Pagas menos Gastos)
         const lucroReal = totalReceitaCaixa - totalGastos;
 
-        // Atualiza os Cards
+        // Atualiza Cards Financeiros
         const cardLucro = document.getElementById('card-lucro-real');
         document.getElementById('d-lucro-real').innerText = fmt(lucroReal);
         document.getElementById('d-receitas').innerText = fmt(totalReceitaCaixa);
         document.getElementById('d-gastos').innerText = fmt(totalGastos);
         document.getElementById('d-receber').innerText = fmt(totalPendente);
 
-        if (lucroReal < 0) {
-            cardLucro.classList.add('negativo');
-        } else {
-            cardLucro.classList.remove('negativo');
-        }
+        if (lucroReal < 0) cardLucro.classList.add('negativo');
+        else cardLucro.classList.remove('negativo');
 
-        // ================= GRÁFICOS CHART.JS =================
+        // Calcula Campeões
+        let topProduto = "-", maxProd = 0;
+        for(let p in mapaProdutos) { if(mapaProdutos[p] > maxProd) { maxProd = mapaProdutos[p]; topProduto = p; } }
+
+        let topCliente = "-", maxCli = 0;
+        for(let c in mapaClientes) { if(mapaClientes[c] > maxCli) { maxCli = mapaClientes[c]; topCliente = c; } }
+
+        document.getElementById('d-produto-top').innerText = topProduto !== "-" ? `${topProduto} (${maxProd} un)` : "Nenhuma venda";
+        document.getElementById('d-cliente-top').innerText = topCliente !== "-" ? `${topCliente} (${fmt(maxCli)})` : "Nenhum cliente";
+
+        // Monta a listagem de lucros por Sócio
+        let htmlSocios = "";
+        for(let s in mapaSocios) {
+            htmlSocios += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mapaSocios[s])}</strong></div>`;
+        }
+        if(!htmlSocios) htmlSocios = "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros registrados no período.</p>";
+        document.getElementById('d-socios-lucro').innerHTML = htmlSocios;
+
+        // Atualiza Gráficos
         const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d');
         const ctxStatus = document.getElementById('chartStatusVendas').getContext('2d');
 
-        // Gráfico 1: Fluxo de Caixa Real
-        if(chartRGBase) chartRGBase.destroy(); // Limpa gráfico anterior se houver
+        if(chartRGBase) chartRGBase.destroy(); 
         chartRGBase = new Chart(ctxRG, {
             type: 'bar',
             data: {
@@ -968,15 +1070,11 @@
             },
             options: { 
                 responsive: true, 
-                plugins: { 
-                    legend: { display: false }, 
-                    title: { display: true, text: 'Fluxo de Caixa Real', font: { family: 'Montserrat', size: 14 } } 
-                },
+                plugins: { legend: { display: false }, title: { display: true, text: 'Fluxo de Caixa do Período', font: { family: 'Montserrat', size: 14 } } },
                 scales: { y: { beginAtZero: true } }
             }
         });
 
-        // Gráfico 2: Status do Dinheiro das Vendas
         if(chartStatusBase) chartStatusBase.destroy();
         chartStatusBase = new Chart(ctxStatus, {
             type: 'doughnut',
@@ -991,10 +1089,7 @@
             },
             options: { 
                 responsive: true, 
-                plugins: { 
-                    title: { display: true, text: 'Status Financeiro das Vendas', font: { family: 'Montserrat', size: 14 } },
-                    legend: { position: 'bottom' }
-                } 
+                plugins: { title: { display: true, text: 'Status das Vendas no Período', font: { family: 'Montserrat', size: 14 } }, legend: { position: 'bottom' } } 
             }
         });
     }
