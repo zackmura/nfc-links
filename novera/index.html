@@ -214,6 +214,9 @@
         <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3>
         <input type="hidden" id="edit-v-linha">
         <div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div>
+        
+        <div class="input-group" style="text-align: left;"><label>Produto Vendido</label><select id="edit-v-produto"><option value="">Carregando produtos...</option></select></div>
+        
         <div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div>
         <div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div>
         <div class="input-group" style="text-align: left;"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div>
@@ -222,7 +225,6 @@
 </div>
 
 <script>
-    // --- COLAR AQUI O SEU LINK DA API (O QUE VOCÊ ME PASSOU) ---
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -251,7 +253,6 @@
         if(tabId === 'vendas') { carregarVendas(); document.getElementById('v-data').valueAsDate = new Date(); }
     }
 
-    // MODAL DE ALERTA PERSONALIZADO
     function mostrarAlerta(titulo, texto, tipo) { 
         const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
         tituloEl.innerText = titulo; document.getElementById("modal-texto-alert").innerText = texto; 
@@ -261,20 +262,12 @@
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-    // MODAL DE CONFIRMAÇÃO PERSONALIZADO
     function abrirConfirmacao(texto, callback) { 
         document.getElementById('texto-confirmar').innerText = texto; 
         acaoConfirmada = callback; 
         document.getElementById('modal-confirmar').style.display = 'flex'; 
     }
-    
-    document.getElementById('btn-confirmar-acao').onclick = () => { 
-        if (acaoConfirmada) acaoConfirmada(); 
-        document.getElementById('modal-confirmar').style.display = 'none'; 
-    };
-
-    // --- FUNÇÕES BASICAS OMITIDAS AQUI PARA ESPAÇO, MANTENHA AS DOS ROTULOS E GASTOS IGUAIS ---
-    // (Pode colar aqui suas funções originais de carregarRotulos, salvarRotulo, carregarGastos, etc.)
+    document.getElementById('btn-confirmar-acao').onclick = () => { if (acaoConfirmada) acaoConfirmada(); document.getElementById('modal-confirmar').style.display = 'none'; };
 
     // ================= CUSTOS / PRODUTOS =================
     async function carregarCustos() {
@@ -284,29 +277,20 @@
             if (dados.sucesso) {
                 custosGlobal = dados.custos;
                 
-                // MÁGICA 1: Preenche o select de Vendas com os produtos
                 const selectVendas = document.getElementById("v-produto");
-                let htmlVendas = '<option value="">Selecione o Lote Vendido...</option>';
+                const selectEditVendas = document.getElementById("edit-v-produto"); // Novo Select no Modal
                 
-                // CORREÇÃO: Renderiza a lista visual na aba de Custos que não estava aparecendo
+                let htmlVendas = '<option value="">Selecione o Lote Vendido...</option>';
                 let htmlListaCustos = '';
 
                 custosGlobal.forEach(c => {
-                    // Garantia de pegar o nome mesmo se a coluna mudar o titulo na planilha
                     const nomeProduto = c.modelo || c.produto || c.nome || "Produto sem nome"; 
-                    
                     htmlVendas += `<option value="${nomeProduto}" data-custo="${parseDinheiro(c.custo_total)}">${nomeProduto} (Custo: ${safeFmt(c.custo_total)})</option>`;
-                    
-                    // Desenha o cartão na aba de Produção
-                    htmlListaCustos += `
-                    <div class="rotulo-card">
-                        <div class="rotulo-info">
-                            <h4>${nomeProduto}</h4>
-                            <p>Custo Unitário: <b>${safeFmt(c.custo_total)}</b></p>
-                        </div>
-                    </div>`;
+                    htmlListaCustos += `<div class="rotulo-card"><div class="rotulo-info"><h4>${nomeProduto}</h4><p>Custo Unitário: <b>${safeFmt(c.custo_total)}</b></p></div></div>`;
                 });
+                
                 if(selectVendas) selectVendas.innerHTML = htmlVendas;
+                if(selectEditVendas) selectEditVendas.innerHTML = htmlVendas; // Abastece o select do modal de edição também
                 
                 const divLista = document.getElementById("lista-custos-cadastrados");
                 if(divLista) divLista.innerHTML = htmlListaCustos || "<p style='text-align:center;'>Nenhum custo registrado ainda.</p>";
@@ -344,12 +328,10 @@
             if (dados.sucesso) { 
                 vendasGlobal = dados.vendas; 
                 
-                // MÁGICA: Aprende os nomes dos clientes
                 const clientesSet = new Set(vendasGlobal.map(v => String(v.cliente).trim()));
                 let dlHtml = ""; clientesSet.forEach(c => dlHtml += `<option value="${c}">`);
                 document.getElementById('lista-clientes').innerHTML = dlHtml;
 
-                // MÁGICA: Aprende os nomes dos Sócios (Lucro p/)
                 const sociosSet = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s !== ''));
                 let dlSociosHtml = ""; sociosSet.forEach(s => dlSociosHtml += `<option value="${s}">`);
                 document.getElementById('lista-socios-dinamica').innerHTML = dlSociosHtml;
@@ -391,7 +373,6 @@
 
                 const isPago = v.status === 'Pago';
 
-                // CARTÕES LIMPOS (Apenas Cifrão, Editar e Excluir)
                 html += `<div class="rotulo-card">
                     <div class="rotulo-info">
                         <h4>${v.cliente} <span class="status-badge ${isPago ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4>
@@ -417,46 +398,30 @@
         document.getElementById('dash-v-lucro').innerText = fmt(tLucro);
         document.getElementById('dash-v-itens').innerText = tItens;
 
-        // ATUALIZA A LISTA DE DEVEDORES PARA O BOTÃO DO WHATSAPP
         atualizarListaCobranca();
     }
 
-    // ================= FUNÇÃO NOVA: WHATSAPP DEVEDORES =================
     function atualizarListaCobranca() {
         const selectCob = document.getElementById('cobranca-cliente');
         const devedoresSet = new Set();
-        
-        vendasGlobal.forEach(v => {
-            if(v.status === 'Pendente' && v.cliente) devedoresSet.add(v.cliente.trim());
-        });
-
+        vendasGlobal.forEach(v => { if(v.status === 'Pendente' && v.cliente) devedoresSet.add(v.cliente.trim()); });
         let optHtml = '<option value="">Selecione o devedor...</option>';
-        devedoresSet.forEach(c => {
-            optHtml += `<option value="${c}">${c}</option>`;
-        });
-        
+        devedoresSet.forEach(c => { optHtml += `<option value="${c}">${c}</option>`; });
         selectCob.innerHTML = optHtml;
     }
 
     function copiarPendenciasWhats() {
         const clienteNome = document.getElementById('cobranca-cliente').value;
-        if(!clienteNome) {
-            return mostrarAlerta("Aviso", "Selecione um cliente com pendência na lista.", "warning");
-        }
-
+        if(!clienteNome) return mostrarAlerta("Aviso", "Selecione um cliente com pendência na lista.", "warning");
         let pendencias = vendasGlobal.filter(p => p.cliente.trim() === clienteNome && p.status === 'Pendente');
-        
         let textoCopia = `Olá ${clienteNome}, tudo bem? Aqui é da Novera Scent! ✨\n\nSegue o resumo dos seus pedidos em aberto:\n\n`;
         let totalDevido = 0;
-
         pendencias.forEach(p => {
             const valor = parseDinheiro(p.valor_venda);
             textoCopia += `📅 ${p.dataVendaDisplay || p.dataVendaIso} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(valor)}\n`;
             totalDevido += valor;
         });
-
         textoCopia += `\n*Total em aberto: ${fmt(totalDevido)}*`;
-
         navigator.clipboard.writeText(textoCopia).then(() => {
             mostrarAlerta("Copiado! 📋", "As pendências foram copiadas. Agora é só abrir o WhatsApp do cliente e colar a mensagem.", "success");
         }).catch(err => {
@@ -466,7 +431,6 @@
 
     // ================= EDITAÇÕES E EXCLUSÕES =================
     async function darBaixaVenda(linha) {
-        // Substituindo o confirm() feio pelo nosso modal bonitão
         abrirConfirmacao("Deseja marcar o pagamento desta venda como RECEBIDO na data de hoje?", async () => {
             try {
                 const hojeStr = new Date().toLocaleDateString('pt-BR'); 
@@ -479,7 +443,18 @@
 
     function abrirModalEditarVenda(linha) {
         const v = vendasGlobal.find(x => x.linha === linha); if (!v) return;
-        document.getElementById('edit-v-linha').value = v.linha; document.getElementById('edit-v-data').value = v.dataVendaIso; document.getElementById('edit-v-cliente').value = v.cliente; document.getElementById('edit-v-socio').value = v.socio; document.getElementById('edit-v-qtd').value = v.qtd; document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); document.getElementById('edit-v-status').value = v.status;
+        document.getElementById('edit-v-linha').value = v.linha; 
+        document.getElementById('edit-v-data').value = v.dataVendaIso; 
+        document.getElementById('edit-v-cliente').value = v.cliente; 
+        
+        // Seta o produto que estava salvo na venda
+        document.getElementById('edit-v-produto').value = v.produto; 
+        
+        document.getElementById('edit-v-socio').value = v.socio; 
+        document.getElementById('edit-v-qtd').value = v.qtd; 
+        document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); 
+        document.getElementById('edit-v-status').value = v.status;
+        
         document.getElementById('modal-editar-venda').style.display = 'flex';
     }
 
@@ -487,10 +462,26 @@
         const linha = document.getElementById('edit-v-linha').value;
         const vOriginal = vendasGlobal.find(x => x.linha == linha);
         
-        const data = document.getElementById('edit-v-data').value, cliente = document.getElementById('edit-v-cliente').value, socio = document.getElementById('edit-v-socio').value, qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr = document.getElementById('edit-v-valor').value, status = document.getElementById('edit-v-status').value;
+        const data = document.getElementById('edit-v-data').value;
+        const cliente = document.getElementById('edit-v-cliente').value;
+        const produtoSelect = document.getElementById('edit-v-produto');
+        const socio = document.getElementById('edit-v-socio').value;
+        const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1;
+        const valorStr = document.getElementById('edit-v-valor').value;
+        const status = document.getElementById('edit-v-status').value;
+        
+        const produtoNome = produtoSelect.value;
         const valorVenda = parseDinheiro(valorStr);
         
-        const custoUnd = parseDinheiro(vOriginal.custo_und);
+        // Pega o custo do novo produto selecionado. Se der erro, tenta manter o antigo.
+        const optionSelecionada = produtoSelect.options[produtoSelect.selectedIndex];
+        let custoUnd = 0;
+        if (optionSelecionada && optionSelecionada.hasAttribute('data-custo')) {
+            custoUnd = parseFloat(optionSelecionada.getAttribute('data-custo'));
+        } else {
+            custoUnd = parseDinheiro(vOriginal.custo_und);
+        }
+
         const custoTotal = custoUnd * qtd;
         const lucro = valorVenda - custoTotal;
         const markup = custoTotal > 0 ? (lucro / custoTotal) : 1;
@@ -498,14 +489,29 @@
 
         const btn = document.getElementById('btn-salvar-edicao-venda'); btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
         try {
-            const py = { acao: "atualizar_venda", linha: linha, data: data, cliente: cliente, produto: vOriginal.produto, socio: socio, qtd: qtd, valor_venda: fmtPlanilha(valorVenda), status: status, custo_und: fmtPlanilha(custoUnd), custo_total: fmtPlanilha(custoTotal), lucro: fmtPlanilha(lucro), markup: (markup * 100).toFixed(2) + "%", data_pg: dataPg };
+            // Manda o 'produtoNome' (que pode ser novo), e os novos valores de 'custo' e 'lucro'
+            const py = { 
+                acao: "atualizar_venda", 
+                linha: linha, 
+                data: data, 
+                cliente: cliente, 
+                produto: produtoNome, 
+                socio: socio, 
+                qtd: qtd, 
+                valor_venda: fmtPlanilha(valorVenda), 
+                status: status, 
+                custo_und: fmtPlanilha(custoUnd), 
+                custo_total: fmtPlanilha(custoTotal), 
+                lucro: fmtPlanilha(lucro), 
+                markup: (markup * 100).toFixed(2) + "%", 
+                data_pg: dataPg 
+            };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
             if(json.sucesso) { document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Venda corrigida com sucesso.", "success"); carregarVendas(); } else throw new Error(json.erro);
         } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
 
     function prepararExclusaoVenda(linha, cliente) { 
-        // Substituindo o confirm() feio pelo nosso modal bonitão
         abrirConfirmacao(`Deseja apagar permanentemente o registro de venda para "${cliente}"?`, async () => { 
             try { 
                 const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); 
