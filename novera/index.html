@@ -13,6 +13,7 @@
             --primary: #B87C96; 
             --primary-dark: #966178;
             --brand-dark: #2C2A2B;
+            --logo-text: #8C6A78; /* Cor exata extraída do texto do seu logo */
             --bg-color: #Fdfbfb;
             --card-bg: #ffffff;
             --text-main: #4A4A4A;
@@ -26,28 +27,26 @@
         /* === HEADER COM LOGO E TÍTULO ELEGANTE === */
         .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
         
-        /* 🔥 ESTILO DO LOGO ATUALIZADO 🔥 */
+        /* 🔥 ESTILO DO LOGO AUMENTADO 🔥 */
         .header img.logo { 
-            width: 90px; /* Largura elegante */
+            width: 150px; /* Aumentado de 90px para 150px */
             height: auto; 
-            margin-bottom: 15px; 
+            margin-bottom: 10px; 
             object-fit: contain;
-            /* Um leve brilho/sombra suave atrás do logo para dar destaque */
             filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));
         }
 
-        /* 🔥 TÍTULO COM A NOVA FONTE ELEGANTE (PLAYFAIR DISPLAY) 🔥 */
+        /* 🔥 TÍTULO COM A COR E FONTE DA LOGO 🔥 */
         .header h1 { 
             margin: 0; 
-            color: var(--brand-dark); 
-            font-family: 'Playfair Display', serif; /* A fonte serifada elegante */
+            color: var(--logo-text); /* Usando a cor exata da logo */
+            font-family: 'Playfair Display', serif; 
             font-weight: 700; 
-            font-size: 1.8rem; /* Tamanho ligeiramente maior para destaque */
-            text-transform: uppercase; /* Todo em maiúsculas */
-            letter-spacing: 2px; /* Espaçamento entre letras para sofisticação */
+            font-size: 1.9rem; /* Levemente maior */
+            text-transform: uppercase; 
+            letter-spacing: 3px; /* Espaçamento mais sofisticado */
         }
         
-        /* 🔥 SUBTÍTULO COM ESTILO COMBINANDO 🔥 */
         .header p { 
             margin: 5px 0 0; 
             font-size: 0.8rem; 
@@ -145,39 +144,27 @@
 </div>
 
 <script>
-    // Função para formatar moeda BRL
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     function calcularNovera() {
-        // Pega valores dos inputs ou define 0 se vazio
         const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0;
         const qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0;
         const cBase1L = parseFloat(document.getElementById('n-custo-base').value) || 0;
         const qBase = parseFloat(document.getElementById('n-qtd-base').value) || 0;
-        const mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1; // Evita divisão por zero
+        const mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1; 
         const cInsumos = parseFloat(document.getElementById('n-insumos').value) || 0;
 
-        // --- Cálculos de Custo e Rendimento ---
-        
-        // 1. Custo por ml de cada componente
         const valorMlFrag = qFrag > 0 ? cFrag / qFrag : 0;
-        const valorMlBase = cBase1L / 1000; // Base considerando custo de 1 Litro
+        const valorMlBase = cBase1L / 1000; 
         
-        // 2. Produção Total do Lote
         const qtdMlProducao = qBase + qFrag;
-        
-        // 3. Rendimento (Quantos frascos inteiros rende)
         const qtdFrascos = qtdMlProducao / mlVenda;
 
-        // 4. Custo Proporcional do Líquido por Frasco
-        // (Custo Total dos Ingredientes / Total de Frascos Produzidos)
         const custoIngredientesTotal = cFrag + (valorMlBase * qBase);
         const custoLiquidoUni = qtdFrascos > 0 ? custoIngredientesTotal / qtdFrascos : 0;
         
-        // 5. Custo Total da Unidade (Líquido + Embalagem)
         const custoTotalUni = custoLiquidoUni + cInsumos;
 
-        // --- Atualiza Tela - Painel de Resumo ---
         document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag);
         document.getElementById('r-ml-base').innerText = fmt(valorMlBase);
         document.getElementById('r-vol-total').innerText = qtdMlProducao + " ml";
@@ -185,7 +172,6 @@
         document.getElementById('r-liquido').innerText = fmt(custoLiquidoUni);
         document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
 
-        // --- Atualiza Tela - Sugestão de Venda ---
         const preco2x = custoTotalUni * 2;
         const preco4x = custoTotalUni * 4;
         
@@ -196,7 +182,6 @@
         document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(preco4x - custoTotalUni);
     }
 
-    // Executa o cálculo inicial ao carregar a página
     window.onload = calcularNovera;
 </script>
 
