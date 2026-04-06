@@ -400,7 +400,8 @@
                 document.getElementById('r-essencia').value = ""; document.getElementById('r-codigo-forn').value = ""; document.getElementById('r-marca').value = "";
                 carregarRotulos();
             } else if (resultado.erro === "DUPLICADO_ROTULO") {
-                mostrarAlerta("Essência Já Existe", `A essência "${essencia}" já possui um Código Novera (N-XXXX) no Dicionário.`, "warning");
+                // 🔥 A mágica acontece aqui: usando o resultado.codigo_existente que o robô nos enviou
+                mostrarAlerta("Essência Já Existe", `A essência "${essencia}" já possui o código ${resultado.codigo_existente} no Dicionário.`, "warning");
             } else throw new Error(resultado.erro);
         } catch (e) { mostrarAlerta("Erro", "Falha ao gerar código: " + e.message, "error"); } finally { btn.disabled = false; btn.innerText = "CRIAR IDENTIDADE (N-XXXX)"; }
     }
