@@ -102,39 +102,66 @@
 
         <div id="tab-rotulos" class="tab-content active">
             <div class="section-title">✨ Nova Identidade Novera</div>
+            
             <div class="input-group">
                 <label>Essência Original (Inspiração)</label>
                 <input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal...">
             </div>
+            
             <div class="row">
                 <div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn" placeholder="Ex: 4953"></div>
                 <div class="col"><label>Marca Fornecedor</label><input type="text" id="r-marca" placeholder="Ex: Wanny"></div>
             </div>
+            
             <div class="input-group">
                 <label>Tipo de Produto</label>
                 <input type="text" id="r-tipo" list="lista-tipos" placeholder="Ex: Essência, Hidratante...">
-                <datalist id="lista-tipos"><option value="Essência"><option value="Perfume"><option value="Home Spray"><option value="Vela"><option value="Hidratante"></datalist>
+                <datalist id="lista-tipos">
+                    <option value="Essência">
+                    <option value="Perfume">
+                    <option value="Home Spray">
+                    <option value="Vela">
+                    <option value="Hidratante">
+                </datalist>
             </div>
+
             <button class="btn-salvar" id="btn-salvar-rotulo" onclick="salvarRotulo()">Criar Identidade (N-XXXX)</button>
 
-            <div class="section-title">📋 Dicionário Ativo <span id="loading-rotulos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳...</span></div>
-            <div id="lista-rotulos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando...</p></div>
+            <div class="section-title">
+                📋 Dicionário Ativo
+                <span id="loading-rotulos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span>
+            </div>
+            <div id="lista-rotulos-cadastrados">
+                <p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando banco de dados...</p>
+            </div>
         </div>
 
         <div id="tab-precificar" class="tab-content">
             <div class="section-title">🧪 Custos da Produção Atual</div>
+            
             <div class="row">
-                <div class="col"><label>Base Mestre (Identidade)</label><select id="n-produto"><option value="">Carregando...</option></select></div>
-                <div class="col"><label>Lote de Produção</label><input type="text" id="p-lote" placeholder="Ex: Lote 2" value="Lote 1"></div>
+                <div class="col">
+                    <label>Base Mestre (Identidade)</label>
+                    <select id="n-produto">
+                        <option value="">Carregando essências...</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Lote de Produção</label>
+                    <input type="text" id="p-lote" placeholder="Ex: Lote 2" value="Lote 1">
+                </div>
             </div>
+            
             <div class="row">
                 <div class="col"><label>Custo Fragrância (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div>
                 <div class="col"><label>Qtd. Fragrância (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div>
             </div>
+            
             <div class="row">
                 <div class="col"><label>Custo Base 1L (R$)</label><input type="number" id="n-custo-base" value="18.40" step="0.01" oninput="calcularNovera()"></div>
                 <div class="col"><label>Qtd. Base Usada (ml)</label><input type="number" id="n-qtd-base" value="1000" oninput="calcularNovera()"></div>
             </div>
+            
             <div class="row">
                 <div class="col"><label>Vol. Frasco Venda (ml)</label><input type="number" id="n-ml-venda" value="250" oninput="calcularNovera()"></div>
                 <div class="col"><label>Custo Embalagem/un (R$)</label><input type="number" id="n-insumos" value="4.00" step="0.01" oninput="calcularNovera()"></div>
@@ -151,13 +178,27 @@
 
             <div class="section-title">💰 Sugestão de Venda (Markup)</div>
             <div class="markup-area">
-                <div class="markup-box"><p class="markup-title">Venda Simples (2x)</p><p class="markup-preco" id="m-preco-2x">R$ 0,00</p><p class="markup-lucro" id="m-lucro-2x">Lucro Limpo: R$ 0,00</p></div>
-                <div class="markup-box"><p class="markup-title">Venda Premium (4x)</p><p class="markup-preco" id="m-preco-4x">R$ 0,00</p><p class="markup-lucro" id="m-lucro-4x">Lucro Limpo: R$ 0,00</p></div>
+                <div class="markup-box">
+                    <p class="markup-title">Venda Simples (2x)</p>
+                    <p class="markup-preco" id="m-preco-2x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-2x">Lucro Limpo: R$ 0,00</p>
+                </div>
+                <div class="markup-box">
+                    <p class="markup-title">Venda Premium (4x)</p>
+                    <p class="markup-preco" id="m-preco-4x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-4x">Lucro Limpo: R$ 0,00</p>
+                </div>
             </div>
+
             <button class="btn-salvar" id="btn-salvar-lote" onclick="salvarLotePrecificacao()">Registrar Custos do Lote</button>
 
-            <div class="section-title" style="margin-top: 35px;">📋 Histórico de Lotes Produzidos <span id="loading-custos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳...</span></div>
-            <div id="lista-custos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando...</p></div>
+            <div class="section-title" style="margin-top: 35px;">
+                📋 Histórico de Lotes Produzidos
+                <span id="loading-custos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span>
+            </div>
+            <div id="lista-custos-cadastrados">
+                <p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando banco de dados...</p>
+            </div>
         </div>
 
         <div id="tab-gastos" class="tab-content">
@@ -186,17 +227,18 @@
             
             <button class="btn-salvar" id="btn-salvar-gasto" onclick="salvarGasto()">Lançar Despesa</button>
 
-            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros <span id="loading-gastos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳...</span></div>
+            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros <span id="loading-gastos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span></div>
             <div class="filtro-box">
                 <div class="row">
                     <div class="col">
                         <label>Sócio</label>
                         <select id="f-socio" onchange="filtrarGastos()">
                             <option value="">Todos os Sócios</option>
-                            <option value="Amor">Amor (Fernando)</option>
-                            <option value="Natália">Natália</option>
-                            <option value="Mãe">Mãe (Sogra)</option>
-                            <option value="Amor/Mãe">Amor/Mãe</option>
+                            <option value="amor">Amor (Fernando)</option>
+                            <option value="natália">Natália</option>
+                            <option value="mãe">Mãe (Sogra)</option>
+                            <option value="amor/mãe">Amor/Mãe</option>
+                            <option value="natália/mãe">Natália/Mãe</option>
                         </select>
                     </div>
                 </div>
@@ -212,15 +254,16 @@
 
             <div id="lista-gastos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando gastos...</p></div>
         </div>
+
     </div>
 </div>
 
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
 <div id="modal-confirmar" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">🗑️</span><h3 class="modal-title-alert" style="color: #A05252;">Excluir?</h3><p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p><div style="display: flex; gap: 10px; margin-top: 15px;"><button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button><button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Apagar</button></div></div></div>
 
-<div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><div class="input-group" style="text-align: left;"><label>Tipo de Produto</label><input type="text" id="edit-r-tipo" list="lista-tipos"></div><button class="btn-salvar" id="btn-salvar-edicao-rotulo" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar</button></div></div>
+<div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><div class="input-group" style="text-align: left;"><label>Tipo de Produto</label><input type="text" id="edit-r-tipo" list="lista-tipos"></div><button class="btn-salvar" id="btn-salvar-edicao-rotulo" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
-<div id="modal-editar-custo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-custo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Custo</h3><input type="hidden" id="edit-c-linha"><div class="input-group" style="text-align: left;"><label>Nome / Lote Produzido</label><input type="text" id="edit-c-modelo"></div><div class="row" style="text-align: left;"><div class="col"><label>Custo Líquido</label><input type="text" id="edit-c-liquido" class="mask-money"></div><div class="col"><label>Insumos</label><input type="text" id="edit-c-insumos" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Custo Total</label><input type="text" id="edit-c-total" class="mask-money"></div><button class="btn-salvar" id="btn-salvar-edicao-custo" onclick="salvarEdicaoCusto()" style="margin-bottom: 0;">💾 Salvar</button></div></div>
+<div id="modal-editar-custo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-custo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Custo</h3><input type="hidden" id="edit-c-linha"><div class="input-group" style="text-align: left;"><label>Nome / Lote Produzido</label><input type="text" id="edit-c-modelo"></div><div class="row" style="text-align: left;"><div class="col"><label>Custo Líquido</label><input type="text" id="edit-c-liquido" class="mask-money"></div><div class="col"><label>Insumos</label><input type="text" id="edit-c-insumos" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Custo Total</label><input type="text" id="edit-c-total" class="mask-money"></div><button class="btn-salvar" id="btn-salvar-edicao-custo" onclick="salvarEdicaoCusto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
 <div id="modal-editar-gasto" class="modal-overlay-alert">
     <div class="modal-box-alert" style="padding-top: 40px;">
@@ -230,9 +273,9 @@
         <div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div>
         <div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div>
         <div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div>
-        <div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div>
+        <div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div>
         <div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div>
-        <button class="btn-salvar" id="btn-salvar-edicao-gasto" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar</button>
+        <button class="btn-salvar" id="btn-salvar-edicao-gasto" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
     </div>
 </div>
 
@@ -241,19 +284,32 @@
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
+    
+    // FILTRO MÁGICO 1: Arruma os números crus do Google Sheets para Tela (R$ 00,00)
     function safeFmt(val) {
-        if (!val) return "R$ 0,00"; if (typeof val === 'number') return fmt(val);
-        let num = parseFloat(String(val).replace(/[R$\s]/g, '').replace('.', '').replace(',', '.'));
+        if (val === "" || val === null || val === undefined) return "R$ 0,00"; 
+        if (typeof val === 'number') return fmt(val);
+        let str = String(val).replace(/[R$\s]/g, '');
+        // Se vier como número gringo da planilha (Ex: 18.21)
+        if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str));
+        // Se vier como formato BR (Ex: 1.250,00)
+        let num = parseFloat(str.replace(/\./g, '').replace(',', '.'));
         return isNaN(num) ? "R$ 0,00" : fmt(num);
     }
-    function parseDinheiro(str) {
-        if(!str) return 0;
-        return parseFloat(String(str).replace(/[R$\s]/g, '').replace('.', '').replace(',', '.')) || 0;
+    
+    // FILTRO MÁGICO 2: Converte da Tela ("R$ 1.250,00") para matemática pura
+    function parseDinheiro(val) {
+        if (val === "" || val === null || val === undefined) return 0;
+        if (typeof val === 'number') return val;
+        let str = String(val).replace(/[R$\s]/g, '');
+        if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0;
+        return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
     }
 
     let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0;
     let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], acaoConfirmada = null; 
 
+    // MÁSCARA DINHEIRO COM ATRASO DE CÁLCULO
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
             let val = e.target.value.replace(/\D/g, ''); 
@@ -263,6 +319,11 @@
             val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); 
             val = val.replace(/(\d)(\d{3}),/g, "$1.$2,");
             e.target.value = "R$ " + val;
+            
+            // O Atraso Inteligente (Espera a máscara terminar para calcular)
+            if(e.target.id === 'g-valor') setTimeout(calcularTotalGasto, 10);
+            if(e.target.id === 'edit-g-valor') setTimeout(calcularEditGasto, 10);
+            if(e.target.id.startsWith('edit-c-')) setTimeout(calcularEditCusto, 10);
         }
     });
 
@@ -327,7 +388,7 @@
             const py = { acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: document.getElementById('edit-r-essencia').value, codigo_forn: document.getElementById('edit-r-codigo-forn').value, marca: document.getElementById('edit-r-marca').value, tipo: document.getElementById('edit-r-tipo').value };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
             if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); carregarRotulos(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar"; }
+        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
     function prepararExclusaoRotulo(linha, codigo) { abrirConfirmacao(`Deseja excluir a identidade ${codigo}?`, async () => {
         try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Identidade apagada.", "success"); carregarRotulos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } });
@@ -340,6 +401,12 @@
         custoLiquidoGlobal = custoLiquidoUni; custoInsumosGlobal = cInsumos; custoTotalGlobal = custoTotalUni;
         document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag); document.getElementById('r-ml-base').innerText = fmt(valorMlBase); document.getElementById('r-vol-total').innerText = qtdMlProducao + " ml"; document.getElementById('r-frascos').innerText = qtdFrascos.toFixed(1); document.getElementById('r-liquido').innerText = fmt(custoLiquidoUni); document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
         document.getElementById('m-preco-2x').innerText = fmt(custoTotalUni * 2); document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt(custoTotalUni); document.getElementById('m-preco-4x').innerText = fmt(custoTotalUni * 4); document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(custoTotalUni * 3);
+    }
+    function calcularEditCusto() {
+        // Apenas mascara o Custo Total somando líquido e insumos na tela de edição
+        const liq = parseDinheiro(document.getElementById('edit-c-liquido').value);
+        const ins = parseDinheiro(document.getElementById('edit-c-insumos').value);
+        document.getElementById('edit-c-total').value = fmt(liq + ins);
     }
     async function salvarLotePrecificacao() {
         const ess = document.getElementById('n-produto').value, lote = document.getElementById('p-lote').value.trim(), ml = document.getElementById('n-ml-venda').value;
@@ -371,7 +438,7 @@
             const py = { acao: "atualizar_custo", linha: document.getElementById('edit-c-linha').value, modelo: document.getElementById('edit-c-modelo').value, valor_liquido: document.getElementById('edit-c-liquido').value, valor_insumos: document.getElementById('edit-c-insumos').value, custo_total: document.getElementById('edit-c-total').value };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
             if(json.sucesso) { document.getElementById('modal-editar-custo').style.display = 'none'; mostrarAlerta("Atualizado!", "Editado com sucesso.", "success"); carregarCustos(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar"; }
+        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
     function prepararExclusaoCusto(linha, modelo) { abrirConfirmacao(`Deseja apagar o lote ${modelo}?`, async () => { try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Apagado.", "success"); carregarCustos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } }); }
 
@@ -420,6 +487,9 @@
             return passSocio && passData;
         });
 
+        // 🔥 Ordenação Automática por Data (Mais novos primeiro) 🔥
+        gastosFiltrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso));
+
         let somaTotal = 0;
         let html = "";
         
@@ -457,7 +527,7 @@
             const py = { acao: "atualizar_gasto", linha: document.getElementById('edit-g-linha').value, data: document.getElementById('edit-g-data').value, local: document.getElementById('edit-g-local').value, socio: document.getElementById('edit-g-socio').value, item: document.getElementById('edit-g-item').value, qtd: document.getElementById('edit-g-qtd').value, valor: document.getElementById('edit-g-valor').value, total: document.getElementById('edit-g-total').value };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
             if(json.sucesso) { document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarAlerta("Atualizado!", "Gasto editado.", "success"); carregarGastos(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar"; }
+        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
 
     function prepararExclusaoGasto(linha, item) { abrirConfirmacao(`Deseja apagar a despesa "${item}"?`, async () => { try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Gasto apagado.", "success"); carregarGastos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } }); }
