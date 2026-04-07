@@ -68,6 +68,10 @@
         .btn-salvar:active { transform: translateY(3px); box-shadow: none; }
         .btn-salvar:disabled { background: #E8DDE1; color: #999; cursor: not-allowed; box-shadow: none; }
 
+        .btn-bio { width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; transition: 0.2s; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3); font-family: 'Montserrat', sans-serif;}
+        .btn-bio:hover { background: #1d4ed8; }
+        .btn-bio:active { transform: translateY(3px); box-shadow: none; }
+
         .rotulo-card { background: #fafafa; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
         .rotulo-card:hover { border-color: var(--primary); background: #fff; box-shadow: 0 4px 10px rgba(184, 124, 150, 0.08);}
         .rotulo-info h4 { margin: 0 0 5px; color: var(--brand-dark); font-size: 0.95rem; }
@@ -147,6 +151,7 @@
         </div>
         
         <button class="btn-salvar" id="btn-login" onclick="fazerLogin()">Entrar</button>
+        <button class="btn-bio" id="btn-login-bio" style="display: none;" onclick="loginBiometria()">🔐 Entrar com Face ID / Digital</button>
     </div>
 </div>
 
@@ -458,8 +463,12 @@
         </div>
 
         <div id="tab-configuracoes" class="tab-content">
-            <div class="section-title">⚙️ Alterar Senha</div>
             
+            <div class="section-title">🔐 Biometria Rápida</div>
+            <p style="font-size: 0.8rem; color: #888; margin-top: 0;">Use o Face ID ou a Digital do seu celular para entrar no aplicativo sem digitar senha.</p>
+            <button class="btn-salvar" style="background: #2563eb; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);" onclick="registrarBiometria()">Cadastrar / Atualizar Face ID ou Digital</button>
+
+            <div class="section-title" style="margin-top: 35px;">⚙️ Alterar Senha do Banco</div>
             <div class="input-group">
                 <label>Usuário Logado</label>
                 <input type="text" id="cfg-user" readonly>
@@ -527,43 +536,69 @@
     // AQUI VOCÊ COLA O LINK DA SUA API NOVA GERADA NO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
+    // ================= HELPER BIOMETRIA (WEBAUTHN) =================
+    function bufferToBase64url(buffer) {
+        const bytes = new Uint8Array(buffer);
+        let str = '';
+        for (let i = 0; i < bytes.byteLength; i++) { str += String.fromCharCode(bytes[i]); }
+        return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    }
+    function base64urlToBuffer(base64url) {
+        let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4) { base64 += '='; }
+        const rawData = window.atob(base64);
+        const buffer = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; i++) { buffer[i] = rawData.charCodeAt(i); }
+        return buffer;
+    }
+
     // ================= CONTROLE DE LOGIN E SEGURANÇA =================
     let usuarioLogado = "";
-    let dadosCarregados = false; // Evita recarregar a planilha toda vez que a tela acende
+    let dadosCarregados = false; 
 
     function toggleSenha(inputId, btnElement) {
         const input = document.getElementById(inputId);
-        if (input.type === "password") {
-            input.type = "text";
-            btnElement.innerText = "🙈"; 
-        } else {
-            input.type = "password";
-            btnElement.innerText = "👁️"; 
+        if (input.type === "password") { input.type = "text"; btnElement.innerText = "🙈"; } 
+        else { input.type = "password"; btnElement.innerText = "👁️"; }
+    }
+
+    function verificarBotaoBiometria() {
+        const hasBio = localStorage.getItem('novera_bio_id');
+        document.getElementById('btn-login-bio').style.display = hasBio ? 'block' : 'none';
+    }
+
+    function iniciarSessaoLocal(usuario) {
+        localStorage.setItem('novera_last_user', usuario);
+        // Trava a sessão para expirar daqui a 12 horas (em milissegundos)
+        localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000));
+        usuarioLogado = usuario;
+        
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        document.getElementById('cfg-user').value = usuario;
+        
+        if (!dadosCarregados) {
+            carregarRotulos(); 
+            carregarCustos();
+            calcularNovera(); 
+            dadosCarregados = true;
         }
     }
 
     function verificarLogin() {
-        const isAutenticado = sessionStorage.getItem('novera_auth'); // Sessão provisória
-        const lastUser = localStorage.getItem('novera_last_user') || ''; // Nome salvo fixo
+        const expires = localStorage.getItem('novera_session_expires');
+        const lastUser = localStorage.getItem('novera_last_user') || '';
 
-        if (isAutenticado === 'true') {
-            usuarioLogado = lastUser;
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            document.getElementById('cfg-user').value = lastUser;
-            
-            // Carrega os dados APENAS na primeira vez que loga
-            if (!dadosCarregados) {
-                carregarRotulos(); 
-                carregarCustos();
-                calcularNovera(); 
-                dadosCarregados = true;
-            }
+        if (expires && Date.now() < parseInt(expires)) {
+            // Sessão ainda é válida! Entra direto.
+            iniciarSessaoLocal(lastUser);
         } else {
+            // Sessão expirou ou não existe
             document.getElementById('login-screen').style.display = 'block';
             document.getElementById('main-app').style.display = 'none';
             document.getElementById('login-user').value = lastUser; 
-            document.getElementById('login-pass').value = ''; // Sempre limpa a senha!
+            document.getElementById('login-pass').value = ''; 
+            verificarBotaoBiometria();
         }
     }
 
@@ -579,9 +614,7 @@
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) });
             const json = await res.json();
             if (json.sucesso) {
-                localStorage.setItem('novera_last_user', json.usuario); // Salva o nome
-                sessionStorage.setItem('novera_auth', 'true'); // Libera o acesso
-                verificarLogin();
+                iniciarSessaoLocal(json.usuario);
             } else {
                 mostrarAlerta("Erro", json.erro, "error");
             }
@@ -593,16 +626,57 @@
     }
 
     function fazerLogout() {
-        sessionStorage.removeItem('novera_auth'); 
+        localStorage.removeItem('novera_session_expires'); // Quebra a chave do tempo
         verificarLogin(); 
     }
 
-    // BLOQUEIA O APP SE A TELA APAGAR OU FOR MINIMIZADO
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === 'hidden') {
-            fazerLogout(); 
+    // ================= BIOMETRIA CORE =================
+    async function registrarBiometria() {
+        if (!window.PublicKeyCredential) return mostrarAlerta("Aviso", "Seu navegador/aparelho não suporta biometria web.", "warning");
+        try {
+            const publicKeyOptions = {
+                challenge: window.crypto.getRandomValues(new Uint8Array(32)),
+                rp: { name: "Novera Scent ERP" },
+                user: {
+                    id: window.crypto.getRandomValues(new Uint8Array(16)),
+                    name: usuarioLogado,
+                    displayName: usuarioLogado
+                },
+                pubKeyCredParams: [{alg: -7, type: "public-key"}],
+                authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                timeout: 60000
+            };
+            const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
+            localStorage.setItem('novera_bio_id', bufferToBase64url(credential.rawId));
+            mostrarAlerta("Sucesso", "Face ID / Digital cadastrada para este aparelho!", "success");
+        } catch (e) {
+            mostrarAlerta("Cancelado", "O cadastro biométrico foi cancelado ou falhou.", "warning");
         }
-    });
+    }
+
+    async function loginBiometria() {
+        const credIdBase64 = localStorage.getItem('novera_bio_id');
+        const lastUser = localStorage.getItem('novera_last_user');
+        if (!credIdBase64 || !lastUser) return;
+        
+        try {
+            const publicKeyOptions = {
+                challenge: window.crypto.getRandomValues(new Uint8Array(32)),
+                allowCredentials: [{
+                    id: base64urlToBuffer(credIdBase64),
+                    type: 'public-key',
+                    transports: ['internal']
+                }],
+                userVerification: "required",
+                timeout: 60000
+            };
+            await navigator.credentials.get({ publicKey: publicKeyOptions });
+            // Se passar daqui, o hardware do celular validou o rosto/dedo
+            iniciarSessaoLocal(lastUser);
+        } catch (e) {
+            mostrarAlerta("Erro", "Falha ao reconhecer a biometria.", "error");
+        }
+    }
 
     async function alterarSenha() {
         const atual = document.getElementById('cfg-senha-atual').value;
