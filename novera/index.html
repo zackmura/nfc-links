@@ -631,26 +631,39 @@
     }
 
     // ================= BIOMETRIA CORE =================
+   // ================= BIOMETRIA CORE =================
     async function registrarBiometria() {
         if (!window.PublicKeyCredential) return mostrarAlerta("Aviso", "Seu navegador/aparelho não suporta biometria web.", "warning");
         try {
             const publicKeyOptions = {
                 challenge: window.crypto.getRandomValues(new Uint8Array(32)),
-                rp: { name: "Novera Scent ERP" },
+                rp: { 
+                    name: "Novera Scent ERP",
+                    id: window.location.hostname // Força o celular a aceitar o seu domínio do Github
+                },
                 user: {
                     id: window.crypto.getRandomValues(new Uint8Array(16)),
                     name: usuarioLogado,
                     displayName: usuarioLogado
                 },
-                pubKeyCredParams: [{alg: -7, type: "public-key"}],
-                authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                // Adiciona mais opções de criptografia para suportar Samsung, Motorola, Apple, etc.
+                pubKeyCredParams: [
+                    {alg: -7, type: "public-key"},   // ES256 (Padrão)
+                    {alg: -257, type: "public-key"}  // RS256 (Alternativa muito comum)
+                ],
+                authenticatorSelection: { 
+                    authenticatorAttachment: "platform", 
+                    userVerification: "preferred" // Deixa menos rigoroso para evitar bloqueios do aparelho
+                },
                 timeout: 60000
             };
             const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
             localStorage.setItem('novera_bio_id', bufferToBase64url(credential.rawId));
             mostrarAlerta("Sucesso", "Face ID / Digital cadastrada para este aparelho!", "success");
+            verificarBotaoBiometria(); // Garante que o botão azul apareça na hora
         } catch (e) {
-            mostrarAlerta("Cancelado", "O cadastro biométrico foi cancelado ou falhou.", "warning");
+            // Agora, se falhar, a mensagem vai nos dizer exatamente o porquê!
+            mostrarAlerta("Cancelado", "Falhou: " + e.message, "warning");
         }
     }
 
@@ -662,19 +675,20 @@
         try {
             const publicKeyOptions = {
                 challenge: window.crypto.getRandomValues(new Uint8Array(32)),
+                rpId: window.location.hostname, // Informa o domínio na hora de ler também
                 allowCredentials: [{
                     id: base64urlToBuffer(credIdBase64),
                     type: 'public-key',
                     transports: ['internal']
                 }],
-                userVerification: "required",
+                userVerification: "preferred",
                 timeout: 60000
             };
             await navigator.credentials.get({ publicKey: publicKeyOptions });
             // Se passar daqui, o hardware do celular validou o rosto/dedo
             iniciarSessaoLocal(lastUser);
         } catch (e) {
-            mostrarAlerta("Erro", "Falha ao reconhecer a biometria.", "error");
+            mostrarAlerta("Erro", "Falha ao reconhecer: " + e.message, "error");
         }
     }
 
