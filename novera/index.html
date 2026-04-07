@@ -95,7 +95,6 @@
         .dash-card.receita p { color: #2e7d32; }
         .dash-card.receber p { color: #b45309; }
 
-        /* ESTILOS DO NOVO DASHBOARD GERAL */
         .chart-container { background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.05);}
         .dash-lucro-card { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 25px; border-radius: 16px; text-align: center; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(46, 125, 50, 0.3); transition: background 0.3s ease;}
         .dash-lucro-card h3 { margin: 0 0 5px; font-size: 0.8rem; text-transform: uppercase; opacity: 0.9; letter-spacing: 1px; font-weight: 700;}
@@ -123,7 +122,25 @@
 </head>
 <body>
 
-<div class="app-container">
+<div id="login-screen" class="app-container" style="display: none;">
+    <div class="card" style="text-align: center; margin-top: 50px;">
+        <img src="logo.png" alt="Novera Scent" class="logo" style="width: 150px; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));" onerror="this.src='logo.jpeg'; this.onerror=null;">
+        <h2 style="color: var(--primary-dark); margin-bottom: 25px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
+        
+        <div class="input-group" style="text-align: left;">
+            <label>Usuário</label>
+            <input type="text" id="login-user" placeholder="Ex: Fernando">
+        </div>
+        <div class="input-group" style="text-align: left;">
+            <label>Senha</label>
+            <input type="password" id="login-pass" placeholder="Digite sua senha">
+        </div>
+        
+        <button class="btn-salvar" id="btn-login" onclick="fazerLogin()">Entrar</button>
+    </div>
+</div>
+
+<div id="main-app" class="app-container" style="display: none;">
     <div class="card">
         <div class="header">
             <img src="logo.png" alt="Novera Scent Logo" class="logo" onerror="this.src='logo.jpeg'; this.onerror=null;">
@@ -140,7 +157,8 @@
                 <a onclick="selectMenu('precificar', '🧪 PRECIFICAÇÃO')">🧪 PRECIFICAÇÃO</a>
                 <a onclick="selectMenu('gastos', '💸 GASTOS')">💸 GASTOS</a>
                 <a onclick="selectMenu('vendas', '🛍️ VENDAS')">🛍️ VENDAS</a>
-                <a onclick="selectMenu('dashboard', '📊 DASHBOARD GERAL')" style="background: var(--primary); color: white; border-radius: 0 0 10px 10px;">📊 DASHBOARD GERAL</a>
+                <a onclick="selectMenu('dashboard', '📊 DASHBOARD GERAL')">📊 DASHBOARD GERAL</a>
+                <a onclick="selectMenu('configuracoes', '⚙️ CONFIGURAÇÕES')" style="background: var(--primary-dark); color: white; border-radius: 0 0 10px 10px;">⚙️ CONFIGURAÇÕES</a>
             </div>
         </div>
 
@@ -429,6 +447,28 @@
             <button class="btn-salvar" onclick="carregarDashboard()" style="margin-top: 10px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Atualizar Dados</button>
         </div>
 
+        <div id="tab-configuracoes" class="tab-content">
+            <div class="section-title">⚙️ Alterar Senha</div>
+            
+            <div class="input-group">
+                <label>Usuário Logado</label>
+                <input type="text" id="cfg-user" readonly>
+            </div>
+            <div class="input-group">
+                <label>Senha Atual</label>
+                <input type="password" id="cfg-senha-atual">
+            </div>
+            <div class="input-group">
+                <label>Nova Senha</label>
+                <input type="password" id="cfg-nova-senha">
+            </div>
+            
+            <button class="btn-salvar" id="btn-alterar-senha" onclick="alterarSenha()">Atualizar Senha</button>
+
+            <div class="section-title" style="margin-top: 40px; color: #A05252; border-left-color: #A05252;">🚪 Sair do Sistema</div>
+            <button class="btn-salvar" style="background: #fdf5f7; color: #A05252; border: 1px solid #f3d8e2; box-shadow: none;" onclick="fazerLogout()">Fazer Logout</button>
+        </div>
+
     </div>
 </div>
 
@@ -468,8 +508,85 @@
 </div>
 
 <script>
+    // AQUI VOCÊ COLA O LINK DA SUA API NOVA GERADA NO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
+    // ================= CONTROLE DE LOGIN (NOVO) =================
+    let usuarioLogado = "";
+
+    function verificarLogin() {
+        const user = localStorage.getItem('novera_user');
+        if (user) {
+            usuarioLogado = user;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('cfg-user').value = user;
+            
+            // Carrega os dados APENAS depois de logado
+            carregarRotulos(); 
+            carregarCustos();
+            calcularNovera(); 
+        } else {
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('main-app').style.display = 'none';
+        }
+    }
+
+    async function fazerLogin() {
+        const user = document.getElementById('login-user').value.trim();
+        const pass = document.getElementById('login-pass').value.trim();
+        if (!user || !pass) return mostrarAlerta("Atenção", "Preencha usuário e senha.", "warning");
+
+        const btn = document.getElementById('btn-login');
+        btn.disabled = true; btn.innerText = "⏳ ENTRANDO...";
+
+        try {
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) });
+            const json = await res.json();
+            if (json.sucesso) {
+                localStorage.setItem('novera_user', json.usuario); // Salva no celular
+                verificarLogin();
+            } else {
+                mostrarAlerta("Erro", json.erro, "error");
+            }
+        } catch(e) {
+            mostrarAlerta("Erro", "Falha na conexão.", "error");
+        } finally {
+            btn.disabled = false; btn.innerText = "Entrar";
+        }
+    }
+
+    function fazerLogout() {
+        localStorage.removeItem('novera_user'); // Apaga a sessão do celular
+        location.reload(); // Recarrega a página
+    }
+
+    async function alterarSenha() {
+        const atual = document.getElementById('cfg-senha-atual').value;
+        const nova = document.getElementById('cfg-nova-senha').value;
+        if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha a senha atual e a nova.", "warning");
+
+        const btn = document.getElementById('btn-alterar-senha');
+        btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
+
+        try {
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) });
+            const json = await res.json();
+            if(json.sucesso) {
+                mostrarAlerta("Sucesso", "Senha alterada com sucesso!", "success");
+                document.getElementById('cfg-senha-atual').value = "";
+                document.getElementById('cfg-nova-senha').value = "";
+            } else {
+                mostrarAlerta("Erro", json.erro, "error");
+            }
+        } catch(e) {
+             mostrarAlerta("Erro", "Falha na conexão.", "error");
+        } finally {
+            btn.disabled = false; btn.innerText = "Atualizar Senha";
+        }
+    }
+
+    // ================= FUNÇÕES UTILITÁRIAS =================
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
     
@@ -492,7 +609,7 @@
 
     let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0;
     let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], vendasGlobal = [], acaoConfirmada = null; 
-    let chartRGBase = null, chartStatusBase = null; // Variáveis dos Gráficos
+    let chartRGBase = null, chartStatusBase = null;
 
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
@@ -510,7 +627,7 @@
         }
     });
 
-    // ================= CONTROLE DO NOVO MENU CASCATA =================
+    // ================= CONTROLE DE MENU =================
     function toggleMenu() {
         const menu = document.getElementById('menu-items');
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -937,7 +1054,6 @@
     }
 
     // ================= NOVO SUPER DASHBOARD =================
-    // Função para setar a data atual ao abrir a tela pela primeira vez
     function inicializarFiltrosDashboard() {
         const dMes = document.getElementById('d-filtro-mes');
         const dAno = document.getElementById('d-filtro-ano');
@@ -953,7 +1069,6 @@
         inicializarFiltrosDashboard();
 
         try {
-            // Garante que temos os dados antes de montar o dash
             if (vendasGlobal.length === 0) {
                 const resV = await fetch(API_NOVERA + "?acao=listar_vendas&_t=" + new Date().getTime()); 
                 const dadosV = await resV.json();
@@ -1009,28 +1124,20 @@
             const lucroVenda = parseDinheiro(v.lucro);
             const qtd = parseInt(v.qtd) || 1;
 
-            // Financeiro
             if (v.status === 'Pago') totalReceitaCaixa += valVenda;
             else totalPendente += valVenda;
 
-            // Ranking Produto (por Quantidade)
             if(v.produto) mapaProdutos[v.produto] = (mapaProdutos[v.produto] || 0) + qtd;
-            
-            // Ranking Cliente (por Dinheiro Gasto)
             if(v.cliente) mapaClientes[v.cliente] = (mapaClientes[v.cliente] || 0) + valVenda;
-            
-            // Ranking Sócios (por Lucro Limpo)
             if(v.socio) mapaSocios[v.socio] = (mapaSocios[v.socio] || 0) + lucroVenda;
         });
 
-        // Processa os Gastos
         gastosDash.forEach(g => {
             totalGastos += parseDinheiro(g.total);
         });
 
         const lucroReal = totalReceitaCaixa - totalGastos;
 
-        // Atualiza Cards Financeiros
         const cardLucro = document.getElementById('card-lucro-real');
         document.getElementById('d-lucro-real').innerText = fmt(lucroReal);
         document.getElementById('d-receitas').innerText = fmt(totalReceitaCaixa);
@@ -1102,9 +1209,8 @@
 
     // INICIALIZAÇÃO
     window.onload = () => { 
-        carregarRotulos(); 
-        carregarCustos();
-        calcularNovera(); 
+        // Em vez de carregar os dados direto, verifica se o usuário está logado
+        verificarLogin();
     };
 </script>
 
@@ -1112,7 +1218,7 @@
         // Registra o Service Worker do PWA
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js') // <-- Alterado aqui
+            navigator.serviceWorker.register('./sw.js') 
                 .then(registration => {
                     console.log('PWA: Service Worker registrado com sucesso!', registration.scope);
                 })
@@ -1122,8 +1228,5 @@
         });
     }
     </script>
-</body>
-</html>
-
 </body>
 </html>
