@@ -116,6 +116,13 @@
         .btn-modal-confirm { flex: 1; background: #A05252; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; box-shadow: 0 4px 0 #803f3f; font-family: 'Montserrat', sans-serif;}
         .btn-modal-confirm:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
 
+        /* ESTILO DO OLHINHO DA SENHA */
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        .password-wrapper input { width: 100%; padding-right: 45px; }
+        .toggle-eye { position: absolute; right: 10px; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--primary-dark); padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .toggle-eye:active { transform: scale(0.8); }
+        .toggle-eye:hover { background: var(--border-color); }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
@@ -133,7 +140,10 @@
         </div>
         <div class="input-group" style="text-align: left;">
             <label>Senha</label>
-            <input type="password" id="login-pass" placeholder="Digite sua senha">
+            <div class="password-wrapper">
+                <input type="password" id="login-pass" placeholder="Digite sua senha">
+                <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">👁️</button>
+            </div>
         </div>
         
         <button class="btn-salvar" id="btn-login" onclick="fazerLogin()">Entrar</button>
@@ -456,11 +466,17 @@
             </div>
             <div class="input-group">
                 <label>Senha Atual</label>
-                <input type="password" id="cfg-senha-atual">
+                <div class="password-wrapper">
+                    <input type="password" id="cfg-senha-atual">
+                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">👁️</button>
+                </div>
             </div>
             <div class="input-group">
                 <label>Nova Senha</label>
-                <input type="password" id="cfg-nova-senha">
+                <div class="password-wrapper">
+                    <input type="password" id="cfg-nova-senha">
+                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">👁️</button>
+                </div>
             </div>
             
             <button class="btn-salvar" id="btn-alterar-senha" onclick="alterarSenha()">Atualizar Senha</button>
@@ -511,24 +527,43 @@
     // AQUI VOCÊ COLA O LINK DA SUA API NOVA GERADA NO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
-    // ================= CONTROLE DE LOGIN (NOVO) =================
+    // ================= CONTROLE DE LOGIN E SEGURANÇA =================
     let usuarioLogado = "";
+    let dadosCarregados = false; // Evita recarregar a planilha toda vez que a tela acende
+
+    function toggleSenha(inputId, btnElement) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+            input.type = "text";
+            btnElement.innerText = "🙈"; 
+        } else {
+            input.type = "password";
+            btnElement.innerText = "👁️"; 
+        }
+    }
 
     function verificarLogin() {
-        const user = localStorage.getItem('novera_user');
-        if (user) {
-            usuarioLogado = user;
+        const isAutenticado = sessionStorage.getItem('novera_auth'); // Sessão provisória
+        const lastUser = localStorage.getItem('novera_last_user') || ''; // Nome salvo fixo
+
+        if (isAutenticado === 'true') {
+            usuarioLogado = lastUser;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            document.getElementById('cfg-user').value = user;
+            document.getElementById('cfg-user').value = lastUser;
             
-            // Carrega os dados APENAS depois de logado
-            carregarRotulos(); 
-            carregarCustos();
-            calcularNovera(); 
+            // Carrega os dados APENAS na primeira vez que loga
+            if (!dadosCarregados) {
+                carregarRotulos(); 
+                carregarCustos();
+                calcularNovera(); 
+                dadosCarregados = true;
+            }
         } else {
             document.getElementById('login-screen').style.display = 'block';
             document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-user').value = lastUser; 
+            document.getElementById('login-pass').value = ''; // Sempre limpa a senha!
         }
     }
 
@@ -544,7 +579,8 @@
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) });
             const json = await res.json();
             if (json.sucesso) {
-                localStorage.setItem('novera_user', json.usuario); // Salva no celular
+                localStorage.setItem('novera_last_user', json.usuario); // Salva o nome
+                sessionStorage.setItem('novera_auth', 'true'); // Libera o acesso
                 verificarLogin();
             } else {
                 mostrarAlerta("Erro", json.erro, "error");
@@ -557,9 +593,16 @@
     }
 
     function fazerLogout() {
-        localStorage.removeItem('novera_user'); // Apaga a sessão do celular
-        location.reload(); // Recarrega a página
+        sessionStorage.removeItem('novera_auth'); 
+        verificarLogin(); 
     }
+
+    // BLOQUEIA O APP SE A TELA APAGAR OU FOR MINIMIZADO
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === 'hidden') {
+            fazerLogout(); 
+        }
+    });
 
     async function alterarSenha() {
         const atual = document.getElementById('cfg-senha-atual').value;
@@ -1209,7 +1252,6 @@
 
     // INICIALIZAÇÃO
     window.onload = () => { 
-        // Em vez de carregar os dados direto, verifica se o usuário está logado
         verificarLogin();
     };
 </script>
