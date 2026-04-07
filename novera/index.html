@@ -570,7 +570,7 @@
     function iniciarSessaoLocal(usuario) {
         localStorage.setItem('novera_last_user', usuario);
         // Trava a sessão para expirar daqui a 12 horas (em milissegundos)
-        localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000));
+        localStorage.setItem('novera_session_expires', Date.now() + (2 * 60 * 60 * 1000));
         usuarioLogado = usuario;
         
         document.getElementById('login-screen').style.display = 'none';
