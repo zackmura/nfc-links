@@ -1628,7 +1628,7 @@
         let pends = vendasGlobal.filter(p => p.cliente.trim() === cli && p.status === 'Pendente');
         if(pends.length === 0) return mostrarAlerta("Aviso", "Este cliente não tem pendências.", "success");
         
-        let txt = `Olá ${cli}, tudo bem? Aqui é da Novera Scent! ✨\n\nResumo dos pedidos em aberto:\n\n`;
+        let txt = `Olá, tudo bem? Aqui é da Novera Scent! ✨\n\nResumo dos pedidos em aberto:\n\n`;
         let tot = 0;
         
         pends.forEach(p => { 
