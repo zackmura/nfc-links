@@ -23,65 +23,31 @@
         }
         
         body { 
-            font-family: 'Montserrat', sans-serif; 
-            background: var(--bg-color); 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            color: var(--text-main); 
-            padding-bottom: 90px; 
+            font-family: 'Montserrat', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; 
+            display: flex; justify-content: center; color: var(--text-main); padding-bottom: 90px; 
         }
-        
         .app-container { width: 100%; max-width: 600px; position: relative; }
         
         /* HEADER E CONFIGURAÇÕES */
         .header { 
-            text-align: center; 
-            margin-bottom: 25px; 
-            padding-bottom: 20px; 
-            border-bottom: 1px solid var(--border-color); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            position: relative; 
+            text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); 
+            display: flex; flex-direction: column; align-items: center; position: relative; 
         }
-        .header img.logo { 
-            width: 140px; height: auto; margin-bottom: 5px; object-fit: contain; 
-            filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); 
-        }
-        .header h1 { 
-            margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; 
-            font-weight: 700; font-size: 1.7rem; text-transform: uppercase; letter-spacing: 3px; 
-        }
-        .btn-settings { 
-            position: absolute; right: 0; top: 10px; background: transparent; border: none; 
-            font-size: 1.5rem; color: var(--primary-dark); cursor: pointer; transition: 0.2s; 
-            padding: 10px; border-radius: 50%; 
-        }
+        .header img.logo { width: 140px; height: auto; margin-bottom: 5px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
+        .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.7rem; text-transform: uppercase; letter-spacing: 3px; }
+        .btn-settings { position: absolute; right: 0; top: 10px; background: transparent; border: none; font-size: 1.5rem; color: var(--primary-dark); cursor: pointer; transition: 0.2s; padding: 10px; border-radius: 50%; }
         .btn-settings:active { transform: rotate(45deg) scale(0.9); background: var(--border-color); }
 
-        .card { 
-            background: var(--card-bg); padding: 25px 20px; border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); 
-            border: 1px solid rgba(184, 124, 150, 0.05); position: relative; 
-        }
+        .card { background: var(--card-bg); padding: 25px 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); position: relative; }
 
         /* MENU INFERIOR NATIVO */
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 600px; background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px); display: flex; justify-content: space-around; 
-            align-items: center; padding: 12px 5px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); 
-            border-radius: 25px 25px 0 0; z-index: 1000; 
-            padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
-            border-top: 1px solid rgba(184, 124, 150, 0.1); 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; 
+            align-items: center; padding: 12px 5px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); border-radius: 25px 25px 0 0; 
+            z-index: 1000; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(184, 124, 150, 0.1); 
         }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            color: #a1a1aa; text-decoration: none; font-size: 0.65rem; font-weight: 700; 
-            letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; width: 60px; 
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #a1a1aa; text-decoration: none; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; width: 60px; }
         .nav-item .icon { font-size: 1.4rem; margin-bottom: 4px; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
         .nav-item.active { color: var(--primary-dark); }
         .nav-item.active .icon { filter: grayscale(0%) opacity(1); transform: translateY(-3px) scale(1.1); }
@@ -89,26 +55,13 @@
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
         
-        .section-title { 
-            font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; 
-            text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; 
-            border-left: 4px solid var(--primary); padding-left: 10px; display: flex; 
-            justify-content: space-between; align-items: center;
-        }
-        
+        .section-title { font-size: 0.85rem; color: var(--primary-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 25px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; display: flex; justify-content: space-between; align-items: center;}
         .row { display: flex; gap: 15px; margin-bottom: 15px; } .col { flex: 1; }
         @media (max-width: 480px) { .row { flex-direction: column; gap: 0; } }
 
         .input-group { margin-bottom: 15px; }
-        label { 
-            font-weight: 600; font-size: 0.75rem; display: block; margin-bottom: 6px; 
-            color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        input, select { 
-            width: 100%; padding: 14px; border: 2px solid var(--border-color); border-radius: 12px; 
-            font-family: 'Montserrat', sans-serif; font-size: 0.95rem; box-sizing: border-box; 
-            background: #fafafa; transition: 0.3s; font-weight: 600; color: var(--brand-dark); appearance: none;
-        }
+        label { font-weight: 600; font-size: 0.75rem; display: block; margin-bottom: 6px; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.5px;}
+        input, select { width: 100%; padding: 14px; border: 2px solid var(--border-color); border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; box-sizing: border-box; background: #fafafa; transition: 0.3s; font-weight: 600; color: var(--brand-dark); appearance: none;}
         input:focus, select:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(184, 124, 150, 0.15); }
         input[readonly] { background: #E8DDE1; color: #7a4a5e; border-color: transparent; font-weight: 800;}
         
@@ -124,12 +77,7 @@
         .markup-preco { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 5px; }
         .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #7a4a5e; margin: 0; background: #E8DDE1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
         
-        .btn-salvar { 
-            width: 100%; background: var(--primary); color: white; border: none; padding: 16px; 
-            border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; 
-            letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); 
-            font-family: 'Montserrat', sans-serif;
-        }
+        .btn-salvar { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif;}
         .btn-salvar:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .btn-salvar:active { transform: translateY(2px); box-shadow: none; }
         .btn-salvar:disabled { background: #E8DDE1; color: #999; cursor: not-allowed; box-shadow: none; transform: none; }
@@ -169,7 +117,7 @@
         .dash-socios-linha { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border-color); font-size: 0.95rem; font-weight: 600;}
         .dash-socios-linha:last-child { border-bottom: none; padding-bottom: 0; }
 
-        /* MODAIS */
+        /* MODAIS GLOBAIS */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
         .modal-box-alert { background: #fff; width: 90%; max-width: 380px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto;}
         .modal-icon-alert { font-size: 3.5rem; margin-bottom: 10px; display: inline-block;}
@@ -177,17 +125,20 @@
         .modal-text-alert { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.4; font-weight: 600;}
         .btn-modal-ok { color: white; border: none; padding: 14px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: 800; font-size: 0.95rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; transition: transform 0.1s;}
         .btn-modal-ok:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
-        
         .btn-modal-cancel { flex: 1; background: #fdf5f7; color: var(--primary-dark); border: 1px solid #f3d8e2; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
         .btn-modal-confirm { flex: 1; background: #A05252; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; box-shadow: 0 4px 0 #803f3f; font-family: 'Montserrat', sans-serif;}
         .btn-modal-confirm:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
 
-        /* SENHA, CHECKBOX E LOADING */
+        /* ESTILO DO OLHINHO E CARREGAMENTO */
         .password-wrapper { position: relative; display: flex; align-items: center; }
         .password-wrapper input { width: 100%; padding-right: 45px; }
         .toggle-eye { position: absolute; right: 10px; background: transparent; border: none; font-size: 1.3rem; cursor: pointer; color: var(--primary-dark); padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .toggle-eye:active { transform: scale(0.8); }
         
+        .loading-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(253, 251, 251, 0.95); z-index: 500; display: none; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px; backdrop-filter: blur(5px); }
+        .spinner { border: 5px solid #f3d8e2; border-top: 5px solid var(--primary-dark); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px;}
+        
+        /* ESTILOS DO CHECKBOX DE RECIBO */
         .checkbox-recibo { display: flex; align-items: center; background: #fff; border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
         .checkbox-recibo:hover { border-color: var(--primary); background: #fdf5f7; }
         .checkbox-recibo input[type="checkbox"] { appearance: auto !important; -webkit-appearance: auto !important; width: 20px; height: 20px; margin: 0 15px 0 0; cursor: pointer; accent-color: var(--primary-dark); flex-shrink: 0; box-shadow: none; border-radius: 4px; padding: 0; }
@@ -196,9 +147,6 @@
         .chk-desc { font-size: 0.7rem; color: #888; margin-top: 3px;}
         .chk-val { font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;}
 
-        .loading-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(253, 251, 251, 0.95); z-index: 500; display: none; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px; backdrop-filter: blur(5px); }
-        .spinner { border: 5px solid #f3d8e2; border-top: 5px solid var(--primary-dark); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px;}
-        
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -243,35 +191,59 @@
 
         <div id="tab-rotulos" class="tab-content active">
             <div class="section-title">✨ Nova Identidade Novera</div>
-            <div class="input-group"><label>Essência Original</label><input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal..."></div>
+            
+            <div class="input-group">
+                <label>Essência Original (Inspiração)</label>
+                <input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal...">
+            </div>
+            
             <div class="row">
                 <div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn" placeholder="Ex: 4953"></div>
                 <div class="col"><label>Marca Fornecedor</label><input type="text" id="r-marca" placeholder="Ex: Wanny"></div>
             </div>
+            
             <div class="input-group">
                 <label>Tipo de Produto</label>
                 <input type="text" id="r-tipo" list="lista-tipos" placeholder="Ex: Essência, Hidratante...">
-                <datalist id="lista-tipos"><option value="Essência"></option><option value="Perfume"></option><option value="Home Spray"></option><option value="Vela"></option><option value="Hidratante"></option></datalist>
+                <datalist id="lista-tipos">
+                    <option value="Essência"></option>
+                    <option value="Perfume"></option>
+                    <option value="Home Spray"></option>
+                    <option value="Vela"></option>
+                    <option value="Hidratante"></option>
+                </datalist>
             </div>
+
             <button class="btn-salvar" id="btn-salvar-rotulo" onclick="salvarRotulo()">Criar Identidade (N-XXXX)</button>
+
             <div class="section-title">📋 Dicionário Ativo</div>
             <div id="lista-rotulos-cadastrados"></div>
         </div>
 
         <div id="tab-precificar" class="tab-content">
             <div class="section-title">🧪 Custos da Produção Atual</div>
+            
             <div class="row">
-                <div class="col"><label>Base Mestre</label><select id="n-produto"><option value="">Aguardando dados...</option></select></div>
-                <div class="col"><label>Lote Produzido</label><input type="text" id="p-lote" placeholder="Ex: Lote 2" value="Lote 1"></div>
+                <div class="col">
+                    <label>Base Mestre</label>
+                    <select id="n-produto"><option value="">Aguardando dados...</option></select>
+                </div>
+                <div class="col">
+                    <label>Lote Produzido</label>
+                    <input type="text" id="p-lote" placeholder="Ex: Lote 2" value="Lote 1">
+                </div>
             </div>
+            
             <div class="row">
                 <div class="col"><label>Custo Frag. (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div>
                 <div class="col"><label>Qtd. Frag. (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div>
             </div>
+            
             <div class="row">
                 <div class="col"><label>Custo Base 1L (R$)</label><input type="number" id="n-custo-base" value="18.40" step="0.01" oninput="calcularNovera()"></div>
                 <div class="col"><label>Qtd. Base Usada</label><input type="number" id="n-qtd-base" value="1000" oninput="calcularNovera()"></div>
             </div>
+            
             <div class="row">
                 <div class="col"><label>Vol. Frasco Venda</label><input type="number" id="n-ml-venda" value="250" oninput="calcularNovera()"></div>
                 <div class="col"><label>Custo Embal./un</label><input type="number" id="n-insumos" value="4.00" step="0.01" oninput="calcularNovera()"></div>
@@ -288,30 +260,51 @@
 
             <div class="section-title">💰 Sugestão de Venda (Markup)</div>
             <div class="markup-area">
-                <div class="markup-box"><p class="markup-title">Venda Simples (2x)</p><p class="markup-preco" id="m-preco-2x">R$ 0,00</p><p class="markup-lucro" id="m-lucro-2x">Lucro: R$ 0,00</p></div>
-                <div class="markup-box"><p class="markup-title">Venda Premium (4x)</p><p class="markup-preco" id="m-preco-4x">R$ 0,00</p><p class="markup-lucro" id="m-lucro-4x">Lucro: R$ 0,00</p></div>
+                <div class="markup-box">
+                    <p class="markup-title">Venda Simples (2x)</p>
+                    <p class="markup-preco" id="m-preco-2x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-2x">Lucro: R$ 0,00</p>
+                </div>
+                <div class="markup-box">
+                    <p class="markup-title">Venda Premium (4x)</p>
+                    <p class="markup-preco" id="m-preco-4x">R$ 0,00</p>
+                    <p class="markup-lucro" id="m-lucro-4x">Lucro: R$ 0,00</p>
+                </div>
             </div>
 
             <button class="btn-salvar" id="btn-salvar-lote" onclick="salvarLotePrecificacao()">Registrar Custos do Lote</button>
+
             <div class="section-title" style="margin-top: 35px;">📋 Histórico de Lotes Produzidos</div>
             <div id="lista-custos-cadastrados"></div>
         </div>
 
         <div id="tab-gastos" class="tab-content">
             <div class="section-title">💸 Registrar Novo Gasto</div>
+            
             <div class="row">
                 <div class="col"><label>Data da Compra</label><input type="date" id="g-data"></div>
                 <div class="col">
                     <label>Local / Fornecedor</label>
                     <input type="text" id="g-local" list="lista-locais" placeholder="Ex: Shopee">
-                    <datalist id="lista-locais"><option value="Wanny Essências"></option><option value="Shopee"></option><option value="Mercado Livre"></option><option value="Embalagens"></option></datalist>
+                    <datalist id="lista-locais">
+                        <option value="Wanny Essências"></option>
+                        <option value="Shopee"></option>
+                        <option value="Mercado Livre"></option>
+                        <option value="Embalagens"></option>
+                    </datalist>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <label>Sócio / Investidor</label>
                     <input type="text" id="g-socio" list="lista-socios" placeholder="Ex: Amor, Natália...">
-                    <datalist id="lista-socios"><option value="Amor"></option><option value="Natália"></option><option value="Mãe"></option><option value="Amor/Mãe"></option><option value="Natália/Mãe"></option></datalist>
+                    <datalist id="lista-socios">
+                        <option value="Amor"></option>
+                        <option value="Natália"></option>
+                        <option value="Mãe"></option>
+                        <option value="Amor/Mãe"></option>
+                        <option value="Natália/Mãe"></option>
+                    </datalist>
                 </div>
                 <div class="col"><label>Item Comprado</label><input type="text" id="g-item" placeholder="Ex: Ess. Daslu"></div>
             </div>
@@ -323,6 +316,7 @@
                 <label>Valor Total (Qtd x Unitário)</label>
                 <input type="text" id="g-total" class="mask-money" readonly>
             </div>
+            
             <button class="btn-salvar" id="btn-salvar-gasto" onclick="salvarGasto()">Lançar Despesa</button>
 
             <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros</div>
@@ -345,21 +339,31 @@
                     <div class="col"><label>Data Fim</label><input type="date" id="f-data-fim" onchange="renderizarGastos()"></div>
                 </div>
             </div>
+            
             <div class="custo-total" style="background: var(--primary-dark); color: white; border: none; box-shadow: 0 5px 15px rgba(150, 97, 120, 0.3); margin-bottom: 20px;">
                 <span>Total Filtrado:</span> <span id="g-total-dashboard">R$ 0,00</span>
             </div>
+
             <div id="lista-gastos-cadastrados"></div>
         </div>
 
         <div id="tab-vendas" class="tab-content">
             <div class="section-title">🛍️ Registrar Venda</div>
-            <div class="row"><div class="col"><label>Data da Venda</label><input type="date" id="v-data"></div><div class="col"><label>Cliente</label><input type="text" id="v-cliente" list="lista-clientes" placeholder="Nome do Cliente"></div></div>
-            <div class="input-group"><label>Produto Vendido</label><select id="v-produto"><option value="">Aguardando dados...</option></select></div>
+            <div class="row">
+                <div class="col"><label>Data da Venda</label><input type="date" id="v-data"></div>
+                <div class="col"><label>Cliente</label><input type="text" id="v-cliente" list="lista-clientes" placeholder="Nome do Cliente"></div>
+            </div>
+            <div class="input-group">
+                <label>Produto Vendido</label><select id="v-produto"><option value="">Aguardando dados...</option></select>
+            </div>
             <div class="row">
                 <div class="col"><label>Lucro p/ (Sócio)</label><input type="text" id="v-socio" list="lista-socios-dinamica" placeholder="Ex: Natália"></div>
                 <div class="col"><label>Quantidade</label><input type="number" id="v-qtd" value="1"></div>
             </div>
-            <div class="row"><div class="col"><label>Valor Total Venda</label><input type="text" id="v-valor" class="mask-money" placeholder="R$ 0,00"></div><div class="col"><label>Status PG</label><select id="v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div>
+            <div class="row">
+                <div class="col"><label>Valor Total Venda</label><input type="text" id="v-valor" class="mask-money" placeholder="R$ 0,00"></div>
+                <div class="col"><label>Status PG</label><select id="v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div>
+            </div>
             <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()">Registrar Venda</button>
 
             <div class="filtro-box" style="background: #fdf5f7; border-color: #f3d8e2; margin-top: 35px;">
@@ -371,6 +375,7 @@
                         <select id="recibo-cliente" onchange="prepararRecibo()"><option value="">Nenhum cliente...</option></select>
                     </div>
                 </div>
+                
                 <div class="row" id="div-recibo-nome" style="display:none; margin-bottom: 10px; margin-top: 10px;">
                     <div class="col">
                         <label style="color: var(--primary-dark);">Nome no Recibo (Editável)</label>
@@ -391,6 +396,7 @@
                         <select id="cobranca-cliente" onchange="prepararCobranca()"><option value="">Nenhum devedor...</option></select>
                     </div>
                 </div>
+                
                 <div class="row" id="div-cobranca-nome" style="display:none; margin-bottom: 0px; margin-top: 10px;">
                     <div class="col">
                         <label style="color: #b45309;">Nome na Mensagem (Editável)</label>
@@ -410,7 +416,10 @@
 
             <div class="section-title" style="margin-top: 25px;">📊 Dashboard de Vendas</div>
             <div class="filtro-box">
-                <div class="row"><div class="col"><label>Mês</label><select id="f-v-mes" onchange="renderizarVendas()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Status PG</label><select id="f-v-status" onchange="renderizarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div></div>
+                <div class="row">
+                    <div class="col"><label>Mês</label><select id="f-v-mes" onchange="renderizarVendas()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
+                    <div class="col"><label>Status PG</label><select id="f-v-status" onchange="renderizarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
+                </div>
             </div>
             
             <div class="dash-grid">
@@ -432,19 +441,42 @@
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col">
                         <label>Mês</label>
-                        <select id="d-filtro-mes" onchange="renderizarDashboard()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select>
+                        <select id="d-filtro-mes" onchange="renderizarDashboard()">
+                            <option value="">Todos</option>
+                            <option value="01">Jan</option><option value="02">Fev</option>
+                            <option value="03">Mar</option><option value="04">Abr</option>
+                            <option value="05">Mai</option><option value="06">Jun</option>
+                            <option value="07">Jul</option><option value="08">Ago</option>
+                            <option value="09">Set</option><option value="10">Out</option>
+                            <option value="11">Nov</option><option value="12">Dez</option>
+                        </select>
                     </div>
                     <div class="col">
-                        <label>Ano</label><select id="d-filtro-ano" onchange="renderizarDashboard()"><option value="">Todos</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select>
+                        <label>Ano</label>
+                        <select id="d-filtro-ano" onchange="renderizarDashboard()">
+                            <option value="">Todos</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
                     </div>
                 </div>
             </div>
             
-            <div id="card-lucro-real" class="dash-lucro-card"><h3>Dinheiro Limpo (Em Caixa)</h3><p id="d-lucro-real">R$ 0,00</p><p style="font-size: 0.7rem; font-weight: 500; margin-top: 5px; opacity: 0.8;">= Receitas Pagas - Gastos Totais</p></div>
+            <div id="card-lucro-real" class="dash-lucro-card">
+                <h3>Dinheiro Limpo (Em Caixa)</h3>
+                <p id="d-lucro-real">R$ 0,00</p>
+                <p style="font-size: 0.7rem; font-weight: 500; margin-top: 5px; opacity: 0.8;">= Receitas Pagas - Gastos Totais</p>
+            </div>
+            
             <div class="dash-grid">
                 <div class="dash-card receita"><h5>Entradas (Pagas)</h5><p id="d-receitas">R$ 0,00</p></div>
                 <div class="dash-card"><h5>Saídas (Gastos)</h5><p id="d-gastos" style="color: #c62828;">R$ 0,00</p></div>
-                <div class="dash-card receber highlight" style="grid-column: span 2; background: #fff9e6; color: #b45309; box-shadow:none; border: 1px solid #ffeeba;"><h5 style="color: #b45309;">A Receber (Rodando/Fiado)</h5><p id="d-receber" style="color: #b45309;">R$ 0,00</p></div>
+                <div class="dash-card receber highlight" style="grid-column: span 2; background: #fff9e6; color: #b45309; box-shadow:none; border: 1px solid #ffeeba;">
+                    <h5 style="color: #b45309;">A Receber (Rodando/Fiado)</h5>
+                    <p id="d-receber" style="color: #b45309;">R$ 0,00</p>
+                </div>
             </div>
             <div class="section-title">🚀 Métricas de Sucesso do Período</div>
             <div class="dash-grid">
@@ -455,21 +487,40 @@
 
             <div class="chart-container"><canvas id="chartReceitasGastos"></canvas></div>
             <div class="chart-container" style="max-width: 400px; margin: 0 auto 20px;"><canvas id="chartStatusVendas"></canvas></div>
-            <button class="btn-salvar" onclick="sincronizarDadosUnico()" style="margin-top: 10px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Sincronizar Tudo Novamente</button>
+            
+            <div class="section-title" style="margin-top: 35px; border-left-color: #2C2A2B; color: #2C2A2B;">🖨️ Exportação e Relatórios</div>
+            <div class="row">
+                <div class="col">
+                    <button class="btn-salvar" style="margin-top: 0; background: #2C2A2B; box-shadow: 0 4px 10px rgba(44, 42, 43, 0.3);" onclick="abrirModalRelatorios()">Gerar Relatórios</button>
+                </div>
+            </div>
+
+            <button class="btn-salvar" onclick="sincronizarDadosUnico()" style="margin-top: 20px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Sincronizar Tudo Novamente</button>
         </div>
 
         <div id="tab-configuracoes" class="tab-content">
             <div class="section-title">⚙️ Alterar Senha do Banco</div>
-            <div class="input-group"><label>Usuário Logado</label><input type="text" id="cfg-user" readonly></div>
+            <div class="input-group">
+                <label>Usuário Logado</label>
+                <input type="text" id="cfg-user" readonly>
+            </div>
             <div class="input-group">
                 <label>Senha Atual</label>
-                <div class="password-wrapper"><input type="password" id="cfg-senha-atual"><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">🙈</button></div>
+                <div class="password-wrapper">
+                    <input type="password" id="cfg-senha-atual">
+                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">🙈</button>
+                </div>
             </div>
             <div class="input-group">
                 <label>Nova Senha</label>
-                <div class="password-wrapper"><input type="password" id="cfg-nova-senha"><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">🙈</button></div>
+                <div class="password-wrapper">
+                    <input type="password" id="cfg-nova-senha">
+                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">🙈</button>
+                </div>
             </div>
+            
             <button class="btn-salvar" id="btn-alterar-senha" onclick="alterarSenha()">Atualizar Senha</button>
+
             <div class="section-title" style="margin-top: 40px; color: #A05252; border-left-color: #A05252;">🚪 Sair do Sistema</div>
             <button class="btn-salvar" style="background: #fdf5f7; color: #A05252; border: 1px solid #f3d8e2; box-shadow: none;" onclick="fazerLogout()">Fazer Logout</button>
         </div>
@@ -528,14 +579,13 @@
         <p style="margin:0;">Qualquer dúvida, é só nos chamar.</p>
     </div>
 </div>
+
 <div id="modal-recibo-preview" class="modal-overlay-alert" style="z-index: 10001;">
     <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 25px 20px; background: #fdfbfb;">
         <button onclick="document.getElementById('modal-recibo-preview').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
-        <h3 class="modal-title-alert" id="preview-title" style="margin-bottom: 15px; font-size: 1.1rem;">Seu Recibo está Pronto!</h3>
+        <h3 class="modal-title-alert" id="preview-title" style="margin-bottom: 15px; font-size: 1.1rem;">Pronto!</h3>
         <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Aperte e segure a imagem abaixo para compartilhar, ou clique no botão verde para baixar.</p>
-        
         <div id="recibo-img-container" style="box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 20px; background: #fff;"></div>
-
         <div style="display: flex; gap: 10px;">
             <button class="btn-modal-cancel" onclick="document.getElementById('modal-recibo-preview').style.display='none'">Fechar</button>
             <button class="btn-modal-confirm" id="btn-baixar-img" style="background: #25D366; box-shadow: 0 4px 0 #1b9c4b;">⬇️ Baixar</button>
@@ -543,16 +593,38 @@
     </div>
 </div>
 
+<div id="modal-relatorios" class="modal-overlay-alert" style="z-index: 10001;">
+    <div class="modal-box-alert" style="width: 95%; max-width: 400px; padding: 30px 20px;">
+        <button onclick="document.getElementById('modal-relatorios').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 5px; color: var(--brand-dark);">Central de Relatórios</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 25px;">Os dados gerados serão baseados no Mês e Ano filtrados no Painel.</p>
+
+        <button class="btn-salvar" style="margin-top: 10px; background: #107c41; box-shadow: 0 4px 10px rgba(16, 124, 65, 0.3);" onclick="exportarExcel()">📊 Baixar Vendas (.CSV)</button>
+        <button class="btn-salvar" style="margin-top: 10px; background: #25D366; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="copiarFechamento()">📱 Copiar Fechamento p/ WhatsApp</button>
+
+        <button class="btn-modal-cancel" style="margin-top: 25px; width: 100%;" onclick="document.getElementById('modal-relatorios').style.display='none'">Fechar</button>
+    </div>
+</div>
+
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
 <div id="modal-confirmar" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-conf-icon">🗑️</span><h3 class="modal-title-alert" id="modal-conf-title" style="color: #A05252;">Excluir?</h3><p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p><div style="display: flex; gap: 10px; margin-top: 15px;"><button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button><button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Confirmar</button></div></div></div>
+
 <div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><div class="input-group" style="text-align: left;"><label>Tipo de Produto</label><input type="text" id="edit-r-tipo" list="lista-tipos"></div><button class="btn-salvar" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 <div id="modal-editar-custo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-custo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Custo</h3><input type="hidden" id="edit-c-linha"><div class="input-group" style="text-align: left;"><label>Nome / Lote Produzido</label><input type="text" id="edit-c-modelo"></div><div class="row" style="text-align: left;"><div class="col"><label>Custo Líquido</label><input type="text" id="edit-c-liquido" class="mask-money"></div><div class="col"><label>Insumos</label><input type="text" id="edit-c-insumos" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Custo Total</label><input type="text" id="edit-c-total" class="mask-money"></div><button class="btn-salvar" onclick="salvarEdicaoCusto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 <div id="modal-editar-gasto" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-gasto').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Gasto</h3><input type="hidden" id="edit-g-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div><div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div><div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div><div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div><div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div><button class="btn-salvar" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 <div id="modal-editar-venda" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-venda').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3><input type="hidden" id="edit-v-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div><div class="input-group" style="text-align: left;"><label>Produto Vendido</label><select id="edit-v-produto"></select></div><div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div><div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div><button class="btn-salvar" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
 <script>
-    // AQUI VOCÊ COLA O LINK DA SUA API NOVA
+    // AQUI VOCÊ COLA O LINK DA SUA API NOVA DO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
+
+    // ================= FUNÇÃO DE SANITIZAÇÃO (FILTRO ANTI-SUJEIRA) =================
+    // Remove espaços extras e deixa a primeira letra de cada palavra maiúscula (Title Case)
+    function padronizarTexto(texto) {
+        if (!texto) return "";
+        let limpo = String(texto).trim().replace(/\s+/g, ' ').toLowerCase();
+        return limpo.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+    }
 
     // ================= DADOS GLOBAIS E SINCRONIZAÇÃO ÚNICA =================
     let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], vendasGlobal = [];
@@ -560,79 +632,152 @@
     let dadosCarregados = false; 
 
     async function sincronizarDadosUnico() {
-        const loader = document.getElementById("global-loader"); loader.style.display = "flex";
+        const loader = document.getElementById("global-loader");
+        loader.style.display = "flex";
+        
         try {
-            const res = await fetch(API_NOVERA + "?acao=listar_tudo&_t=" + new Date().getTime()); const dados = await res.json();
+            const res = await fetch(API_NOVERA + "?acao=listar_tudo&_t=" + new Date().getTime()); 
+            const dados = await res.json();
+            
             if (dados.sucesso) {
-                rotulosGlobal = dados.rotulos || []; custosGlobal = dados.custos || []; gastosGlobal = dados.gastos || []; vendasGlobal = dados.vendas || [];
-                renderizarRotulos(); renderizarCustos(); renderizarGastos(); renderizarVendas(); renderizarDashboard();
+                rotulosGlobal = dados.rotulos || [];
+                custosGlobal = dados.custos || [];
+                gastosGlobal = dados.gastos || [];
+                vendasGlobal = dados.vendas || [];
+                
+                renderizarRotulos();
+                renderizarCustos();
+                renderizarGastos();
+                renderizarVendas();
+                renderizarDashboard();
+                
                 dadosCarregados = true;
-            } else { mostrarAlerta("Erro de Sincronização", dados.erro, "error"); }
-        } catch(e) { mostrarAlerta("Falha de Conexão", "Não foi possível buscar os dados.", "error"); } 
-        finally { loader.style.display = "none"; }
+            } else {
+                mostrarAlerta("Erro de Sincronização", dados.erro, "error");
+            }
+        } catch(e) { 
+            mostrarAlerta("Falha de Conexão", "Não foi possível buscar os dados da planilha.", "error"); 
+        } finally { 
+            loader.style.display = "none"; 
+        }
     }
 
-    // ================= LOGIN E SEGURANÇA =================
+    // ================= CONTROLE DE LOGIN =================
     function toggleSenha(inputId, btnElement) {
         const input = document.getElementById(inputId);
-        if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } else { input.type = "password"; btnElement.innerText = "🙈"; }
+        if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } 
+        else { input.type = "password"; btnElement.innerText = "🙈"; }
     }
+
     function iniciarSessaoLocal(usuario) {
-        localStorage.setItem('novera_last_user', usuario); localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); 
-        usuarioLogado = usuario; document.getElementById('login-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; document.getElementById('cfg-user').value = usuario;
+        localStorage.setItem('novera_last_user', usuario);
+        localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); 
+        usuarioLogado = usuario;
+        
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        document.getElementById('cfg-user').value = usuario;
+        
         if (!dadosCarregados) sincronizarDadosUnico();
     }
+
     function verificarLogin() {
-        const expires = localStorage.getItem('novera_session_expires'), lastUser = localStorage.getItem('novera_last_user') || '';
-        if (expires && Date.now() < parseInt(expires)) { iniciarSessaoLocal(lastUser); } 
-        else { document.getElementById('login-screen').style.display = 'block'; document.getElementById('main-app').style.display = 'none'; document.getElementById('login-user').value = lastUser; document.getElementById('login-pass').value = ''; }
+        const expires = localStorage.getItem('novera_session_expires');
+        const lastUser = localStorage.getItem('novera_last_user') || '';
+
+        if (expires && Date.now() < parseInt(expires)) {
+            iniciarSessaoLocal(lastUser);
+        } else {
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-user').value = lastUser; 
+            document.getElementById('login-pass').value = ''; 
+        }
     }
+
     async function fazerLogin() {
-        const user = document.getElementById('login-user').value.trim(), pass = document.getElementById('login-pass').value.trim();
+        const user = document.getElementById('login-user').value.trim();
+        const pass = document.getElementById('login-pass').value.trim();
         if (!user || !pass) return mostrarAlerta("Atenção", "Preencha usuário e senha.", "warning");
-        const btn = document.getElementById('btn-login'); btn.disabled = true; btn.innerText = "⏳ ENTRANDO...";
+
+        const btn = document.getElementById('btn-login');
+        btn.disabled = true; btn.innerText = "⏳ ENTRANDO...";
+
         try {
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) }); const json = await res.json();
-            if (json.sucesso) { iniciarSessaoLocal(json.usuario); } else { mostrarAlerta("Acesso Negado", json.erro, "error"); }
-        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "Entrar"; }
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) });
+            const json = await res.json();
+            if (json.sucesso) { iniciarSessaoLocal(json.usuario); } 
+            else { mostrarAlerta("Acesso Negado", json.erro, "error"); }
+        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
+        finally { btn.disabled = false; btn.innerText = "Entrar"; }
     }
-    function fazerLogout() { localStorage.removeItem('novera_session_expires'); dadosCarregados = false; verificarLogin(); }
+
+    function fazerLogout() {
+        localStorage.removeItem('novera_session_expires'); 
+        dadosCarregados = false; 
+        verificarLogin(); 
+    }
+
     async function alterarSenha() {
-        const atual = document.getElementById('cfg-senha-atual').value, nova = document.getElementById('cfg-nova-senha').value;
+        const atual = document.getElementById('cfg-senha-atual').value;
+        const nova = document.getElementById('cfg-nova-senha').value;
         if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha a senha atual e a nova.", "warning");
         const btn = document.getElementById('btn-alterar-senha'); btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
         try {
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) }); const json = await res.json();
-            if(json.sucesso) { mostrarAlerta("Sucesso", "Senha alterada no banco!", "success"); document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = ""; } else { mostrarAlerta("Erro", json.erro, "error"); }
-        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "Atualizar Senha"; }
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) });
+            const json = await res.json();
+            if(json.sucesso) {
+                mostrarAlerta("Sucesso", "Senha alterada no banco!", "success");
+                document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = "";
+            } else { mostrarAlerta("Erro", json.erro, "error"); }
+        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
+        finally { btn.disabled = false; btn.innerText = "Atualizar Senha"; }
     }
 
-    // ================= UTILITÁRIOS E MENU NATIVO =================
-    const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
-    function safeFmt(val) { if (val === "" || val == null) return "R$ 0,00"; if (typeof val === 'number') return fmt(val); let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str)); let num = parseFloat(str.replace(/\./g, '').replace(',', '.')); return isNaN(num) ? "R$ 0,00" : fmt(num); }
-    function parseDinheiro(val) { if (val === "" || val == null) return 0; if (typeof val === 'number') return val; let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0; return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0; }
-    let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0, acaoConfirmada = null, chartRGBase = null, chartStatusBase = null;
+    // ================= FUNÇÕES UTILITÁRIAS =================
+    const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
+    function safeFmt(val) {
+        if (val === "" || val === null || val === undefined) return "R$ 0,00"; 
+        if (typeof val === 'number') return fmt(val);
+        let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str));
+        let num = parseFloat(str.replace(/\./g, '').replace(',', '.')); return isNaN(num) ? "R$ 0,00" : fmt(num);
+    }
+    function parseDinheiro(val) {
+        if (val === "" || val === null || val === undefined) return 0;
+        if (typeof val === 'number') return val;
+        let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0;
+        return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+    }
+
+    let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0; 
+    let acaoConfirmada = null; let chartRGBase = null, chartStatusBase = null;
 
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
             let val = e.target.value.replace(/\D/g, ''); if(val === "") { e.target.value = ""; return; }
-            val = (parseInt(val) / 100).toFixed(2) + ''; val = val.replace(".", ","); val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); val = val.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            val = (parseInt(val) / 100).toFixed(2) + ''; val = val.replace(".", ","); 
+            val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); val = val.replace(/(\d)(\d{3}),/g, "$1.$2,");
             e.target.value = "R$ " + val;
-            if(e.target.id === 'g-valor') setTimeout(calcularTotalGasto, 10); if(e.target.id === 'edit-g-valor') setTimeout(calcularEditGasto, 10); if(e.target.id.startsWith('edit-c-')) setTimeout(calcularEditCusto, 10);
+            if(e.target.id === 'g-valor') setTimeout(calcularTotalGasto, 10);
+            if(e.target.id === 'edit-g-valor') setTimeout(calcularEditGasto, 10);
+            if(e.target.id.startsWith('edit-c-')) setTimeout(calcularEditCusto, 10);
         }
     });
 
+    // ================= MENU NATIVO =================
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         document.getElementById('tab-' + tabId).classList.add('active');
-        if(tabId !== 'configuracoes') document.getElementById('nav-' + tabId).classList.add('active');
+        if(tabId !== 'configuracoes') { document.getElementById('nav-' + tabId).classList.add('active'); }
         if(tabId === 'gastos' && !document.getElementById('g-data').value) document.getElementById('g-data').valueAsDate = new Date();
         if(tabId === 'vendas' && !document.getElementById('v-data').value) document.getElementById('v-data').valueAsDate = new Date();
     }
     
     function mostrarAlerta(titulo, texto, tipo) { 
-        const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
+        const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); 
+        const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
         tituloEl.innerText = titulo; document.getElementById("modal-texto-alert").innerText = texto; 
         if(tipo === "success") { icone.innerText = "✨"; tituloEl.style.color = "var(--primary-dark)"; btnEl.style.background = "var(--primary-dark)"; btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; } 
         else if (tipo === "warning") { icone.innerText = "⚠️"; tituloEl.style.color = "#D4A373"; btnEl.style.background = "#D4A373"; btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; } 
@@ -641,12 +786,13 @@
     }
 
     function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
-        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
+        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; 
+        document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
         const btn = document.getElementById('btn-confirmar-acao'); btn.innerText = textoBtn; btn.style.background = corHex; btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
         acaoConfirmada = callback; document.getElementById('modal-confirmar').style.display = 'flex';
     }
 
-    // ================= ROTULOS E PRECIFICAÇÃO =================
+    // ================= ABA ROTULOS =================
     function renderizarRotulos() {
         const lista = document.getElementById("lista-rotulos-cadastrados"), select = document.getElementById("n-produto");
         if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; select.innerHTML = '<option value="">Cadastre no Dicionário primeiro...</option>'; return; }
@@ -657,19 +803,52 @@
         });
         lista.innerHTML = htmlLista; select.innerHTML = htmlSelect;
     }
+
     async function salvarRotulo() {
-        const essencia = document.getElementById('r-essencia').value.trim(), codForn = document.getElementById('r-codigo-forn').value.trim(), marca = document.getElementById('r-marca').value.trim(), tipo = document.getElementById('r-tipo').value.trim();
+        // SANITIZAÇÃO
+        const essencia = padronizarTexto(document.getElementById('r-essencia').value);
+        const codForn = padronizarTexto(document.getElementById('r-codigo-forn').value);
+        const marca = padronizarTexto(document.getElementById('r-marca').value);
+        const tipo = padronizarTexto(document.getElementById('r-tipo').value);
+        
         if (!essencia || !tipo) return mostrarAlerta("Atenção", "Preencha a Essência e o Tipo.", "warning");
         const btn = document.getElementById('btn-salvar-rotulo'); btn.disabled = true; btn.innerText = "⏳ GERANDO...";
+        
         try {
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, tipo: tipo }) }); const resultado = await res.json();
-            if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; sincronizarDadosUnico(); } else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); }
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, tipo: tipo }) }); 
+            const resultado = await res.json();
+            if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; sincronizarDadosUnico(); } 
+            else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); }
         } catch (e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "CRIAR IDENTIDADE (N-XXXX)"; }
     }
-    function abrirModalEditarRotulo(linha) { const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return; document.getElementById('edit-r-linha').value = r.linha; document.getElementById('edit-r-essencia').value = r.essencia; document.getElementById('edit-r-codigo-forn').value = r.codigo_forn; document.getElementById('edit-r-marca').value = r.marca; document.getElementById('edit-r-tipo').value = r.tipo; document.getElementById('modal-editar-rotulo').style.display = 'flex'; }
-    async function salvarEdicaoRotulo() { try { const py = { acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: document.getElementById('edit-r-essencia').value, codigo_forn: document.getElementById('edit-r-codigo-forn').value, marca: document.getElementById('edit-r-marca').value, tipo: document.getElementById('edit-r-tipo').value }; await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); } catch(e) {} }
-    function prepararExclusaoRotulo(linha, codigo) { abrirConfirmacao("Excluir Identidade?", `Deseja excluir a identidade ${codigo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); mostrarAlerta("Excluído", "Identidade apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
+    function abrirModalEditarRotulo(linha) {
+        const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return;
+        document.getElementById('edit-r-linha').value = r.linha; document.getElementById('edit-r-essencia').value = r.essencia; document.getElementById('edit-r-codigo-forn').value = r.codigo_forn; document.getElementById('edit-r-marca').value = r.marca; document.getElementById('edit-r-tipo').value = r.tipo; document.getElementById('modal-editar-rotulo').style.display = 'flex';
+    }
+
+    async function salvarEdicaoRotulo() {
+        try {
+            const py = { 
+                acao: "atualizar_rotulo", 
+                linha: document.getElementById('edit-r-linha').value, 
+                essencia: padronizarTexto(document.getElementById('edit-r-essencia').value), 
+                codigo_forn: padronizarTexto(document.getElementById('edit-r-codigo-forn').value), 
+                marca: padronizarTexto(document.getElementById('edit-r-marca').value), 
+                tipo: padronizarTexto(document.getElementById('edit-r-tipo').value) 
+            };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
+            if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); }
+        } catch(e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); }
+    }
+
+    function prepararExclusaoRotulo(linha, codigo) { 
+        abrirConfirmacao("Excluir Identidade?", `Deseja excluir a identidade ${codigo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => {
+            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Identidade apagada.", "success"); sincronizarDadosUnico(); } } catch(e) {} 
+        });
+    }
+
+    // ================= ABA PRECIFICAÇÃO =================
     function calcularNovera() {
         const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0, qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0, cBase1L = parseFloat(document.getElementById('n-custo-base').value) || 0, qBase = parseFloat(document.getElementById('n-qtd-base').value) || 0, mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1, cInsumos = parseFloat(document.getElementById('n-insumos').value) || 0;
         const valorMlFrag = qFrag > 0 ? cFrag / qFrag : 0, valorMlBase = cBase1L / 1000, qtdMlProducao = qBase + qFrag, qtdFrascos = qtdMlProducao / mlVenda, custoLiquidoUni = qtdFrascos > 0 ? (cFrag + (valorMlBase * qBase)) / qtdFrascos : 0, custoTotalUni = custoLiquidoUni + cInsumos;
@@ -677,6 +856,7 @@
         document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag); document.getElementById('r-ml-base').innerText = fmt(valorMlBase); document.getElementById('r-vol-total').innerText = qtdMlProducao + " ml"; document.getElementById('r-frascos').innerText = qtdFrascos.toFixed(1); document.getElementById('r-liquido').innerText = fmt(custoLiquidoUni); document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
         document.getElementById('m-preco-2x').innerText = fmt(custoTotalUni * 2); document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt(custoTotalUni); document.getElementById('m-preco-4x').innerText = fmt(custoTotalUni * 4); document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(custoTotalUni * 3);
     }
+
     function renderizarCustos() {
         const lista = document.getElementById("lista-custos-cadastrados"), selectVendas = document.getElementById("v-produto"), selectEditVendas = document.getElementById("edit-v-produto");
         if (custosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999;'>Vazio.</p>"; return; }
@@ -687,47 +867,138 @@
         }); 
         lista.innerHTML = html; if(selectVendas) selectVendas.innerHTML = htmlVendas; if(selectEditVendas) selectEditVendas.innerHTML = htmlVendas;
     }
+
     async function salvarLotePrecificacao() {
-        const ess = document.getElementById('n-produto').value, lote = document.getElementById('p-lote').value.trim(), ml = document.getElementById('n-ml-venda').value;
+        const ess = padronizarTexto(document.getElementById('n-produto').value);
+        const lote = padronizarTexto(document.getElementById('p-lote').value);
+        const ml = document.getElementById('n-ml-venda').value;
+        
         if (!ess || !lote) return mostrarAlerta("Atenção", "Preencha a Base Mestre e o Lote.", "warning");
         const btn = document.getElementById('btn-salvar-lote'); btn.disabled = true; btn.innerText = "⏳...";
-        try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_custo", modelo: `${ess} - ${lote} ${ml}ml`, valor_liquido: fmtPlanilha(custoLiquidoGlobal), valor_insumos: fmtPlanilha(custoInsumosGlobal), custo_total: fmtPlanilha(custoTotalGlobal) }) }); mostrarAlerta("Salvo!", `Lote registrado.`, "success"); sincronizarDadosUnico(); } catch (erro) {} finally { btn.disabled = false; btn.innerText = "Registrar Custos do Lote"; }
+        try {
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_custo", modelo: `${ess} - ${lote} ${ml}ml`, valor_liquido: fmtPlanilha(custoLiquidoGlobal), valor_insumos: fmtPlanilha(custoInsumosGlobal), custo_total: fmtPlanilha(custoTotalGlobal) }) }); 
+            const resultado = await res.json();
+            if (resultado.sucesso) { mostrarAlerta("Salvo!", `Lote registrado.`, "success"); sincronizarDadosUnico(); } 
+        } catch (erro) {} finally { btn.disabled = false; btn.innerText = "Registrar Custos do Lote"; }
     }
-    function abrirModalEditarCusto(linha) { const c = custosGlobal.find(x => x.linha === linha); if (!c) return; document.getElementById('edit-c-linha').value = c.linha; document.getElementById('edit-c-modelo').value = c.modelo; document.getElementById('edit-c-liquido').value = safeFmt(c.valor_liquido); document.getElementById('edit-c-insumos').value = safeFmt(c.valor_insumos); document.getElementById('edit-c-total').value = safeFmt(c.custo_total); document.getElementById('modal-editar-custo').style.display = 'flex'; }
-    function calcularEditCusto() { document.getElementById('edit-c-total').value = fmt(parseDinheiro(document.getElementById('edit-c-liquido').value) + parseDinheiro(document.getElementById('edit-c-insumos').value)); }
-    async function salvarEdicaoCusto() { try { const py = { acao: "atualizar_custo", linha: document.getElementById('edit-c-linha').value, modelo: document.getElementById('edit-c-modelo').value, valor_liquido: document.getElementById('edit-c-liquido').value, valor_insumos: document.getElementById('edit-c-insumos').value, custo_total: document.getElementById('edit-c-total').value }; await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-custo').style.display = 'none'; mostrarAlerta("Atualizado!", "Lote editado.", "success"); sincronizarDadosUnico(); } catch(e) {} }
-    function prepararExclusaoCusto(linha, modelo) { abrirConfirmacao("Excluir Lote?", `Apagar o lote ${modelo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); mostrarAlerta("Excluído", "Apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
-    // ================= GASTOS =================
-    function calcularTotalGasto() { document.getElementById('g-total').value = fmt((parseFloat(document.getElementById('g-qtd').value) || 1) * parseDinheiro(document.getElementById('g-valor').value)); }
-    function calcularEditGasto() { document.getElementById('edit-g-total').value = fmt((parseFloat(document.getElementById('edit-g-qtd').value) || 1) * parseDinheiro(document.getElementById('edit-g-valor').value)); }
+    function abrirModalEditarCusto(linha) {
+        const c = custosGlobal.find(x => x.linha === linha); if (!c) return;
+        document.getElementById('edit-c-linha').value = c.linha; document.getElementById('edit-c-modelo').value = c.modelo; document.getElementById('edit-c-liquido').value = safeFmt(c.valor_liquido); document.getElementById('edit-c-insumos').value = safeFmt(c.valor_insumos); document.getElementById('edit-c-total').value = safeFmt(c.custo_total); document.getElementById('modal-editar-custo').style.display = 'flex';
+    }
+    
+    function calcularEditCusto() {
+        const liq = parseDinheiro(document.getElementById('edit-c-liquido').value), ins = parseDinheiro(document.getElementById('edit-c-insumos').value);
+        document.getElementById('edit-c-total').value = fmt(liq + ins);
+    }
+
+    async function salvarEdicaoCusto() {
+        try {
+            const py = { acao: "atualizar_custo", linha: document.getElementById('edit-c-linha').value, modelo: padronizarTexto(document.getElementById('edit-c-modelo').value), valor_liquido: document.getElementById('edit-c-liquido').value, valor_insumos: document.getElementById('edit-c-insumos').value, custo_total: document.getElementById('edit-c-total').value };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
+            if(json.sucesso) { document.getElementById('modal-editar-custo').style.display = 'none'; mostrarAlerta("Atualizado!", "Lote editado.", "success"); sincronizarDadosUnico(); }
+        } catch(e) {}
+    }
+
+    function prepararExclusaoCusto(linha, modelo) { 
+        abrirConfirmacao("Excluir Lote?", `Apagar o lote ${modelo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
+            try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); mostrarAlerta("Excluído", "Apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} 
+        }); 
+    }
+
+    // ================= ABA GASTOS =================
+    function calcularTotalGasto() { const qtd = parseFloat(document.getElementById('g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('g-valor').value); document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
+    function calcularEditGasto() { const qtd = parseFloat(document.getElementById('edit-g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('edit-g-valor').value); document.getElementById('edit-g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
+    
     async function salvarGasto() {
-        const py = { acao: "salvar_gasto", data: document.getElementById('g-data').value, local: document.getElementById('g-local').value, socio: document.getElementById('g-socio').value, item: document.getElementById('g-item').value, qtd: document.getElementById('g-qtd').value, valor: document.getElementById('g-valor').value, total: document.getElementById('g-total').value };
+        // SANITIZAÇÃO
+        const py = { 
+            acao: "salvar_gasto", 
+            data: document.getElementById('g-data').value, 
+            local: padronizarTexto(document.getElementById('g-local').value), 
+            socio: padronizarTexto(document.getElementById('g-socio').value), 
+            item: padronizarTexto(document.getElementById('g-item').value), 
+            qtd: document.getElementById('g-qtd').value, 
+            valor: document.getElementById('g-valor').value, 
+            total: document.getElementById('g-total').value 
+        };
         if(!py.data || !py.item || py.valor === "R$ 0,00") return mostrarAlerta("Atenção", "Preencha a Data, Item e Valor.", "warning");
         const btn = document.getElementById('btn-salvar-gasto'); btn.disabled = true; btn.innerText = "⏳...";
-        try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); mostrarAlerta("Sucesso", "Despesa lançada.", "success"); document.getElementById('g-item').value = ""; document.getElementById('g-valor').value = ""; document.getElementById('g-total').value = ""; sincronizarDadosUnico(); } catch(e) {} finally { btn.disabled = false; btn.innerText = "Lançar Despesa"; }
+        try {
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
+            if(json.sucesso) { mostrarAlerta("Sucesso", "Despesa lançada.", "success"); document.getElementById('g-item').value = ""; document.getElementById('g-valor').value = ""; document.getElementById('g-total').value = ""; sincronizarDadosUnico(); }
+        } catch(e) {} finally { btn.disabled = false; btn.innerText = "Lançar Despesa"; }
     }
-    function renderizarGastos() {
-        const fSocio = document.getElementById('f-socio').value.toLowerCase(), fIni = document.getElementById('f-data-ini').value, fFim = document.getElementById('f-data-fim').value;
-        let filtrados = gastosGlobal.filter(g => { let pS = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio), pD = true; if(fIni && g.dataIso < fIni) pD = false; if(fFim && g.dataIso > fFim) pD = false; return pS && pD; });
-        filtrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso)); let sT = 0, html = "";
-        if (filtrados.length === 0) { html = "<p style='text-align:center; color:#999;'>Vazio.</p>"; } else { filtrados.forEach(g => { sT += parseDinheiro(g.total); html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4><p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p><p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoGasto(${g.linha}, '${g.item}')">🗑️</button></div></div></div>`; }); }
-        document.getElementById('lista-gastos-cadastrados').innerHTML = html; document.getElementById('g-total-dashboard').innerText = fmt(sT);
-    }
-    function abrirModalEditarGasto(linha) { const g = gastosGlobal.find(x => x.linha === linha); if (!g) return; document.getElementById('edit-g-linha').value = g.linha; document.getElementById('edit-g-data').value = g.dataIso; document.getElementById('edit-g-socio').value = g.socio; document.getElementById('edit-g-local').value = g.local; document.getElementById('edit-g-item').value = g.item; document.getElementById('edit-g-qtd').value = g.qtd; document.getElementById('edit-g-valor').value = safeFmt(g.valor); document.getElementById('edit-g-total').value = safeFmt(g.total); document.getElementById('modal-editar-gasto').style.display = 'flex'; }
-    async function salvarEdicaoGasto() { try { const py = { acao: "atualizar_gasto", linha: document.getElementById('edit-g-linha').value, data: document.getElementById('edit-g-data').value, local: document.getElementById('edit-g-local').value, socio: document.getElementById('edit-g-socio').value, item: document.getElementById('edit-g-item').value, qtd: document.getElementById('edit-g-qtd').value, valor: document.getElementById('edit-g-valor').value, total: document.getElementById('edit-g-total').value }; await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); } catch(e) {} }
-    function prepararExclusaoGasto(linha, item) { abrirConfirmacao("Excluir Despesa?", `Apagar a despesa "${item}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); mostrarAlerta("Excluído", "Gasto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
-    // ================= VENDAS E RECIBOS =================
+    function renderizarGastos() { filtrarGastos(); } 
+    function filtrarGastos() {
+        const fSocio = document.getElementById('f-socio').value.toLowerCase(), fIni = document.getElementById('f-data-ini').value, fFim = document.getElementById('f-data-fim').value;
+        let filtrados = gastosGlobal.filter(g => {
+            let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio), passData = true;
+            if(fIni && g.dataIso < fIni) passData = false; if(fFim && g.dataIso > fFim) passData = false;
+            return passSocio && passData;
+        });
+        filtrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso));
+        let somaTotal = 0, html = "";
+        if (filtrados.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } 
+        else {
+            filtrados.forEach(g => {
+                somaTotal += parseDinheiro(g.total);
+                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4><p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p><p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoGasto(${g.linha}, '${g.item}')">🗑️</button></div></div></div>`;
+            });
+        }
+        document.getElementById('lista-gastos-cadastrados').innerHTML = html; document.getElementById('g-total-dashboard').innerText = fmt(somaTotal);
+    }
+
+    function abrirModalEditarGasto(linha) {
+        const g = gastosGlobal.find(x => x.linha === linha); if (!g) return;
+        document.getElementById('edit-g-linha').value = g.linha; document.getElementById('edit-g-data').value = g.dataIso; document.getElementById('edit-g-socio').value = g.socio; document.getElementById('edit-g-local').value = g.local; document.getElementById('edit-g-item').value = g.item; document.getElementById('edit-g-qtd').value = g.qtd; document.getElementById('edit-g-valor').value = safeFmt(g.valor); document.getElementById('edit-g-total').value = safeFmt(g.total); document.getElementById('modal-editar-gasto').style.display = 'flex';
+    }
+
+    async function salvarEdicaoGasto() {
+        try {
+            const py = { 
+                acao: "atualizar_gasto", 
+                linha: document.getElementById('edit-g-linha').value, 
+                data: document.getElementById('edit-g-data').value, 
+                local: padronizarTexto(document.getElementById('edit-g-local').value), 
+                socio: padronizarTexto(document.getElementById('edit-g-socio').value), 
+                item: padronizarTexto(document.getElementById('edit-g-item').value), 
+                qtd: document.getElementById('edit-g-qtd').value, 
+                valor: document.getElementById('edit-g-valor').value, 
+                total: document.getElementById('edit-g-total').value 
+            };
+            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico();
+        } catch(e) {}
+    }
+
+    function prepararExclusaoGasto(linha, item) { 
+        abrirConfirmacao("Excluir Despesa?", `Apagar a despesa "${item}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
+            try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); mostrarAlerta("Excluído", "Gasto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} 
+        }); 
+    }
+
+    // ================= ABA VENDAS =================
     async function salvarVenda() {
-        const py = { data: document.getElementById('v-data').value, cliente: document.getElementById('v-cliente').value, produto: document.getElementById('v-produto').value, socio: document.getElementById('v-socio').value, qtd: parseInt(document.getElementById('v-qtd').value) || 1, valorStr: document.getElementById('v-valor').value, status: document.getElementById('v-status').value };
+        // SANITIZAÇÃO
+        const py = { 
+            data: document.getElementById('v-data').value, 
+            cliente: padronizarTexto(document.getElementById('v-cliente').value), 
+            produto: padronizarTexto(document.getElementById('v-produto').value), 
+            socio: padronizarTexto(document.getElementById('v-socio').value), 
+            qtd: parseInt(document.getElementById('v-qtd').value) || 1, 
+            valorStr: document.getElementById('v-valor').value, 
+            status: document.getElementById('v-status').value 
+        };
+        
         if(!py.data || !py.cliente || !py.produto || !py.valorStr) return mostrarAlerta("Atenção", "Preencha todos os campos obrigatórios.", "warning");
         const valVenda = parseDinheiro(py.valorStr); const opt = document.getElementById('v-produto').options[document.getElementById('v-produto').selectedIndex];
         const cUnd = opt ? parseFloat(opt.getAttribute('data-custo')) || 0 : 0; const cTot = cUnd * py.qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1;
         const btn = document.getElementById('btn-salvar-venda'); btn.disabled = true; btn.innerText = "⏳...";
         try {
             const envio = { acao: "salvar_venda", data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: py.status === "Pago" ? py.data : "" };
-            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); mostrarAlerta("Sucesso", "Venda lançada.", "success"); document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; sincronizarDadosUnico();
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); const json = await res.json();
+            if(json.sucesso) { mostrarAlerta("Sucesso", "Venda lançada.", "success"); document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; sincronizarDadosUnico(); }
         } catch(e) {} finally { btn.disabled = false; btn.innerText = "Registrar Venda"; }
     }
 
@@ -738,11 +1009,20 @@
         document.getElementById('recibo-cliente').innerHTML = htmlClientes; document.getElementById('cobranca-cliente').innerHTML = htmlClientes;
         const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
         
+        filtrarVendas();
+    }
+
+    function filtrarVendas() {
         const fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value;
-        let filtradas = vendasGlobal.filter(v => { let pM = true, pS = true; if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; } if(fStatus && v.status !== fStatus) pS = false; return pM && pS; });
+        let filtradas = vendasGlobal.filter(v => {
+            let pM = true, pS = true;
+            if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; }
+            if(fStatus && v.status !== fStatus) pS = false; return pM && pS;
+        });
         filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso));
+
         let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
-        if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999;'>Vazio.</p>"; } 
+        if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } 
         else {
             filtradas.forEach(v => {
                 const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0;
@@ -753,8 +1033,7 @@
         document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens;
     }
 
-    // ================= MÁGICA DOS NOMES DINÂMICOS (RECIBO E COBRANÇA) =================
-    
+    // ================= NOME DINÂMICO NOS RECIBOS / COBRANÇAS =================
     function prepararRecibo() {
         const cliente = document.getElementById('recibo-cliente').value;
         const divNome = document.getElementById('div-recibo-nome');
@@ -762,23 +1041,15 @@
         const container = document.getElementById('recibo-pedidos-lista');
         const btn = document.getElementById('btn-gerar-recibo');
 
-        if (!cliente) { 
-            divNome.style.display = 'none'; 
-            container.style.display = 'none'; 
-            btn.style.display = 'none'; 
-            return; 
-        }
+        if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none'; return; }
 
-        // Preenche o campo de exibição com o nome real por padrão e exibe
-        inputNome.value = cliente;
-        divNome.style.display = 'block';
+        inputNome.value = cliente; divNome.style.display = 'block';
 
         let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente); 
         pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso));
         
-        if (pedidos.length === 0) { 
-            container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido encontrado.</p>'; 
-        } else {
+        if (pedidos.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido encontrado.</p>'; } 
+        else {
             let html = '';
             pedidos.forEach(p => {
                 const dataCompra = p.dataVendaDisplay || p.dataVendaIso, statusTexto = p.status === 'Pago' ? `<span style="color:#2e7d32;">Pago: ${p.dataPgtoDisplay || '?'}</span>` : `<span style="color:#b45309;">Pendente</span>`;
@@ -797,7 +1068,6 @@
         if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Deixe pelo menos um pedido marcado para o recibo.", "warning");
         const btnGerar = document.getElementById('btn-gerar-recibo'); btnGerar.innerText = "⏳ Gerando..."; btnGerar.disabled = true;
 
-        // Usa o NOME DE EXIBIÇÃO aqui
         document.getElementById('rec-cli-nome').innerText = clienteNomeExibicao; 
         document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR');
         
@@ -827,31 +1097,24 @@
         const divNome = document.getElementById('div-cobranca-nome');
         const inputNome = document.getElementById('cobranca-nome-exibicao');
 
-        if (!cliente) { 
-            divNome.style.display = 'none'; 
-            return; 
-        }
-        // Preenche com o nome padrão
-        inputNome.value = cliente;
-        divNome.style.display = 'block';
+        if (!cliente) { divNome.style.display = 'none'; return; }
+        inputNome.value = cliente; divNome.style.display = 'block';
     }
 
     function copiarPendenciasWhats() {
         const cliReal = document.getElementById('cobranca-cliente').value; 
         if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning");
-        
         const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal;
         
-        let pends = vendasGlobal.filter(p => p.cliente.trim() === cliReal && p.status === 'Pendente'), txt = `Olá ${cliDisplay}, tudo bem? Aqui é da Novera Scent! ✨\n\nResumo dos pedidos em aberto:\n\n`, tot = 0;
+        let pends = vendasGlobal.filter(p => p.cliente.trim() === cliReal && p.status === 'Pendente'), txt = `Olá ${cliDisplay}, tudo bem com você? Passando aqui pela Novera Scent ✨\n\nEsse é um resuminho dos seus pedidos em aberto com a gente:\n\n`, tot = 0;
         if(pends.length === 0) return mostrarAlerta("Aviso", "Este cliente não tem pendências.", "success");
-        pends.forEach(p => { const val = parseDinheiro(p.valor_venda); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(val)}\n`; tot += val; }); txt += `\n*Total: ${fmt(tot)}*`;
+        pends.forEach(p => { const val = parseDinheiro(p.valor_venda); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(val)}\n`; tot += val; }); txt += `\n*Total em aberto: ${fmt(tot)}*\n\nQualquer dúvida, é só chamar!`;
         navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success"));
     }
 
     async function montarCobranca() {
         const cliReal = document.getElementById('cobranca-cliente').value;
         if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente devedor.", "warning");
-        
         const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal;
         
         let pends = vendasGlobal.filter(p => p.cliente.trim() === cliReal && p.status === 'Pendente');
@@ -889,15 +1152,29 @@
     }
 
     async function salvarEdicaoVenda() {
-        const l = document.getElementById('edit-v-linha').value, vOrig = vendasGlobal.find(x => x.linha == l), py = { data: document.getElementById('edit-v-data').value, cliente: document.getElementById('edit-v-cliente').value, produto: document.getElementById('edit-v-produto').value, socio: document.getElementById('edit-v-socio').value, qtd: parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr: document.getElementById('edit-v-valor').value, status: document.getElementById('edit-v-status').value };
+        const l = document.getElementById('edit-v-linha').value, vOrig = vendasGlobal.find(x => x.linha == l);
+        
+        // SANITIZAÇÃO
+        const py = { 
+            data: document.getElementById('edit-v-data').value, 
+            cliente: padronizarTexto(document.getElementById('edit-v-cliente').value), 
+            produto: padronizarTexto(document.getElementById('edit-v-produto').value), 
+            socio: padronizarTexto(document.getElementById('edit-v-socio').value), 
+            qtd: parseInt(document.getElementById('edit-v-qtd').value) || 1, 
+            valorStr: document.getElementById('edit-v-valor').value, 
+            status: document.getElementById('edit-v-status').value 
+        };
         const valVenda = parseDinheiro(py.valorStr), opt = document.getElementById('edit-v-produto').options[document.getElementById('edit-v-produto').selectedIndex];
         let cUnd = opt && opt.hasAttribute('data-custo') ? parseFloat(opt.getAttribute('data-custo')) : parseDinheiro(vOrig.custo_und); const cTot = cUnd * py.qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1; const dPg = py.status === "Pago" ? (vOrig.dataPgtoDisplay || new Date().toLocaleDateString('pt-BR')) : "";
-        try { const envio = { acao: "atualizar_venda", linha: l, data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: dPg }; await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Ok.", "success"); sincronizarDadosUnico(); } catch(e) {}
+        try {
+            const envio = { acao: "atualizar_venda", linha: l, data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: dPg };
+            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Ok.", "success"); sincronizarDadosUnico();
+        } catch(e) {}
     }
 
     function prepararExclusaoVenda(linha, cliente) { abrirConfirmacao("Excluir Venda?", `Apagar registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); mostrarAlerta("Excluído", "Venda apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
-    // ================= DASHBOARD =================
+    // ================= ABA DASHBOARD =================
     function renderizarDashboard() {
         const dMes = document.getElementById('d-filtro-mes'), dAno = document.getElementById('d-filtro-ano');
         if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); }
@@ -923,10 +1200,51 @@
         if(chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } });
     }
 
+    // ================= CENTRAL DE RELATÓRIOS =================
+    function abrirModalRelatorios() { document.getElementById('modal-relatorios').style.display = 'flex'; }
+
+    function exportarExcel() {
+        const dMes = document.getElementById('d-filtro-mes').value, dAno = document.getElementById('d-filtro-ano').value;
+        let pfx = dAno && dMes ? `${dAno}-${dMes}` : dAno;
+        const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true);
+
+        if(vDash.length === 0) return mostrarAlerta("Aviso", "Nenhuma venda neste período.", "warning");
+
+        let csvContent = "data:text/csv;charset=utf-8,Data,Cliente,Produto,Socio,Quantidade,Valor,Status,Custo Und,Custo Total,Lucro,Markup,Data Pagamento\n";
+        vDash.forEach(v => {
+            let row = [v.dataVendaDisplay, `"${v.cliente}"`, `"${v.produto}"`, v.socio, v.qtd, `"${v.valor_venda}"`, v.status, `"${v.custo_und}"`, `"${v.custo_total}"`, `"${v.lucro}"`, `"${v.markup}"`, v.dataPgtoDisplay || ""];
+            csvContent += row.join(",") + "\n";
+        });
+
+        const encodedUri = encodeURI(csvContent), link = document.createElement("a");
+        link.setAttribute("href", encodedUri); link.setAttribute("download", `Vendas_Novera_${pfx || 'Tudo'}.csv`);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    function copiarFechamento() {
+        const dMesSel = document.getElementById('d-filtro-mes'), dMesText = dMesSel.options[dMesSel.selectedIndex].text;
+        const dAno = document.getElementById('d-filtro-ano').value || 'Todo o Período';
+        
+        let lReal = document.getElementById('d-lucro-real').innerText, entradas = document.getElementById('d-receitas').innerText, saidas = document.getElementById('d-gastos').innerText, aReceber = document.getElementById('d-receber').innerText;
+
+        let txt = `📊 *FECHAMENTO NOVERA SCENT* 📊\n🗓️ Período: ${dMesText} ${dAno}\n\n📈 *Entradas (Pagas):* ${entradas}\n📉 *Saídas (Gastos):* ${saidas}\n⏳ *A Receber (Fiado):* ${aReceber}\n💰 *Caixa Líquido:* ${lReal}\n\n🤝 *Divisão de Lucros Projetada:*\n`;
+
+        const fM = document.getElementById('d-filtro-mes').value, fA = document.getElementById('d-filtro-ano').value;
+        let pfx = fA && fM ? `${fA}-${fM}` : fA;
+        const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true);
+        let mSoc = {};
+        vDash.forEach(v => { const luc = parseDinheiro(v.lucro); if(v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; });
+        
+        let sociosText = "";
+        for(let s in mSoc) { sociosText += `▪️ ${s}: ${fmt(mSoc[s])}\n`; }
+        txt += sociosText || "Nenhum lucro.\n";
+        txt += `\n✨ _Bora pra cima!_ 🚀`;
+
+        navigator.clipboard.writeText(txt).then(() => { mostrarAlerta("Copiado!", "Resumo do fechamento copiado para o WhatsApp.", "success"); }).catch(err => { mostrarAlerta("Erro", "Falha ao copiar texto.", "error"); });
+    }
+
     // INICIALIZAÇÃO
     window.onload = () => { verificarLogin(); };
-
-    // Registra o Service Worker do PWA
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
 </script>
 </body>
