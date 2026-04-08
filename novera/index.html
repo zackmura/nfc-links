@@ -146,7 +146,7 @@
             <label>Senha</label>
             <div class="password-wrapper">
                 <input type="password" id="login-pass" placeholder="Digite sua senha">
-                <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">🙈</button>
+                <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">👁️</button>
             </div>
         </div>
         
@@ -450,11 +450,11 @@
                 <canvas id="chartStatusVendas"></canvas>
             </div>
 
-            <button class="btn-salvar" onclick="sincronizarDadosUnico()" style="margin-top: 10px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Atualizar Todos os Dados</button>
+            <button class="btn-salvar" onclick="sincronizarDadosUnico()" style="margin-top: 10px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Sincronizar Tudo Novamente</button>
         </div>
 
         <div id="tab-configuracoes" class="tab-content">
-            <div class="section-title">⚙️ Alterar Senha do Banco</div>
+            <div class="section-title">⚙️ Alterar Senha</div>
             <div class="input-group">
                 <label>Usuário Logado</label>
                 <input type="text" id="cfg-user" readonly>
@@ -463,14 +463,14 @@
                 <label>Senha Atual</label>
                 <div class="password-wrapper">
                     <input type="password" id="cfg-senha-atual">
-                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">🙈</button>
+                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">👁️</button>
                 </div>
             </div>
             <div class="input-group">
                 <label>Nova Senha</label>
                 <div class="password-wrapper">
                     <input type="password" id="cfg-nova-senha">
-                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">🙈</button>
+                    <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">👁️</button>
                 </div>
             </div>
             
@@ -502,10 +502,10 @@
 <div id="modal-editar-venda" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-venda').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3><input type="hidden" id="edit-v-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div><div class="input-group" style="text-align: left;"><label>Produto Vendido</label><select id="edit-v-produto"></select></div><div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div><div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div><button class="btn-salvar" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
 <script>
-    // URL DA API (ATUALIZE AQUI CASO CRIE NOVA IMPLANTAÇÃO)
+    // AQUI VOCÊ COLA O LINK DA SUA API NOVA
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
-    // ================= DADOS GLOBAIS E SINCRONIZAÇÃO ÚNICA (O SEGREDO DA VELOCIDADE) =================
+    // ================= DADOS GLOBAIS E SINCRONIZAÇÃO ÚNICA =================
     let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], vendasGlobal = [];
     let usuarioLogado = "";
     let dadosCarregados = false; 
@@ -519,15 +519,15 @@
             const dados = await res.json();
             
             if (dados.sucesso) {
-                rotulosGlobal = dados.rotulos;
-                custosGlobal = dados.custos;
-                gastosGlobal = dados.gastos;
-                vendasGlobal = dados.vendas;
+                rotulosGlobal = dados.rotulos || [];
+                custosGlobal = dados.custos || [];
+                gastosGlobal = dados.gastos || [];
+                vendasGlobal = dados.vendas || [];
                 
-                // Renderiza todas as telas de uma vez com os dados guardados
+                // Renderiza todas as telas de uma vez com os dados em memória
                 renderizarRotulos();
                 renderizarCustos();
-                filtrarGastos();
+                renderizarGastos();
                 renderizarVendas();
                 renderizarDashboard();
                 
@@ -536,17 +536,17 @@
                 mostrarAlerta("Erro de Sincronização", dados.erro, "error");
             }
         } catch(e) { 
-            mostrarAlerta("Falha de Conexão", "Não foi possível buscar os dados. Verifique a internet.", "error"); 
+            mostrarAlerta("Falha de Conexão", "Não foi possível buscar os dados. Verifique sua internet.", "error"); 
         } finally { 
             loader.style.display = "none"; 
         }
     }
 
-    // ================= CONTROLE DE LOGIN =================
+    // ================= CONTROLE DE LOGIN E SEGURANÇA =================
     function toggleSenha(inputId, btnElement) {
         const input = document.getElementById(inputId);
-        if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } 
-        else { input.type = "password"; btnElement.innerText = "🙈"; }
+        if (input.type === "password") { input.type = "text"; btnElement.innerText = "🙈"; } 
+        else { input.type = "password"; btnElement.innerText = "👁️"; }
     }
 
     function iniciarSessaoLocal(usuario) {
@@ -558,8 +558,8 @@
         document.getElementById('main-app').style.display = 'block';
         document.getElementById('cfg-user').value = usuario;
         
-        // Inicia a super busca na planilha
-        sincronizarDadosUnico();
+        // Só carrega da planilha se os dados não estiverem na memória
+        if (!dadosCarregados) sincronizarDadosUnico();
     }
 
     function verificarLogin() {
@@ -567,9 +567,8 @@
         const lastUser = localStorage.getItem('novera_last_user') || '';
 
         if (expires && Date.now() < parseInt(expires)) {
-            iniciarSessaoLocal(lastUser); // Entra direto
+            iniciarSessaoLocal(lastUser);
         } else {
-            // Volta pro Login
             document.getElementById('login-screen').style.display = 'block';
             document.getElementById('main-app').style.display = 'none';
             document.getElementById('login-user').value = lastUser; 
@@ -591,7 +590,7 @@
             if (json.sucesso) {
                 iniciarSessaoLocal(json.usuario);
             } else {
-                mostrarAlerta("Acesso Negado", "Usuário ou senha incorretos.", "error");
+                mostrarAlerta("Acesso Negado", json.erro, "error");
             }
         } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
         finally { btn.disabled = false; btn.innerText = "Entrar"; }
@@ -599,7 +598,7 @@
 
     function fazerLogout() {
         localStorage.removeItem('novera_session_expires'); 
-        dadosCarregados = false; // Força recarregar tudo na proxima vez
+        dadosCarregados = false; 
         verificarLogin(); 
     }
 
@@ -612,7 +611,7 @@
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) });
             const json = await res.json();
             if(json.sucesso) {
-                mostrarAlerta("Sucesso", "Sua senha foi alterada no banco de dados!", "success");
+                mostrarAlerta("Sucesso", "Senha alterada no banco de dados!", "success");
                 document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = "";
             } else { mostrarAlerta("Erro", json.erro, "error"); }
         } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
@@ -650,6 +649,7 @@
     });
 
     // ================= CONTROLE DE MENU =================
+    // Perceba que switchTab NÃO faz NENHUM FETCH. Ele só muda a tela instantaneamente!
     function toggleMenu() { const menu = document.getElementById('menu-items'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
     function selectMenu(tabId, nomeMenu) { document.getElementById('menu-texto-atual').innerText = nomeMenu; document.getElementById('menu-items').style.display = 'none'; switchTab(tabId); }
     function switchTab(tabId) {
@@ -786,7 +786,7 @@
         } catch(e) {} finally { btn.disabled = false; btn.innerText = "Lançar Despesa"; }
     }
 
-    function renderizarGastos() { filtrarGastos(); } // Alias
+    function renderizarGastos() { filtrarGastos(); } 
     function filtrarGastos() {
         const fSocio = document.getElementById('f-socio').value.toLowerCase(), fIni = document.getElementById('f-data-ini').value, fFim = document.getElementById('f-data-fim').value;
         let filtrados = gastosGlobal.filter(g => {
