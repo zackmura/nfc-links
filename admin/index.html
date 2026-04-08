@@ -127,7 +127,7 @@
 
 <div id="login-screen">
     <div class="login-box">
-        <span class="app-version">v2.0.3</span>
+        <span class="app-version">v2.0.4</span>
         <img src="logo.png" alt="Mini Mundo" onerror="this.src='logo.jpg'; this.onerror=null;">
         <h2>Acesso Restrito</h2>
         <p>Área exclusiva da Diretoria</p>
@@ -158,7 +158,7 @@
 
         <div class="brand-header">
             <button class="btn-logout" onclick="fazerLogout()" title="Sair do Sistema">🚪 Sair</button>
-            <span class="app-version">v2.0.3</span>
+            <span class="app-version">v2.0.4</span>
             
             <img src="logo.png" alt="Mini Mundo 3D" crossorigin="anonymous" onerror="this.src='logo.jpg'; this.onerror=null;">
             <h1>Central de Automação</h1>
@@ -169,7 +169,7 @@
 
         <div id="tab-vendas" class="tab-content active">
             
-            <div class="section-title">📊 Visão Global da Novera</div>
+            <div class="section-title">📊 Visão Global da Empresa</div>
             
             <div class="filtros-box">
                 <div class="row" style="margin-bottom: 0;">
@@ -232,8 +232,8 @@
                     <p class="valor" id="dash-cli-campeao" style="font-size:1rem; margin-top:5px; color:var(--primary);">-</p>
                 </div>
                 <div class="dash-card highlight" style="background:#fffbeb; color:var(--brand-dark); border:1px solid #fde68a; box-shadow:none;">
-                    <h3 style="color:#b45309;">🤝 Lucro Projetado por Sócio</h3>
-                    <div id="dash-socios-list" style="margin-top:10px; text-align:left;">-</div>
+                    <h3 style="color:#b45309;">📱 Vendas por Plataforma</h3>
+                    <div id="dash-plataformas-list" style="margin-top:10px; text-align:left;">-</div>
                 </div>
             </div>
 
@@ -249,7 +249,7 @@
                 <div class="row"><div class="col"><label>Data da Venda</label><input type="date" id="venda-data"></div><div class="col"><label>Status</label><select id="venda-status" class="input-var" style="border-color:#fcd34d !important;"><option value="Pago">🟢 Pago</option><option value="Pendente">🟡 Pendente</option></select></div></div>
                 <div class="input-group"><label>Cliente</label><input type="text" id="venda-cliente" class="input-var" list="lista-clientes-venda" placeholder="Ex: João Silva" autocomplete="off" style="border-color:#fcd34d !important;"><datalist id="lista-clientes-venda"></datalist></div>
                 <div class="input-group"><label>Produto Vendido</label><input type="text" id="venda-produto" class="input-var" list="lista-produtos-venda" placeholder="Ex: Placa profissões" autocomplete="off" style="border-color:#fcd34d !important;"><datalist id="lista-produtos-venda"></datalist></div>
-                <div class="row"><div class="col"><label>Lucro para Sócio</label><input type="text" id="venda-plataforma" class="input-var" list="lista-plataformas-venda" placeholder="Sócio ou Outro" autocomplete="off" style="border-color:#fcd34d !important;"><datalist id="lista-plataformas-venda"></datalist></div><div class="col"><label>Qtd</label><input type="number" id="venda-qtd" class="input-var" value="1" min="1" style="border-color:#fcd34d !important;"></div></div>
+                <div class="row"><div class="col"><label>Plataforma</label><input type="text" id="venda-plataforma" class="input-var" list="lista-plataformas-venda" placeholder="Ex: Shopee, Física" autocomplete="off" style="border-color:#fcd34d !important;"><datalist id="lista-plataformas-venda"></datalist></div><div class="col"><label>Qtd</label><input type="number" id="venda-qtd" class="input-var" value="1" min="1" style="border-color:#fcd34d !important;"></div></div>
                 <div class="input-group"><label>Valor Total</label><input type="text" id="venda-valor" class="input-var mask-money" placeholder="R$ 0,00" style="border-color:#fcd34d !important;"></div>
                 <button class="btn-magic" id="btn-salvar-venda" onclick="salvarVenda()" style="margin-bottom:0;">✅ Lançar Venda</button>
             </div>
@@ -286,7 +286,6 @@
                 <div class="section-title" style="margin-top:0; color:#b91c1c; border-left-color:#ef4444;">💸 Registrar Nova Compra</div>
                 <div class="row" style="margin-bottom:10px;"><div class="col"><label>Data</label><input type="date" id="d-data"></div><div class="col"><label>Local</label><input type="text" id="d-local" class="input-var" list="lista-locais-sugestao" placeholder="Ex: Shopee" style="border-color:#fca5a5 !important; background-color:#fff !important;"><datalist id="lista-locais-sugestao"></datalist></div></div>
                 <div class="input-group"><label>Item / Produto</label><input type="text" id="d-item" class="input-var" list="lista-itens-sugestao" placeholder="Ex: Filamento" autocomplete="off" style="border-color:#fca5a5 !important; background-color:#fff !important;"><datalist id="lista-itens-sugestao"></datalist></div>
-                <div class="row"><div class="col"><label>Sócio/Pessoa</label><input type="text" id="d-socio" class="input-var" list="lista-plataformas-venda" placeholder="Quem comprou?" style="border-color:#fca5a5 !important; background-color:#fff !important;"></div></div>
                 <div class="row"><div class="col"><label>Quantidade</label><input type="number" id="d-qtd" class="input-var" value="1" min="1" step="0.01" style="border-color:#fca5a5 !important; background-color:#fff !important;"></div><div class="col"><label>Valor Unit.</label><input type="text" id="d-valor-uni" class="input-var mask-money" placeholder="R$ 0,00" style="border-color:#fca5a5 !important; background-color:#fff !important;"></div></div>
                 <div class="resumo-box" style="margin-top:5px; padding:15px; margin-bottom:15px; background:#b91c1c;"><div class="custo-total" style="margin-top:0; font-size:1.1rem; padding:5px;"><span>Total a Lançar:</span> <span id="d-total-calc">R$ 0,00</span></div></div>
                 <button class="btn-magic" id="btn-salvar-despesa" onclick="salvarDespesa()" style="margin-bottom:0; background:linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); box-shadow:0 10px 25px rgba(239,68,68,0.3);">💳 Lançar Despesa</button>
@@ -366,8 +365,8 @@
 
             <div class="section-title" style="margin-top: 35px; border-left-color: #2C2A2B; color: #2C2A2B;">🖨️ Exportação de Dados</div>
             <div class="filtros-box">
-                <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Baixe o Excel para o contador ou copie o resumo do fechamento baseado no filtro do mês abaixo.</p>
-                <div class="row" style="margin-bottom:10px;"><div class="col"><label>Mês:</label><select id="rel-mes" onchange="aplicarFiltrosDashboardERP()"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Ano:</label><select id="rel-ano" onchange="aplicarFiltrosDashboardERP()"><option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option></select></div></div>
+                <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Baixe o Excel para o contador com base no mês abaixo.</p>
+                <div class="row" style="margin-bottom:10px;"><div class="col"><label>Mês:</label><select id="rel-mes"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Ano:</label><select id="rel-ano"><option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option></select></div></div>
                 <button class="btn-magic" style="margin-top: 10px; font-size:0.85rem; background: #107c41; box-shadow: 0 4px 10px rgba(16, 124, 65, 0.3);" onclick="exportarExcelERP()">📊 Baixar Vendas (.CSV)</button>
             </div>
             
@@ -449,33 +448,30 @@
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✅</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">Operação realizada com sucesso!</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="fecharAlerta()">Certo, entendi</button></div></div>
 <div id="custom-confirm-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">💸</span><h3 class="modal-title-alert">Confirmar Pagamento</h3><p class="modal-text-alert">Tem certeza que deseja marcar esta venda como <b>PAGA</b>?</p><div style="display:flex; gap:10px; margin-top:15px;"><button class="btn-modal-cancel" onclick="fecharConfirmacao()">Cancelar</button><button class="btn-modal-confirm" onclick="executarPagamentoVenda()">✅ Sim, Recebi!</button></div></div></div>
 <div id="custom-delete-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">🗑️</span><h3 class="modal-title-alert" style="color:#ef4444;">Excluir Venda?</h3><p class="modal-text-alert">Tem certeza que deseja apagar o registro dessa venda? Esta ação <b>não pode ser desfeita.</b></p><div style="display:flex; gap:10px; margin-top:15px;"><button class="btn-modal-cancel" onclick="fecharExclusao()">Cancelar</button><button class="btn-modal-confirm" style="background:#ef4444; box-shadow:0 6px 0 #b91c1c;" onclick="executarExclusaoVenda()">🗑️ Apagar</button></div></div></div>
-<div id="custom-edit-venda-modal" class="modal-overlay-alert" style="align-items:flex-start; padding-top:40px;"><div class="modal-box-alert" style="width:95%; max-width:400px; text-align:left;"><button onclick="fecharEditarVenda()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; color:#64748b; cursor:pointer;">×</button><h3 class="section-title" style="margin-top:0; margin-bottom:20px; color:var(--brand-dark); border-left-color:var(--primary);">✏️ Editar Venda</h3><input type="hidden" id="edit-venda-linha"><div class="row"><div class="col"><label>Data</label><input type="date" id="edit-venda-data"></div><div class="col"><label>Status</label><select id="edit-venda-status"><option value="Pago">🟢 Pago</option><option value="Pendente">🟡 Pendente</option></select></div></div><div class="input-group"><label>Cliente</label><input type="text" id="edit-venda-cliente" list="lista-clientes-venda" autocomplete="off"></div><div class="input-group"><label>Produto</label><input type="text" id="edit-venda-produto" list="lista-produtos-venda" autocomplete="off"></div><div class="row"><div class="col"><label>Lucro para Sócio</label><input type="text" id="edit-venda-plataforma" list="lista-plataformas-venda" autocomplete="off"></div><div class="col"><label>Qtd</label><input type="number" id="edit-venda-qtd" min="1"></div></div><div class="input-group"><label>Valor Total</label><input type="text" id="edit-venda-valor" class="mask-money"></div><button class="btn-magic btn-global" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom:0;">💾 Salvar Alterações</button></div></div>
+<div id="custom-edit-venda-modal" class="modal-overlay-alert" style="align-items:flex-start; padding-top:40px;"><div class="modal-box-alert" style="width:95%; max-width:400px; text-align:left;"><button onclick="fecharEditarVenda()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; color:#64748b; cursor:pointer;">×</button><h3 class="section-title" style="margin-top:0; margin-bottom:20px; color:var(--brand-dark); border-left-color:var(--primary);">✏️ Editar Venda</h3><input type="hidden" id="edit-venda-linha"><div class="row"><div class="col"><label>Data</label><input type="date" id="edit-venda-data"></div><div class="col"><label>Status</label><select id="edit-venda-status"><option value="Pago">🟢 Pago</option><option value="Pendente">🟡 Pendente</option></select></div></div><div class="input-group"><label>Cliente</label><input type="text" id="edit-venda-cliente" list="lista-clientes-venda" autocomplete="off"></div><div class="input-group"><label>Produto</label><input type="text" id="edit-venda-produto" list="lista-produtos-venda" autocomplete="off"></div><div class="row"><div class="col"><label>Plataforma</label><input type="text" id="edit-venda-plataforma" list="lista-plataformas-venda" autocomplete="off"></div><div class="col"><label>Qtd</label><input type="number" id="edit-venda-qtd" min="1"></div></div><div class="input-group"><label>Valor Total</label><input type="text" id="edit-venda-valor" class="mask-money"></div><button class="btn-magic btn-global" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom:0;">💾 Salvar Alterações</button></div></div>
 
 <script>
     const $ = id => document.getElementById(id); 
     
     // ================= APIS DO SEU SISTEMA =================
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
-    const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec"; // ONDE COLOQUEI O LISTAR TUDO
+    const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
     const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/catalogo";
     const API_ONIONSYS_ADS = "https://api.onionsys.com.br/api/registrar/anuncios";
     const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
     const TIMES_INFO = { "corinthians":{cor:"#000",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/874.png",classText:"txt-corinthians"},"palmeiras":{cor:"#006400",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/2029.png",classText:"txt-palmeiras"},"santos":{cor:"#555",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/2674.png",classText:"txt-santos"},"são paulo":{cor:"#cc0000",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/2026.png",classText:"txt-saopaulo"},"flamengo":{cor:"#c90000",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/819.png",classText:"txt-flamengo"} };
 
-    // ================= SANITIZAÇÃO (ANTISSUJEIRA) =================
     function padronizarTexto(texto) {
         if (!texto) return "";
         let limpo = String(texto).trim().replace(/\s+/g, ' ').toLowerCase();
         return limpo.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     }
 
-    // ================= VARIÁVEIS GLOBAIS =================
     let dadosTotaisAcessos = [], graficoInstancia = null, catalogoAdminArray = [], anunciosAdminArray = [], quantidadeAnunciosPendentes = -1; 
     let custoTotalGlobal = 0, despesaTotalCalculada = 0, arrayBancoCustos = [], arrayDespesas = [], arrayVendas = [], dashVendas = [], dashDespesas = [], linhaVendaPagamento = null, linhaVendaExclusao = null;
     let chartFluxo = null, chartStatus = null;
     let usuarioLogado = ""; let dadosCarregados = false; 
 
-    // ================= FORMATAÇÕES E EVENTOS =================
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
     const limparValorPlanilha = val => { if(!val) return 0; if(typeof val==='number') return val; let str=String(val).trim().replace(/R\$\s?/gi,'').trim(); if(str.includes(',')&&str.includes('.')){str=str.replace(/\./g,'').replace(',','.');}else if(str.includes(',')){str=str.replace(',','.');} let num=parseFloat(str); return isNaN(num)?0:num; };
@@ -488,7 +484,6 @@
         if(e.target.id==="v-insumos") calcular();
     });
 
-    // ================= LOGIN, SEGURANÇA E SINCRONIZAÇÃO =================
     window.onload = () => { verificarLogin(); };
     
     function toggleSenha(inputId, btnElement) {
@@ -524,119 +519,65 @@
     function verificarLogin() {
         const expires = localStorage.getItem('mm_session_expires');
         const lastUser = localStorage.getItem('mm_last_user') || '';
-
-        if (expires && Date.now() < parseInt(expires)) {
-            iniciarSessaoLocal(lastUser);
-        } else {
-            $('login-screen').style.display = 'flex';
-            $('app-core').style.display = 'none';
-            $('login-user').value = lastUser; 
-            $('login-pass').value = ''; 
-        }
+        if (expires && Date.now() < parseInt(expires)) { iniciarSessaoLocal(lastUser); } 
+        else { $('login-screen').style.display = 'flex'; $('app-core').style.display = 'none'; $('login-user').value = lastUser; $('login-pass').value = ''; }
     }
 
     async function fazerLogin() {
-        const user = $('login-user').value.trim();
-        const pass = $('login-pass').value.trim();
+        const user = $('login-user').value.trim(); const pass = $('login-pass').value.trim();
         if (!user || !pass) return mostrarAlerta("Atenção", "Preencha usuário e senha.", "warning");
-
-        const btn = $('btn-login');
-        btn.disabled = true; btn.innerText = "⏳ ENTRANDO...";
-
+        const btn = $('btn-login'); btn.disabled = true; btn.innerText = "⏳ ENTRANDO...";
         try {
             const res = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) });
             const json = await res.json();
-            if (json.sucesso) { iniciarSessaoLocal(json.usuario); } 
-            else { mostrarAlerta("Acesso Negado", json.erro, "error"); }
-        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
-        finally { btn.disabled = false; btn.innerText = "🔓 Entrar no Sistema"; }
+            if (json.sucesso) { iniciarSessaoLocal(json.usuario); } else { mostrarAlerta("Acesso Negado", json.erro, "error"); }
+        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "🔓 Entrar no Sistema"; }
     }
 
     function fazerLogout() { localStorage.removeItem('mm_session_expires'); dadosCarregados = false; verificarLogin(); }
 
     async function alterarSenha() {
-        const atual = $('cfg-senha-atual').value;
-        const nova = $('cfg-nova-senha').value;
+        const atual = $('cfg-senha-atual').value; const nova = $('cfg-nova-senha').value;
         if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha a senha atual e a nova.", "warning");
         const btn = $('btn-alterar-senha'); btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
         try {
             const res = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) });
             const json = await res.json();
-            if(json.sucesso) {
-                mostrarAlerta("Sucesso", "Senha alterada no banco!", "success");
-                $('cfg-senha-atual').value = ""; $('cfg-nova-senha').value = "";
-            } else { mostrarAlerta("Erro", json.erro, "error"); }
-        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
-        finally { btn.disabled = false; btn.innerText = "💾 Atualizar Senha no Banco"; }
+            if(json.sucesso) { mostrarAlerta("Sucesso", "Senha alterada no banco!", "success"); $('cfg-senha-atual').value = ""; $('cfg-nova-senha').value = ""; } else { mostrarAlerta("Erro", json.erro, "error"); }
+        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "💾 Atualizar Senha no Banco"; }
     }
 
     async function sincronizarDadosUnico() {
-        const loader = $('global-loader');
-        loader.style.display = "flex";
-        
+        const loader = $('global-loader'); loader.style.display = "flex";
         try {
-            const res = await fetch(API_PRECIFICACAO + "?acao=listar_tudo&_t=" + new Date().getTime()); 
-            const textoResposta = await res.text();
-            
+            const res = await fetch(API_PRECIFICACAO + "?acao=listar_tudo&_t=" + new Date().getTime()); const textoResposta = await res.text();
             try {
                 const dados = JSON.parse(textoResposta);
                 if (dados.sucesso) {
-                    arrayBancoCustos = dados.produtos_banco || [];
-                    arrayDespesas = dados.despesas || [];
-                    arrayVendas = dados.vendas || [];
+                    arrayBancoCustos = dados.produtos_banco || []; arrayDespesas = dados.despesas || []; arrayVendas = dados.vendas || [];
                     dashVendas = arrayVendas; dashDespesas = arrayDespesas;
-                    
-                    alimentarDatalistE_Filtro(arrayDespesas);
-                    renderizarListaBanco(arrayBancoCustos);
-                    filtrarDespesas();
-                    renderizarDatalistsVenda();
-                    filtrarVendas();
+                    alimentarDatalistE_Filtro(arrayDespesas); renderizarListaBanco(arrayBancoCustos); filtrarDespesas(); renderizarDatalistsVenda(); filtrarVendas();
                 } else { mostrarAlerta("Erro ERP", dados.erro, "error"); }
-            } catch (e) {
-                mostrarAlerta("Script Desatualizado", "O Google Script retornou um formato inválido. Vá no seu painel do Apps Script e clique em 'Implantar' -> 'Nova implantação' para o sistema rápido funcionar.", "warning");
-            }
-
-            carregarAnalytics(); 
-            carregarCatalogoAdmin(); 
-            carregarAnunciosAdmin(); 
-            atualizarBadgeUltimo(); 
-            carregarInfoBanco(); 
-            calcular();
-
+            } catch (e) { mostrarAlerta("Script Desatualizado", "O Google Script retornou um formato inválido.", "warning"); }
+            carregarAnalytics(); carregarCatalogoAdmin(); carregarAnunciosAdmin(); atualizarBadgeUltimo(); carregarInfoBanco(); calcular();
             dadosCarregados = true;
-        } catch(e) { mostrarAlerta("Falha de Conexão", "Erro ao buscar os dados da planilha. Verifique sua internet.", "error"); } 
-        finally { loader.style.display = "none"; }
+        } catch(e) { mostrarAlerta("Falha de Conexão", "Erro ao buscar os dados da planilha.", "error"); } finally { loader.style.display = "none"; }
     }
 
-    // ================= MENU E NAVEGAÇÃO =================
     function switchTab(tabName) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-        
         $('tab-'+tabName).classList.add('active');
-        
         const mainNavs = ['vendas', 'custos', 'precificar', 'loja', 'menu'];
-        if(mainNavs.includes(tabName)) {
-            $('nav-'+tabName).classList.add('active');
-        } else {
-            $('nav-menu').classList.add('active');
-        }
-
-        const titles = {
-            'vendas': '🛒 VENDAS & CRM', 'custos': '💳 DESPESAS', 'precificar': '➕ PRECIFICAÇÃO',
-            'loja': '📦 CATÁLOGO', 'menu': '🚀 MAIS',
-            'analytics': '📈 ANALYTICS', 'anuncios': '📢 ANÚNCIOS', 'quiz': '🎮 QUIZ IA',
-            'config': '⚙️ CONFIGURAÇÕES'
-        };
+        if(mainNavs.includes(tabName)) { $('nav-'+tabName).classList.add('active'); } else { $('nav-menu').classList.add('active'); }
+        const titles = { 'vendas': '🛒 VENDAS & CRM', 'custos': '💳 DESPESAS', 'precificar': '➕ PRECIFICAÇÃO', 'loja': '📦 CATÁLOGO', 'menu': '🚀 MAIS', 'analytics': '📈 ANALYTICS', 'anuncios': '📢 ANÚNCIOS', 'quiz': '🎮 QUIZ IA', 'config': '⚙️ CONFIGURAÇÕES' };
         if(titles[tabName]) $('titulo-modulo-ativo').innerText = titles[tabName];
     }
     
     function addLog(msg, tipo='info'){ 
         const html = `<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${msg}</span></div>`;
-        const tCat = $('terminal-catalogo');
-        if(tCat) { tCat.innerHTML += html; tCat.scrollTop = tCat.scrollHeight; }
-        const tQuiz = $('terminal-quiz');
-        if(tQuiz) { tQuiz.innerHTML += html; tQuiz.scrollTop = tQuiz.scrollHeight; }
+        const tCat = $('terminal-catalogo'); if(tCat) { tCat.innerHTML += html; tCat.scrollTop = tCat.scrollHeight; }
+        const tQuiz = $('terminal-quiz'); if(tQuiz) { tQuiz.innerHTML += html; tQuiz.scrollTop = tQuiz.scrollHeight; }
     }
 
     function mostrarAlerta(tit, txt, tipo){ $('modal-titulo-alert').innerText=tit; $('modal-texto-alert').innerText=txt; const ic=$('modal-icone-alert'), b=$('btn-modal-ok'); if(tipo==="success"){ic.innerText="✅";b.style.background="#10b981";b.style.boxShadow="0 6px 0 #059669";}else if(tipo==="warning"){ic.innerText="⚠️";b.style.background="#f59e0b";b.style.boxShadow="0 6px 0 #d97706";}else{ic.innerText="❌";b.style.background="#ef4444";b.style.boxShadow="0 6px 0 #b91c1c";} $('custom-modal').style.display="flex"; if("vibrate" in navigator) navigator.vibrate(50); }
@@ -644,23 +585,16 @@
     function abrirConfirmacaoPagamento(l){ linhaVendaPagamento=l; $('custom-confirm-modal').style.display="flex"; } function fecharConfirmacao(){ $('custom-confirm-modal').style.display="none"; linhaVendaPagamento=null; }
     function abrirConfirmacaoExclusao(l){ linhaVendaExclusao=l; $('custom-delete-modal').style.display="flex"; } function fecharExclusao(){ $('custom-delete-modal').style.display="none"; linhaVendaExclusao=null; }
     function fecharEditarVenda(){ $('custom-edit-venda-modal').style.display="none"; }
-    
     function abrirModalEditarVenda(l){ const v=arrayVendas.find(x=>x.linha===l); if(!v)return; $('edit-venda-linha').value=v.linha; $('edit-venda-data').value=v.data.includes('/')?`${v.data.split('/')[2].substring(0,4)}-${v.data.split('/')[1].padStart(2,'0')}-${v.data.split('/')[0].padStart(2,'0')}`:""; $('edit-venda-status').value=v.status; $('edit-venda-cliente').value=v.cliente; $('edit-venda-produto').value=v.produto; $('edit-venda-plataforma').value=v.plataforma; $('edit-venda-qtd').value=v.qtd; $('edit-venda-valor').value=formatarDoBanco(v.valor_venda); $('custom-edit-venda-modal').style.display="flex"; }
 
     async function excluirRegistroLocal(aba, l, idBtn, fnFechar, fnRecarregar, apiBase=API_PRECIFICACAO){ const b=$(idBtn); b.disabled=true; b.innerText="⏳ Excluindo..."; try { const r=await fetch(apiBase,{method:"POST",body:JSON.stringify({acao:"excluir_registro",aba:aba,linha:l})}); const res=await r.json(); if(res.sucesso){addLog(`🗑️ Registro excluído.`, "success"); if(fnFechar)fnFechar(); if(fnRecarregar)fnRecarregar();}else throw new Error("Erro exclusão."); }catch(e){ apiBase===API_PRECIFICACAO?mostrarAlerta("Erro","Falha: "+e.message,"error"):alert("Falha: "+e.message); }finally{b.disabled=false;b.innerText="🗑️ Apagar";} }
 
-    // ==========================================
-    // ADMIN: ANALYTICS 
-    // ==========================================
     function limparDatasManuais(){ $('data-inicio').value=""; $('data-fim').value=""; } function limparFiltrosRapidos(){ $('filtro-mes').value="todos"; $('filtro-ano').value="todos"; }
     async function carregarAnalytics(forcar=false){ if(dadosTotaisAcessos.length>0&&!forcar)return; try{ const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=analytics"); const res=await r.json(); if(res.sucesso){dadosTotaisAcessos=res.dados; aplicarFiltros();}else throw new Error(res.erro); }catch(e){addLog(`❌ Erro Analytics: ${e.message}`,"error");} }
     function aplicarFiltros(){ const mS=$('filtro-mes').value, aS=$('filtro-ano').value, tS=$('filtro-time').value.toLowerCase(), dI=$('data-inicio').value, dF=$('data-fim').value; const filtrados=dadosTotaisAcessos.filter(i=>{ if(!i.data||!i.time)return false; if(tS!=="todos"){let tr=i.time.toLowerCase(); if(tS==="são paulo"&&(tr==="sao paulo"||tr==="são paulo")){}else if(tr!==tS)return false;} const dT=new Date(i.data); if(dI===""&&dF===""){if(aS!=="todos"&&String(dT.getFullYear())!==aS)return false; if(mS!=="todos"&&String(dT.getMonth()+1).padStart(2,'0')!==mS)return false; return true;} if(dI!==""&&dF!==""){const di=new Date(dI),df=new Date(dF); df.setHours(23,59,59); return dT>=di&&dT<=df;} return true; }); processarDashboard(filtrados); }
     function processarDashboard(arr){ $('dash-total').innerText=arr.length; if(arr.length===0){ $('dash-media').innerText=`Média: 0/dia`; $('lista-ranking').innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhum acesso.</p>"; $('nome-campeao').innerText="-"; $('img-campeao').style.display="none"; $('dash-campeao').className="valor"; $('dash-pico').innerText=`Pico: Nenhum`; if(graficoInstancia)graficoInstancia.destroy(); return; } const cT={}, cD={}; arr.forEach(l=>{let t=String(l.time).trim(), d=l.data; if(t)cT[t]=(cT[t]||0)+1; if(d)cD[d]=(cD[d]||0)+1; }); const td=Object.keys(cD).length; $('dash-media').innerText=`Média: ${td>0?(arr.length/td).toFixed(1):0} acessos/dia`; let mD="", mAd=0; for(const d in cD){if(cD[d]>mAd){mAd=cD[d];mD=d;}} let dL=""; if(mD){const a=mD.split('-'); if(a.length===3)dL=`${a[2]}/${a[1]}`;} $('dash-pico').innerText=`Pico: ${mAd} toques (${dL})`; const aR=Object.keys(cT).map(t=>({nome:t,acessos:cT[t]})).sort((a,b)=>b.acessos-a.acessos); const c=aR[0], iC=TIMES_INFO[c.nome.toLowerCase()]||{cor:"var(--brand-dark)",logo:""}; $('nome-campeao').innerText=c.nome; const img=$('img-campeao'); if(iC.logo){img.src=iC.logo;img.style.display="block";}else img.style.display="none"; $('dash-campeao').className="valor "+(iC.classText||""); let hR="", lg=[], dg=[], cg=[]; const maxA=aR[0].acessos; aR.forEach((i)=>{lg.push(i.nome);dg.push(i.acessos);let iT=TIMES_INFO[i.nome.toLowerCase()]||{cor:"var(--primary)",logo:""}; cg.push(iT.cor); let p=Math.round((i.acessos/maxA)*100); hR+=`<div class="ranking-item"><div class="ranking-nome"><img src="${iT.logo}" onerror="this.style.display='none'"><span class="${iT.classText||''}">${i.nome}</span></div><div class="progresso-bg"><div class="progresso-bar" style="width:${p}%; background-color:${iT.cor};"></div></div><div class="ranking-valor" style="color:${iT.cor};">${i.acessos}</div></div>`;}); $('lista-ranking').innerHTML=hR; renderizarGrafico(lg,dg,cg); }
     function renderizarGrafico(l,d,c){ const ctx=$('graficoAcessos').getContext('2d'); if(graficoInstancia)graficoInstancia.destroy(); graficoInstancia=new Chart(ctx,{type:'bar',data:{labels:l,datasets:[{data:d,backgroundColor:c,borderRadius:8,borderWidth:0,barPercentage:0.6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#4E342E',titleFont:{size:14,family:'Inter'},bodyFont:{size:16,weight:'bold',family:'Inter'},padding:12,displayColors:false,callbacks:{label:ctx=>ctx.parsed.y+' toques'}}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,precision:0}},x:{grid:{display:false}}},animation:{duration:800,easing:'easeOutQuart'}}}); }
 
-    // ==========================================
-    // ADMIN: ANÚNCIOS E CATÁLOGO IA
-    // ==========================================
     function ativarNotificacoesBrowser(){ if("Notification" in window){Notification.requestPermission().then(p=>{if(p==="granted"){$('btn-notifica').style.display="none";try{new Notification("Mini Mundo",{body:"Alertas ativados!",icon:"logo.png"});}catch(e){}}});} }
     function dispararAlertaSeHouverNovos(nA){ let pA=nA.filter(a=>a.status==="PENDENTE").length; if(quantidadeAnunciosPendentes===-1){quantidadeAnunciosPendentes=pA;return;} if(pA>quantidadeAnunciosPendentes){let eN=nA[nA.length-1].empresa; addLog(`🔔 ALERTA: Solicitação de ${eN}`,"warn"); try{if("Notification" in window&&Notification.permission==="granted"){new Notification("🚀 Novo Anunciante!",{body:`Empresa ${eN} solicitou anúncio.`,icon:"logo.png"});}}catch(e){} try{if("vibrate" in navigator)navigator.vibrate([200,100,200]);}catch(e){}} quantidadeAnunciosPendentes=pA; }
     async function carregarAnunciosAdmin(s=false){ try{const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=anuncios_admin");const res=await r.json(); if(res.sucesso){anunciosAdminArray=res.anuncios.slice().reverse(); dispararAlertaSeHouverNovos(res.anuncios); if(!s||$('lista-anuncios-admin').innerHTML==="")renderListaAnuncios(anunciosAdminArray);}}catch(e){if(!s)addLog(`Erro anúncios: ${e.message}`,"error");} }
@@ -681,13 +615,16 @@
     function comprimirImagem(f,mW,mH,q){ return new Promise((r,j)=>{ if(!f.type.match(/image.*/))return j(new Error(`Formato inválido.`)); const rd=new FileReader();rd.readAsDataURL(f); rd.onload=e=>{ const i=new Image();i.src=e.target.result; i.onload=()=>{ let w=i.width,h=i.height; if(w>h){if(w>mW){h=Math.round(h*mW/w);w=mW;}}else{if(h>mH){w=Math.round(w*mH/h);h=mH;}} const cv=document.createElement('canvas');cv.width=w;cv.height=h; const cx=cv.getContext('2d');cx.drawImage(i,0,0,w,h); const nU=Date.now()+"_"+f.name.replace(/[^a-zA-Z0-9.]/g,'_').toLowerCase(); cv.toBlob(b=>b?r(new File([b],nU,{type:'image/jpeg'})):j(new Error("Compressão.")),'image/jpeg',q); };};}); }
     async function fazerUploadInteligente(fC,ik,iA=false){ try{ const fd=new FormData();fd.append("imagem",fC); const ep=iA?API_ONIONSYS_ADS:API_ONIONSYS; const rp=await fetch(ep,{method:"POST",headers:{"Authorization":`Bearer ${TOKEN_ONIONSYS}`,"x-tenant-id":"MiniMundo"},body:fd}); const tx=await rp.text(); if(rp.ok){try{const rs=JSON.parse(tx); let u=(rs.arquivos&&rs.arquivos.length>0)?rs.arquivos[0].url:(rs.url||rs.link||rs.URL||(rs.filename?`https://api.onionsys.com.br/arquivos/${iA?'anuncios':'catalogo'}/${rs.filename}`:null)); if(u)return u; else throw new Error("URL em branco.");}catch(e){throw new Error("Formato inválido.");}}else throw new Error(`Servidor rejeitou (${rp.status})`); }catch(er){ addLog(`⚠️ Servidor primário falhou. Tentando ImgBB...`,"warn"); if(!ik){addLog(`❌ Falta chave ImgBB!`,"error");throw new Error("Chave ImgBB.");} try{const fd2=new FormData();fd2.append("image",fC); const r2=await fetch(`https://api.imgbb.com/1/upload?key=${ik}`,{method:"POST",body:fd2}); const d2=await r2.json(); if(d2.success)return d2.data.url; throw new Error(`ImgBB recusou.`);}catch(e){addLog(`❌ Falha dupla upload.`,"error");throw e;} } }
     
-    async function cadastrarProdutoIA(){ const ak=$('api-key').value.trim(), ik=$('imgbb-key').value.trim(), n=$('prod-nome').value.trim(), p=$('prod-preco').value.trim(), f=$('prod-fotos').files, b=$('btn-salvar-produto'); if(!ak){switchTab('config');return addLog("❌ ERRO: Coloque a chave da IA (Gemini)!","error");} if(!n||!p||f.length===0)return addLog("⚠️ Preencha Nome, Preço e escolha Foto.","warn"); b.disabled=true; b.innerText="⏳ Analisando..."; try{ addLog(`Cadastrando: ${n}...`,"warn"); const b6=await fileToBase64(f[0]); let ls=[]; for(let i=0;i<f.length;i++){addLog(`⏳ Foto ${i+1}...`,"info"); const urlF=await fazerUploadInteligente(await comprimirImagem(f[i],1000,1000,0.8),ik,false); ls.push(urlF); addLog(`✅ Foto ${i+1} online.`,"success");} addLog(`🤖 IA criando copy...`,"info"); const pr=`Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda EXATAMENTE neste formato (sem asteriscos ou negrito):\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`; const rI=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${ak}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr},{inlineData:{mimeType:f[0].type,data:b6}}]}]})}); if(!rI.ok)throw new Error("IA não respondeu."); const dI=await rI.json(); const resIA=dI.candidates[0].content.parts[0].text; let ds="Exclusivo Mini Mundo 3D.", ct="Geral"; let mD=resIA.match(/descri[cç][aã]o:\s*(.*)/i); if(mD)ds=mD[1].replace(/\*/g,'').trim(); let mC=resIA.match(/categoria:\s*(.*)/i); if(mC)ct=mC[1].replace(/\*/g,'').trim(); addLog(`💾 Salvando na Planilha...`,"info"); const rS=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify({acao:"salvar_produto",nome:padronizarTexto(n),descricao:ds,preco:p,foto:ls.join(","),categoria:padronizarTexto(ct)})}); const resS=await rS.json(); if(resS.sucesso){addLog(`🎉 PRODUTO CADASTRADO!`,"success");$('prod-nome').value="";$('prod-preco').value="";$('prod-fotos').value="";carregarCatalogoAdmin();}else throw new Error("API falhou."); }catch(e){addLog(`❌ ERRO: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="✨ Enviar e Cadastrar via IA";} }
+    // API CORRIGIDA AQUI PARA: gemini-1.5-flash-latest
+    async function cadastrarProdutoIA(){ const ak=$('api-key').value.trim(), ik=$('imgbb-key').value.trim(), n=$('prod-nome').value.trim(), p=$('prod-preco').value.trim(), f=$('prod-fotos').files, b=$('btn-salvar-produto'); if(!ak){switchTab('config');return addLog("❌ ERRO: Coloque a chave da IA (Gemini)!","error");} if(!n||!p||f.length===0)return addLog("⚠️ Preencha Nome, Preço e escolha Foto.","warn"); b.disabled=true; b.innerText="⏳ Analisando..."; try{ addLog(`Cadastrando: ${n}...`,"warn"); const b6=await fileToBase64(f[0]); let ls=[]; for(let i=0;i<f.length;i++){addLog(`⏳ Foto ${i+1}...`,"info"); const urlF=await fazerUploadInteligente(await comprimirImagem(f[i],1000,1000,0.8),ik,false); ls.push(urlF); addLog(`✅ Foto ${i+1} online.`,"success");} addLog(`🤖 IA criando copy...`,"info"); const pr=`Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda EXATAMENTE neste formato (sem asteriscos ou negrito):\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`; const rI=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${ak}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr},{inlineData:{mimeType:f[0].type,data:b6}}]}]})}); if(!rI.ok)throw new Error("IA não respondeu."); const dI=await rI.json(); const resIA=dI.candidates[0].content.parts[0].text; let ds="Exclusivo Mini Mundo 3D.", ct="Geral"; let mD=resIA.match(/descri[cç][aã]o:\s*(.*)/i); if(mD)ds=mD[1].replace(/\*/g,'').trim(); let mC=resIA.match(/categoria:\s*(.*)/i); if(mC)ct=mC[1].replace(/\*/g,'').trim(); addLog(`💾 Salvando na Planilha...`,"info"); const rS=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify({acao:"salvar_produto",nome:padronizarTexto(n),descricao:ds,preco:p,foto:ls.join(","),categoria:padronizarTexto(ct)})}); const resS=await rS.json(); if(resS.sucesso){addLog(`🎉 PRODUTO CADASTRADO!`,"success");$('prod-nome').value="";$('prod-preco').value="";$('prod-fotos').value="";carregarCatalogoAdmin();}else throw new Error("API falhou."); }catch(e){addLog(`❌ ERRO: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="✨ Enviar e Cadastrar via IA";} }
 
     function salvarChaves(){ localStorage.setItem("gemini_api_key",$('api-key').value); localStorage.setItem("imgbb_api_key",$('imgbb-key').value); }
     const delay=ms=>new Promise(r=>setTimeout(r,ms));
     function atualizarBadgeUltimo(){ const uT=localStorage.getItem("ultimo_time_gerado"), uH=localStorage.getItem("ultimo_horario_gerado"); if(uT&&uH)$('badge-ultimo').innerHTML=`🕒 Último: <b>${uT}</b> (${uH})`; }
     async function carregarInfoBanco(){ const s=$('time'), bT=$('badge-total'); bT.innerHTML=`⏳ Contando...`; try{const r=await fetch(s.value);const d=await r.json();bT.innerHTML=`📊 Total: <b>${(d.quiz&&Array.isArray(d.quiz))?d.quiz.length:0} perguntas</b>`;}catch(e){bT.innerHTML=`⚠️ Erro.`;} }
-    async function processarTimeUnico(tN,tU,q,aK,t,d,mR){ addLog(`>> GERANDO: ${tN.toUpperCase()}`,"warn"); const pr=`Gere ${q} perguntas sobre história do ${tN} (Dificuldade: ${d}). ${t?`Tema OBRIGATÓRIO: "${t}".`:`Varie temas.`}\nREGRAS: Fatos históricos, max 15 palavras/perg, max 4 palavras/opc.\nFormato ESTRITO:\nPergunta: [Texto]\nA) [Opc 1]\nB) [Opc 2]\nC) [Opc 3]\nD) [Opc 4]\nCorreta: [1 a 4]\nAPENAS o texto puro.`; let tx=null; for(let i=1;i<=3;i++){const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${aK}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr}]}]})}); if(r.ok){const ds=await r.json();tx=ds.candidates[0].content.parts[0].text;addLog(`IA respondeu!`,"success");break;} if(r.status===429&&i<3){addLog(`⚠️ Limite IA. Tentando em 5s...`,"warn");await delay(5000);continue;} throw new Error(`IA recusou (${r.status}).`);} const pg=[]; tx.split(/(?:Pergunta|Q):/i).filter(b=>b.trim().length>0).forEach(b=>{const l=b.trim().split('\n').map(x=>x.trim()).filter(x=>x!==''); if(l.length>=5){let c=1,lC=l.find(x=>/Correta/i.test(x));if(lC){let m=lC.match(/\d+/);if(m)c=parseInt(m[0]);} pg.push({pergunta:l[0],opcoes:[l[1].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[2].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[3].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[4].replace(/^[A-D1-4][\)\.-]?\s*/i,'')],correta:c});} }); if(pg.length===0)throw new Error("IA gerou texto inválido."); addLog(`Geradas ${pg.length} perguntas.`,"info"); if(mR)addLog(`⚠️ Reciclagem!`,"error"); const rP=await fetch(tU,{method:"POST",body:JSON.stringify({acao:"salvar_quiz",perguntas:pg,substituir:mR})}); const rS=await rP.json(); if(rS.sucesso){addLog(`✅ SUCESSO!`,"success");localStorage.setItem("ultimo_time_gerado",tN);localStorage.setItem("ultimo_horario_gerado",new Date().toLocaleString('pt-BR'));}else throw new Error(rS.erro); }
+    
+    // API CORRIGIDA AQUI PARA: gemini-1.5-flash-latest
+    async function processarTimeUnico(tN,tU,q,aK,t,d,mR){ addLog(`>> GERANDO: ${tN.toUpperCase()}`,"warn"); const pr=`Gere ${q} perguntas sobre história do ${tN} (Dificuldade: ${d}). ${t?`Tema OBRIGATÓRIO: "${t}".`:`Varie temas.`}\nREGRAS: Fatos históricos, max 15 palavras/perg, max 4 palavras/opc.\nFormato ESTRITO:\nPergunta: [Texto]\nA) [Opc 1]\nB) [Opc 2]\nC) [Opc 3]\nD) [Opc 4]\nCorreta: [1 a 4]\nAPENAS o texto puro.`; let tx=null; for(let i=1;i<=3;i++){const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${aK}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr}]}]})}); if(r.ok){const ds=await r.json();tx=ds.candidates[0].content.parts[0].text;addLog(`IA respondeu!`,"success");break;} if(r.status===429&&i<3){addLog(`⚠️ Limite IA. Tentando em 5s...`,"warn");await delay(5000);continue;} throw new Error(`IA recusou (${r.status}).`);} const pg=[]; tx.split(/(?:Pergunta|Q):/i).filter(b=>b.trim().length>0).forEach(b=>{const l=b.trim().split('\n').map(x=>x.trim()).filter(x=>x!==''); if(l.length>=5){let c=1,lC=l.find(x=>/Correta/i.test(x));if(lC){let m=lC.match(/\d+/);if(m)c=parseInt(m[0]);} pg.push({pergunta:l[0],opcoes:[l[1].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[2].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[3].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[4].replace(/^[A-D1-4][\)\.-]?\s*/i,'')],correta:c});} }); if(pg.length===0)throw new Error("IA gerou texto inválido."); addLog(`Geradas ${pg.length} perguntas.`,"info"); if(mR)addLog(`⚠️ Reciclagem!`,"error"); const rP=await fetch(tU,{method:"POST",body:JSON.stringify({acao:"salvar_quiz",perguntas:pg,substituir:mR})}); const rS=await rP.json(); if(rS.sucesso){addLog(`✅ SUCESSO!`,"success");localStorage.setItem("ultimo_time_gerado",tN);localStorage.setItem("ultimo_horario_gerado",new Date().toLocaleString('pt-BR'));}else throw new Error(rS.erro); }
     async function iniciarAutomacao(mG){ const aK=$('api-key').value.trim(); if(!aK){switchTab('config');return addLog("ERRO: Chave Gemini!","error");} const q=$('qtd').value,t=$('tema').value.trim(),d=$('dificuldade').value,mR=$('substituir').checked,bU=$('btn-iniciar'),bG=$('btn-global'); bU.disabled=true;bG.disabled=true; try{ if(mG){addLog(`--- LOTE GLOBAL ---`,"warn"); const o=Array.from($('time').options); for(let i=0;i<o.length;i++){try{await processarTimeUnico(o[i].getAttribute("data-nome"),o[i].value,q,aK,t,d,mR);}catch(e){addLog(`❌ ERRO ${o[i].getAttribute("data-nome")}: ${e.message}`,"error");} if(i<o.length-1){addLog("Aguardando 5s...","info");await delay(5000);}} addLog(`--- FINALIZADO ---`,"success");}else{const s=$('time');await processarTimeUnico(s.options[s.selectedIndex].getAttribute("data-nome"),s.value,q,aK,t,d,mR);} atualizarBadgeUltimo();carregarInfoBanco(); }catch(er){addLog(`FALHA: ${er.message}`,"error");}finally{bU.disabled=false;bG.disabled=false;} }
 
     // ==========================================
@@ -767,12 +704,11 @@
 
         let mapaProdutos = {};
         let mapaClientes = {};
-        let mapaSocios = {};
+        let mapaPlataformas = {};
 
         // Processa as Vendas
         vendasFilter.forEach(v => {
             const valVenda = limparValorPlanilha(v.valor_venda);
-            const lucroVenda = limparValorPlanilha(v.lucro);
             const qtd = parseInt(v.qtd) || 1;
 
             totalVendidoBruto += valVenda;
@@ -782,7 +718,7 @@
 
             if(v.produto) mapaProdutos[v.produto] = (mapaProdutos[v.produto] || 0) + qtd;
             if(v.cliente) mapaClientes[v.cliente] = (mapaClientes[v.cliente] || 0) + valVenda;
-            if(v.plataforma) mapaSocios[v.plataforma] = (mapaSocios[v.plataforma] || 0) + lucroVenda; // Usa plataforma como socio
+            if(v.plataforma) mapaPlataformas[v.plataforma] = (mapaPlataformas[v.plataforma] || 0) + valVenda; 
         });
 
         // Processa os Gastos
@@ -810,14 +746,14 @@
         $('dash-prod-campeao').innerText = topProduto !== "-" ? `${topProduto} (${maxProd} un)` : "-";
         $('dash-cli-campeao').innerText = topCliente !== "-" ? `${topCliente} (${fmt(maxCli)})` : "-";
 
-        // Sócios
-        let htmlSocios = "";
-        for(let s in mapaSocios) {
+        // Plataformas
+        let htmlPlat = "";
+        for(let s in mapaPlataformas) {
             if(s && s.trim() !== "") {
-                htmlSocios += `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed #fde68a; padding:5px 0;"><span>${s}</span> <strong>${fmt(mapaSocios[s])}</strong></div>`;
+                htmlPlat += `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed #fde68a; padding:5px 0;"><span>${s}</span> <strong style="color:var(--brand-dark);">${fmt(mapaPlataformas[s])}</strong></div>`;
             }
         }
-        $('dash-socios-list').innerHTML = htmlSocios || "<p style='font-size:0.8rem; color:#b45309;'>Nenhum lucro distribuído.</p>";
+        $('dash-plataformas-list').innerHTML = htmlPlat || "<p style='font-size:0.8rem; color:#b45309;'>Nenhuma venda distribuída.</p>";
 
         // Gráficos
         const ctxFluxo = $('chartFluxoCaixa').getContext('2d');
@@ -862,29 +798,6 @@
     async function executarPagamentoVenda(){ if(!linhaVendaPagamento)return; const l=linhaVendaPagamento; fecharConfirmacao(); try{ const p={acao:"atualizar_status_venda",linha:l,novo_status:"Pago"}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Sucesso!","Pagamento registrado!","success");sincronizarDadosUnico();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");} }
     async function executarExclusaoVenda(){ if(!linhaVendaExclusao)return; const l=linhaVendaExclusao; fecharExclusao(); try{ const p={acao:"excluir_registro",aba:"Vendas",linha:l}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Excluído!","Venda apagada.","success");sincronizarDadosUnico();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");} }
 
-    // ==========================================
-    // EXPORTAÇÃO
-    // ==========================================
-    function exportarExcelERP() {
-        const m = $('rel-mes').value, a = $('rel-ano').value;
-        const fD = (i) => { 
-            if(m==="todos"&&a==="todos") return true; 
-            let pt=[]; if(i.data.includes('/')) pt=i.data.split('/'); else if(i.data.includes('-')) {let p=i.data.split('-'); pt=[p[2],p[1],p[0]];} 
-            if(pt.length>=3){ let mD=String(pt[1]).padStart(2,'0'), aD=String(pt[2]).substring(0,4); if(m!=="todos"&&mD!==m) return false; if(a!=="todos"&&aD!==a) return false; return true; } return false; 
-        };
-        const vDash = arrayVendas.filter(fD);
-        if(vDash.length === 0) return mostrarAlerta("Aviso", "Nenhuma venda neste período.", "warning");
-
-        let csvContent = "data:text/csv;charset=utf-8,Data,Cliente,Produto,Plataforma,Quantidade,Valor,Status,Lucro,Data Pagamento\n";
-        vDash.forEach(v => {
-            let row = [v.data, `"${v.cliente}"`, `"${v.produto}"`, `"${v.plataforma}"`, v.qtd, `"${v.valor_venda}"`, v.status, `"${v.lucro}"`, v.data_pgt || ""];
-            csvContent += row.join(",") + "\n";
-        });
-
-        const encodedUri = encodeURI(csvContent), link = document.createElement("a");
-        link.setAttribute("href", encodedUri); link.setAttribute("download", `Vendas_MiniMundo_${a}_${m}.csv`);
-        document.body.appendChild(link); link.click(); document.body.removeChild(link);
-    }
 </script>
 </body>
 </html>
