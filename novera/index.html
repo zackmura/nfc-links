@@ -22,7 +22,7 @@
         
         body { font-family: 'Montserrat', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; color: var(--text-main); padding-bottom: 50px; }
         .app-container { width: 100%; max-width: 600px; }
-        .card { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); }
+        .card { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); position: relative; }
         
         .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
         .header img.logo { width: 150px; height: auto; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
@@ -116,12 +116,16 @@
         .btn-modal-confirm { flex: 1; background: #A05252; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; box-shadow: 0 4px 0 #803f3f; font-family: 'Montserrat', sans-serif;}
         .btn-modal-confirm:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
 
-        /* ESTILO DO OLHINHO DA SENHA */
+        /* ESTILO DO OLHINHO E CARREGAMENTO */
         .password-wrapper { position: relative; display: flex; align-items: center; }
         .password-wrapper input { width: 100%; padding-right: 45px; }
         .toggle-eye { position: absolute; right: 10px; background: transparent; border: none; font-size: 1.2rem; cursor: pointer; color: var(--primary-dark); padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .toggle-eye:active { transform: scale(0.8); }
         .toggle-eye:hover { background: var(--border-color); }
+        
+        .loading-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 500; display: none; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px; }
+        .spinner { border: 4px solid #f3d8e2; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -134,35 +138,30 @@
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 150px; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 25px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
-        <div id="login-full-area">
-            <div class="input-group" style="text-align: left;">
-                <label>Usuário</label>
-                <input type="text" id="login-user" placeholder="Ex: Fernando">
-            </div>
-            <div class="input-group" style="text-align: left;">
-                <label>Senha</label>
-                <div class="password-wrapper">
-                    <input type="password" id="login-pass" placeholder="Digite sua senha">
-                    <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">👁️</button>
-                </div>
-            </div>
-            <button class="btn-salvar" id="btn-login" onclick="fazerLogin()">Entrar</button>
+        <div class="input-group" style="text-align: left;">
+            <label>Usuário</label>
+            <input type="text" id="login-user" placeholder="Ex: Fernando">
         </div>
-
-        <div id="login-pin-area" style="display: none; margin-top: 10px;">
-            <p style="font-size: 0.9rem; font-weight: 600; color: var(--primary-dark);">Bem-vindo de volta, <span id="pin-user-name"></span>!</p>
-            <div class="input-group">
-                <input type="password" id="login-pin-input" maxlength="4" placeholder="PIN" style="text-align: center; letter-spacing: 15px; font-size: 1.8rem; padding: 15px;">
+        <div class="input-group" style="text-align: left;">
+            <label>Senha (PIN)</label>
+            <div class="password-wrapper">
+                <input type="password" id="login-pass" inputmode="numeric" pattern="[0-9]*" placeholder="Digite sua senha">
+                <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">👁️</button>
             </div>
-            <button class="btn-salvar" style="background: #2563eb; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);" onclick="fazerLoginPIN()">Entrar com PIN</button>
-            <p style="font-size: 0.75rem; margin-top: 25px; cursor: pointer; text-decoration: underline; color: #888;" onclick="mostrarLoginCompleto()">Entrar com outra conta</p>
         </div>
-
+        
+        <button class="btn-salvar" id="btn-login" onclick="fazerLogin()">Entrar</button>
     </div>
 </div>
 
 <div id="main-app" class="app-container" style="display: none;">
     <div class="card">
+        
+        <div id="global-loader" class="loading-overlay">
+            <div class="spinner"></div>
+            <p style="color: var(--primary-dark); font-weight: 700; font-size: 0.9rem;">Sincronizando Dados...</p>
+        </div>
+
         <div class="header">
             <img src="logo.png" alt="Novera Scent Logo" class="logo" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -210,13 +209,8 @@
 
             <button class="btn-salvar" id="btn-salvar-rotulo" onclick="salvarRotulo()">Criar Identidade (N-XXXX)</button>
 
-            <div class="section-title">
-                📋 Dicionário Ativo
-                <span id="loading-rotulos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span>
-            </div>
-            <div id="lista-rotulos-cadastrados">
-                <p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando banco de dados...</p>
-            </div>
+            <div class="section-title">📋 Dicionário Ativo</div>
+            <div id="lista-rotulos-cadastrados"></div>
         </div>
 
         <div id="tab-precificar" class="tab-content">
@@ -226,7 +220,7 @@
                 <div class="col">
                     <label>Base Mestre (Identidade)</label>
                     <select id="n-produto">
-                        <option value="">Carregando essências...</option>
+                        <option value="">Aguardando dados...</option>
                     </select>
                 </div>
                 <div class="col">
@@ -275,13 +269,8 @@
 
             <button class="btn-salvar" id="btn-salvar-lote" onclick="salvarLotePrecificacao()">Registrar Custos do Lote</button>
 
-            <div class="section-title" style="margin-top: 35px;">
-                📋 Histórico de Lotes Produzidos
-                <span id="loading-custos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span>
-            </div>
-            <div id="lista-custos-cadastrados">
-                <p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando banco de dados...</p>
-            </div>
+            <div class="section-title" style="margin-top: 35px;">📋 Histórico de Lotes Produzidos</div>
+            <div id="lista-custos-cadastrados"></div>
         </div>
 
         <div id="tab-gastos" class="tab-content">
@@ -310,12 +299,12 @@
             
             <button class="btn-salvar" id="btn-salvar-gasto" onclick="salvarGasto()">Lançar Despesa</button>
 
-            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros <span id="loading-gastos" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span></div>
+            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros</div>
             <div class="filtro-box">
                 <div class="row">
                     <div class="col">
                         <label>Sócio</label>
-                        <select id="f-socio" onchange="filtrarGastos()">
+                        <select id="f-socio" onchange="renderizarGastos()">
                             <option value="">Todos os Sócios</option>
                             <option value="amor">Amor (Fernando)</option>
                             <option value="natália">Natália</option>
@@ -326,8 +315,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col"><label>Data Início</label><input type="date" id="f-data-ini" onchange="filtrarGastos()"></div>
-                    <div class="col"><label>Data Fim</label><input type="date" id="f-data-fim" onchange="filtrarGastos()"></div>
+                    <div class="col"><label>Data Início</label><input type="date" id="f-data-ini" onchange="renderizarGastos()"></div>
+                    <div class="col"><label>Data Fim</label><input type="date" id="f-data-fim" onchange="renderizarGastos()"></div>
                 </div>
             </div>
             
@@ -335,13 +324,13 @@
                 <span>Total Filtrado:</span> <span id="g-total-dashboard">R$ 0,00</span>
             </div>
 
-            <div id="lista-gastos-cadastrados"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando gastos...</p></div>
+            <div id="lista-gastos-cadastrados"></div>
         </div>
 
         <div id="tab-vendas" class="tab-content">
             <div class="section-title">🛍️ Registrar Venda</div>
             <div class="row"><div class="col"><label>Data da Venda</label><input type="date" id="v-data"></div><div class="col"><label>Cliente</label><input type="text" id="v-cliente" list="lista-clientes" placeholder="Nome do Cliente"></div></div>
-            <div class="input-group"><label>Produto Vendido</label><select id="v-produto"><option value="">Carregando produtos...</option></select></div>
+            <div class="input-group"><label>Produto Vendido</label><select id="v-produto"><option value="">Aguardando dados...</option></select></div>
             
             <div class="row">
                 <div class="col"><label>Lucro da Venda p/</label><input type="text" id="v-socio" list="lista-socios-dinamica" placeholder="Sócio (Ex: Natália)"></div>
@@ -366,11 +355,11 @@
                 </div>
             </div>
 
-            <div class="section-title" style="margin-top: 25px;">📊 Dashboard de Vendas <span id="loading-vendas" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Carregando...</span></div>
+            <div class="section-title" style="margin-top: 25px;">📊 Dashboard de Vendas</div>
             <div class="filtro-box">
                 <div class="row">
-                    <div class="col"><label>Mês</label><select id="f-v-mes" onchange="filtrarVendas()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
-                    <div class="col"><label>Status PG</label><select id="f-v-status" onchange="filtrarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
+                    <div class="col"><label>Mês</label><select id="f-v-mes" onchange="renderizarVendas()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
+                    <div class="col"><label>Status PG</label><select id="f-v-status" onchange="renderizarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
                 </div>
             </div>
             
@@ -382,16 +371,13 @@
                 <div class="dash-card"><h5>Itens Vendidos</h5><p id="dash-v-itens">0</p></div>
             </div>
 
-            <div id="lista-vendas-cadastradas"><p style="text-align: center; color: #999; font-size: 0.8rem;">Carregando histórico...</p></div>
+            <div id="lista-vendas-cadastradas"></div>
             <datalist id="lista-clientes"></datalist>
             <datalist id="lista-socios-dinamica"></datalist>
         </div>
 
         <div id="tab-dashboard" class="tab-content">
-            <div class="section-title">
-                📊 Visão Global da Novera 
-                <span id="loading-dash" style="font-size: 0.7rem; display: none; color: var(--primary);">⏳ Calculando...</span>
-            </div>
+            <div class="section-title">📊 Visão Global da Novera</div>
 
             <div class="filtro-box">
                 <div class="row" style="margin-bottom: 0;">
@@ -464,19 +450,12 @@
                 <canvas id="chartStatusVendas"></canvas>
             </div>
 
-            <button class="btn-salvar" onclick="carregarDashboard()" style="margin-top: 10px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Atualizar Dados</button>
+            <button class="btn-salvar" onclick="sincronizarDadosUnico()" style="margin-top: 10px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Atualizar Todos os Dados</button>
         </div>
 
         <div id="tab-configuracoes" class="tab-content">
-            
-            <div class="section-title">🔐 Acesso Rápido (PIN)</div>
-            <p style="font-size: 0.8rem; color: #888; margin-top: 0; line-height: 1.4;">Crie uma senha de 4 dígitos para entrar no sistema rapidamente sem precisar digitar a senha completa do banco toda vez.</p>
-            <div class="input-group" style="margin-top: 15px;">
-                <input type="password" id="cfg-pin" maxlength="4" placeholder="Ex: 1234" style="text-align: center; letter-spacing: 15px; font-size: 1.5rem; padding: 15px;">
-            </div>
-            <button class="btn-salvar" style="background: #2563eb; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3); margin-top: 5px;" onclick="salvarPIN()">Salvar PIN</button>
-
-            <div class="section-title" style="margin-top: 35px;">⚙️ Alterar Senha do Banco</div>
+            <div class="section-title">⚙️ Alterar Senha (PIN)</div>
+            <p style="font-size: 0.8rem; color: #888; margin-top: 0; line-height: 1.4;">Lembre-se: sua senha deve conter preferencialmente apenas números para o login rápido.</p>
             <div class="input-group">
                 <label>Usuário Logado</label>
                 <input type="text" id="cfg-user" readonly>
@@ -484,19 +463,19 @@
             <div class="input-group">
                 <label>Senha Atual</label>
                 <div class="password-wrapper">
-                    <input type="password" id="cfg-senha-atual">
+                    <input type="password" id="cfg-senha-atual" inputmode="numeric" pattern="[0-9]*">
                     <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">👁️</button>
                 </div>
             </div>
             <div class="input-group">
                 <label>Nova Senha</label>
                 <div class="password-wrapper">
-                    <input type="password" id="cfg-nova-senha">
+                    <input type="password" id="cfg-nova-senha" inputmode="numeric" pattern="[0-9]*">
                     <button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">👁️</button>
                 </div>
             </div>
             
-            <button class="btn-salvar" id="btn-alterar-senha" onclick="alterarSenha()">Atualizar Senha</button>
+            <button class="btn-salvar" id="btn-alterar-senha" onclick="alterarSenha()">Atualizar Senha no Banco</button>
 
             <div class="section-title" style="margin-top: 40px; color: #A05252; border-left-color: #A05252;">🚪 Sair do Sistema</div>
             <button class="btn-salvar" style="background: #fdf5f7; color: #A05252; border: 1px solid #f3d8e2; box-shadow: none;" onclick="fazerLogout()">Fazer Logout</button>
@@ -513,50 +492,58 @@
         <p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p>
         <div style="display: flex; gap: 10px; margin-top: 15px;">
             <button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button>
-            <button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Apagar</button>
+            <button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Confirmar</button>
         </div>
     </div>
 </div>
 
-<div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><div class="input-group" style="text-align: left;"><label>Tipo de Produto</label><input type="text" id="edit-r-tipo" list="lista-tipos"></div><button class="btn-salvar" id="btn-salvar-edicao-rotulo" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
-
-<div id="modal-editar-custo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-custo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Custo</h3><input type="hidden" id="edit-c-linha"><div class="input-group" style="text-align: left;"><label>Nome / Lote Produzido</label><input type="text" id="edit-c-modelo"></div><div class="row" style="text-align: left;"><div class="col"><label>Custo Líquido</label><input type="text" id="edit-c-liquido" class="mask-money"></div><div class="col"><label>Insumos</label><input type="text" id="edit-c-insumos" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Custo Total</label><input type="text" id="edit-c-total" class="mask-money"></div><button class="btn-salvar" id="btn-salvar-edicao-custo" onclick="salvarEdicaoCusto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
-
-<div id="modal-editar-gasto" class="modal-overlay-alert">
-    <div class="modal-box-alert" style="padding-top: 40px;">
-        <button onclick="document.getElementById('modal-editar-gasto').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
-        <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Gasto</h3>
-        <input type="hidden" id="edit-g-linha">
-        <div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div>
-        <div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div>
-        <div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div>
-        <div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div>
-        <div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div>
-        <button class="btn-salvar" id="btn-salvar-edicao-gasto" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
-    </div>
-</div>
-
-<div id="modal-editar-venda" class="modal-overlay-alert">
-    <div class="modal-box-alert" style="padding-top: 40px;">
-        <button onclick="document.getElementById('modal-editar-venda').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
-        <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3>
-        <input type="hidden" id="edit-v-linha">
-        <div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div>
-        <div class="input-group" style="text-align: left;"><label>Produto Vendido</label><select id="edit-v-produto"><option value="">Carregando produtos...</option></select></div>
-        <div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div>
-        <div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div>
-        <div class="input-group" style="text-align: left;"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div>
-        <button class="btn-salvar" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
-    </div>
-</div>
+<div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><div class="input-group" style="text-align: left;"><label>Tipo de Produto</label><input type="text" id="edit-r-tipo" list="lista-tipos"></div><button class="btn-salvar" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+<div id="modal-editar-custo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-custo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Custo</h3><input type="hidden" id="edit-c-linha"><div class="input-group" style="text-align: left;"><label>Nome / Lote Produzido</label><input type="text" id="edit-c-modelo"></div><div class="row" style="text-align: left;"><div class="col"><label>Custo Líquido</label><input type="text" id="edit-c-liquido" class="mask-money"></div><div class="col"><label>Insumos</label><input type="text" id="edit-c-insumos" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Custo Total</label><input type="text" id="edit-c-total" class="mask-money"></div><button class="btn-salvar" onclick="salvarEdicaoCusto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+<div id="modal-editar-gasto" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-gasto').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Gasto</h3><input type="hidden" id="edit-g-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div><div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div><div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div><div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div><div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div><button class="btn-salvar" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+<div id="modal-editar-venda" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-venda').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3><input type="hidden" id="edit-v-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div><div class="input-group" style="text-align: left;"><label>Produto Vendido</label><select id="edit-v-produto"></select></div><div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div><div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div><button class="btn-salvar" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
 <script>
+    // URL DA API (ATUALIZE AQUI CASO CRIE NOVA IMPLANTAÇÃO)
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
-    // ================= CONTROLE DE LOGIN E SEGURANÇA =================
+    // ================= DADOS GLOBAIS E SINCRONIZAÇÃO ÚNICA (O SEGREDO DA VELOCIDADE) =================
+    let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], vendasGlobal = [];
     let usuarioLogado = "";
     let dadosCarregados = false; 
 
+    async function sincronizarDadosUnico() {
+        const loader = document.getElementById("global-loader");
+        loader.style.display = "flex";
+        
+        try {
+            const res = await fetch(API_NOVERA + "?acao=listar_tudo&_t=" + new Date().getTime()); 
+            const dados = await res.json();
+            
+            if (dados.sucesso) {
+                rotulosGlobal = dados.rotulos;
+                custosGlobal = dados.custos;
+                gastosGlobal = dados.gastos;
+                vendasGlobal = dados.vendas;
+                
+                // Renderiza todas as telas de uma vez com os dados guardados
+                renderizarRotulos();
+                renderizarCustos();
+                filtrarGastos();
+                renderizarVendas();
+                renderizarDashboard();
+                
+                dadosCarregados = true;
+            } else {
+                mostrarAlerta("Erro de Sincronização", dados.erro, "error");
+            }
+        } catch(e) { 
+            mostrarAlerta("Falha de Conexão", "Não foi possível buscar os dados. Verifique a internet.", "error"); 
+        } finally { 
+            loader.style.display = "none"; 
+        }
+    }
+
+    // ================= CONTROLE DE LOGIN E SEGURANÇA =================
     function toggleSenha(inputId, btnElement) {
         const input = document.getElementById(inputId);
         if (input.type === "password") { input.type = "text"; btnElement.innerText = "🙈"; } 
@@ -565,52 +552,30 @@
 
     function iniciarSessaoLocal(usuario) {
         localStorage.setItem('novera_last_user', usuario);
-        // Trava a sessão para expirar daqui a 12 horas
-        localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000));
+        localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); // 12h logado
         usuarioLogado = usuario;
         
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
         document.getElementById('cfg-user').value = usuario;
         
-        if (!dadosCarregados) {
-            carregarRotulos(); 
-            carregarCustos();
-            calcularNovera(); 
-            dadosCarregados = true;
-        }
+        // Inicia a super busca se for o primeiro login do dia
+        if (!dadosCarregados) sincronizarDadosUnico();
     }
 
     function verificarLogin() {
         const expires = localStorage.getItem('novera_session_expires');
         const lastUser = localStorage.getItem('novera_last_user') || '';
-        const savedPin = localStorage.getItem('novera_pin');
 
         if (expires && Date.now() < parseInt(expires)) {
-            // Sessão válida! Entra direto.
-            iniciarSessaoLocal(lastUser);
+            iniciarSessaoLocal(lastUser); // Entra direto
         } else {
-            // Sessão expirou
+            // Volta pro Login
             document.getElementById('login-screen').style.display = 'block';
             document.getElementById('main-app').style.display = 'none';
-            
-            if(lastUser && savedPin) {
-                // Tem PIN configurado
-                document.getElementById('login-full-area').style.display = 'none';
-                document.getElementById('login-pin-area').style.display = 'block';
-                document.getElementById('pin-user-name').innerText = lastUser;
-                document.getElementById('login-pin-input').value = '';
-            } else {
-                mostrarLoginCompleto();
-            }
+            document.getElementById('login-user').value = lastUser; 
+            document.getElementById('login-pass').value = ''; 
         }
-    }
-
-    function mostrarLoginCompleto() {
-        document.getElementById('login-full-area').style.display = 'block';
-        document.getElementById('login-pin-area').style.display = 'none';
-        document.getElementById('login-user').value = localStorage.getItem('novera_last_user') || ''; 
-        document.getElementById('login-pass').value = ''; 
     }
 
     async function fazerLogin() {
@@ -627,136 +592,74 @@
             if (json.sucesso) {
                 iniciarSessaoLocal(json.usuario);
             } else {
-                mostrarAlerta("Erro", json.erro, "error");
+                mostrarAlerta("Acesso Negado", "Usuário ou senha incorretos.", "error");
             }
-        } catch(e) {
-            mostrarAlerta("Erro", "Falha na conexão.", "error");
-        } finally {
-            btn.disabled = false; btn.innerText = "Entrar";
-        }
+        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
+        finally { btn.disabled = false; btn.innerText = "Entrar"; }
     }
 
     function fazerLogout() {
         localStorage.removeItem('novera_session_expires'); 
+        dadosCarregados = false; // Força recarregar tudo na proxima vez
         verificarLogin(); 
-    }
-
-    // ================= PIN RÁPIDO =================
-    function salvarPIN() {
-        const pin = document.getElementById('cfg-pin').value;
-        if(pin.length !== 4 || isNaN(pin)) return mostrarAlerta("Atenção", "O PIN deve ter exatamente 4 números.", "warning");
-        
-        localStorage.setItem('novera_pin', pin);
-        mostrarAlerta("Sucesso", "PIN configurado! A partir de agora você pode acessar usando ele.", "success");
-        document.getElementById('cfg-pin').value = '';
-    }
-
-    function fazerLoginPIN() {
-        const typedPin = document.getElementById('login-pin-input').value;
-        const savedPin = localStorage.getItem('novera_pin');
-        const lastUser = localStorage.getItem('novera_last_user');
-        
-        if(typedPin === savedPin) {
-            iniciarSessaoLocal(lastUser);
-        } else {
-            mostrarAlerta("Erro", "PIN Incorreto. Tente novamente.", "error");
-            document.getElementById('login-pin-input').value = '';
-        }
     }
 
     async function alterarSenha() {
         const atual = document.getElementById('cfg-senha-atual').value;
         const nova = document.getElementById('cfg-nova-senha').value;
         if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha a senha atual e a nova.", "warning");
-
-        const btn = document.getElementById('btn-alterar-senha');
-        btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
-
+        const btn = document.getElementById('btn-alterar-senha'); btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
         try {
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) });
             const json = await res.json();
             if(json.sucesso) {
-                mostrarAlerta("Sucesso", "Senha alterada com sucesso no banco!", "success");
-                document.getElementById('cfg-senha-atual').value = "";
-                document.getElementById('cfg-nova-senha').value = "";
-            } else {
-                mostrarAlerta("Erro", json.erro, "error");
-            }
-        } catch(e) {
-             mostrarAlerta("Erro", "Falha na conexão.", "error");
-        } finally {
-            btn.disabled = false; btn.innerText = "Atualizar Senha";
-        }
+                mostrarAlerta("Sucesso", "Sua senha (PIN) foi alterada no banco de dados!", "success");
+                document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = "";
+            } else { mostrarAlerta("Erro", json.erro, "error"); }
+        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
+        finally { btn.disabled = false; btn.innerText = "Atualizar Senha no Banco"; }
     }
 
     // ================= FUNÇÕES UTILITÁRIAS =================
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
-    
     function safeFmt(val) {
         if (val === "" || val === null || val === undefined) return "R$ 0,00"; 
         if (typeof val === 'number') return fmt(val);
-        let str = String(val).replace(/[R$\s]/g, '');
-        if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str));
-        let num = parseFloat(str.replace(/\./g, '').replace(',', '.'));
-        return isNaN(num) ? "R$ 0,00" : fmt(num);
+        let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str));
+        let num = parseFloat(str.replace(/\./g, '').replace(',', '.')); return isNaN(num) ? "R$ 0,00" : fmt(num);
     }
-    
     function parseDinheiro(val) {
         if (val === "" || val === null || val === undefined) return 0;
         if (typeof val === 'number') return val;
-        let str = String(val).replace(/[R$\s]/g, '');
-        if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0;
+        let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0;
         return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
     }
 
-    let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0;
-    let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], vendasGlobal = [], acaoConfirmada = null; 
-    let chartRGBase = null, chartStatusBase = null;
+    let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0; let acaoConfirmada = null; let chartRGBase = null, chartStatusBase = null;
 
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
-            let val = e.target.value.replace(/\D/g, ''); 
-            if(val === "") { e.target.value = ""; return; }
-            val = (parseInt(val) / 100).toFixed(2) + ''; 
-            val = val.replace(".", ","); 
-            val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); 
-            val = val.replace(/(\d)(\d{3}),/g, "$1.$2,");
+            let val = e.target.value.replace(/\D/g, ''); if(val === "") { e.target.value = ""; return; }
+            val = (parseInt(val) / 100).toFixed(2) + ''; val = val.replace(".", ","); 
+            val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); val = val.replace(/(\d)(\d{3}),/g, "$1.$2,");
             e.target.value = "R$ " + val;
-            
             if(e.target.id === 'g-valor') setTimeout(calcularTotalGasto, 10);
             if(e.target.id === 'edit-g-valor') setTimeout(calcularEditGasto, 10);
             if(e.target.id.startsWith('edit-c-')) setTimeout(calcularEditCusto, 10);
         }
     });
 
-    // ================= CONTROLE DE MENU E MODAL =================
-    function toggleMenu() {
-        const menu = document.getElementById('menu-items');
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function selectMenu(tabId, nomeMenu) {
-        document.getElementById('menu-texto-atual').innerText = nomeMenu;
-        document.getElementById('menu-items').style.display = 'none';
-        switchTab(tabId);
-    }
-
+    // ================= CONTROLE DE MENU =================
+    function toggleMenu() { const menu = document.getElementById('menu-items'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
+    function selectMenu(tabId, nomeMenu) { document.getElementById('menu-texto-atual').innerText = nomeMenu; document.getElementById('menu-items').style.display = 'none'; switchTab(tabId); }
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.getElementById('tab-' + tabId).classList.add('active');
-        
-        if(tabId === 'precificar') carregarCustos();
-        if(tabId === 'gastos') { carregarGastos(); document.getElementById('g-data').valueAsDate = new Date(); }
-        if(tabId === 'vendas') { carregarVendas(); document.getElementById('v-data').valueAsDate = new Date(); }
-        if(tabId === 'dashboard') { carregarDashboard(); }
+        if(tabId === 'gastos' && !document.getElementById('g-data').value) document.getElementById('g-data').valueAsDate = new Date();
+        if(tabId === 'vendas' && !document.getElementById('v-data').value) document.getElementById('v-data').valueAsDate = new Date();
     }
-
-    window.onclick = function(event) {
-        if (!event.target.closest('.menu-dropdown')) {
-            document.getElementById('menu-items').style.display = "none";
-        }
-    }
+    window.onclick = function(event) { if (!event.target.closest('.menu-dropdown')) { document.getElementById('menu-items').style.display = "none"; } }
 
     function mostrarAlerta(titulo, texto, tipo) { 
         const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
@@ -767,71 +670,55 @@
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-    // AQUI ESTÁ A FUNÇÃO CORRIGIDA PARA O MODAL DINÂMICO
     function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
-        document.getElementById('modal-conf-title').innerText = titulo;
-        document.getElementById('modal-conf-title').style.color = corHex;
-        document.getElementById('modal-conf-icon').innerText = icone;
-        document.getElementById('texto-confirmar').innerText = texto;
-        
-        const btn = document.getElementById('btn-confirmar-acao');
-        btn.innerText = textoBtn;
-        btn.style.background = corHex;
-        btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
-        
-        acaoConfirmada = callback; 
-        document.getElementById('modal-confirmar').style.display = 'flex';
+        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
+        const btn = document.getElementById('btn-confirmar-acao'); btn.innerText = textoBtn; btn.style.background = corHex; btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
+        acaoConfirmada = callback; document.getElementById('modal-confirmar').style.display = 'flex';
     }
-    
-    document.getElementById('btn-confirmar-acao').onclick = () => { if (acaoConfirmada) acaoConfirmada(); document.getElementById('modal-confirmar').style.display = 'none'; };
 
-    // ================= ROTULOS =================
-    async function carregarRotulos() {
-        document.getElementById("loading-rotulos").style.display = "inline";
-        try {
-            const res = await fetch(API_NOVERA + "?acao=listar_rotulos&_t=" + new Date().getTime()); const dados = await res.json();
-            if (dados.sucesso) {
-                rotulosGlobal = dados.rotulos;
-                const lista = document.getElementById("lista-rotulos-cadastrados"), select = document.getElementById("n-produto");
-                if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum rótulo cadastrado.</p>"; select.innerHTML = '<option value="">Cadastre no Dicionário primeiro...</option>'; return; }
-                let htmlLista = "", htmlSelect = '<option value="">Selecione a Identidade Base...</option>';
-                rotulosGlobal.forEach(r => {
-                    htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>${r.tipo} • Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRotulo(${r.linha}, '${r.codigo}')" title="Excluir">🗑️</button></div></div></div>`;
-                    htmlSelect += `<option value="${r.codigo} ${r.essencia}">${r.codigo} ${r.essencia}</option>`;
-                });
-                lista.innerHTML = htmlLista; select.innerHTML = htmlSelect;
-            }
-        } catch(e) {} finally { document.getElementById("loading-rotulos").style.display = "none"; }
+    // ================= ABA ROTULOS =================
+    function renderizarRotulos() {
+        const lista = document.getElementById("lista-rotulos-cadastrados"), select = document.getElementById("n-produto");
+        if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; select.innerHTML = '<option value="">Cadastre no Dicionário primeiro...</option>'; return; }
+        let htmlLista = "", htmlSelect = '<option value="">Selecione a Identidade Base...</option>';
+        rotulosGlobal.forEach(r => {
+            htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>${r.tipo} • Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRotulo(${r.linha}, '${r.codigo}')" title="Excluir">🗑️</button></div></div></div>`;
+            htmlSelect += `<option value="${r.codigo} ${r.essencia}">${r.codigo} ${r.essencia}</option>`;
+        });
+        lista.innerHTML = htmlLista; select.innerHTML = htmlSelect;
     }
+
     async function salvarRotulo() {
         const essencia = document.getElementById('r-essencia').value.trim(), codForn = document.getElementById('r-codigo-forn').value.trim(), marca = document.getElementById('r-marca').value.trim(), tipo = document.getElementById('r-tipo').value.trim();
         if (!essencia || !tipo) return mostrarAlerta("Atenção", "Preencha a Essência e o Tipo.", "warning");
         const btn = document.getElementById('btn-salvar-rotulo'); btn.disabled = true; btn.innerText = "⏳ GERANDO...";
         try {
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, tipo: tipo }) }); const resultado = await res.json();
-            if (resultado.sucesso) { mostrarAlerta("Criado!", `Essência fixada como ${resultado.novo_codigo}.`, "success"); document.getElementById('r-essencia').value = ""; carregarRotulos(); } 
-            else if (resultado.erro === "DUPLICADO_ROTULO") { mostrarAlerta("Já Existe", `A essência "${essencia}" já possui o código ${resultado.codigo_existente}.`, "warning"); } else throw new Error(resultado.erro);
-        } catch (e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "CRIAR IDENTIDADE (N-XXXX)"; }
+            if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; sincronizarDadosUnico(); } 
+            else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); }
+        } catch (e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "CRIAR IDENTIDADE (N-XXXX)"; }
     }
+
     function abrirModalEditarRotulo(linha) {
         const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return;
         document.getElementById('edit-r-linha').value = r.linha; document.getElementById('edit-r-essencia').value = r.essencia; document.getElementById('edit-r-codigo-forn').value = r.codigo_forn; document.getElementById('edit-r-marca').value = r.marca; document.getElementById('edit-r-tipo').value = r.tipo; document.getElementById('modal-editar-rotulo').style.display = 'flex';
     }
+
     async function salvarEdicaoRotulo() {
-        const btn = document.getElementById('btn-salvar-edicao-rotulo'); btn.disabled = true; btn.innerText = "⏳...";
         try {
             const py = { acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: document.getElementById('edit-r-essencia').value, codigo_forn: document.getElementById('edit-r-codigo-forn').value, marca: document.getElementById('edit-r-marca').value, tipo: document.getElementById('edit-r-tipo').value };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); carregarRotulos(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
+            if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); }
+        } catch(e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); }
     }
+
     function prepararExclusaoRotulo(linha, codigo) { 
-        abrirConfirmacao("Excluir Identidade?", `Deseja excluir a identidade ${codigo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => {
-            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Identidade apagada.", "success"); carregarRotulos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        abrirConfirmacao("Excluir Identidade?", `Apagar ${codigo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => {
+            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Apagado.", "success"); sincronizarDadosUnico(); } } catch(e) {} 
         });
     }
 
-    // ================= PRECIFICAÇÃO =================
+    // ================= ABA PRECIFICAÇÃO =================
     function calcularNovera() {
         const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0, qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0, cBase1L = parseFloat(document.getElementById('n-custo-base').value) || 0, qBase = parseFloat(document.getElementById('n-qtd-base').value) || 0, mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1, cInsumos = parseFloat(document.getElementById('n-insumos').value) || 0;
         const valorMlFrag = qFrag > 0 ? cFrag / qFrag : 0, valorMlBase = cBase1L / 1000, qtdMlProducao = qBase + qFrag, qtdFrascos = qtdMlProducao / mlVenda, custoLiquidoUni = qtdFrascos > 0 ? (cFrag + (valorMlBase * qBase)) / qtdFrascos : 0, custoTotalUni = custoLiquidoUni + cInsumos;
@@ -839,519 +726,215 @@
         document.getElementById('r-ml-frag').innerText = fmt(valorMlFrag); document.getElementById('r-ml-base').innerText = fmt(valorMlBase); document.getElementById('r-vol-total').innerText = qtdMlProducao + " ml"; document.getElementById('r-frascos').innerText = qtdFrascos.toFixed(1); document.getElementById('r-liquido').innerText = fmt(custoLiquidoUni); document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
         document.getElementById('m-preco-2x').innerText = fmt(custoTotalUni * 2); document.getElementById('m-lucro-2x').innerText = "Lucro Limpo: " + fmt(custoTotalUni); document.getElementById('m-preco-4x').innerText = fmt(custoTotalUni * 4); document.getElementById('m-lucro-4x').innerText = "Lucro Limpo: " + fmt(custoTotalUni * 3);
     }
-    function calcularEditCusto() {
-        const liq = parseDinheiro(document.getElementById('edit-c-liquido').value);
-        const ins = parseDinheiro(document.getElementById('edit-c-insumos').value);
-        document.getElementById('edit-c-total').value = fmt(liq + ins);
+
+    function renderizarCustos() {
+        const lista = document.getElementById("lista-custos-cadastrados"), selectVendas = document.getElementById("v-produto"), selectEditVendas = document.getElementById("edit-v-produto");
+        if (custosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999;'>Vazio.</p>"; return; }
+        let html = "", htmlVendas = '<option value="">Selecione o Produto/Lote...</option>';
+        custosGlobal.forEach(c => { 
+            html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${c.modelo}</h4><p>Líquido: ${safeFmt(c.valor_liquido)} • Insumos: ${safeFmt(c.valor_insumos)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val">${safeFmt(c.custo_total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarCusto(${c.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoCusto(${c.linha}, '${c.modelo}')">🗑️</button></div></div></div>`; 
+            htmlVendas += `<option value="${c.modelo}" data-custo="${parseDinheiro(c.custo_total)}">${c.modelo} (Custo: ${safeFmt(c.custo_total)})</option>`;
+        }); 
+        lista.innerHTML = html; if(selectVendas) selectVendas.innerHTML = htmlVendas; if(selectEditVendas) selectEditVendas.innerHTML = htmlVendas;
     }
+
     async function salvarLotePrecificacao() {
         const ess = document.getElementById('n-produto').value, lote = document.getElementById('p-lote').value.trim(), ml = document.getElementById('n-ml-venda').value;
         if (!ess || !lote) return mostrarAlerta("Atenção", "Preencha a Base Mestre e o Lote.", "warning");
-        const modeloFinal = `${ess} - ${lote} ${ml}ml`; const btn = document.getElementById('btn-salvar-lote'); btn.disabled = true; btn.innerText = "⏳ REGISTRANDO...";
+        const btn = document.getElementById('btn-salvar-lote'); btn.disabled = true; btn.innerText = "⏳...";
         try {
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_custo", modelo: modeloFinal, valor_liquido: fmtPlanilha(custoLiquidoGlobal), valor_insumos: fmtPlanilha(custoInsumosGlobal), custo_total: fmtPlanilha(custoTotalGlobal) }) }); const resultado = await res.json();
-            if (resultado.sucesso) { mostrarAlerta("Salvo!", `Lote ${modeloFinal} registrado.`, "success"); carregarCustos(); } else if (resultado.erro === "DUPLICADO") { mostrarAlerta("Duplicado", "Lote já existe.", "warning"); } else throw new Error(resultado.erro);
-        } catch (erro) { mostrarAlerta("Erro", erro.message, "error"); } finally { btn.disabled = false; btn.innerText = "REGISTRAR CUSTOS DO LOTE"; }
-    }
-    
-    async function carregarCustos() {
-        document.getElementById("loading-custos").style.display = "inline";
-        try {
-            const res = await fetch(API_NOVERA + "?acao=listar_custos&_t=" + new Date().getTime()); const dados = await res.json();
-            if (dados.sucesso) {
-                custosGlobal = dados.custos; const lista = document.getElementById("lista-custos-cadastrados");
-                if (custosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; return; }
-                
-                let html = ""; 
-                const selectVendas = document.getElementById("v-produto");
-                const selectEditVendas = document.getElementById("edit-v-produto");
-                let htmlVendas = '<option value="">Selecione o Lote Vendido...</option>';
-
-                custosGlobal.forEach(c => { 
-                    html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${c.modelo}</h4><p>Líquido: ${safeFmt(c.valor_liquido)} • Insumos: ${safeFmt(c.valor_insumos)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val">${safeFmt(c.custo_total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarCusto(${c.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoCusto(${c.linha}, '${c.modelo}')">🗑️</button></div></div></div>`; 
-                    const nomeProduto = c.modelo || c.produto || c.nome || "Produto sem nome"; 
-                    htmlVendas += `<option value="${nomeProduto}" data-custo="${parseDinheiro(c.custo_total)}">${nomeProduto} (Custo: ${safeFmt(c.custo_total)})</option>`;
-                }); 
-                
-                lista.innerHTML = html;
-                if(selectVendas) selectVendas.innerHTML = htmlVendas;
-                if(selectEditVendas) selectEditVendas.innerHTML = htmlVendas;
-            }
-        } catch(e) {} finally { document.getElementById("loading-custos").style.display = "none"; }
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_custo", modelo: `${ess} - ${lote} ${ml}ml`, valor_liquido: fmtPlanilha(custoLiquidoGlobal), valor_insumos: fmtPlanilha(custoInsumosGlobal), custo_total: fmtPlanilha(custoTotalGlobal) }) }); 
+            const resultado = await res.json();
+            if (resultado.sucesso) { mostrarAlerta("Salvo!", `Lote registrado.`, "success"); sincronizarDadosUnico(); } 
+        } catch (erro) {} finally { btn.disabled = false; btn.innerText = "Registrar Custos do Lote"; }
     }
 
     function abrirModalEditarCusto(linha) {
         const c = custosGlobal.find(x => x.linha === linha); if (!c) return;
         document.getElementById('edit-c-linha').value = c.linha; document.getElementById('edit-c-modelo').value = c.modelo; document.getElementById('edit-c-liquido').value = safeFmt(c.valor_liquido); document.getElementById('edit-c-insumos').value = safeFmt(c.valor_insumos); document.getElementById('edit-c-total').value = safeFmt(c.custo_total); document.getElementById('modal-editar-custo').style.display = 'flex';
     }
+    
+    function calcularEditCusto() {
+        const liq = parseDinheiro(document.getElementById('edit-c-liquido').value), ins = parseDinheiro(document.getElementById('edit-c-insumos').value);
+        document.getElementById('edit-c-total').value = fmt(liq + ins);
+    }
+
     async function salvarEdicaoCusto() {
-        const btn = document.getElementById('btn-salvar-edicao-custo'); btn.disabled = true; btn.innerText = "⏳...";
         try {
             const py = { acao: "atualizar_custo", linha: document.getElementById('edit-c-linha').value, modelo: document.getElementById('edit-c-modelo').value, valor_liquido: document.getElementById('edit-c-liquido').value, valor_insumos: document.getElementById('edit-c-insumos').value, custo_total: document.getElementById('edit-c-total').value };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { document.getElementById('modal-editar-custo').style.display = 'none'; mostrarAlerta("Atualizado!", "Editado com sucesso.", "success"); carregarCustos(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
+            if(json.sucesso) { document.getElementById('modal-editar-custo').style.display = 'none'; mostrarAlerta("Atualizado!", "Lote editado.", "success"); sincronizarDadosUnico(); }
+        } catch(e) {}
     }
+
     function prepararExclusaoCusto(linha, modelo) { 
-        abrirConfirmacao("Excluir Lote?", `Deseja apagar o lote ${modelo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
-            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Apagado.", "success"); carregarCustos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        abrirConfirmacao("Excluir Lote?", `Apagar ${modelo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
+            try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); mostrarAlerta("Excluído", "Apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} 
         }); 
     }
 
-    // ================= GASTOS & INVESTIMENTOS =================
-    function calcularTotalGasto() {
-        const qtd = parseFloat(document.getElementById('g-qtd').value) || 1;
-        const valUnit = parseDinheiro(document.getElementById('g-valor').value);
-        document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00";
-    }
-    function calcularEditGasto() {
-        const qtd = parseFloat(document.getElementById('edit-g-qtd').value) || 1;
-        const valUnit = parseDinheiro(document.getElementById('edit-g-valor').value);
-        document.getElementById('edit-g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00";
-    }
+    // ================= ABA GASTOS =================
+    function calcularTotalGasto() { const qtd = parseFloat(document.getElementById('g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('g-valor').value); document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
+    function calcularEditGasto() { const qtd = parseFloat(document.getElementById('edit-g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('edit-g-valor').value); document.getElementById('edit-g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
     
     async function salvarGasto() {
-        const data = document.getElementById('g-data').value, local = document.getElementById('g-local').value, socio = document.getElementById('g-socio').value, item = document.getElementById('g-item').value;
-        const qtd = document.getElementById('g-qtd').value, valor = document.getElementById('g-valor').value, total = document.getElementById('g-total').value;
-        if(!data || !item || !valor || valor === "R$ 0,00") return mostrarAlerta("Atenção", "Preencha a Data, o Item e o Valor.", "warning");
-        const btn = document.getElementById('btn-salvar-gasto'); btn.disabled = true; btn.innerText = "⏳ LANÇANDO...";
+        const py = { acao: "salvar_gasto", data: document.getElementById('g-data').value, local: document.getElementById('g-local').value, socio: document.getElementById('g-socio').value, item: document.getElementById('g-item').value, qtd: document.getElementById('g-qtd').value, valor: document.getElementById('g-valor').value, total: document.getElementById('g-total').value };
+        if(!py.data || !py.item || py.valor === "R$ 0,00") return mostrarAlerta("Atenção", "Preencha a Data, Item e Valor.", "warning");
+        const btn = document.getElementById('btn-salvar-gasto'); btn.disabled = true; btn.innerText = "⏳...";
         try {
-            const py = { acao: "salvar_gasto", data: data, local: local, socio: socio, item: item, qtd: qtd, valor: valor, total: total };
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { mostrarAlerta("Sucesso", "Despesa lançada no caixa.", "success"); document.getElementById('g-item').value = ""; document.getElementById('g-valor').value = ""; document.getElementById('g-total').value = ""; carregarGastos(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "LANÇAR DESPESA"; }
+            if(json.sucesso) { mostrarAlerta("Sucesso", "Despesa lançada.", "success"); document.getElementById('g-item').value = ""; document.getElementById('g-valor').value = ""; document.getElementById('g-total').value = ""; sincronizarDadosUnico(); }
+        } catch(e) {} finally { btn.disabled = false; btn.innerText = "Lançar Despesa"; }
     }
 
-    async function carregarGastos() {
-        document.getElementById("loading-gastos").style.display = "inline";
-        try {
-            const res = await fetch(API_NOVERA + "?acao=listar_gastos&_t=" + new Date().getTime()); const dados = await res.json();
-            if (dados.sucesso) { gastosGlobal = dados.gastos; filtrarGastos(); }
-        } catch(e) { console.error(e); } finally { document.getElementById("loading-gastos").style.display = "none"; }
-    }
-
+    function renderizarGastos() { filtrarGastos(); } // Alias
     function filtrarGastos() {
-        const fSocio = document.getElementById('f-socio').value.toLowerCase();
-        const fIni = document.getElementById('f-data-ini').value;
-        const fFim = document.getElementById('f-data-fim').value;
-        
-        let gastosFiltrados = gastosGlobal.filter(g => {
-            let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio);
-            let passData = true;
-            if(fIni && g.dataIso < fIni) passData = false;
-            if(fFim && g.dataIso > fFim) passData = false;
+        const fSocio = document.getElementById('f-socio').value.toLowerCase(), fIni = document.getElementById('f-data-ini').value, fFim = document.getElementById('f-data-fim').value;
+        let filtrados = gastosGlobal.filter(g => {
+            let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio), passData = true;
+            if(fIni && g.dataIso < fIni) passData = false; if(fFim && g.dataIso > fFim) passData = false;
             return passSocio && passData;
         });
-
-        gastosFiltrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso));
-
-        let somaTotal = 0;
-        let html = "";
-        
-        if (gastosFiltrados.length === 0) {
-            html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum gasto encontrado nesse filtro.</p>";
-        } else {
-            gastosFiltrados.forEach(g => {
+        filtrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso));
+        let somaTotal = 0, html = "";
+        if (filtrados.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } 
+        else {
+            filtrados.forEach(g => {
                 somaTotal += parseDinheiro(g.total);
-                html += `<div class="rotulo-card">
-                    <div class="rotulo-info">
-                        <h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4>
-                        <p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p>
-                        <p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p>
-                    </div>
-                    <div style="display:flex; gap:12px; align-items:center;">
-                        <div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div>
-                        <div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoGasto(${g.linha}, '${g.item}')">🗑️</button></div>
-                    </div>
-                </div>`;
+                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4><p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p><p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoGasto(${g.linha}, '${g.item}')">🗑️</button></div></div></div>`;
             });
         }
-        document.getElementById('lista-gastos-cadastrados').innerHTML = html;
-        document.getElementById('g-total-dashboard').innerText = fmt(somaTotal);
+        document.getElementById('lista-gastos-cadastrados').innerHTML = html; document.getElementById('g-total-dashboard').innerText = fmt(somaTotal);
     }
 
     function abrirModalEditarGasto(linha) {
         const g = gastosGlobal.find(x => x.linha === linha); if (!g) return;
-        document.getElementById('edit-g-linha').value = g.linha; document.getElementById('edit-g-data').value = g.dataIso; document.getElementById('edit-g-socio').value = g.socio; document.getElementById('edit-g-local').value = g.local; document.getElementById('edit-g-item').value = g.item; document.getElementById('edit-g-qtd').value = g.qtd; document.getElementById('edit-g-valor').value = safeFmt(g.valor); document.getElementById('edit-g-total').value = safeFmt(g.total);
-        document.getElementById('modal-editar-gasto').style.display = 'flex';
+        document.getElementById('edit-g-linha').value = g.linha; document.getElementById('edit-g-data').value = g.dataIso; document.getElementById('edit-g-socio').value = g.socio; document.getElementById('edit-g-local').value = g.local; document.getElementById('edit-g-item').value = g.item; document.getElementById('edit-g-qtd').value = g.qtd; document.getElementById('edit-g-valor').value = safeFmt(g.valor); document.getElementById('edit-g-total').value = safeFmt(g.total); document.getElementById('modal-editar-gasto').style.display = 'flex';
     }
 
     async function salvarEdicaoGasto() {
-        const btn = document.getElementById('btn-salvar-edicao-gasto'); btn.disabled = true; btn.innerText = "⏳...";
         try {
             const py = { acao: "atualizar_gasto", linha: document.getElementById('edit-g-linha').value, data: document.getElementById('edit-g-data').value, local: document.getElementById('edit-g-local').value, socio: document.getElementById('edit-g-socio').value, item: document.getElementById('edit-g-item').value, qtd: document.getElementById('edit-g-qtd').value, valor: document.getElementById('edit-g-valor').value, total: document.getElementById('edit-g-total').value };
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarAlerta("Atualizado!", "Gasto editado.", "success"); carregarGastos(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
+            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico();
+        } catch(e) {}
     }
 
     function prepararExclusaoGasto(linha, item) { 
-        abrirConfirmacao("Excluir Despesa?", `Deseja apagar a despesa "${item}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
-            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Gasto apagado.", "success"); carregarGastos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        abrirConfirmacao("Excluir Gasto?", `Apagar a despesa "${item}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
+            try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); mostrarAlerta("Excluído", "Gasto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} 
         }); 
     }
 
-    // ================= VENDAS =================
+    // ================= ABA VENDAS =================
     async function salvarVenda() {
-        const data = document.getElementById('v-data').value, cliente = document.getElementById('v-cliente').value, produtoSelect = document.getElementById('v-produto'), socio = document.getElementById('v-socio').value;
-        const qtd = parseInt(document.getElementById('v-qtd').value) || 1, valorVendaStr = document.getElementById('v-valor').value, status = document.getElementById('v-status').value;
-        const produtoNome = produtoSelect.value;
-        
-        if(!data || !cliente || !produtoNome || valorVendaStr === "") return mostrarAlerta("Atenção", "Preencha Data, Cliente, Produto e Valor.", "warning");
-        
-        const valorVenda = parseDinheiro(valorVendaStr);
-        const custoUnd = parseFloat(produtoSelect.options[produtoSelect.selectedIndex].getAttribute('data-custo')) || 0;
-        const custoTotal = custoUnd * qtd;
-        const lucro = valorVenda - custoTotal;
-        const markup = custoTotal > 0 ? (lucro / custoTotal) : 1;
-        const dataPg = status === "Pago" ? data : ""; 
-
-        const btn = document.getElementById('btn-salvar-venda'); btn.disabled = true; btn.innerText = "⏳ REGISTRANDO...";
+        const py = { data: document.getElementById('v-data').value, cliente: document.getElementById('v-cliente').value, produto: document.getElementById('v-produto').value, socio: document.getElementById('v-socio').value, qtd: parseInt(document.getElementById('v-qtd').value) || 1, valorStr: document.getElementById('v-valor').value, status: document.getElementById('v-status').value };
+        if(!py.data || !py.cliente || !py.produto || !py.valorStr) return mostrarAlerta("Atenção", "Preencha todos os campos obrigatórios.", "warning");
+        const valVenda = parseDinheiro(py.valorStr); const opt = document.getElementById('v-produto').options[document.getElementById('v-produto').selectedIndex];
+        const cUnd = opt ? parseFloat(opt.getAttribute('data-custo')) || 0 : 0; const cTot = cUnd * py.qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1;
+        const btn = document.getElementById('btn-salvar-venda'); btn.disabled = true; btn.innerText = "⏳...";
         try {
-            const py = { acao: "salvar_venda", data: data, cliente: cliente, produto: produtoNome, socio: socio, qtd: qtd, valor_venda: fmtPlanilha(valorVenda), status: status, custo_und: fmtPlanilha(custoUnd), custo_total: fmtPlanilha(custoTotal), lucro: fmtPlanilha(lucro), markup: (markup * 100).toFixed(2) + "%", data_pg: dataPg };
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { mostrarAlerta("Venda Salva!", "A venda foi registrada com sucesso.", "success"); document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; carregarVendas(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "REGISTRAR VENDA"; }
+            const envio = { acao: "salvar_venda", data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: py.status === "Pago" ? py.data : "" };
+            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); const json = await res.json();
+            if(json.sucesso) { mostrarAlerta("Sucesso", "Venda lançada.", "success"); document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; sincronizarDadosUnico(); }
+        } catch(e) {} finally { btn.disabled = false; btn.innerText = "Registrar Venda"; }
     }
 
-    async function carregarVendas() {
-        document.getElementById("loading-vendas").style.display = "inline";
-        try {
-            const res = await fetch(API_NOVERA + "?acao=listar_vendas&_t=" + new Date().getTime()); const dados = await res.json();
-            if (dados.sucesso) { 
-                vendasGlobal = dados.vendas; 
-                
-                const clientesSet = new Set(vendasGlobal.map(v => String(v.cliente).trim()));
-                let dlHtml = ""; clientesSet.forEach(c => dlHtml += `<option value="${c}">`);
-                document.getElementById('lista-clientes').innerHTML = dlHtml;
-
-                const sociosSet = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s !== ''));
-                let dlSociosHtml = ""; sociosSet.forEach(s => dlSociosHtml += `<option value="${s}">`);
-                document.getElementById('lista-socios-dinamica').innerHTML = dlSociosHtml;
-                
-                filtrarVendas(); 
-            }
-        } catch(e) {} finally { document.getElementById("loading-vendas").style.display = "none"; }
+    function renderizarVendas() {
+        const dlist = new Set(vendasGlobal.map(v => String(v.cliente).trim())); document.getElementById('lista-clientes').innerHTML = [...dlist].map(c => `<option value="${c}">`).join('');
+        const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
+        filtrarVendas();
     }
 
     function filtrarVendas() {
-        const fMes = document.getElementById('f-v-mes').value;
-        const fStatus = document.getElementById('f-v-status').value;
-        
+        const fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value;
         let filtradas = vendasGlobal.filter(v => {
-            let passMes = true, passStatus = true;
-            if(fMes) {
-                const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null;
-                if(mesVenda && mesVenda !== fMes) passMes = false;
-            }
-            if(fStatus && v.status !== fStatus) passStatus = false;
-            return passMes && passStatus;
+            let pM = true, pS = true;
+            if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; }
+            if(fStatus && v.status !== fStatus) pS = false; return pM && pS;
         });
-
         filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso));
 
-        let tVendido = 0, tReceita = 0, tReceber = 0, tLucro = 0, tItens = 0;
-        let html = "";
-        
-        if (filtradas.length === 0) {
-            html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma venda neste filtro.</p>";
-        } else {
+        let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
+        if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } 
+        else {
             filtradas.forEach(v => {
-                const valVenda = parseDinheiro(v.valor_venda);
-                tVendido += valVenda;
-                tLucro += parseDinheiro(v.lucro);
-                tItens += parseInt(v.qtd) || 0;
-                
-                if(v.status === 'Pago') tReceita += valVenda; else tReceber += valVenda;
-
-                const isPago = v.status === 'Pago';
-
-                html += `<div class="rotulo-card">
-                    <div class="rotulo-info">
-                        <h4>${v.cliente} <span class="status-badge ${isPago ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4>
-                        <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p>
-                        <p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p>
-                        <p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-                        <div class="custo-val">${safeFmt(v.valor_venda)}</div>
-                        <div style="display:flex; gap:5px;">
-                            ${!isPago ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32;" onclick="darBaixaVenda(${v.linha})" title="Marcar como Pago">💲</button>` : ''}
-                            <button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>
-                            <button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button>
-                        </div>
-                    </div>
-                </div>`;
+                const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0;
+                const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val;
+                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`;
             });
         }
-        document.getElementById('lista-vendas-cadastradas').innerHTML = html;
-        document.getElementById('dash-v-total').innerText = fmt(tVendido);
-        document.getElementById('dash-v-receita').innerText = fmt(tReceita);
-        document.getElementById('dash-v-receber').innerText = fmt(tReceber);
-        document.getElementById('dash-v-lucro').innerText = fmt(tLucro);
-        document.getElementById('dash-v-itens').innerText = tItens;
-
-        atualizarListaCobranca();
-    }
-
-    function atualizarListaCobranca() {
-        const selectCob = document.getElementById('cobranca-cliente');
-        const devedoresSet = new Set();
-        vendasGlobal.forEach(v => { if(v.status === 'Pendente' && v.cliente) devedoresSet.add(v.cliente.trim()); });
-        let optHtml = '<option value="">Selecione o devedor...</option>';
-        devedoresSet.forEach(c => { optHtml += `<option value="${c}">${c}</option>`; });
-        selectCob.innerHTML = optHtml;
+        document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens;
+        const selCob = document.getElementById('cobranca-cliente'); const devSet = new Set(); vendasGlobal.forEach(v => { if(v.status === 'Pendente' && v.cliente) devSet.add(v.cliente.trim()); }); selCob.innerHTML = '<option value="">Selecione...</option>' + [...devSet].map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
     function copiarPendenciasWhats() {
-        const clienteNome = document.getElementById('cobranca-cliente').value;
-        if(!clienteNome) return mostrarAlerta("Aviso", "Selecione um cliente com pendência na lista.", "warning");
-        let pendencias = vendasGlobal.filter(p => p.cliente.trim() === clienteNome && p.status === 'Pendente');
-        let textoCopia = `Olá ${clienteNome}, tudo bem? Aqui é da Novera Scent! ✨\n\nSegue o resumo dos seus pedidos em aberto:\n\n`;
-        let totalDevido = 0;
-        pendencias.forEach(p => {
-            const valor = parseDinheiro(p.valor_venda);
-            textoCopia += `📅 ${p.dataVendaDisplay || p.dataVendaIso} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(valor)}\n`;
-            totalDevido += valor;
-        });
-        textoCopia += `\n*Total em aberto: ${fmt(totalDevido)}*`;
-        navigator.clipboard.writeText(textoCopia).then(() => {
-            mostrarAlerta("Copiado! 📋", "As pendências foram copiadas. Agora é só abrir o WhatsApp do cliente e colar a mensagem.", "success");
-        }).catch(err => {
-            mostrarAlerta("Erro", "Não foi possível copiar automaticamente do seu navegador.", "error");
-        });
+        const cli = document.getElementById('cobranca-cliente').value; if(!cli) return;
+        let pends = vendasGlobal.filter(p => p.cliente.trim() === cli && p.status === 'Pendente'), txt = `Olá ${cli}, tudo bem? Aqui é da Novera Scent! ✨\n\nResumo dos pedidos em aberto:\n\n`, tot = 0;
+        pends.forEach(p => { const val = parseDinheiro(p.valor_venda); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(val)}\n`; tot += val; }); txt += `\n*Total: ${fmt(tot)}*`;
+        navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success"));
     }
 
     async function darBaixaVenda(linha) {
-        abrirConfirmacao("Confirmar Pagamento?", "Deseja marcar o pagamento desta venda como RECEBIDO?", "💰", "#2e7d32", "#1b5e20", "💲 Receber", async () => {
-            try {
-                const hojeStr = new Date().toLocaleDateString('pt-BR'); 
-                const py = { acao: "atualizar_status_venda", linha: linha, status: "Pago", data_pg: hojeStr };
-                const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-                if(json.sucesso) { mostrarAlerta("Recebido!", "Baixa registrada no caixa.", "success"); carregarVendas(); } else throw new Error(json.erro);
-            } catch(e) { mostrarAlerta("Erro", e.message, "error"); }
+        abrirConfirmacao("Confirmar Pagamento?", "Marcar venda como RECEBIDA hoje?", "💰", "#2e7d32", "#1b5e20", "💲 Receber", async () => {
+            try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "atualizar_status_venda", linha: linha, status: "Pago", data_pg: new Date().toLocaleDateString('pt-BR') }) }); mostrarAlerta("Recebido!", "Baixa ok.", "success"); sincronizarDadosUnico(); } catch(e) {}
         });
     }
 
     function abrirModalEditarVenda(linha) {
         const v = vendasGlobal.find(x => x.linha === linha); if (!v) return;
-        document.getElementById('edit-v-linha').value = v.linha; 
-        document.getElementById('edit-v-data').value = v.dataVendaIso; 
-        document.getElementById('edit-v-cliente').value = v.cliente; 
-        document.getElementById('edit-v-produto').value = v.produto; 
-        document.getElementById('edit-v-socio').value = v.socio; 
-        document.getElementById('edit-v-qtd').value = v.qtd; 
-        document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); 
-        document.getElementById('edit-v-status').value = v.status;
-        document.getElementById('modal-editar-venda').style.display = 'flex';
+        document.getElementById('edit-v-linha').value = v.linha; document.getElementById('edit-v-data').value = v.dataVendaIso; document.getElementById('edit-v-cliente').value = v.cliente; document.getElementById('edit-v-produto').value = v.produto; document.getElementById('edit-v-socio').value = v.socio; document.getElementById('edit-v-qtd').value = v.qtd; document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); document.getElementById('edit-v-status').value = v.status; document.getElementById('modal-editar-venda').style.display = 'flex';
     }
 
     async function salvarEdicaoVenda() {
-        const linha = document.getElementById('edit-v-linha').value;
-        const vOriginal = vendasGlobal.find(x => x.linha == linha);
-        
-        const data = document.getElementById('edit-v-data').value, cliente = document.getElementById('edit-v-cliente').value, produtoSelect = document.getElementById('edit-v-produto'), socio = document.getElementById('edit-v-socio').value, qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr = document.getElementById('edit-v-valor').value, status = document.getElementById('edit-v-status').value;
-        const produtoNome = produtoSelect.value;
-        const valorVenda = parseDinheiro(valorStr);
-        
-        const optionSelecionada = produtoSelect.options[produtoSelect.selectedIndex];
-        let custoUnd = optionSelecionada && optionSelecionada.hasAttribute('data-custo') ? parseFloat(optionSelecionada.getAttribute('data-custo')) : parseDinheiro(vOriginal.custo_und);
-        const custoTotal = custoUnd * qtd;
-        const lucro = valorVenda - custoTotal;
-        const markup = custoTotal > 0 ? (lucro / custoTotal) : 1;
-        const dataPg = status === "Pago" ? (vOriginal.dataPgtoDisplay || new Date().toLocaleDateString('pt-BR')) : "";
-
-        const btn = document.getElementById('btn-salvar-edicao-venda'); btn.disabled = true; btn.innerText = "⏳ SALVANDO...";
+        const l = document.getElementById('edit-v-linha').value, vOrig = vendasGlobal.find(x => x.linha == l);
+        const py = { data: document.getElementById('edit-v-data').value, cliente: document.getElementById('edit-v-cliente').value, produto: document.getElementById('edit-v-produto').value, socio: document.getElementById('edit-v-socio').value, qtd: parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr: document.getElementById('edit-v-valor').value, status: document.getElementById('edit-v-status').value };
+        const valVenda = parseDinheiro(py.valorStr); const opt = document.getElementById('edit-v-produto').options[document.getElementById('edit-v-produto').selectedIndex];
+        let cUnd = opt && opt.hasAttribute('data-custo') ? parseFloat(opt.getAttribute('data-custo')) : parseDinheiro(vOrig.custo_und); const cTot = cUnd * py.qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1; const dPg = py.status === "Pago" ? (vOrig.dataPgtoDisplay || new Date().toLocaleDateString('pt-BR')) : "";
         try {
-            const py = { acao: "atualizar_venda", linha: linha, data: data, cliente: cliente, produto: produtoNome, socio: socio, qtd: qtd, valor_venda: fmtPlanilha(valorVenda), status: status, custo_und: fmtPlanilha(custoUnd), custo_total: fmtPlanilha(custoTotal), lucro: fmtPlanilha(lucro), markup: (markup * 100).toFixed(2) + "%", data_pg: dataPg };
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Venda corrigida com sucesso.", "success"); carregarVendas(); } else throw new Error(json.erro);
-        } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
+            const envio = { acao: "atualizar_venda", linha: l, data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: dPg };
+            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); document.getElementById('modal-editar-venda').style.display = 'none'; mostrarAlerta("Atualizado!", "Ok.", "success"); sincronizarDadosUnico();
+        } catch(e) {}
     }
 
     function prepararExclusaoVenda(linha, cliente) { 
-        abrirConfirmacao("Excluir Venda?", `Deseja apagar o registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
-            try { 
-                const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); 
-                const json = await res.json(); 
-                if(json.sucesso) { mostrarAlerta("Excluído", "Venda apagada.", "success"); carregarVendas(); } else throw new Error(json.erro); 
-            } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        abrirConfirmacao("Excluir Venda?", `Apagar registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
+            try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); mostrarAlerta("Excluído", "Venda apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} 
         }); 
     }
 
-    // ================= NOVO SUPER DASHBOARD =================
-    function inicializarFiltrosDashboard() {
-        const dMes = document.getElementById('d-filtro-mes');
-        const dAno = document.getElementById('d-filtro-ano');
-        if (!dMes.value && !dAno.value) {
-            const hoje = new Date();
-            dMes.value = String(hoje.getMonth() + 1).padStart(2, '0');
-            dAno.value = String(hoje.getFullYear());
-        }
-    }
-
-    async function carregarDashboard() {
-        document.getElementById("loading-dash").style.display = "inline";
-        inicializarFiltrosDashboard();
-
-        try {
-            if (vendasGlobal.length === 0) {
-                const resV = await fetch(API_NOVERA + "?acao=listar_vendas&_t=" + new Date().getTime()); 
-                const dadosV = await resV.json();
-                if(dadosV.sucesso) vendasGlobal = dadosV.vendas;
-            }
-            if (gastosGlobal.length === 0) {
-                const resG = await fetch(API_NOVERA + "?acao=listar_gastos&_t=" + new Date().getTime()); 
-                const dadosG = await resG.json();
-                if(dadosG.sucesso) gastosGlobal = dadosG.gastos;
-            }
-            
-            renderizarDashboard();
-        } catch(e) {
-            console.error(e);
-            mostrarAlerta("Erro", "Não foi possível atualizar o Dashboard.", "error");
-        } finally {
-            document.getElementById("loading-dash").style.display = "none";
-        }
-    }
-
+    // ================= ABA DASHBOARD =================
     function renderizarDashboard() {
-        const fMes = document.getElementById('d-filtro-mes').value;
-        const fAno = document.getElementById('d-filtro-ano').value;
+        const dMes = document.getElementById('d-filtro-mes'); const dAno = document.getElementById('d-filtro-ano');
+        if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); }
+        const fM = dMes.value, fA = dAno.value; let pfx = fA && fM ? `${fA}-${fM}` : fA;
+        const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true);
+        const gDash = gastosGlobal.filter(g => pfx ? (g.dataIso && g.dataIso.startsWith(pfx)) : true);
+
+        let tRec = 0, tPend = 0, tGas = 0, mProd = {}, mCli = {}, mSoc = {};
+        vDash.forEach(v => { const val = parseDinheiro(v.valor_venda), luc = parseDinheiro(v.lucro), q = parseInt(v.qtd) || 1; if (v.status === 'Pago') tRec += val; else tPend += val; if(v.produto) mProd[v.produto] = (mProd[v.produto] || 0) + q; if(v.cliente) mCli[v.cliente] = (mCli[v.cliente] || 0) + val; if(v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; });
+        gDash.forEach(g => tGas += parseDinheiro(g.total));
+        const lReal = tRec - tGas;
+
+        document.getElementById('d-lucro-real').innerText = fmt(lReal); document.getElementById('card-lucro-real').classList.toggle('negativo', lReal < 0);
+        document.getElementById('d-receitas').innerText = fmt(tRec); document.getElementById('d-gastos').innerText = fmt(tGas); document.getElementById('d-receber').innerText = fmt(tPend);
+
+        let topP = "-", mxP = 0; for(let p in mProd) { if(mProd[p] > mxP) { mxP = mProd[p]; topP = p; } }
+        let topC = "-", mxC = 0; for(let c in mCli) { if(mCli[c] > mxC) { mxC = mCli[c]; topC = c; } }
+        document.getElementById('d-produto-top').innerText = topP !== "-" ? `${topP} (${mxP} un)` : "-"; document.getElementById('d-cliente-top').innerText = topC !== "-" ? `${topC} (${fmt(mxC)})` : "-";
         
-        let prefixoData = "";
-        if (fAno && fMes) prefixoData = `${fAno}-${fMes}`;
-        else if (fAno) prefixoData = fAno; // Só ano
-        
-        // Filtra os arrays baseados no Mês e Ano
-        const vendasDash = vendasGlobal.filter(v => {
-            if(!prefixoData) return true;
-            return v.dataVendaIso && v.dataVendaIso.startsWith(prefixoData);
-        });
-        
-        const gastosDash = gastosGlobal.filter(g => {
-            if(!prefixoData) return true;
-            return g.dataIso && g.dataIso.startsWith(prefixoData);
-        });
+        let hSoc = ""; for(let s in mSoc) { hSoc += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mSoc[s])}</strong></div>`; }
+        document.getElementById('d-socios-lucro').innerHTML = hSoc || "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros.</p>";
 
-        // Variáveis de Somatório
-        let totalReceitaCaixa = 0; 
-        let totalPendente = 0;     
-        let totalGastos = 0;       
-
-        // Variáveis de Ranking
-        let mapaProdutos = {};
-        let mapaClientes = {};
-        let mapaSocios = {};
-
-        // Processa as Vendas
-        vendasDash.forEach(v => {
-            const valVenda = parseDinheiro(v.valor_venda);
-            const lucroVenda = parseDinheiro(v.lucro);
-            const qtd = parseInt(v.qtd) || 1;
-
-            if (v.status === 'Pago') totalReceitaCaixa += valVenda;
-            else totalPendente += valVenda;
-
-            if(v.produto) mapaProdutos[v.produto] = (mapaProdutos[v.produto] || 0) + qtd;
-            if(v.cliente) mapaClientes[v.cliente] = (mapaClientes[v.cliente] || 0) + valVenda;
-            if(v.socio) mapaSocios[v.socio] = (mapaSocios[v.socio] || 0) + lucroVenda;
-        });
-
-        gastosDash.forEach(g => {
-            totalGastos += parseDinheiro(g.total);
-        });
-
-        const lucroReal = totalReceitaCaixa - totalGastos;
-
-        const cardLucro = document.getElementById('card-lucro-real');
-        document.getElementById('d-lucro-real').innerText = fmt(lucroReal);
-        document.getElementById('d-receitas').innerText = fmt(totalReceitaCaixa);
-        document.getElementById('d-gastos').innerText = fmt(totalGastos);
-        document.getElementById('d-receber').innerText = fmt(totalPendente);
-
-        if (lucroReal < 0) cardLucro.classList.add('negativo');
-        else cardLucro.classList.remove('negativo');
-
-        // Calcula Campeões
-        let topProduto = "-", maxProd = 0;
-        for(let p in mapaProdutos) { if(mapaProdutos[p] > maxProd) { maxProd = mapaProdutos[p]; topProduto = p; } }
-
-        let topCliente = "-", maxCli = 0;
-        for(let c in mapaClientes) { if(mapaClientes[c] > maxCli) { maxCli = mapaClientes[c]; topCliente = c; } }
-
-        document.getElementById('d-produto-top').innerText = topProduto !== "-" ? `${topProduto} (${maxProd} un)` : "Nenhuma venda";
-        document.getElementById('d-cliente-top').innerText = topCliente !== "-" ? `${topCliente} (${fmt(maxCli)})` : "Nenhum cliente";
-
-        // Monta a listagem de lucros por Sócio
-        let htmlSocios = "";
-        for(let s in mapaSocios) {
-            htmlSocios += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mapaSocios[s])}</strong></div>`;
-        }
-        if(!htmlSocios) htmlSocios = "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros registrados no período.</p>";
-        document.getElementById('d-socios-lucro').innerHTML = htmlSocios;
-
-        // Atualiza Gráficos
-        const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d');
-        const ctxStatus = document.getElementById('chartStatusVendas').getContext('2d');
-
-        if(chartRGBase) chartRGBase.destroy(); 
-        chartRGBase = new Chart(ctxRG, {
-            type: 'bar',
-            data: {
-                labels: ['Entradas (Recebidas)', 'Saídas (Gastos)'],
-                datasets: [{
-                    label: 'Valores em R$',
-                    data: [totalReceitaCaixa, totalGastos],
-                    backgroundColor: ['#2e7d32', '#c62828'],
-                    borderRadius: 8
-                }]
-            },
-            options: { 
-                responsive: true, 
-                plugins: { legend: { display: false }, title: { display: true, text: 'Fluxo de Caixa do Período', font: { family: 'Montserrat', size: 14 } } },
-                scales: { y: { beginAtZero: true } }
-            }
-        });
-
-        if(chartStatusBase) chartStatusBase.destroy();
-        chartStatusBase = new Chart(ctxStatus, {
-            type: 'doughnut',
-            data: {
-                labels: ['Na Conta (Pago)', 'Rodando (Fiado)'],
-                datasets: [{
-                    data: [totalReceitaCaixa, totalPendente],
-                    backgroundColor: ['#2e7d32', '#f59e0b'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: { 
-                responsive: true, 
-                plugins: { title: { display: true, text: 'Status das Vendas no Período', font: { family: 'Montserrat', size: 14 } }, legend: { position: 'bottom' } } 
-            }
-        });
+        const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d'), ctxSt = document.getElementById('chartStatusVendas').getContext('2d');
+        if(chartRGBase) chartRGBase.destroy(); chartRGBase = new Chart(ctxRG, { type: 'bar', data: { labels: ['Caixa', 'Gastos'], datasets: [{ data: [tRec, tGas], backgroundColor: ['#2e7d32', '#c62828'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { display: false } } } });
+        if(chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } });
     }
 
     // INICIALIZAÇÃO
-    window.onload = () => { 
-        verificarLogin();
-    };
-</script>
+    window.onload = () => { verificarLogin(); };
 
-    <script>
-        // Registra o Service Worker do PWA
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js') 
-                .then(registration => {
-                    console.log('PWA: Service Worker registrado com sucesso!', registration.scope);
-                })
-                .catch(error => {
-                    console.log('PWA: Falha ao registrar o Service Worker:', error);
-                });
-        });
-    }
-    </script>
+    // Registra o Service Worker do PWA
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
+</script>
 </body>
 </html>
