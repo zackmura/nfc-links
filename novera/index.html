@@ -11,6 +11,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Novera ERP">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
         
@@ -20,7 +22,7 @@
             --text-main: #4A4A4A; --border-color: #E8DDE1;
         }
         
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; color: var(--text-main); padding-bottom: 90px; /* Espaço para o menu inferior */ }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg-color); margin: 0; padding: 20px; display: flex; justify-content: center; color: var(--text-main); padding-bottom: 90px; }
         .app-container { width: 100%; max-width: 600px; position: relative; }
         
         /* HEADER E CONFIGURAÇÕES */
@@ -32,7 +34,7 @@
 
         .card { background: var(--card-bg); padding: 25px 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); position: relative; }
 
-        /* MENU INFERIOR NATIVO (BOTTOM NAVIGATION) */
+        /* MENU INFERIOR NATIVO */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; padding: 12px 5px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); border-radius: 25px 25px 0 0; z-index: 1000; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(184, 124, 150, 0.1); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #a1a1aa; text-decoration: none; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; width: 60px; }
         .nav-item .icon { font-size: 1.4rem; margin-bottom: 4px; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
@@ -127,8 +129,17 @@
         
         .loading-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(253, 251, 251, 0.95); z-index: 500; display: none; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px; backdrop-filter: blur(5px); }
         .spinner { border: 5px solid #f3d8e2; border-top: 5px solid var(--primary-dark); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px;}
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* ESTILOS DO CHECKBOX DE RECIBO */
+        .checkbox-recibo { display: flex; align-items: center; background: #fff; border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
+        .checkbox-recibo:hover { border-color: var(--primary); background: #fdf5f7; }
+        .checkbox-recibo input { width: 20px; height: 20px; margin: 0 15px 0 0; cursor: pointer; accent-color: var(--primary-dark); flex-shrink: 0; box-shadow: none; border-radius: 4px; padding: 0; }
+        .chk-info { display: flex; flex-direction: column; flex: 1;}
+        .chk-title { font-weight: 700; font-size: 0.85rem; color: var(--brand-dark); line-height: 1.2;}
+        .chk-desc { font-size: 0.7rem; color: #888; margin-top: 3px;}
+        .chk-val { font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;}
 
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
@@ -166,7 +177,7 @@
 
         <div class="header">
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
-            <img src="logo.png" alt="Novera Scent Logo" class="logo" onerror="this.src='logo.jpeg'; this.onerror=null;">
+            <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
         </div>
 
@@ -187,11 +198,7 @@
                 <label>Tipo de Produto</label>
                 <input type="text" id="r-tipo" list="lista-tipos" placeholder="Ex: Essência, Hidratante...">
                 <datalist id="lista-tipos">
-                    <option value="Essência">
-                    <option value="Perfume">
-                    <option value="Home Spray">
-                    <option value="Vela">
-                    <option value="Hidratante">
+                    <option value="Essência"><option value="Perfume"><option value="Home Spray"><option value="Vela"><option value="Hidratante">
                 </datalist>
             </div>
 
@@ -325,6 +332,22 @@
             
             <div class="row"><div class="col"><label>Valor Total Venda</label><input type="text" id="v-valor" class="mask-money" placeholder="R$ 0,00"></div><div class="col"><label>Status PG</label><select id="v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div>
             <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()">Registrar Venda</button>
+
+            <div class="filtro-box" style="background: #fdf5f7; border-color: #f3d8e2; margin-top: 35px;">
+                <div class="section-title" style="margin-top:0; border-left-color: var(--primary-dark); color: var(--primary-dark);">🧾 Gerador de Recibos</div>
+                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar um comprovante elegante.</p>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col">
+                        <label style="color: var(--primary-dark);">Selecione o Cliente</label>
+                        <select id="recibo-cliente" onchange="listarPedidosParaRecibo()">
+                            <option value="">Nenhum cliente...</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="recibo-pedidos-lista" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; display: none;">
+                    </div>
+                <button class="btn-salvar" style="margin-top: 0; display: none; background: var(--primary-dark);" id="btn-gerar-recibo" onclick="montarRecibo()">📸 Gerar Imagem do Recibo</button>
+            </div>
 
             <div class="filtro-box" style="background: #fff9e6; border-color: #ffeeba; margin-top: 35px;">
                 <div class="section-title" style="margin-top:0; border-left-color: #ffc107; color: #b45309;">📱 Cobrança Rápida</div>
@@ -485,6 +508,29 @@
     </nav>
 </div>
 
+<div id="recibo-template" style="position: absolute; left: -9999px; top: -9999px; width: 400px; background: #fff; padding: 40px; border-radius: 10px; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
+    <div style="text-align: center; border-bottom: 2px dashed #E8DDE1; padding-bottom: 20px; margin-bottom: 20px;">
+        <img src="logo.png" style="width: 120px; margin-bottom: 10px;" crossorigin="anonymous">
+        <h2 style="margin: 0; font-family: 'Playfair Display', serif; color: #966178; text-transform: uppercase; letter-spacing: 2px; font-size: 1.3rem;">Recibo de Pagamento</h2>
+    </div>
+    <p style="font-size: 0.9rem; margin-bottom: 5px; color: #4A4A4A;"><strong>Cliente:</strong> <span id="rec-cli-nome"></span></p>
+    <p style="font-size: 0.9rem; margin-bottom: 20px; color: #4A4A4A;"><strong>Data de Emissão:</strong> <span id="rec-data-emissao"></span></p>
+    
+    <div style="background: #fafafa; border: 1px solid #E8DDE1; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <h4 style="margin: 0 0 10px; font-size: 0.75rem; color: #966178; text-transform: uppercase; letter-spacing: 1px;">Itens Recebidos</h4>
+        <div id="rec-itens-lista" style="font-size: 0.85rem; line-height: 1.5; color: #4A4A4A;">
+            </div>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px dashed #E8DDE1; padding-top: 15px;">
+        <span style="font-weight: 700; font-size: 1rem; color: #4A4A4A;">TOTAL PAGO:</span>
+        <span id="rec-total" style="font-weight: 800; font-size: 1.4rem; color: #966178;">R$ 0,00</span>
+    </div>
+    <div style="text-align: center; margin-top: 30px; font-size: 0.7rem; color: #888;">
+        <p style="margin:0;">Obrigado pela preferência!</p>
+        <p style="margin:0;">Novera Scent - Aromas que marcam.</p>
+    </div>
+</div>
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
 <div id="modal-confirmar" class="modal-overlay-alert">
     <div class="modal-box-alert">
@@ -494,6 +540,22 @@
         <div style="display: flex; gap: 10px; margin-top: 15px;">
             <button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button>
             <button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-recibo-preview" class="modal-overlay-alert" style="z-index: 10001;">
+    <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 25px 20px; background: #fdfbfb;">
+        <button onclick="document.getElementById('modal-recibo-preview').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 15px; font-size: 1.1rem;">Seu Recibo está Pronto!</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Aperte e segure a imagem abaixo para compartilhar no WhatsApp, ou clique no botão verde para baixar.</p>
+        
+        <div id="recibo-img-container" style="box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 20px; background: #fff;">
+            </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-modal-cancel" onclick="document.getElementById('modal-recibo-preview').style.display='none'">Fechar</button>
+            <button class="btn-modal-confirm" id="btn-baixar-recibo" style="background: #25D366; box-shadow: 0 4px 0 #1b9c4b;">⬇️ Baixar Imagem</button>
         </div>
     </div>
 </div>
@@ -648,21 +710,12 @@
         }
     });
 
-    // ================= CONTROLE DE MENU (NATIVO) =================
+    // ================= CONTROLE DE MENU NATIVO =================
     function switchTab(tabId) {
-        // Esconde todas as abas e tira o active dos botoes do menu inferior
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-        
-        // Mostra a aba clicada
         document.getElementById('tab-' + tabId).classList.add('active');
-        
-        // Acende o botão no menu inferior (se não for a aba configurações)
-        if(tabId !== 'configuracoes') {
-            document.getElementById('nav-' + tabId).classList.add('active');
-        }
-
-        // Set datas automáticas se for a primeira vez
+        if(tabId !== 'configuracoes') { document.getElementById('nav-' + tabId).classList.add('active'); }
         if(tabId === 'gastos' && !document.getElementById('g-data').value) document.getElementById('g-data').valueAsDate = new Date();
         if(tabId === 'vendas' && !document.getElementById('v-data').value) document.getElementById('v-data').valueAsDate = new Date();
     }
@@ -831,7 +884,7 @@
         }); 
     }
 
-    // ================= ABA VENDAS =================
+    // ================= ABA VENDAS E RECIBOS =================
     async function salvarVenda() {
         const py = { data: document.getElementById('v-data').value, cliente: document.getElementById('v-cliente').value, produto: document.getElementById('v-produto').value, socio: document.getElementById('v-socio').value, qtd: parseInt(document.getElementById('v-qtd').value) || 1, valorStr: document.getElementById('v-valor').value, status: document.getElementById('v-status').value };
         if(!py.data || !py.cliente || !py.produto || !py.valorStr) return mostrarAlerta("Atenção", "Preencha todos os campos obrigatórios.", "warning");
@@ -846,8 +899,15 @@
     }
 
     function renderizarVendas() {
-        const dlist = new Set(vendasGlobal.map(v => String(v.cliente).trim())); document.getElementById('lista-clientes').innerHTML = [...dlist].map(c => `<option value="${c}">`).join('');
-        const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
+        const dlist = new Set(vendasGlobal.map(v => String(v.cliente).trim())); 
+        const htmlClientes = '<option value="">Selecione...</option>' + [...dlist].map(c => `<option value="${c}">${c}</option>`).join('');
+        document.getElementById('lista-clientes').innerHTML = [...dlist].map(c => `<option value="${c}">`).join('');
+        document.getElementById('recibo-cliente').innerHTML = htmlClientes;
+        document.getElementById('cobranca-cliente').innerHTML = htmlClientes; // Agora também pega todos os clientes
+
+        const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); 
+        document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
+        
         filtrarVendas();
     }
 
@@ -870,12 +930,121 @@
             });
         }
         document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens;
-        const selCob = document.getElementById('cobranca-cliente'); const devSet = new Set(); vendasGlobal.forEach(v => { if(v.status === 'Pendente' && v.cliente) devSet.add(v.cliente.trim()); }); selCob.innerHTML = '<option value="">Selecione...</option>' + [...devSet].map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    // LOGICA DO GERADOR DE RECIBOS
+    function listarPedidosParaRecibo() {
+        const cliente = document.getElementById('recibo-cliente').value;
+        const container = document.getElementById('recibo-pedidos-lista');
+        const btn = document.getElementById('btn-gerar-recibo');
+        
+        if (!cliente) { container.style.display = 'none'; btn.style.display = 'none'; return; }
+        
+        let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente);
+        pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); // Mais recentes primeiro
+
+        if (pedidos.length === 0) {
+            container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido encontrado.</p>';
+        } else {
+            let html = '';
+            pedidos.forEach(p => {
+                const dataCompra = p.dataVendaDisplay || p.dataVendaIso;
+                const statusTexto = p.status === 'Pago' ? `<span style="color:#2e7d32;">Pago em ${p.dataPgtoDisplay || '?'}</span>` : `<span style="color:#b45309;">Pendente</span>`;
+                
+                html += `
+                <label class="checkbox-recibo">
+                    <input type="checkbox" class="chk-item-recibo" value="${p.linha}">
+                    <div class="chk-info">
+                        <span class="chk-title">${p.qtd}x ${p.produto}</span>
+                        <span class="chk-desc">Comprado: ${dataCompra} | ${statusTexto}</span>
+                    </div>
+                    <div class="chk-val">${safeFmt(p.valor_venda)}</div>
+                </label>`;
+            });
+            container.innerHTML = html;
+        }
+        container.style.display = 'block';
+        btn.style.display = 'block';
+    }
+
+    async function montarRecibo() {
+        const clienteNome = document.getElementById('recibo-cliente').value;
+        const checkboxes = document.querySelectorAll('.chk-item-recibo:checked');
+        
+        if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido para gerar o recibo.", "warning");
+
+        const btnGerar = document.getElementById('btn-gerar-recibo');
+        btnGerar.innerText = "⏳ Criando Imagem...";
+        btnGerar.disabled = true;
+
+        // Prepara o Template HTML do Recibo
+        document.getElementById('rec-cli-nome').innerText = clienteNome;
+        document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR');
+
+        let htmlItens = "";
+        let somaTotal = 0;
+
+        checkboxes.forEach(chk => {
+            const linhaStr = chk.value;
+            const pedido = vendasGlobal.find(v => v.linha == linhaStr);
+            if(pedido) {
+                const valor = parseDinheiro(pedido.valor_venda);
+                somaTotal += valor;
+                const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso;
+                const txtPago = pedido.status === 'Pago' ? `Pago em: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente';
+                
+                htmlItens += `
+                <div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;">
+                    <div style="flex: 1;">
+                       <strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br>
+                       <span style="font-size: 0.7rem; color: #888;">Compra: ${dataCompra} | ${txtPago}</span>
+                    </div>
+                    <div style="font-weight: 700; color: #966178;">${fmt(valor)}</div>
+                </div>`;
+            }
+        });
+
+        document.getElementById('rec-itens-lista').innerHTML = htmlItens;
+        document.getElementById('rec-total').innerText = fmt(somaTotal);
+
+        // Transforma o HTML em Canvas e depois em Imagem PNG
+        try {
+            const template = document.getElementById('recibo-template');
+            const canvas = await html2canvas(template, {
+                scale: 2, // Mais qualidade
+                backgroundColor: "#ffffff",
+                useCORS: true // Ajuda a carregar a imagem da logo sem erro
+            });
+            
+            const base64image = canvas.toDataURL("image/png");
+            
+            // Joga a imagem no modal de preview
+            const imgContainer = document.getElementById('recibo-img-container');
+            imgContainer.innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`;
+            
+            // Configura o botão de baixar
+            const btnBaixar = document.getElementById('btn-baixar-recibo');
+            btnBaixar.onclick = () => {
+                const link = document.createElement('a');
+                link.download = `Recibo_Novera_${clienteNome.replace(/\s+/g, '_')}.png`;
+                link.href = base64image;
+                link.click();
+            };
+
+            document.getElementById('modal-recibo-preview').style.display = 'flex';
+
+        } catch (error) {
+            mostrarAlerta("Erro", "Falha ao gerar a imagem do recibo.", "error");
+        } finally {
+            btnGerar.innerText = "📸 Gerar Imagem do Recibo";
+            btnGerar.disabled = false;
+        }
     }
 
     function copiarPendenciasWhats() {
-        const cli = document.getElementById('cobranca-cliente').value; if(!cli) return;
+        const cli = document.getElementById('cobranca-cliente').value; if(!cli) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning");
         let pends = vendasGlobal.filter(p => p.cliente.trim() === cli && p.status === 'Pendente'), txt = `Olá ${cli}, tudo bem? Aqui é da Novera Scent! ✨\n\nResumo dos pedidos em aberto:\n\n`, tot = 0;
+        if(pends.length === 0) return mostrarAlerta("Aviso", "Este cliente não tem pendências.", "success");
         pends.forEach(p => { const val = parseDinheiro(p.valor_venda); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(val)}\n`; tot += val; }); txt += `\n*Total: ${fmt(tot)}*`;
         navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success"));
     }
