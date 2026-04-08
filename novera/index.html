@@ -35,6 +35,9 @@
         }
         .header img.logo { width: 140px; height: auto; margin-bottom: 5px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
         .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.7rem; text-transform: uppercase; letter-spacing: 3px; }
+        
+        /* VERSÃO E BOTÃO CONFIG */
+        .app-version { position: absolute; left: 15px; top: 15px; font-size: 0.65rem; font-weight: 800; color: #d1d5db; letter-spacing: 1px; }
         .btn-settings { position: absolute; right: 0; top: 10px; background: transparent; border: none; font-size: 1.5rem; color: var(--primary-dark); cursor: pointer; transition: 0.2s; padding: 10px; border-radius: 50%; }
         .btn-settings:active { transform: rotate(45deg) scale(0.9); background: var(--border-color); }
 
@@ -156,6 +159,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
+        <span class="app-version">v1.0.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -184,6 +188,7 @@
         </div>
 
         <div class="header">
+            <span class="app-version">v1.0.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -368,7 +373,7 @@
 
             <div class="filtro-box" style="background: #fdf5f7; border-color: #f3d8e2; margin-top: 35px;">
                 <div class="section-title" style="margin-top:0; border-left-color: var(--primary-dark); color: var(--primary-dark);">🧾 Gerador de Recibos</div>
-                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar o comprovante das compras.</p>
+                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar o comprovante das compras pagas.</p>
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col">
                         <label style="color: var(--primary-dark);">Selecione o Cliente</label>
@@ -417,8 +422,26 @@
             <div class="section-title" style="margin-top: 25px;">📊 Dashboard de Vendas</div>
             <div class="filtro-box">
                 <div class="row">
-                    <div class="col"><label>Mês</label><select id="f-v-mes" onchange="renderizarVendas()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
-                    <div class="col"><label>Status PG</label><select id="f-v-status" onchange="renderizarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
+                    <div class="col">
+                        <label>Mês</label>
+                        <select id="f-v-mes" onchange="renderizarVendas()">
+                            <option value="">Todos</option>
+                            <option value="01">Jan</option><option value="02">Fev</option>
+                            <option value="03">Mar</option><option value="04">Abr</option>
+                            <option value="05">Mai</option><option value="06">Jun</option>
+                            <option value="07">Jul</option><option value="08">Ago</option>
+                            <option value="09">Set</option><option value="10">Out</option>
+                            <option value="11">Nov</option><option value="12">Dez</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Status</label>
+                        <select id="f-v-status" onchange="renderizarVendas()">
+                            <option value="">Todos</option>
+                            <option value="Pago">Pago</option>
+                            <option value="Pendente">Pendente</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
@@ -618,15 +641,14 @@
     // AQUI VOCÊ COLA O LINK DA SUA API NOVA DO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
-    // ================= FUNÇÃO DE SANITIZAÇÃO (FILTRO ANTI-SUJEIRA) =================
-    // Remove espaços extras e deixa a primeira letra de cada palavra maiúscula (Title Case)
+    // ================= FUNÇÃO DE SANITIZAÇÃO =================
     function padronizarTexto(texto) {
         if (!texto) return "";
         let limpo = String(texto).trim().replace(/\s+/g, ' ').toLowerCase();
         return limpo.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     }
 
-    // ================= DADOS GLOBAIS E SINCRONIZAÇÃO ÚNICA =================
+    // ================= DADOS GLOBAIS E SINCRONIZAÇÃO =================
     let rotulosGlobal = [], custosGlobal = [], gastosGlobal = [], vendasGlobal = [];
     let usuarioLogado = "";
     let dadosCarregados = false; 
@@ -805,7 +827,6 @@
     }
 
     async function salvarRotulo() {
-        // SANITIZAÇÃO
         const essencia = padronizarTexto(document.getElementById('r-essencia').value);
         const codForn = padronizarTexto(document.getElementById('r-codigo-forn').value);
         const marca = padronizarTexto(document.getElementById('r-marca').value);
@@ -911,7 +932,6 @@
     function calcularEditGasto() { const qtd = parseFloat(document.getElementById('edit-g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('edit-g-valor').value); document.getElementById('edit-g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
     
     async function salvarGasto() {
-        // SANITIZAÇÃO
         const py = { 
             acao: "salvar_gasto", 
             data: document.getElementById('g-data').value, 
@@ -980,7 +1000,6 @@
 
     // ================= ABA VENDAS =================
     async function salvarVenda() {
-        // SANITIZAÇÃO
         const py = { 
             data: document.getElementById('v-data').value, 
             cliente: padronizarTexto(document.getElementById('v-cliente').value), 
@@ -1154,7 +1173,6 @@
     async function salvarEdicaoVenda() {
         const l = document.getElementById('edit-v-linha').value, vOrig = vendasGlobal.find(x => x.linha == l);
         
-        // SANITIZAÇÃO
         const py = { 
             data: document.getElementById('edit-v-data').value, 
             cliente: padronizarTexto(document.getElementById('edit-v-cliente').value), 
@@ -1174,7 +1192,7 @@
 
     function prepararExclusaoVenda(linha, cliente) { abrirConfirmacao("Excluir Venda?", `Apagar registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); mostrarAlerta("Excluído", "Venda apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
-    // ================= ABA DASHBOARD =================
+    // ================= DASHBOARD E RELATÓRIOS =================
     function renderizarDashboard() {
         const dMes = document.getElementById('d-filtro-mes'), dAno = document.getElementById('d-filtro-ano');
         if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); }
@@ -1200,7 +1218,6 @@
         if(chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } });
     }
 
-    // ================= CENTRAL DE RELATÓRIOS =================
     function abrirModalRelatorios() { document.getElementById('modal-relatorios').style.display = 'flex'; }
 
     function exportarExcel() {
@@ -1240,10 +1257,10 @@
         txt += sociosText || "Nenhum lucro.\n";
         txt += `\n✨ _Bora pra cima!_ 🚀`;
 
-        navigator.clipboard.writeText(txt).then(() => { mostrarAlerta("Copiado!", "Resumo do fechamento copiado para o WhatsApp.", "success"); }).catch(err => { mostrarAlerta("Erro", "Falha ao copiar texto.", "error"); });
+        navigator.clipboard.writeText(txt).then(() => { mostrarAlerta("Copiado!", "Resumo do fechamento copiado.", "success"); }).catch(err => { mostrarAlerta("Erro", "Falha ao copiar texto.", "error"); });
     }
 
-    // INICIALIZAÇÃO
+    // INICIALIZAÇÃO E SERVICE WORKER
     window.onload = () => { verificarLogin(); };
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
 </script>
