@@ -28,7 +28,7 @@
         .header img.logo { width: 150px; height: auto; margin-bottom: 10px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
         .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.9rem; text-transform: uppercase; letter-spacing: 3px; }
         
-        /* MENU CASCATA (DROPDOWN) */
+        /* MENU CASCATA */
         .menu-dropdown { position: relative; margin-bottom: 25px; z-index: 200; }
         .menu-toggle { width: 100%; background: var(--primary); color: white; padding: 16px 20px; border-radius: 12px; border: none; font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif; transition: 0.2s;}
         .menu-toggle:active { transform: translateY(2px); box-shadow: none; }
@@ -67,10 +67,6 @@
         .btn-salvar:hover { background: var(--primary-dark); }
         .btn-salvar:active { transform: translateY(3px); box-shadow: none; }
         .btn-salvar:disabled { background: #E8DDE1; color: #999; cursor: not-allowed; box-shadow: none; }
-
-        .btn-bio { width: 100%; background: #2563eb; color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; transition: 0.2s; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3); font-family: 'Montserrat', sans-serif;}
-        .btn-bio:hover { background: #1d4ed8; }
-        .btn-bio:active { transform: translateY(3px); box-shadow: none; }
 
         .rotulo-card { background: #fafafa; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
         .rotulo-card:hover { border-color: var(--primary); background: #fff; box-shadow: 0 4px 10px rgba(184, 124, 150, 0.08);}
@@ -138,20 +134,30 @@
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 150px; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 25px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
-        <div class="input-group" style="text-align: left;">
-            <label>Usuário</label>
-            <input type="text" id="login-user" placeholder="Ex: Fernando">
-        </div>
-        <div class="input-group" style="text-align: left;">
-            <label>Senha</label>
-            <div class="password-wrapper">
-                <input type="password" id="login-pass" placeholder="Digite sua senha">
-                <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">👁️</button>
+        <div id="login-full-area">
+            <div class="input-group" style="text-align: left;">
+                <label>Usuário</label>
+                <input type="text" id="login-user" placeholder="Ex: Fernando">
             </div>
+            <div class="input-group" style="text-align: left;">
+                <label>Senha</label>
+                <div class="password-wrapper">
+                    <input type="password" id="login-pass" placeholder="Digite sua senha">
+                    <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">👁️</button>
+                </div>
+            </div>
+            <button class="btn-salvar" id="btn-login" onclick="fazerLogin()">Entrar</button>
         </div>
-        
-        <button class="btn-salvar" id="btn-login" onclick="fazerLogin()">Entrar</button>
-        <button class="btn-bio" id="btn-login-bio" style="display: none;" onclick="loginBiometria()">🔐 Entrar com Face ID / Digital</button>
+
+        <div id="login-pin-area" style="display: none; margin-top: 10px;">
+            <p style="font-size: 0.9rem; font-weight: 600; color: var(--primary-dark);">Bem-vindo de volta, <span id="pin-user-name"></span>!</p>
+            <div class="input-group">
+                <input type="password" id="login-pin-input" maxlength="4" placeholder="PIN" style="text-align: center; letter-spacing: 15px; font-size: 1.8rem; padding: 15px;">
+            </div>
+            <button class="btn-salvar" style="background: #2563eb; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);" onclick="fazerLoginPIN()">Entrar com PIN</button>
+            <p style="font-size: 0.75rem; margin-top: 25px; cursor: pointer; text-decoration: underline; color: #888;" onclick="mostrarLoginCompleto()">Entrar com outra conta</p>
+        </div>
+
     </div>
 </div>
 
@@ -447,8 +453,7 @@
                 </div>
                 <div class="dash-card" style="grid-column: span 2;">
                     <h5>🤝 Lucro por Sócio</h5>
-                    <div id="d-socios-lucro" style="margin-top: 10px;">
-                        </div>
+                    <div id="d-socios-lucro" style="margin-top: 10px;"></div>
                 </div>
             </div>
 
@@ -464,9 +469,12 @@
 
         <div id="tab-configuracoes" class="tab-content">
             
-            <div class="section-title">🔐 Biometria Rápida</div>
-            <p style="font-size: 0.8rem; color: #888; margin-top: 0;">Use o Face ID ou a Digital do seu celular para entrar no aplicativo sem digitar senha.</p>
-            <button class="btn-salvar" style="background: #2563eb; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);" onclick="registrarBiometria()">Cadastrar / Atualizar Face ID ou Digital</button>
+            <div class="section-title">🔐 Acesso Rápido (PIN)</div>
+            <p style="font-size: 0.8rem; color: #888; margin-top: 0; line-height: 1.4;">Crie uma senha de 4 dígitos para entrar no sistema rapidamente sem precisar digitar a senha completa do banco toda vez.</p>
+            <div class="input-group" style="margin-top: 15px;">
+                <input type="password" id="cfg-pin" maxlength="4" placeholder="Ex: 1234" style="text-align: center; letter-spacing: 15px; font-size: 1.5rem; padding: 15px;">
+            </div>
+            <button class="btn-salvar" style="background: #2563eb; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3); margin-top: 5px;" onclick="salvarPIN()">Salvar PIN</button>
 
             <div class="section-title" style="margin-top: 35px;">⚙️ Alterar Senha do Banco</div>
             <div class="input-group">
@@ -498,7 +506,17 @@
 </div>
 
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
-<div id="modal-confirmar" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">🗑️</span><h3 class="modal-title-alert" style="color: #A05252;">Excluir?</h3><p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p><div style="display: flex; gap: 10px; margin-top: 15px;"><button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button><button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Apagar</button></div></div></div>
+<div id="modal-confirmar" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert" id="modal-conf-icon">🗑️</span>
+        <h3 class="modal-title-alert" id="modal-conf-title" style="color: #A05252;">Excluir?</h3>
+        <p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button>
+            <button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Apagar</button>
+        </div>
+    </div>
+</div>
 
 <div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><div class="input-group" style="text-align: left;"><label>Tipo de Produto</label><input type="text" id="edit-r-tipo" list="lista-tipos"></div><button class="btn-salvar" id="btn-salvar-edicao-rotulo" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
@@ -533,24 +551,7 @@
 </div>
 
 <script>
-    // AQUI VOCÊ COLA O LINK DA SUA API NOVA GERADA NO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
-
-    // ================= HELPER BIOMETRIA (WEBAUTHN) =================
-    function bufferToBase64url(buffer) {
-        const bytes = new Uint8Array(buffer);
-        let str = '';
-        for (let i = 0; i < bytes.byteLength; i++) { str += String.fromCharCode(bytes[i]); }
-        return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-    }
-    function base64urlToBuffer(base64url) {
-        let base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
-        while (base64.length % 4) { base64 += '='; }
-        const rawData = window.atob(base64);
-        const buffer = new Uint8Array(rawData.length);
-        for (let i = 0; i < rawData.length; i++) { buffer[i] = rawData.charCodeAt(i); }
-        return buffer;
-    }
 
     // ================= CONTROLE DE LOGIN E SEGURANÇA =================
     let usuarioLogado = "";
@@ -562,15 +563,10 @@
         else { input.type = "password"; btnElement.innerText = "👁️"; }
     }
 
-    function verificarBotaoBiometria() {
-        const hasBio = localStorage.getItem('novera_bio_id');
-        document.getElementById('btn-login-bio').style.display = hasBio ? 'block' : 'none';
-    }
-
     function iniciarSessaoLocal(usuario) {
         localStorage.setItem('novera_last_user', usuario);
-        // Trava a sessão para expirar daqui a 12 horas (em milissegundos)
-        localStorage.setItem('novera_session_expires', Date.now() + (2 * 60 * 60 * 1000));
+        // Trava a sessão para expirar daqui a 12 horas
+        localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000));
         usuarioLogado = usuario;
         
         document.getElementById('login-screen').style.display = 'none';
@@ -588,18 +584,33 @@
     function verificarLogin() {
         const expires = localStorage.getItem('novera_session_expires');
         const lastUser = localStorage.getItem('novera_last_user') || '';
+        const savedPin = localStorage.getItem('novera_pin');
 
         if (expires && Date.now() < parseInt(expires)) {
-            // Sessão ainda é válida! Entra direto.
+            // Sessão válida! Entra direto.
             iniciarSessaoLocal(lastUser);
         } else {
-            // Sessão expirou ou não existe
+            // Sessão expirou
             document.getElementById('login-screen').style.display = 'block';
             document.getElementById('main-app').style.display = 'none';
-            document.getElementById('login-user').value = lastUser; 
-            document.getElementById('login-pass').value = ''; 
-            verificarBotaoBiometria();
+            
+            if(lastUser && savedPin) {
+                // Tem PIN configurado
+                document.getElementById('login-full-area').style.display = 'none';
+                document.getElementById('login-pin-area').style.display = 'block';
+                document.getElementById('pin-user-name').innerText = lastUser;
+                document.getElementById('login-pin-input').value = '';
+            } else {
+                mostrarLoginCompleto();
+            }
         }
+    }
+
+    function mostrarLoginCompleto() {
+        document.getElementById('login-full-area').style.display = 'block';
+        document.getElementById('login-pin-area').style.display = 'none';
+        document.getElementById('login-user').value = localStorage.getItem('novera_last_user') || ''; 
+        document.getElementById('login-pass').value = ''; 
     }
 
     async function fazerLogin() {
@@ -626,69 +637,30 @@
     }
 
     function fazerLogout() {
-        localStorage.removeItem('novera_session_expires'); // Quebra a chave do tempo
+        localStorage.removeItem('novera_session_expires'); 
         verificarLogin(); 
     }
 
-    // ================= BIOMETRIA CORE =================
-   // ================= BIOMETRIA CORE =================
-    async function registrarBiometria() {
-        if (!window.PublicKeyCredential) return mostrarAlerta("Aviso", "Seu navegador/aparelho não suporta biometria web.", "warning");
-        try {
-            const publicKeyOptions = {
-                challenge: window.crypto.getRandomValues(new Uint8Array(32)),
-                rp: { 
-                    name: "Novera Scent ERP",
-                    id: window.location.hostname // Força o celular a aceitar o seu domínio do Github
-                },
-                user: {
-                    id: window.crypto.getRandomValues(new Uint8Array(16)),
-                    name: usuarioLogado,
-                    displayName: usuarioLogado
-                },
-                // Adiciona mais opções de criptografia para suportar Samsung, Motorola, Apple, etc.
-                pubKeyCredParams: [
-                    {alg: -7, type: "public-key"},   // ES256 (Padrão)
-                    {alg: -257, type: "public-key"}  // RS256 (Alternativa muito comum)
-                ],
-                authenticatorSelection: { 
-                    authenticatorAttachment: "platform", 
-                    userVerification: "preferred" // Deixa menos rigoroso para evitar bloqueios do aparelho
-                },
-                timeout: 60000
-            };
-            const credential = await navigator.credentials.create({ publicKey: publicKeyOptions });
-            localStorage.setItem('novera_bio_id', bufferToBase64url(credential.rawId));
-            mostrarAlerta("Sucesso", "Face ID / Digital cadastrada para este aparelho!", "success");
-            verificarBotaoBiometria(); // Garante que o botão azul apareça na hora
-        } catch (e) {
-            // Agora, se falhar, a mensagem vai nos dizer exatamente o porquê!
-            mostrarAlerta("Cancelado", "Falhou: " + e.message, "warning");
-        }
+    // ================= PIN RÁPIDO =================
+    function salvarPIN() {
+        const pin = document.getElementById('cfg-pin').value;
+        if(pin.length !== 4 || isNaN(pin)) return mostrarAlerta("Atenção", "O PIN deve ter exatamente 4 números.", "warning");
+        
+        localStorage.setItem('novera_pin', pin);
+        mostrarAlerta("Sucesso", "PIN configurado! A partir de agora você pode acessar usando ele.", "success");
+        document.getElementById('cfg-pin').value = '';
     }
 
-    async function loginBiometria() {
-        const credIdBase64 = localStorage.getItem('novera_bio_id');
+    function fazerLoginPIN() {
+        const typedPin = document.getElementById('login-pin-input').value;
+        const savedPin = localStorage.getItem('novera_pin');
         const lastUser = localStorage.getItem('novera_last_user');
-        if (!credIdBase64 || !lastUser) return;
         
-        try {
-            const publicKeyOptions = {
-                challenge: window.crypto.getRandomValues(new Uint8Array(32)),
-                rpId: window.location.hostname, // Informa o domínio na hora de ler também
-                allowCredentials: [{
-                    id: base64urlToBuffer(credIdBase64),
-                    type: 'public-key',
-                    transports: ['internal']
-                }],
-                userVerification: "preferred",
-                timeout: 60000
-            };
-            await navigator.credentials.get({ publicKey: publicKeyOptions });
-            // Se passar daqui, o hardware do celular validou o rosto/dedo
+        if(typedPin === savedPin) {
             iniciarSessaoLocal(lastUser);
-        } catch (e) {
-            mostrarAlerta("Erro", "Falha ao reconhecer: " + e.message, "error");
+        } else {
+            mostrarAlerta("Erro", "PIN Incorreto. Tente novamente.", "error");
+            document.getElementById('login-pin-input').value = '';
         }
     }
 
@@ -704,7 +676,7 @@
             const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) });
             const json = await res.json();
             if(json.sucesso) {
-                mostrarAlerta("Sucesso", "Senha alterada com sucesso!", "success");
+                mostrarAlerta("Sucesso", "Senha alterada com sucesso no banco!", "success");
                 document.getElementById('cfg-senha-atual').value = "";
                 document.getElementById('cfg-nova-senha').value = "";
             } else {
@@ -758,7 +730,7 @@
         }
     });
 
-    // ================= CONTROLE DE MENU =================
+    // ================= CONTROLE DE MENU E MODAL =================
     function toggleMenu() {
         const menu = document.getElementById('menu-items');
         menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
@@ -795,9 +767,22 @@
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-    function abrirConfirmacao(texto, callback) {
-        document.getElementById('texto-confirmar').innerText = texto; acaoConfirmada = callback; document.getElementById('modal-confirmar').style.display = 'flex';
+    // AQUI ESTÁ A FUNÇÃO CORRIGIDA PARA O MODAL DINÂMICO
+    function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
+        document.getElementById('modal-conf-title').innerText = titulo;
+        document.getElementById('modal-conf-title').style.color = corHex;
+        document.getElementById('modal-conf-icon').innerText = icone;
+        document.getElementById('texto-confirmar').innerText = texto;
+        
+        const btn = document.getElementById('btn-confirmar-acao');
+        btn.innerText = textoBtn;
+        btn.style.background = corHex;
+        btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
+        
+        acaoConfirmada = callback; 
+        document.getElementById('modal-confirmar').style.display = 'flex';
     }
+    
     document.getElementById('btn-confirmar-acao').onclick = () => { if (acaoConfirmada) acaoConfirmada(); document.getElementById('modal-confirmar').style.display = 'none'; };
 
     // ================= ROTULOS =================
@@ -840,8 +825,10 @@
             if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); carregarRotulos(); } else throw new Error(json.erro);
         } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
-    function prepararExclusaoRotulo(linha, codigo) { abrirConfirmacao(`Deseja excluir a identidade ${codigo}?`, async () => {
-        try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Identidade apagada.", "success"); carregarRotulos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } });
+    function prepararExclusaoRotulo(linha, codigo) { 
+        abrirConfirmacao("Excluir Identidade?", `Deseja excluir a identidade ${codigo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => {
+            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Identidade apagada.", "success"); carregarRotulos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        });
     }
 
     // ================= PRECIFICAÇÃO =================
@@ -905,7 +892,11 @@
             if(json.sucesso) { document.getElementById('modal-editar-custo').style.display = 'none'; mostrarAlerta("Atualizado!", "Editado com sucesso.", "success"); carregarCustos(); } else throw new Error(json.erro);
         } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
-    function prepararExclusaoCusto(linha, modelo) { abrirConfirmacao(`Deseja apagar o lote ${modelo}?`, async () => { try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Apagado.", "success"); carregarCustos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } }); }
+    function prepararExclusaoCusto(linha, modelo) { 
+        abrirConfirmacao("Excluir Lote?", `Deseja apagar o lote ${modelo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
+            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "CustosProdutos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Apagado.", "success"); carregarCustos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        }); 
+    }
 
     // ================= GASTOS & INVESTIMENTOS =================
     function calcularTotalGasto() {
@@ -994,7 +985,11 @@
         } catch(e) { mostrarAlerta("Erro", e.message, "error"); } finally { btn.disabled = false; btn.innerText = "💾 Salvar Alterações"; }
     }
 
-    function prepararExclusaoGasto(linha, item) { abrirConfirmacao(`Deseja apagar a despesa "${item}"?`, async () => { try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Gasto apagado.", "success"); carregarGastos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } }); }
+    function prepararExclusaoGasto(linha, item) { 
+        abrirConfirmacao("Excluir Despesa?", `Deseja apagar a despesa "${item}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
+            try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Excluído", "Gasto apagado.", "success"); carregarGastos(); } else throw new Error(json.erro); } catch(e) { mostrarAlerta("Erro", e.message, "error"); } 
+        }); 
+    }
 
     // ================= VENDAS =================
     async function salvarVenda() {
@@ -1128,7 +1123,7 @@
     }
 
     async function darBaixaVenda(linha) {
-        abrirConfirmacao("Deseja marcar o pagamento desta venda como RECEBIDO na data de hoje?", async () => {
+        abrirConfirmacao("Confirmar Pagamento?", "Deseja marcar o pagamento desta venda como RECEBIDO?", "💰", "#2e7d32", "#1b5e20", "💲 Receber", async () => {
             try {
                 const hojeStr = new Date().toLocaleDateString('pt-BR'); 
                 const py = { acao: "atualizar_status_venda", linha: linha, status: "Pago", data_pg: hojeStr };
@@ -1175,7 +1170,7 @@
     }
 
     function prepararExclusaoVenda(linha, cliente) { 
-        abrirConfirmacao(`Deseja apagar permanentemente o registro de venda para "${cliente}"?`, async () => { 
+        abrirConfirmacao("Excluir Venda?", `Deseja apagar o registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
             try { 
                 const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); 
                 const json = await res.json(); 
