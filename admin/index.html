@@ -36,8 +36,12 @@
         #app-core { display:none; width:100%; max-width:700px; position:relative; }
         .admin-card { background:var(--card-bg); width:100%; padding:35px; border-radius:24px; box-shadow:0 20px 40px rgba(78,52,46,0.08); box-sizing:border-box; position:relative;}
         
-        /* HEADER E VERSÃO */
-        .app-version { position:absolute; left:15px; top:15px; font-size:0.65rem; font-weight:800; color:#d1d5db; letter-spacing:1px; z-index:10;}
+        /* HEADER COM BOTÃO SAIR GLOBAL */
+        .app-version { position:absolute; right:15px; top:15px; font-size:0.65rem; font-weight:800; color:#d1d5db; letter-spacing:1px; z-index:10;}
+        .btn-logout { position:absolute; left:15px; top:15px; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:10px; padding:6px 12px; font-size:0.8rem; font-weight:800; cursor:pointer; transition:0.2s; box-shadow:0 2px 5px rgba(239,68,68,0.1); font-family:'Inter', sans-serif; z-index:10;}
+        .btn-logout:active { transform:scale(0.95); }
+        .btn-logout:hover { background:#fee2e2; }
+        
         .brand-header { text-align:center; margin-bottom:25px; padding-bottom:20px; border-bottom:2px dashed var(--border-color); position:relative;}
         .brand-header img { width:140px; height:auto; margin-bottom:12px; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.08)); border-radius:12px;}
         .brand-header h1 { margin:0; color:var(--brand-dark); font-size:1.5rem; font-weight:900; letter-spacing:-0.5px; }
@@ -106,19 +110,11 @@
         .modal-box { background:#fff; width:92%; max-width:450px; border-radius:20px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s ease-out; position:relative; max-height:90vh; overflow-y:auto;} .btn-fechar-modal { position:absolute; top:12px; right:12px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-size:1.1rem; font-weight:bold; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center;} .modal-title { font-size:1.1rem; font-weight:900; color:var(--brand-dark); margin:0 0 15px;} .foto-atual-box { background:#f8fafc; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;} .foto-atual-box img { width:40px; height:40px; object-fit:cover; border-radius:6px;} .foto-atual-box span { font-size:0.75rem; color:#64748b; font-weight:600;}
         .modal-box-alert { background:#fff; width:90%; max-width:380px; border-radius:24px; padding:30px 20px 20px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s ease-out; position:relative;} .modal-icon-alert { font-size:4rem; margin-bottom:10px; display:inline-block;} .modal-title-alert { font-size:1.3rem; font-weight:900; color:var(--brand-dark); margin:0 0 10px; text-transform:uppercase;} .modal-text-alert { font-size:0.9rem; color:var(--text-muted); margin-bottom:25px; line-height:1.4; font-weight:600;} .btn-modal-ok { color:white; border:none; padding:15px; border-radius:12px; width:100%; cursor:pointer; font-weight:900; font-size:0.95rem; text-transform:uppercase; transition:transform 0.1s;} .btn-modal-ok:active { transform:translateY(4px); box-shadow:0 0 0 transparent !important; } .btn-modal-cancel { flex:1; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; padding:15px; border-radius:12px; cursor:pointer; font-weight:800; font-size:0.90rem; text-transform:uppercase; transition:0.2s;} .btn-modal-cancel:active { background:#e2e8f0; } .btn-modal-confirm { flex:1; background:#10b981; color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900; font-size:0.90rem; text-transform:uppercase; transition:transform 0.1s; box-shadow:0 6px 0 #059669;} .btn-modal-confirm:active { transform:translateY(4px); box-shadow:0 0 0 transparent !important; }
 
-        /* SENHA, CHECKBOX E LOADING */
+        /* SENHA E LOADING */
         .password-wrapper { position: relative; display: flex; align-items: center; }
         .password-wrapper input { width: 100%; padding-right: 45px; }
         .toggle-eye { position: absolute; right: 10px; background: transparent; border: none; font-size: 1.3rem; cursor: pointer; color: var(--primary); padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         
-        .checkbox-recibo { display: flex; align-items: center; background: #fff; border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
-        .checkbox-recibo:hover { border-color: var(--primary); background: #fffbeb; }
-        .checkbox-recibo input[type="checkbox"] { appearance: auto !important; -webkit-appearance: auto !important; width: 20px; height: 20px; margin: 0 15px 0 0; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; border-radius: 4px; }
-        .chk-info { display: flex; flex-direction: column; flex: 1;}
-        .chk-title { font-weight: 800; font-size: 0.85rem; color: var(--brand-dark); line-height: 1.2;}
-        .chk-desc { font-size: 0.7rem; color: #888; margin-top: 3px; font-weight:600;}
-        .chk-val { font-weight: 900; color: var(--primary); font-size: 0.95rem;}
-
         .loading-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(250, 250, 249, 0.95); z-index: 500; display: none; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px; backdrop-filter: blur(5px); }
         .spinner { border: 5px solid #fde68a; border-top: 5px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px;}
 
@@ -131,7 +127,7 @@
 
 <div id="login-screen">
     <div class="login-box">
-        <span class="app-version">v2.0.0</span>
+        <span class="app-version">v2.0.1</span>
         <img src="logo.png" alt="Mini Mundo" onerror="this.src='logo.jpg'; this.onerror=null;">
         <h2>Acesso Restrito</h2>
         <p>Área exclusiva da Diretoria</p>
@@ -161,7 +157,9 @@
         </div>
 
         <div class="brand-header">
-            <span class="app-version">v2.0.0</span>
+            <button class="btn-logout" onclick="fazerLogout()" title="Sair do Sistema">🚪 Sair</button>
+            <span class="app-version">v2.0.1</span>
+            
             <img src="logo.png" alt="Mini Mundo 3D" crossorigin="anonymous" onerror="this.src='logo.jpg'; this.onerror=null;">
             <h1>Central de Automação</h1>
             <p>Inteligência Artificial, CRM & ERP</p>
@@ -191,32 +189,6 @@
                 <div class="row"><div class="col"><label>Plataforma</label><input type="text" id="venda-plataforma" class="input-var" list="lista-plataformas-venda" placeholder="Ex: Física, Shopee" autocomplete="off" style="border-color:#fcd34d !important;"><datalist id="lista-plataformas-venda"></datalist></div><div class="col"><label>Qtd</label><input type="number" id="venda-qtd" class="input-var" value="1" min="1" style="border-color:#fcd34d !important;"></div></div>
                 <div class="input-group"><label>Valor Total</label><input type="text" id="venda-valor" class="input-var mask-money" placeholder="R$ 0,00" style="border-color:#fcd34d !important;"></div>
                 <button class="btn-magic" id="btn-salvar-venda" onclick="salvarVenda()" style="margin-bottom:0;">✅ Lançar Venda</button>
-            </div>
-
-            <div class="filtros-box" style="background: #fffbeb; border-color: #fde68a; margin-top: 25px;">
-                <div class="section-title" style="margin-top:0; border-left-color: var(--primary); color: var(--brand-dark);">🧾 Recibos & Cobranças</div>
-                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar imagens profissionais de recibo ou lembrete de pagamento.</p>
-                <div class="row" style="margin-bottom: 10px;">
-                    <div class="col">
-                        <label style="color: var(--brand-dark);">Selecione o Cliente</label>
-                        <select id="recibo-cliente" onchange="prepararReciboCobranca()"><option value="">Nenhum cliente...</option></select>
-                    </div>
-                </div>
-                
-                <div class="row" id="div-recibo-nome" style="display:none; margin-bottom: 15px; margin-top: 10px;">
-                    <div class="col">
-                        <label style="color: var(--brand-dark);">Nome na Imagem/Mensagem (Editável)</label>
-                        <input type="text" id="recibo-nome-exibicao" placeholder="Como o cliente vai ler..." style="border-color:var(--primary);">
-                    </div>
-                </div>
-
-                <div id="recibo-pedidos-lista" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; display: none;"></div>
-                
-                <div class="row" id="botoes-recibo" style="display: none; margin-top: 15px; margin-bottom: 0;">
-                    <div class="col"><button class="btn-magic" style="margin-top: 0; font-size:0.85rem;" onclick="montarRecibo()">📸 Recibo</button></div>
-                    <div class="col"><button class="btn-magic" style="margin-top: 0; font-size:0.85rem; background:linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); box-shadow:0 10px 25px rgba(239,68,68,0.3);" onclick="montarCobranca()">📸 Cobrança</button></div>
-                </div>
-                <button id="btn-texto-cobranca" class="btn-limpar" style="width:100%; margin-top:10px; display:none; background:#dcfce7; color:#166534; border-color:#86efac;" onclick="copiarPendenciasWhats()">📋 Copiar Texto de Cobrança P/ WhatsApp</button>
             </div>
 
             <div class="section-title">📊 Histórico de Vendas</div>
@@ -289,16 +261,21 @@
         </div>
 
         <div id="tab-loja" class="tab-content">
-            <div class="section-title" style="margin-top:0;">➕ Adicionar Produto no Site</div>
+            <div class="section-title" style="margin-top:0;">➕ Adicionar Produto no Catálogo</div>
             <div style="background:#fff; padding:15px; border-radius:16px; border:1px solid var(--border-color); margin-bottom:20px;">
                 <div class="input-group"><label>Nome:</label><input type="text" id="prod-nome" placeholder="Ex: Placa Personalizada"></div>
                 <div class="input-group"><label>Preço:</label><input type="text" id="prod-preco" class="mask-money" placeholder="Ex: R$ 60,00"></div>
                 <div class="input-group"><label>Fotos (Exemplos):</label><input type="file" id="prod-fotos" accept="image/*" multiple></div>
                 <button id="btn-salvar-produto" class="btn-magic btn-global" style="margin-top:5px; padding:12px; font-size:0.9rem;" onclick="cadastrarProdutoIA()">✨ Enviar e Cadastrar via IA</button>
             </div>
-            <div class="section-title">📋 Produtos no Site</div>
+            <div class="section-title">📋 Produtos no Catálogo</div>
             <input type="text" id="busca-catalogo" class="search-bar" placeholder="🔍 Buscar nome, categoria..." onkeyup="filtrarCatalogo()">
             <div id="lista-produtos-admin" class="scroll-container"></div>
+            
+            <div class="section-title" style="margin-top: 25px;">💻 Console do Sistema</div>
+            <div class="log-container" id="terminal-catalogo">
+                <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Módulo Catálogo Iniciado.</span></div>
+            </div>
         </div>
 
         <div id="tab-menu" class="tab-content">
@@ -316,11 +293,6 @@
                 <div class="row" style="margin-bottom:10px;"><div class="col"><label>Mês:</label><select id="rel-mes" onchange="aplicarFiltrosDashboardERP()"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Ano:</label><select id="rel-ano" onchange="aplicarFiltrosDashboardERP()"><option value="todos">Todos</option><option value="2025">2025</option><option value="2026">2026</option></select></div></div>
                 <button class="btn-magic" style="margin-top: 10px; font-size:0.85rem; background: #107c41; box-shadow: 0 4px 10px rgba(16, 124, 65, 0.3);" onclick="exportarExcelERP()">📊 Baixar Vendas (.CSV)</button>
                 <button class="btn-magic" style="margin-top: 10px; font-size:0.85rem; background: #25D366; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="copiarFechamentoERP()">📱 Copiar Fechamento p/ WhatsApp</button>
-            </div>
-
-            <div class="section-title">💻 Console do Sistema</div>
-            <div class="log-container" id="terminal">
-                <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Painel Mini Mundo Carregado.</span></div>
             </div>
             
             <button class="btn-magic" onclick="sincronizarDadosUnico()" style="margin-top: 20px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Sincronizar Banco Novamente</button>
@@ -379,6 +351,11 @@
             <div style="background:#fee2e2; border:1px solid #fecaca; padding:10px; border-radius:10px; margin-top:15px;"><label style="color:#e11d48; margin-bottom:0; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.75rem; font-weight:800;"><input type="checkbox" id="substituir" style="width:18px; height:18px; margin:0;">⚠️ RECICLAGEM: Apagar banco antigo e substituir</label></div>
             <button id="btn-iniciar" class="btn-magic" style="padding:12px; font-size:0.9rem;" onclick="iniciarAutomacao(false)">🤖 Gerar para o Time</button>
             <button id="btn-global" class="btn-magic btn-global" style="padding:12px; font-size:0.9rem;" onclick="iniciarAutomacao(true)">🌍 GERAR TODOS (GLOBAL)</button>
+
+            <div class="section-title" style="margin-top: 25px;">💻 Console do Sistema</div>
+            <div class="log-container" id="terminal-quiz">
+                <div class="log-line"><span class="log-time">[Sistema]</span><span class="log-info">Módulo Quiz IA Iniciado.</span></div>
+            </div>
         </div>
 
         <div id="tab-config" class="tab-content">
@@ -391,9 +368,6 @@
             <div class="input-group"><label>Senha Atual</label><div class="password-wrapper"><input type="password" id="cfg-senha-atual"><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">🙈</button></div></div>
             <div class="input-group"><label>Nova Senha</label><div class="password-wrapper"><input type="password" id="cfg-nova-senha"><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">🙈</button></div></div>
             <button class="btn-magic btn-global" id="btn-alterar-senha" style="padding:14px; font-size:0.9rem;" onclick="alterarSenha()">💾 Atualizar Senha no Banco</button>
-
-            <div class="section-title" style="margin-top: 40px; color: #b91c1c; border-left-color: #ef4444;">🚪 Sair do Sistema</div>
-            <button class="btn-magic btn-excluir" style="padding:14px; font-size:0.9rem; margin-top:0;" onclick="fazerLogout()">Fazer Logout</button>
         </div>
 
     </div>
@@ -401,8 +375,8 @@
     <nav class="bottom-nav">
         <a class="nav-item active" id="nav-vendas" onclick="switchTab('vendas')"><span class="icon">🛒</span><span>Vendas</span></a>
         <a class="nav-item" id="nav-custos" onclick="switchTab('custos')"><span class="icon">💳</span><span>Gastos</span></a>
-        <a class="nav-item" id="nav-precificar" onclick="switchTab('precificar')"><span class="icon">➕</span><span>Fábrica</span></a>
-        <a class="nav-item" id="nav-loja" onclick="switchTab('loja')"><span class="icon">📦</span><span>Site</span></a>
+        <a class="nav-item" id="nav-precificar" onclick="switchTab('precificar')"><span class="icon">➕</span><span>Preços</span></a>
+        <a class="nav-item" id="nav-loja" onclick="switchTab('loja')"><span class="icon">📦</span><span>Catálogo</span></a>
         <a class="nav-item" id="nav-menu" onclick="switchTab('menu')"><span class="icon">☰</span><span>Mais</span></a>
     </nav>
 </div>
@@ -414,12 +388,10 @@
     </div>
     <p style="font-size: 0.9rem; margin-bottom: 5px; color: #292524;"><strong>Cliente:</strong> <span id="rec-cli-nome"></span></p>
     <p style="font-size: 0.9rem; margin-bottom: 20px; color: #292524;"><strong>Data de Emissão:</strong> <span id="rec-data-emissao"></span></p>
-    
     <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
         <h4 style="margin: 0 0 10px; font-size: 0.75rem; color: #b45309; text-transform: uppercase; letter-spacing: 1px; font-weight:900;">Itens</h4>
         <div id="rec-itens-lista" style="font-size: 0.85rem; line-height: 1.5; color: #4E342E;"></div>
     </div>
-    
     <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px dashed #e7e5e4; padding-top: 15px;">
         <span style="font-weight: 800; font-size: 1rem; color: #292524;">TOTAL PAGO:</span>
         <span id="rec-total" style="font-weight: 900; font-size: 1.4rem; color: #10b981;">R$ 0,00</span>
@@ -437,11 +409,9 @@
     </div>
     <p style="font-size: 0.9rem; margin-bottom: 5px; color: #292524;"><strong>Olá,</strong> <span id="cob-cli-nome"></span>!</p>
     <p style="font-size: 0.85rem; margin-bottom: 20px; color: #78716c;">Aqui é do Mini Mundo 3D ✨ Esse é um resumo dos seus pedidos que estão em aberto com a gente:</p>
-    
     <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
         <div id="cob-itens-lista" style="font-size: 0.85rem; line-height: 1.5; color: #4E342E;"></div>
     </div>
-    
     <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px dashed #fecaca; padding-top: 15px;">
         <span style="font-weight: 800; font-size: 0.9rem; color: #ef4444;">TOTAL EM ABERTO:</span>
         <span id="cob-total" style="font-weight: 900; font-size: 1.5rem; color: #ef4444;">R$ 0,00</span>
@@ -464,7 +434,7 @@
     </div>
 </div>
 
-<div id="modal-editar-produto" class="modal-overlay"><div class="modal-box"><button class="btn-fechar-modal" onclick="$('modal-editar-produto').style.display='none'">×</button><h3 class="modal-title">✏️ Editar Produto</h3><input type="hidden" id="edit-prod-linha"><input type="hidden" id="edit-prod-foto-antiga"><div class="foto-atual-box"><img id="edit-prod-img-preview" src=""><span>Deixe o campo abaixo vazio para manter fotos atuais.</span></div><div class="input-group"><input type="file" id="edit-prod-fotos-novas" accept="image/*" multiple></div><div class="input-group"><label>Nome:</label><input type="text" id="edit-prod-nome"></div><div class="row"><div class="col"><div class="input-group"><label>Preço:</label><input type="text" id="edit-prod-preco" class="mask-money"></div></div><div class="col"><div class="input-group"><label>Categoria:</label><input type="text" id="edit-prod-categoria"></div></div></div><div class="input-group"><label>Descrição:</label><textarea id="edit-prod-desc"></textarea></div><div class="input-group"><label>Status:</label><select id="edit-prod-status"><option value="true">🟢 ATIVO</option><option value="false">🔴 INATIVO</option></select></div><div style="display:flex; gap:10px; margin-top:15px;"><button id="btn-excluir-prod" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoProduto()">🗑️ Excluir</button><button id="btn-salvar-edicao-prod" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoProduto()">💾 Salvar</button></div></div></div>
+<div id="modal-editar-produto" class="modal-overlay"><div class="modal-box"><button class="btn-fechar-modal" onclick="$('modal-editar-produto').style.display='none'">×</button><h3 class="modal-title">✏️ Editar Produto</h3><input type="hidden" id="edit-prod-linha"><input type="hidden" id="edit-prod-foto-antiga"><div class="foto-atual-box"><img id="edit-prod-img-preview" src=""><span>Deixe o campo vazio para manter fotos atuais.</span></div><div class="input-group"><input type="file" id="edit-prod-fotos-novas" accept="image/*" multiple></div><div class="input-group"><label>Nome:</label><input type="text" id="edit-prod-nome"></div><div class="row"><div class="col"><div class="input-group"><label>Preço:</label><input type="text" id="edit-prod-preco" class="mask-money"></div></div><div class="col"><div class="input-group"><label>Categoria:</label><input type="text" id="edit-prod-categoria"></div></div></div><div class="input-group"><label>Descrição:</label><textarea id="edit-prod-desc"></textarea></div><div class="input-group"><label>Status:</label><select id="edit-prod-status"><option value="true">🟢 ATIVO</option><option value="false">🔴 INATIVO</option></select></div><div style="display:flex; gap:10px; margin-top:15px;"><button id="btn-excluir-prod" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoProduto()">🗑️ Excluir</button><button id="btn-salvar-edicao-prod" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoProduto()">💾 Salvar</button></div></div></div>
 <div id="modal-editar-anuncio" class="modal-overlay"><div class="modal-box"><button class="btn-fechar-modal" onclick="$('modal-editar-anuncio').style.display='none'">×</button><h3 class="modal-title">💼 Editar Anúncio</h3><input type="hidden" id="edit-ad-linha"><input type="hidden" id="edit-ad-foto-antiga"><input type="hidden" id="edit-ad-logo-antiga"><div class="foto-atual-box"><img id="edit-ad-logo-preview" src="" style="border-radius:50%;"><img id="edit-ad-banner-preview" src="" style="width:60px;"><span>Vazio = mantém atual.</span></div><div class="input-group"><label>Empresa:</label><input type="text" id="edit-ad-empresa" disabled style="background:#f1f5f9; color:#94a3b8;"></div><div class="row"><div class="col"><div class="input-group"><label>Status:</label><select id="edit-ad-status"><option value="ATIVO">🟢 ATIVA</option><option value="PENDENTE">🟡 PENDENTE</option><option value="CANCELADO">🔴 CANCELADA</option></select></div></div><div class="col"><div class="input-group"><label>Vencimento:</label><input type="date" id="edit-ad-vencimento"></div></div></div><div class="input-group"><label>Nova Logo:</label><input type="file" id="edit-ad-logo-nova" accept="image/*"></div><div class="input-group"><label>Novo Banner:</label><input type="file" id="edit-ad-banner-novo" accept="image/*"></div><div class="input-group"><label>Chamada:</label><input type="text" id="edit-ad-desc" maxlength="60"></div><div class="row"><div class="col"><div class="input-group"><label>Cupom:</label><input type="text" id="edit-ad-cupom" style="text-transform:uppercase;"></div></div><div class="col"><div class="input-group"><label>Valor:</label><input type="text" id="edit-ad-valor" class="mask-money"></div></div></div><div style="display:flex; gap:10px; margin-top:15px;"><button id="btn-excluir-ad" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoAnuncio()">🗑️ Excluir</button><button id="btn-salvar-edicao-ad" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoAnuncio()">💾 Salvar</button></div></div></div>
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✅</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">Operação realizada com sucesso!</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="fecharAlerta()">Certo, entendi</button></div></div>
 <div id="custom-confirm-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">💸</span><h3 class="modal-title-alert">Confirmar Pagamento</h3><p class="modal-text-alert">Tem certeza que deseja marcar esta venda como <b>PAGA</b>?</p><div style="display:flex; gap:10px; margin-top:15px;"><button class="btn-modal-cancel" onclick="fecharConfirmacao()">Cancelar</button><button class="btn-modal-confirm" onclick="executarPagamentoVenda()">✅ Sim, Recebi!</button></div></div></div>
@@ -590,29 +560,36 @@
         finally { btn.disabled = false; btn.innerText = "💾 Atualizar Senha no Banco"; }
     }
 
+    // CORREÇÃO DO ERRO DE CONEXÃO
     async function sincronizarDadosUnico() {
         const loader = $('global-loader');
         loader.style.display = "flex";
         
         try {
-            // 1. DADOS DO ERP (Tiro Único)
             const res = await fetch(API_PRECIFICACAO + "?acao=listar_tudo&_t=" + new Date().getTime()); 
-            const dados = await res.json();
-            if (dados.sucesso) {
-                arrayBancoCustos = dados.produtos_banco || [];
-                arrayDespesas = dados.despesas || [];
-                arrayVendas = dados.vendas || [];
-                dashVendas = arrayVendas; dashDespesas = arrayDespesas;
-                
-                alimentarDatalistE_Filtro(arrayDespesas);
-                renderizarListaBanco(arrayBancoCustos);
-                filtrarDespesas();
-                renderizarDatalistsVenda();
-                filtrarVendas();
-                aplicarFiltrosDashboardERP();
-            } else { mostrarAlerta("Erro ERP", dados.erro, "error"); }
+            const textoResposta = await res.text();
+            
+            try {
+                const dados = JSON.parse(textoResposta);
+                if (dados.sucesso) {
+                    arrayBancoCustos = dados.produtos_banco || [];
+                    arrayDespesas = dados.despesas || [];
+                    arrayVendas = dados.vendas || [];
+                    dashVendas = arrayVendas; dashDespesas = arrayDespesas;
+                    
+                    alimentarDatalistE_Filtro(arrayDespesas);
+                    renderizarListaBanco(arrayBancoCustos);
+                    filtrarDespesas();
+                    renderizarDatalistsVenda();
+                    filtrarVendas();
+                    aplicarFiltrosDashboardERP();
+                } else { mostrarAlerta("Erro ERP", dados.erro, "error"); }
+            } catch (e) {
+                // Se cair aqui, é porque o Google Script não retornou um JSON válido (Script desatualizado)
+                mostrarAlerta("Script Desatualizado", "O Google Script retornou um formato inválido. Vá no seu painel do Apps Script e clique em 'Implantar' -> 'Nova implantação' para o sistema rápido funcionar.", "warning");
+            }
 
-            // 2. DADOS EXTERNOS (Marketing e Site)
+            // Continua carregando as outras abas
             carregarAnalytics(); 
             carregarCatalogoAdmin(); 
             carregarAnunciosAdmin(); 
@@ -621,7 +598,7 @@
             calcular();
 
             dadosCarregados = true;
-        } catch(e) { mostrarAlerta("Falha de Conexão", "Erro ao buscar os dados da planilha.", "error"); } 
+        } catch(e) { mostrarAlerta("Falha de Conexão", "Erro ao buscar os dados da planilha. Verifique sua internet.", "error"); } 
         finally { loader.style.display = "none"; }
     }
 
@@ -634,20 +611,30 @@
         
         // Ativa o ícone do Menu Inferior se não for aba de ferramenta
         const mainNavs = ['vendas', 'custos', 'precificar', 'loja', 'menu'];
-        if(mainNavs.includes(tabName)) $('nav-'+tabName).classList.add('active');
-        else $('nav-menu').classList.add('active');
+        if(mainNavs.includes(tabName)) {
+            $('nav-'+tabName).classList.add('active');
+        } else {
+            $('nav-menu').classList.add('active');
+        }
 
-        // Mapear Titulos do Header
+        // Mapear Titulos do Header (Fábrica, Catálogo)
         const titles = {
-            'vendas': '🛒 VENDAS & CRM', 'custos': '💳 DESPESAS', 'precificar': '➕ FÁBRICA',
-            'loja': '📦 SITE', 'menu': '🚀 MAIS', 'dashboard_erp': '📊 FINANCEIRO',
+            'vendas': '🛒 VENDAS & CRM', 'custos': '💳 DESPESAS', 'precificar': '➕ PRECIFICAÇÃO',
+            'loja': '📦 CATÁLOGO', 'menu': '🚀 MAIS', 'dashboard_erp': '📊 FINANCEIRO',
             'analytics': '📈 ANALYTICS', 'anuncios': '📢 ANÚNCIOS', 'quiz': '🎮 QUIZ IA',
-            'modelos': '📋 MODELOS 3D', 'config': '⚙️ CONFIGURAÇÕES'
+            'config': '⚙️ CONFIGURAÇÕES'
         };
         if(titles[tabName]) $('titulo-modulo-ativo').innerText = titles[tabName];
     }
     
-    function addLog(msg, tipo='info'){ $('terminal').innerHTML+=`<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${msg}</span></div>`; $('terminal').scrollTop=$('terminal').scrollHeight; }
+    // NOVO ADD LOG (Escreve nos dois terminais: Catálogo e Quiz)
+    function addLog(msg, tipo='info'){ 
+        const html = `<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${msg}</span></div>`;
+        const tCat = $('terminal-catalogo');
+        if(tCat) { tCat.innerHTML += html; tCat.scrollTop = tCat.scrollHeight; }
+        const tQuiz = $('terminal-quiz');
+        if(tQuiz) { tQuiz.innerHTML += html; tQuiz.scrollTop = tQuiz.scrollHeight; }
+    }
 
     function mostrarAlerta(tit, txt, tipo){ $('modal-titulo-alert').innerText=tit; $('modal-texto-alert').innerText=txt; const ic=$('modal-icone-alert'), b=$('btn-modal-ok'); if(tipo==="success"){ic.innerText="✅";b.style.background="#10b981";b.style.boxShadow="0 6px 0 #059669";}else if(tipo==="warning"){ic.innerText="⚠️";b.style.background="#f59e0b";b.style.boxShadow="0 6px 0 #d97706";}else{ic.innerText="❌";b.style.background="#ef4444";b.style.boxShadow="0 6px 0 #b91c1c";} $('custom-modal').style.display="flex"; if("vibrate" in navigator) navigator.vibrate(50); }
     function fecharAlerta(){ $('custom-modal').style.display="none"; }
@@ -669,7 +656,7 @@
     function renderizarGrafico(l,d,c){ const ctx=$('graficoAcessos').getContext('2d'); if(graficoInstancia)graficoInstancia.destroy(); graficoInstancia=new Chart(ctx,{type:'bar',data:{labels:l,datasets:[{data:d,backgroundColor:c,borderRadius:8,borderWidth:0,barPercentage:0.6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#4E342E',titleFont:{size:14,family:'Inter'},bodyFont:{size:16,weight:'bold',family:'Inter'},padding:12,displayColors:false,callbacks:{label:ctx=>ctx.parsed.y+' toques'}}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,precision:0}},x:{grid:{display:false}}},animation:{duration:800,easing:'easeOutQuart'}}}); }
 
     // ==========================================
-    // ADMIN: ANÚNCIOS E LOJA IA
+    // ADMIN: ANÚNCIOS E CATÁLOGO IA
     // ==========================================
     function ativarNotificacoesBrowser(){ if("Notification" in window){Notification.requestPermission().then(p=>{if(p==="granted"){$('btn-notifica').style.display="none";try{new Notification("Mini Mundo",{body:"Alertas ativados!",icon:"logo.png"});}catch(e){}}});} }
     function dispararAlertaSeHouverNovos(nA){ let pA=nA.filter(a=>a.status==="PENDENTE").length; if(quantidadeAnunciosPendentes===-1){quantidadeAnunciosPendentes=pA;return;} if(pA>quantidadeAnunciosPendentes){let eN=nA[nA.length-1].empresa; addLog(`🔔 ALERTA: Solicitação de ${eN}`,"warn"); try{if("Notification" in window&&Notification.permission==="granted"){new Notification("🚀 Novo Anunciante!",{body:`Empresa ${eN} solicitou anúncio.`,icon:"logo.png"});}}catch(e){} try{if("vibrate" in navigator)navigator.vibrate([200,100,200]);}catch(e){}} quantidadeAnunciosPendentes=pA; }
