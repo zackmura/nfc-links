@@ -1,8 +1,8 @@
 /* style.css */
 :root {
-    --marrom-mini: #4A3320; /* Cor da letra da logo */
+    --marrom-mini: #4A3320; 
     --fundo: #F5F2EB;
-    --verde-insta: #5C8D89; /* Cor baseada no globo da logo */
+    --verde-insta: #5C8D89; 
 }
 
 body {
@@ -16,33 +16,61 @@ body {
 }
 
 .container {
-    max-width: 400px; /* Otimizado para celular */
+    max-width: 400px; 
     width: 100%;
     padding: 30px 20px;
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .logo {
     width: 90%;
     max-width: 250px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+/* --- ESTILOS DO FUNDO ATRÁS DA FOTO (BURST) --- */
+.burst-wrapper {
+    position: relative;
+    margin: 0 auto 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.burst-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    height: 320px;
+    /* Usa a logo completa e dá um zoom para focar só no globo/casas */
+    background-image: url('logo_completo.png'); 
+    background-size: 130%; 
+    background-position: center 30px; 
+    background-repeat: no-repeat;
+    z-index: -1; 
+    opacity: 0.9;
 }
 
 .media-container {
     width: 220px;
     height: 220px;
-    margin: 0 auto 20px;
-    border-radius: 50%; /* Faz o círculo perfeito */
+    border-radius: 50%; 
     overflow: hidden;
     border: 5px solid white;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    background-color: #ddd; /* Fundo caso a imagem demore */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    background-color: #ddd; 
 }
 
 .foto-destaque {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Garante que a foto preencha o círculo sem distorcer */
+    object-fit: cover; 
 }
 
 #video-cliente {
@@ -59,8 +87,18 @@ h1 {
 .mensagem {
     font-size: 16px;
     line-height: 1.4;
-    margin-bottom: 40px;
+    margin-bottom: 25px;
     padding: 0 15px;
+}
+
+/* --- ESTILOS DA IMAGEM DO PRODUTO FÍSICO --- */
+.imagem-produto {
+    width: 100%;
+    max-width: 180px;
+    margin: 0 auto 20px;
+    display: block;
+    border-radius: 8px; /* Dá uma leve suavizada nas bordas caso a imagem não tenha fundo transparente */
+    filter: drop-shadow(0px 8px 10px rgba(0,0,0,0.2)); /* Adiciona uma sombra para parecer real */
 }
 
 .marketing-card {
@@ -88,12 +126,15 @@ h1 {
     opacity: 0.7;
 }
 
+/* --- ESTILOS DO BOTÃO DO INSTAGRAM --- */
 .btn-instagram {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: var(--verde-insta);
     color: white;
     text-decoration: none;
-    padding: 15px;
+    padding: 12px 15px;
     border-radius: 12px;
     font-size: 15px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.15);
@@ -102,4 +143,15 @@ h1 {
 
 .btn-instagram:active {
     transform: scale(0.98);
+}
+
+.icon-social {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+}
+
+.btn-text {
+    text-align: left;
+    line-height: 1.2;
 }
