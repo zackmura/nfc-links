@@ -309,7 +309,7 @@
         </a>
     </div>  
     
-    <script>
+   <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const clienteId = urlParams.get('id');
@@ -343,22 +343,46 @@
                 }
 
                 tituloEl.innerText = dadosCliente.nomes;
-                fotoEl.src = dadosCliente.foto; 
-                fotoEl.style.display = "block";
                 loaderEl.style.display = "none"; 
+
+                // ==========================================
+                // NOVA LÓGICA DE REDUNDÂNCIA DA FOTO
+                // ==========================================
+                const urlsFoto = dadosCliente.foto ? dadosCliente.foto.split(',') : [];
+                
+                if (urlsFoto.length > 0) {
+                    // Tenta carregar a primária (OnionSys)
+                    fotoEl.src = urlsFoto[0].trim();
+                    
+                    // Se falhar e existir uma secundária (ImgBB), faz o Fallback
+                    if (urlsFoto.length > 1) {
+                        fotoEl.onerror = () => {
+                            console.warn("Servidor primário falhou. Carregando imagem de backup...");
+                            fotoEl.onerror = null; // Remove o evento para evitar loop infinito
+                            fotoEl.src = urlsFoto[1].trim();
+                        };
+                    } else {
+                        // Se falhar e não tiver secundária, mostra a logo padrão
+                        fotoEl.onerror = () => {
+                            fotoEl.onerror = null;
+                            fotoEl.src = 'Logo_titulo.png'; 
+                        };
+                    }
+                }
+                
+                fotoEl.style.display = "block";
+                // ==========================================
 
                 // Configuração da Data
                 const dataString = dadosCliente.dataLiberacao || "2026-12-31T00:00:00";
                 const dataAlvo = new Date(dataString);
                 const timestampAlvo = dataAlvo.getTime();
 
-                // Formatação normal (DD/MM/AAAA)
                 const dia = String(dataAlvo.getDate()).padStart(2, '0');
                 const mes = String(dataAlvo.getMonth() + 1).padStart(2, '0');
                 const ano = dataAlvo.getFullYear();
                 const dataFormatada = `${dia}/${mes}/${ano}`;
 
-                // Cria datas puras (sem hora) para descobrir se é hoje ou amanhã
                 const hojePuro = new Date();
                 hojePuro.setHours(0,0,0,0);
                 
@@ -368,7 +392,6 @@
                 const dataAlvoPura = new Date(dataAlvo);
                 dataAlvoPura.setHours(0,0,0,0);
 
-                // Monta a frase dinamicamente
                 let fraseDinamica = "";
                 if (dataAlvoPura.getTime() === hojePuro.getTime()) {
                     fraseDinamica = "Uma surpresa muito especial será revelada <strong>HOJE</strong>! Fique de olho na contagem regressiva:";
@@ -378,7 +401,6 @@
                     fraseDinamica = `Uma surpresa muito especial já tem data marcada! No dia <strong>${dataFormatada}</strong>, um vídeo incrível será revelado. Fique de olho na contagem regressiva:`;
                 }
 
-                // Verifica se tem link no sheets
                 const temVideo = dadosCliente.linkVideoYoutube && dadosCliente.linkVideoYoutube.trim() !== "";
 
                 function atualizarTela() {
@@ -386,15 +408,12 @@
                     const diferenca = timestampAlvo - agora;
                     const tempoEsgotado = diferenca <= 0;
 
-                    // LÓGICA AUTOMÁTICA: O tempo zerou E você já colocou um link lá?
                     if (tempoEsgotado && temVideo) {
                         contadorEl.style.display = "none";
                         mensagemEl.innerHTML = `<strong>A espera acabou!</strong><br>Sua lembrança em vídeo está pronta. Clique no botão abaixo para se emocionar:`;
                         btnVideo.href = dadosCliente.linkVideoYoutube;
                         btnVideo.style.display = "flex"; 
-                    } 
-                    // FASE DE ESPERA (O tempo não zerou, ou você ainda não colocou o vídeo)
-                    else {
+                    } else {
                         btnVideo.style.display = "none";
                         
                         if (diferenca > 0) {
@@ -411,7 +430,6 @@
                             document.getElementById("minutos").innerText = String(minutos).padStart(2, '0');
                             document.getElementById("segundos").innerText = String(segundos).padStart(2, '0');
                         } else {
-                            // Tempo zerou, mas a coluna de vídeo tá em branco na planilha!
                             contadorEl.style.display = "none";
                             mensagemEl.innerHTML = "<strong style='color: var(--verde-insta);'>Quase lá!</strong><br>Finalizando os últimos detalhes do seu vídeo. Volte em instantes!";
                         }
