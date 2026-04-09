@@ -48,7 +48,7 @@ body {
     transform: translate(-50%, -50%);
     width: 360px; /* Tamanho ajustado para sobrar em volta da foto de 220px */
     height: 360px;
-    background-image: url('logo_fundo.png'); 
+    background-image: url('Logo_fundo.png'); 
     background-size: contain; /* Como a imagem agora é separada, 'contain' faz ela caber inteira */
     background-position: center; 
     background-repeat: no-repeat;
