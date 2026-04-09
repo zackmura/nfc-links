@@ -1,0 +1,105 @@
+/* style.css */
+:root {
+    --marrom-mini: #4A3320; /* Cor da letra da logo */
+    --fundo: #F5F2EB;
+    --verde-insta: #5C8D89; /* Cor baseada no globo da logo */
+}
+
+body {
+    background-color: var(--fundo);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--marrom-mini);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    max-width: 400px; /* Otimizado para celular */
+    width: 100%;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.logo {
+    width: 90%;
+    max-width: 250px;
+    margin-bottom: 30px;
+}
+
+.media-container {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 20px;
+    border-radius: 50%; /* Faz o círculo perfeito */
+    overflow: hidden;
+    border: 5px solid white;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background-color: #ddd; /* Fundo caso a imagem demore */
+}
+
+.foto-destaque {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a foto preencha o círculo sem distorcer */
+}
+
+#video-cliente {
+    width: 100%;
+    height: 100%;
+}
+
+h1 {
+    font-size: 28px;
+    margin: 10px 0;
+    color: var(--marrom-mini);
+}
+
+.mensagem {
+    font-size: 16px;
+    line-height: 1.4;
+    margin-bottom: 40px;
+    padding: 0 15px;
+}
+
+.marketing-card {
+    background-color: #E8E3D8;
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    text-align: left;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.marketing-card p {
+    margin: 0;
+    font-size: 13px;
+    width: 75%;
+}
+
+.nfc-icon {
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--marrom-mini);
+    opacity: 0.7;
+}
+
+.btn-instagram {
+    display: block;
+    background-color: var(--verde-insta);
+    color: white;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+
+.btn-instagram:active {
+    transform: scale(0.98);
+}
