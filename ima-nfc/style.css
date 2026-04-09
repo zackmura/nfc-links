@@ -46,12 +46,11 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 320px;
-    height: 320px;
-    /* Usa a logo completa e dá um zoom para focar só no globo/casas */
+    width: 360px; /* Tamanho ajustado para sobrar em volta da foto de 220px */
+    height: 360px;
     background-image: url('logo_fundo.png'); 
-    background-size: 130%; 
-    background-position: center 30px; 
+    background-size: contain; /* Como a imagem agora é separada, 'contain' faz ela caber inteira */
+    background-position: center; 
     background-repeat: no-repeat;
     z-index: -1; 
     opacity: 0.9;
