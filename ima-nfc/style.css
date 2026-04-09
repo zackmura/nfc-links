@@ -30,29 +30,48 @@ body {
     margin-bottom: 20px;
 }
 
-/* --- ESTILOS DO FUNDO ATRÁS DA FOTO (BURST) --- */
+/* --- ESTILOS DO FUNDO ATRÁS DA FOTO (DUPLICADO) --- */
 .burst-wrapper {
     position: relative;
-    margin: 0 auto 10px;
+    margin: 0 auto 20px;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
+/* Globo Lado Esquerdo */
 .burst-wrapper::before {
     content: "";
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 360px; /* Tamanho ajustado para sobrar em volta da foto de 220px */
-    height: 360px;
+    left: -40px; /* Puxa a imagem para a esquerda da tela */
+    transform: translateY(-50%);
+    width: 220px;
+    height: 220px;
     background-image: url('Logo_fundo.png'); 
-    background-size: contain; /* Como a imagem agora é separada, 'contain' faz ela caber inteira */
+    background-size: contain; 
     background-position: center; 
     background-repeat: no-repeat;
-    z-index: -1; 
+    z-index: 0; /* Agora fica acima do fundo, mas atrás da foto */
+    opacity: 0.9;
+}
+
+/* Globo Lado Direito */
+.burst-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -40px; /* Puxa a imagem para a direita da tela */
+    transform: translateY(-50%);
+    width: 220px;
+    height: 220px;
+    background-image: url('Logo_fundo.png'); 
+    background-size: contain; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    z-index: 0;
     opacity: 0.9;
 }
 
@@ -64,6 +83,8 @@ body {
     border: 5px solid white;
     box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     background-color: #ddd; 
+    position: relative; /* Garante que a foto respeite a ordem de sobreposição */
+    z-index: 2; /* Garante que a foto e o vídeo fiquem por cima dos globos */
 }
 
 .foto-destaque {
