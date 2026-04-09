@@ -4,21 +4,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lembrança Interativa - Mini Mundo 3D</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* --- CSS EMBUTIDO --- */
+        :root {
+            --marrom-mini: #4A3320; 
+            --fundo: #F5F2EB;
+            --verde-insta: #5C8D89; 
+        }
+
+        body {
+            background-color: var(--fundo);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--marrom-mini);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 400px; 
+            width: 100%;
+            padding: 15px 20px 30px; /* Reduzi o padding superior para subir tudo */
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            width: 90%;
+            max-width: 250px;
+            margin-bottom: 15px; /* Reduzi a margem para aproximar da foto */
+        }
+
+        /* --- ESTILOS DO FUNDO ATRÁS DA FOTO (DUPLICADO E DESFOCADO) --- */
+        .burst-wrapper {
+            position: relative;
+            margin: 0 auto 15px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        /* Globo Lado Esquerdo */
+        .burst-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -15px; /* Mais próximo do centro */
+            transform: translateY(-50%);
+            width: 200px; /* Tamanho levemente reduzido */
+            height: 200px;
+            background-image: url('Logo_fundo.png'); 
+            background-size: contain; 
+            background-position: center; 
+            background-repeat: no-repeat;
+            z-index: 0; 
+            opacity: 0.6; /* Deixa mais transparente para focar na foto */
+            filter: blur(3px); /* Desfoca o fundo */
+        }
+
+        /* Globo Lado Direito */
+        .burst-wrapper::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -15px; /* Mais próximo do centro */
+            transform: translateY(-50%);
+            width: 200px;
+            height: 200px;
+            background-image: url('Logo_fundo.png'); 
+            background-size: contain; 
+            background-position: center; 
+            background-repeat: no-repeat;
+            z-index: 0;
+            opacity: 0.6;
+            filter: blur(3px);
+        }
+
+        .media-container {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%; 
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            background-color: #ddd; 
+            position: relative; 
+            z-index: 2; /* Garante que a foto fique por cima dos globos desfocados */
+        }
+
+        .foto-destaque {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+        }
+
+        #video-cliente {
+            width: 100%;
+            height: 100%;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin: 10px 0;
+            color: var(--marrom-mini);
+        }
+
+        .mensagem {
+            font-size: 15px;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            padding: 0 15px;
+        }
+
+        /* --- ESTILOS DA IMAGEM DO PRODUTO FÍSICO --- */
+        .imagem-produto {
+            width: 100%;
+            max-width: 180px;
+            margin: 0 auto 20px;
+            display: block;
+            border-radius: 8px; 
+            filter: drop-shadow(0px 8px 10px rgba(0,0,0,0.2)); 
+        }
+
+        .marketing-card {
+            background-color: #E8E3D8;
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            text-align: left;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .marketing-card p {
+            margin: 0;
+            font-size: 13px;
+            width: 75%;
+        }
+
+        .nfc-icon {
+            font-weight: 800;
+            font-size: 24px;
+            color: var(--marrom-mini);
+            opacity: 0.7;
+        }
+
+        /* --- ESTILOS DO BOTÃO DO INSTAGRAM --- */
+        .btn-instagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--verde-insta);
+            color: white;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 12px;
+            font-size: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+
+        .btn-instagram:active {
+            transform: scale(0.98);
+        }
+
+        .icon-social {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+        }
+
+        .btn-text {
+            text-align: left;
+            line-height: 1.2;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <img src="Logo_titulo.png" alt="Mini Mundo Impressão 3D & Design" class="logo">
+        <img src="logo_titulo.png" alt="Mini Mundo Impressão 3D & Design" class="logo">
 
         <div class="burst-wrapper">
             <div class="media-container">
-                <img id="foto-cliente" src="" alt="Foto" class="foto-destaque">
+                <img id="foto-cliente" src="foto.png" alt="Foto da Lembrança" class="foto-destaque">
                 <iframe id="video-cliente" src="" frameborder="0" allowfullscreen style="display: none;"></iframe>
             </div>
         </div>
 
-        <h1 id="nomes-cliente">Carregando...</h1>
-        <p id="mensagem-cliente" class="mensagem"></p>
+        <h1 id="nomes-cliente">Arthur & Heitor</h1>
+        <p id="mensagem-cliente" class="mensagem">Aguardem... Uma lembrança interativa da Mini Mundo 3D está chegando. Em breve, um vídeo muito especial.</p>
 
         <img src="produto_ima.png" alt="Lembrança NFC Mini Mundo" class="imagem-produto">
 
@@ -34,6 +215,7 @@
             </div>
         </a>
     </div>  
+    
     <script src="app.js"></script>
 </body>
 </html>
