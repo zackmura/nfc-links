@@ -40,7 +40,6 @@
         .tab-content { display:none; animation:fadeIn 0.3s ease; } .tab-content.active { display:block; }
         .divisor-erp { width:100%; text-align:center; font-size:0.70rem; font-weight:900; color:var(--text-muted); margin:5px 0; border-bottom:1px dashed var(--border-color); padding-bottom:8px; text-transform:uppercase; letter-spacing:1px;}
         
-        /* TÍTULO MÓDULO ATIVO (REFINADO E FINO) */
         .titulo-wrapper { text-align: center; margin-bottom: 25px; }
         #titulo-modulo-ativo { display: inline-block; font-size:0.75rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing: 1.5px; background: #fffbeb; padding: 6px 16px; border-radius: 20px; border: 1px solid #fde68a; box-shadow: 0 2px 5px rgba(217,119,6,0.05); }
 
@@ -54,7 +53,6 @@
         .row { display:flex; gap:15px; } .col { flex:1; }
         .badges-container { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; } .badge { font-size:0.7rem; font-weight:700; padding:6px 10px; border-radius:20px; display:flex; align-items:center; gap:6px;} .badge-blue { background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd;} .badge-green { background:#dcfce7; color:#047857; border:1px solid #a7f3d0;}
 
-        /* BOTÕES */
         .btn-magic { width:100%; border:none; padding:15px; border-radius:14px; font-weight:900; font-size:0.95rem; cursor:pointer; transition:all 0.3s ease; display:flex; justify-content:center; align-items:center; gap:10px; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:white; margin-top:15px; box-shadow:0 10px 25px rgba(217,119,6,0.3); text-transform:uppercase; letter-spacing:1px; }
         .btn-magic:active { transform:translateY(2px); } .btn-magic:disabled { background:#d6d3d1; cursor:not-allowed; box-shadow:none; color:#a8a29e; }
         .btn-global { background:linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow:0 10px 25px rgba(16,185,129,0.4); margin-top:10px; }
@@ -66,7 +64,6 @@
         .log-container::-webkit-scrollbar { width:6px; } .log-container::-webkit-scrollbar-thumb { background:#78716c; border-radius:10px; }
         .log-line { margin:5px 0; border-bottom:1px dashed #44403c; padding-bottom:5px; word-wrap:break-word;} .log-time { color:#a8a29e; margin-right:8px;} .log-info { color:#38bdf8; } .log-warn { color:#facc15; } .log-error { color:#ef4444; } .log-success { color:#10b981; font-weight:500;}
 
-        /* BOXES ERP E DASHBOARD */
         .resumo-box { background:var(--brand-dark); color:white; padding:20px; border-radius:16px; margin-bottom:20px; box-shadow:0 10px 20px rgba(78,52,46,0.15);} .resumo-box h3 { margin:0 0 15px; font-weight:900; font-size:1.1rem; color:var(--primary); text-transform:uppercase;}
         .custo-linha { display:flex; justify-content:space-between; margin-bottom:8px; font-size:0.85rem; font-weight:600; color:#d6d3d1; border-bottom:1px dashed #78716c; padding-bottom:5px;} .custo-total { display:flex; justify-content:space-between; margin-top:15px; font-size:1.2rem; font-weight:900; color:white; background:rgba(255,255,255,0.1); padding:10px; border-radius:8px;}
         .markup-box { background:#f0fdf4; border:2px solid #bbf7d0; padding:15px; border-radius:12px; margin-bottom:15px;} .markup-title { color:#166534; font-weight:900; font-size:0.9rem; margin:0 0 10px; text-transform:uppercase;} .markup-preco { font-size:1.3rem; font-weight:900; color:var(--text-main); margin:0;} .markup-lucro { font-size:0.8rem; font-weight:800; color:var(--green-profit); margin-top:5px;}
@@ -76,12 +73,10 @@
         
         .txt-corinthians{color:#000} .txt-palmeiras{color:#006400} .txt-santos{color:#555} .txt-saopaulo{color:#cc0000} .txt-flamengo{color:#c90000}
 
-        /* LISTAS CRM E ERP */
         .list-item { display:flex; align-items:center; padding:12px; border:1px solid var(--border-color); border-radius:14px; margin-bottom:12px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.02);} .list-img { width:50px; height:50px; object-fit:cover; border-radius:8px; margin-right:12px; background:#f5f5f4; border:1px solid #e7e5e4; flex-shrink:0;} .list-info { flex-grow:1; overflow:hidden;} .list-nome { font-weight:800; color:var(--brand-dark); font-size:0.9rem; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .list-detalhes { font-size:0.75rem; color:var(--text-muted); font-weight:600; display:flex; gap:6px; align-items:center; flex-wrap:wrap;} .tag-ativo { background:#dcfce7; color:#166534; padding:2px 6px; border-radius:4px; font-size:0.65rem; text-transform:uppercase; font-weight:800;} .tag-pendente { background:#fef08a; color:#854d0e; padding:2px 6px; border-radius:4px; font-size:0.65rem; text-transform:uppercase; font-weight:800;} .tag-inativo { background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-size:0.65rem; text-transform:uppercase; font-weight:800;} .btn-editar { background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:8px 12px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer; flex-shrink:0;} .btn-zap-lista { background:#25D366; color:white; padding:8px; border-radius:8px; text-decoration:none; margin-right:8px; display:inline-flex; flex-shrink:0;}
         .produto-banco-card { background:#fff; border:1px solid var(--border-color); padding:15px; border-radius:14px; margin-bottom:12px; display:flex; flex-direction:column; box-shadow:0 2px 6px rgba(0,0,0,0.02);} .card-row-top { display:flex; justify-content:space-between; align-items:flex-start; width:100%;} .pb-info { flex-grow:1; overflow:hidden; padding-right:10px;} .pb-nome { margin:0 0 6px; font-size:0.95rem; font-weight:900; color:var(--brand-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .pb-detalhes { font-size:0.7rem; color:var(--text-muted); font-weight:700; display:flex; gap:8px; flex-wrap:wrap; margin-bottom:4px;} .pb-tag { background:#f1f5f9; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; color:#475569;} .pb-custo { font-size:1.1rem; font-weight:900; color:var(--primary); background:#fffbeb; padding:8px 12px; border-radius:10px; border:1px solid #fde68a; flex-shrink:0; text-align:center;} .btn-baixar-pgt { width:100%; background:#fef08a; color:#b45309; border:2px dashed #f59e0b; padding:12px; border-radius:10px; font-weight:900; font-size:0.85rem; cursor:pointer; transition:0.2s; text-transform:uppercase; margin-top:12px;} .btn-baixar-pgt:active { background:#fde68a; transform:translateY(2px); } .card-pendente { border:2px solid #fde68a; background:#fffbeb; } .btn-excluir-venda, .btn-editar-venda { background:transparent; border:none; font-size:1.1rem; cursor:pointer; transition:0.2s; border-radius:50%; padding:0; margin-left:10px;}
         .scroll-container { max-height:450px; overflow-y:auto; padding-right:5px; margin-top:10px; } .scroll-container::-webkit-scrollbar { width:6px; } .scroll-container::-webkit-scrollbar-track { background:transparent; } .scroll-container::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:10px; }
 
-        /* MODAIS GERAIS */
         .modal-overlay, .modal-overlay-alert { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:10000; backdrop-filter:blur(3px); animation:fadeIn 0.2s ease;}
         .modal-box { background:#fff; width:92%; max-width:450px; border-radius:20px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s ease-out; position:relative; max-height:90vh; overflow-y:auto;} .btn-fechar-modal { position:absolute; top:12px; right:12px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-size:1.1rem; font-weight:bold; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center;} .modal-title { font-size:1.1rem; font-weight:900; color:var(--brand-dark); margin:0 0 15px;} .foto-atual-box { background:#f8fafc; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;} .foto-atual-box img { width:40px; height:40px; object-fit:cover; border-radius:6px;} .foto-atual-box span { font-size:0.75rem; color:#64748b; font-weight:600;}
         .modal-box-alert { background:#fff; width:90%; max-width:360px; border-radius:24px; padding:30px 20px 20px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s ease-out; position:relative;} .modal-icon-alert { font-size:4rem; margin-bottom:10px; display:inline-block; animation:pulseIcon 1s infinite alternate;} .modal-title-alert { font-size:1.3rem; font-weight:900; color:var(--brand-dark); margin:0 0 10px; text-transform:uppercase;} .modal-text-alert { font-size:0.9rem; color:var(--text-muted); margin-bottom:25px; line-height:1.4; font-weight:600;} .btn-modal-ok { color:white; border:none; padding:15px; border-radius:12px; width:100%; cursor:pointer; font-weight:900; font-size:0.95rem; text-transform:uppercase; transition:transform 0.1s;} .btn-modal-ok:active { transform:translateY(4px); box-shadow:0 0 0 transparent !important; } .btn-modal-cancel { flex:1; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; padding:15px; border-radius:12px; cursor:pointer; font-weight:800; font-size:0.90rem; text-transform:uppercase; transition:0.2s;} .btn-modal-cancel:active { background:#e2e8f0; } .btn-modal-confirm { flex:1; background:#10b981; color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900; font-size:0.90rem; text-transform:uppercase; transition:transform 0.1s; box-shadow:0 6px 0 #059669;} .btn-modal-confirm:active { transform:translateY(4px); box-shadow:0 0 0 transparent !important; }
@@ -157,6 +152,7 @@
             <div id="loading-imas" style="text-align:center; padding:20px; color:var(--primary); font-weight:800; display:none;">⏳ Buscando dados dos ímãs...</div>
             <div id="lista-imas-admin" class="scroll-container"></div>
         </div>
+
         <div id="tab-analytics" class="tab-content active">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                 <p style="font-size:0.8rem; color:var(--text-muted); margin:0; font-weight:600;">Monitoramento de engajamento.</p>
@@ -375,8 +371,20 @@
         </div>
 
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoIma()">🗑️ Excluir</button>
+            <button id="btn-excluir-ima-modal" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoIma()">🗑️ Excluir</button>
             <button id="btn-salvar-edicao-ima" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoIma()">💾 Atualizar Mágica</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-confirmar-exclusao-ima" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert">🗑️</span>
+        <h3 class="modal-title-alert" style="color:#ef4444;">Excluir Ímã?</h3>
+        <p class="modal-text-alert">Apagar o ímã de <b id="nome-ima-excluir"></b>?<br>O link do cliente vai parar de funcionar na mesma hora.</p>
+        <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="btn-modal-cancel" onclick="$('modal-confirmar-exclusao-ima').style.display='none'">Cancelar</button>
+            <button id="btn-executar-exclusao-ima" class="btn-modal-confirm" style="background:#ef4444; box-shadow:0 6px 0 #b91c1c;">🗑️ Apagar</button>
         </div>
     </div>
 </div>
@@ -392,10 +400,7 @@
     const SENHA_MESTRA = "minimundo2026$";
     const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
     const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
-    
-    // NOVA API DOS IMÃS (Aqui está a sua que criamos)
     const API_NFC = "https://script.google.com/macros/s/AKfycbxaubKWb7f9DiIlR8WLryYv8UClrCIbaSM4biGwgkwxUnDFGHsCsL7JQrLEGEZNwRvtdg/exec";
-
     const API_ONIONSYS = "https://api.onionsys.com.br/api/registrar/catalogo";
     const API_ONIONSYS_ADS = "https://api.onionsys.com.br/api/registrar/anuncios";
     const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
@@ -404,7 +409,7 @@
 
     let dadosTotaisAcessos = [], graficoInstancia = null, catalogoAdminArray = [], anunciosAdminArray = [], quantidadeAnunciosPendentes = -1; 
     let custoTotalGlobal = 0, despesaTotalCalculada = 0, arrayBancoCustos = [], arrayDespesas = [], arrayVendas = [], dashVendas = [], dashDespesas = [], linhaVendaPagamento = null, linhaVendaExclusao = null, chartProd = null, chartPlat = null, chartCli = null;
-    let arrayImas = []; // Novo array para os Imãs
+    let arrayImas = []; 
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
@@ -456,7 +461,7 @@
         if(tabName==='custos') carregarDespesas(); 
         if(tabName==='vendas'){ carregarOpcoesVenda(); carregarVendas(); }
         if(tabName==='dashboard_erp') carregarDashboardERP();
-        if(tabName==='imas') carregarImas(); // Lazy Load da nova aba
+        if(tabName==='imas') carregarImas(); 
     }
     
     function addLog(msg, tipo='info'){ $('terminal').innerHTML+=`<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${msg}</span></div>`; $('terminal').scrollTop=$('terminal').scrollHeight; }
@@ -471,7 +476,7 @@
     async function excluirRegistroLocal(aba, l, idBtn, fnFechar, fnRecarregar, apiBase=URL_ANALYTICS_CATALOGO){ const b=$(idBtn); b.disabled=true; b.innerText="⏳ Excluindo..."; try { const r=await fetch(apiBase,{method:"POST",body:JSON.stringify({acao:"excluir_registro",aba:aba,linha:l})}); const res=await r.json(); if(res.sucesso){addLog(`🗑️ Registro excluído.`, "success"); if(fnFechar)fnFechar(); if(fnRecarregar)fnRecarregar();}else throw new Error("Erro exclusão."); }catch(e){ apiBase===API_PRECIFICACAO?mostrarAlerta("Erro","Falha: "+e.message,"error"):alert("Falha: "+e.message); }finally{b.disabled=false;b.innerText="🗑️ Excluir";} }
 
     // ==========================================
-    // NOVO MÓDULO: ÍMAS NFC
+    // MÓDULO ÍMAS NFC
     // ==========================================
     async function carregarImas() {
         $('loading-imas').style.display = 'block';
@@ -498,16 +503,19 @@
         arr.forEach(i => {
             const statusVisual = i.linkVideoYoutube ? `<span class="tag-ativo">🎬 Vídeo Ativo</span>` : `<span class="tag-pendente">⏳ Teaser</span>`;
             
-            // Formatando a data do backend (ISO) para algo legível no card
             let dataFormatada = "Sem data alvo";
             if(i.dataLiberacao) {
                 let d = new Date(i.dataLiberacao);
                 if(!isNaN(d)) dataFormatada = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} às ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
             }
 
+            // Pega o primeiro link para gerar a prévia na lista (e se não tiver, usa a logo)
+            const fotoUrl = i.foto ? i.foto.split(',')[0].trim() : 'logo.png';
+            const linkNfc = `https://diario.vivainteligente.net/ima-nfc/?id=${i.id}`;
+
             h += `
             <div class="list-item">
-                <img src="${i.foto || 'logo.png'}" class="list-img" onerror="this.src='logo.png'">
+                <img src="${fotoUrl}" class="list-img" onerror="this.src='logo.png'">
                 <div class="list-info">
                     <h4 class="list-nome">ID: ${i.id} - ${i.nomes}</h4>
                     <div class="list-detalhes">
@@ -515,10 +523,19 @@
                     </div>
                     <div style="margin-top:8px;">${statusVisual}</div>
                 </div>
+                <button class="btn-editar" style="margin-right:8px; background:#e0f2fe; border-color:#bae6fd; color:#0369a1;" onclick="copiarLinkNfc('${linkNfc}')" title="Copiar Link">🔗 Link</button>
                 <button class="btn-editar" onclick="abrirModalEditarIma(${i.linha})">✏️</button>
             </div>`;
         });
         lE.innerHTML = h;
+    }
+
+    function copiarLinkNfc(link) {
+        navigator.clipboard.writeText(link).then(() => {
+            mostrarAlerta("Copiado!", "O link do ímã foi copiado para sua área de transferência!\n\nAgora é só colar no seu aplicativo e gravar na tag NFC.", "success");
+        }).catch(() => {
+            alert("Erro ao copiar o link. Você pode copiar manualmente: " + link);
+        });
     }
 
     function filtrarImas() {
@@ -526,13 +543,11 @@
         renderListaImas(arrayImas.filter(i => String(i.id).toLowerCase().includes(t) || i.nomes.toLowerCase().includes(t)));
     }
 
-
-    // NOVA FUNÇÃO: UPLOAD REDUNDANTE PARA OS ÍMAS
+    // UPLOAD REDUNDANTE (ONION + IMGBB)
     async function fazerUploadRedundante(fC, ik) {
         let urlOnion = "";
         let urlImgBB = "";
 
-        // 1. Tenta OnionSys (Primário)
         try {
             const fd = new FormData(); fd.append("imagem", fC);
             const rp = await fetch(API_ONIONSYS, {method:"POST", headers:{"Authorization":`Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id":"MiniMundo"}, body:fd});
@@ -540,13 +555,12 @@
             if (rp.ok) {
                 const rs = JSON.parse(tx);
                 urlOnion = (rs.arquivos && rs.arquivos.length > 0) ? rs.arquivos[0].url : (rs.url || rs.link || rs.URL || (rs.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${rs.filename}` : ""));
-                addLog("✅ Imagem salva no OnionSys.", "success");
+                addLog("✅ Imagem salva no servidor Primário.", "success");
             }
         } catch (e) {
-            addLog("⚠️ Erro OnionSys: Servidor indisponível.", "warn");
+            addLog("⚠️ Servidor primário falhou.", "warn");
         }
 
-        // 2. Tenta ImgBB (Secundário/Backup)
         if (ik) {
             try {
                 const fd2 = new FormData(); fd2.append("image", fC);
@@ -554,23 +568,22 @@
                 const d2 = await r2.json();
                 if (d2.success) {
                     urlImgBB = d2.data.url;
-                    addLog("✅ Imagem de backup salva no ImgBB.", "success");
+                    addLog("✅ Imagem salva no Backup (ImgBB).", "success");
                 }
             } catch (e) {
-                addLog("⚠️ Erro ImgBB: Upload de backup falhou.", "warn");
+                addLog("⚠️ Servidor de backup falhou.", "warn");
             }
         }
 
-        if (!urlOnion && !urlImgBB) throw new Error("Ambos os servidores de imagem falharam.");
+        if (!urlOnion && !urlImgBB) throw new Error("Ambos os servidores de imagem falharam. Tente novamente.");
 
-        // Junta as URLs que deram certo, separadas por vírgula
         let urlsFinais = [];
         if (urlOnion) urlsFinais.push(urlOnion);
         if (urlImgBB) urlsFinais.push(urlImgBB);
         
         return urlsFinais.join(",");
     }
-    
+
     async function cadastrarIma() {
         const id = $('ima-id').value.trim();
         const nomes = $('ima-nomes').value.trim();
@@ -587,20 +600,19 @@
 
         try {
             addLog(`Iniciando upload duplo da foto (Ímã ${id})...`, "info");
-            // USA A NOVA FUNÇÃO DE UPLOAD DUPLO AQUI
             const urlsFotoDupla = await fazerUploadRedundante(await comprimirImagem(f[0], 600, 600, 0.8), ik);
             
             let dataLiberacaoStr = "";
             if(dataOriginal) { dataLiberacaoStr = dataOriginal + ":00"; }
 
-            addLog(`Salvando banco NFC...`, "info");
+            addLog(`Salvando no banco de dados...`, "info");
             const p = { acao: "salvar_ima", id: id, nomes: nomes, foto: urlsFotoDupla, linkVideoYoutube: video, dataLiberacao: dataLiberacaoStr };
             
             const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) });
             const res = await r.json();
 
             if(res.sucesso) {
-                mostrarAlerta("Ímã Pronto!", `O link do cliente será:\ndiario.vivainteligente.net/ima-nfc/?id=${id}`, "success");
+                mostrarAlerta("Ímã Pronto!", `Sucesso! Você pode copiar o link do cliente direto na lista abaixo.`, "success");
                 $('ima-id').value = ""; $('ima-nomes').value = ""; $('ima-foto').value = ""; $('ima-video').value = ""; $('ima-data').value = "";
                 carregarImas();
             } else throw new Error("Erro na API.");
@@ -618,10 +630,7 @@
         $('edit-ima-nomes').value = i.nomes;
         $('edit-ima-video').value = i.linkVideoYoutube;
         $('edit-ima-foto-antiga').value = i.foto;
-        
-        // No preview de edição, se houver vírgula, ele pega a primeira foto
         $('edit-ima-img-preview').src = i.foto ? i.foto.split(',')[0].trim() : "logo.png";
-        
         $('edit-ima-foto').value = "";
         
         if(i.dataLiberacao) {
@@ -645,7 +654,6 @@
 
             if(novaFoto.length > 0) {
                 addLog(`Atualizando imagem com upload duplo...`, "info");
-                // USA A NOVA FUNÇÃO DE UPLOAD DUPLO AQUI
                 fotoFinal = await fazerUploadRedundante(await comprimirImagem(novaFoto[0], 600, 600, 0.8), ik);
             }
 
@@ -680,9 +688,16 @@
 
     function confirmarExclusaoIma() {
         const l = parseInt($('edit-ima-linha').value);
-        if(confirm(`Tem certeza que deseja apagar o registro deste ímã? O link do cliente vai parar de funcionar.`)) {
-            excluirRegistroLocal("Indiferente_API_Cuida_Disso", l, "btn-excluir-ad", () => $('modal-editar-ima').style.display='none', carregarImas, API_NFC);
-        }
+        const i = arrayImas.find(x => x.linha === l);
+        if(!i) return;
+
+        $('nome-ima-excluir').innerText = i.nomes;
+        $('modal-confirmar-exclusao-ima').style.display = 'flex';
+        
+        $('btn-executar-exclusao-ima').onclick = function() {
+            $('modal-confirmar-exclusao-ima').style.display = 'none';
+            excluirRegistroLocal("API_Ignora_Isso", l, "btn-excluir-ima-modal", () => $('modal-editar-ima').style.display='none', carregarImas, API_NFC);
+        };
     }
     // ==========================================
 
