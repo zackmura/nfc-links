@@ -49,7 +49,7 @@ body {
     width: 320px;
     height: 320px;
     /* Usa a logo completa e dá um zoom para focar só no globo/casas */
-    background-image: url('logo_completo.png'); 
+    background-image: url('logo_completo1.png'); 
     background-size: 130%; 
     background-position: center 30px; 
     background-repeat: no-repeat;
