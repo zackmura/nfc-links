@@ -87,21 +87,50 @@
             display: none; 
         }
 
+        /* --- NOVO LOADER CIRCULAR --- */
         .loader-animacao {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
-            animation: pulse 1.5s infinite alternate;
-            color: var(--marrom-mini);
-            font-weight: bold;
-            font-size: 14px;
+            background-color: #F5F2EB;
+            z-index: 5;
         }
 
+        /* O anel giratório */
+        .loader-animacao::before {
+            content: "";
+            position: absolute;
+            width: 180px; /* Tamanho do anel de carregamento */
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid #E8E3D8; /* Trilha de fundo do anel */
+            border-top-color: var(--verde-insta); /* Cor da barra que gira */
+            animation: spin 1s linear infinite; /* Animação de giro constante */
+        }
+
+        /* O texto pulsando no centro */
+        .loader-texto {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--marrom-mini);
+            animation: pulse 1.5s infinite alternate;
+            z-index: 6;
+        }
+
+        /* Animação do giro (360 graus) */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animação do pulso de opacidade */
         @keyframes pulse {
-            0% { opacity: 0.6; }
+            0% { opacity: 0.5; }
             100% { opacity: 1; }
         }
 
@@ -222,7 +251,10 @@
 
         <div class="burst-wrapper">
             <div class="media-container">
-                <div id="loader-visual" class="loader-animacao">Preparando surpresa...</div>
+                <div id="loader-visual" class="loader-animacao">
+                    <span class="loader-texto">Preparando...</span>
+                </div>
+                
                 <img id="foto-cliente" src="" alt="Foto da Lembrança" class="foto-destaque">
                 <iframe id="video-cliente" src="" frameborder="0" allowfullscreen></iframe>
             </div>
@@ -264,15 +296,15 @@
             const videoEl = document.getElementById("video-cliente");
             const loaderEl = document.getElementById("loader-visual");
             const contadorEl = document.getElementById("contador-regressivo");
+            const loaderTexto = document.querySelector(".loader-texto"); // Seleciona o texto de dentro do loader
 
             if (!clienteId) {
                 tituloEl.innerText = "Aproxime seu celular!";
                 mensagemEl.innerText = "Para ver a surpresa, encoste o celular no ímã NFC da Mini Mundo 3D.";
-                loaderEl.innerText = "Aguardando NFC...";
+                loaderTexto.innerText = "Aguardando...";
                 return;
             }
 
-            // Sua URL da API mantida
             const webAppUrl = "https://script.google.com/macros/s/AKfycbxaubKWb7f9DiIlR8WLryYv8UClrCIbaSM4biGwgkwxUnDFGHsCsL7JQrLEGEZNwRvtdg/exec"; 
             
             try {
@@ -282,7 +314,7 @@
                 if (dadosCliente.erro) {
                     tituloEl.innerText = "Ops, não encontrado.";
                     mensagemEl.innerText = "Verifique se a etiqueta NFC foi gravada corretamente.";
-                    loaderEl.innerText = "Erro";
+                    loaderTexto.innerText = "Erro!";
                     return;
                 }
 
@@ -293,12 +325,9 @@
                     fotoEl.src = dadosCliente.foto; 
                     fotoEl.style.display = "block";
                     
-                    // LÓGICA NOVA: Pegar a data da planilha e formatar
-                    // Se não tiver data na planilha, cai num valor padrão de segurança
                     const dataString = dadosCliente.dataLiberacao || "2026-12-31T00:00:00";
                     const dataAlvo = new Date(dataString);
                     
-                    // Formata a data para exibir bonito (Ex: 13/04/2026)
                     const dia = String(dataAlvo.getDate()).padStart(2, '0');
                     const mes = String(dataAlvo.getMonth() + 1).padStart(2, '0');
                     const ano = dataAlvo.getFullYear();
@@ -310,7 +339,6 @@
 
                     const timestampAlvo = dataAlvo.getTime();
 
-                    // Contador rodando
                     setInterval(function() {
                         const agora = new Date().getTime();
                         const diferenca = timestampAlvo - agora;
@@ -340,7 +368,7 @@
                 console.error("Erro na integração:", erro);
                 tituloEl.innerText = "Erro de conexão.";
                 mensagemEl.innerText = "Não conseguimos carregar os dados agora.";
-                loaderEl.innerText = "Erro";
+                loaderTexto.innerText = "Erro!";
             }
         });
     </script>
