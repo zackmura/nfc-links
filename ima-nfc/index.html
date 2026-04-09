@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only"> 
     <title>Lembrança Interativa - Mini Mundo 3D</title>
     
     <style>
@@ -11,12 +12,13 @@
             --marrom-mini: #4A3320; 
             --fundo: #F5F2EB;
             --verde-insta: #5C8D89; 
+            color-scheme: light; /* Reforça o modo claro */
         }
 
         body {
-            background-color: var(--fundo);
+            background-color: var(--fundo) !important;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--marrom-mini);
+            color: var(--marrom-mini) !important;
             margin: 0;
             padding: 0;
             display: flex;
@@ -80,14 +82,13 @@
             z-index: 2; 
         }
 
-        .foto-destaque, #video-cliente {
+        .foto-destaque {
             width: 100%;
             height: 100%;
             object-fit: cover; 
             display: none; 
         }
 
-        /* --- NOVO LOADER CIRCULAR --- */
         .loader-animacao {
             position: absolute;
             top: 0;
@@ -101,19 +102,17 @@
             z-index: 5;
         }
 
-        /* O anel giratório */
         .loader-animacao::before {
             content: "";
             position: absolute;
-            width: 180px; /* Tamanho do anel de carregamento */
+            width: 180px; 
             height: 180px;
             border-radius: 50%;
-            border: 5px solid #E8E3D8; /* Trilha de fundo do anel */
-            border-top-color: var(--verde-insta); /* Cor da barra que gira */
-            animation: spin 1s linear infinite; /* Animação de giro constante */
+            border: 5px solid #E8E3D8; 
+            border-top-color: var(--verde-insta); 
+            animation: spin 1s linear infinite; 
         }
 
-        /* O texto pulsando no centro */
         .loader-texto {
             font-size: 14px;
             font-weight: bold;
@@ -122,13 +121,11 @@
             z-index: 6;
         }
 
-        /* Animação do giro (360 graus) */
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Animação do pulso de opacidade */
         @keyframes pulse {
             0% { opacity: 0.5; }
             100% { opacity: 1; }
@@ -151,7 +148,7 @@
             display: none; 
             justify-content: center;
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         
         .tempo-box {
@@ -177,6 +174,35 @@
             font-weight: 700;
             color: var(--verde-insta);
             margin-top: 2px;
+        }
+
+        /* --- ESTILOS DO NOVO BOTÃO DE VÍDEO --- */
+        .btn-video {
+            display: none; /* Escondido até a hora certa */
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #d32f2f, #f44336); /* Vermelho premium */
+            color: white !important;
+            text-decoration: none;
+            padding: 16px 25px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 auto 25px;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+            animation: pulse-btn 2s infinite;
+            width: 80%;
+        }
+
+        .btn-video span {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        @keyframes pulse-btn {
+            0% { transform: scale(1); box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 4px 20px rgba(211, 47, 47, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4); }
         }
 
         .imagem-produto {
@@ -220,17 +246,13 @@
             align-items: center;
             justify-content: center;
             background-color: var(--verde-insta);
-            color: white;
+            color: white !important;
             text-decoration: none;
             padding: 12px 15px;
             border-radius: 12px;
             font-size: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.15);
             transition: transform 0.2s;
-        }
-
-        .btn-instagram:active {
-            transform: scale(0.98);
         }
 
         .icon-social {
@@ -256,12 +278,15 @@
                 </div>
                 
                 <img id="foto-cliente" src="" alt="Foto da Lembrança" class="foto-destaque">
-                <iframe id="video-cliente" src="" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
 
         <h1 id="nomes-cliente">Só um instante...</h1>
         <p id="mensagem-cliente" class="mensagem">Acessando a sua lembrança exclusiva da Mini Mundo 3D.</p>
+
+        <a id="btn-assistir-video" href="#" target="_blank" class="btn-video">
+            <span>▶</span> Assistir Surpresa Especial
+        </a>
 
         <div id="contador-regressivo" class="contador-container">
             <div class="tempo-box"><span id="dias">00</span><p>Dias</p></div>
@@ -293,10 +318,10 @@
             const tituloEl = document.getElementById("nomes-cliente");
             const mensagemEl = document.getElementById("mensagem-cliente");
             const fotoEl = document.getElementById("foto-cliente");
-            const videoEl = document.getElementById("video-cliente");
             const loaderEl = document.getElementById("loader-visual");
             const contadorEl = document.getElementById("contador-regressivo");
-            const loaderTexto = document.querySelector(".loader-texto"); // Seleciona o texto de dentro do loader
+            const loaderTexto = document.querySelector(".loader-texto");
+            const btnVideo = document.getElementById("btn-assistir-video");
 
             if (!clienteId) {
                 tituloEl.innerText = "Aproxime seu celular!";
@@ -318,32 +343,46 @@
                     return;
                 }
 
+                // A FOTO SEMPRE APARECE
                 tituloEl.innerText = dadosCliente.nomes;
+                fotoEl.src = dadosCliente.foto; 
+                fotoEl.style.display = "block";
                 loaderEl.style.display = "none"; 
 
-                if (dadosCliente.fase === "teaser") {
-                    fotoEl.src = dadosCliente.foto; 
-                    fotoEl.style.display = "block";
-                    
-                    const dataString = dadosCliente.dataLiberacao || "2026-12-31T00:00:00";
-                    const dataAlvo = new Date(dataString);
-                    
-                    const dia = String(dataAlvo.getDate()).padStart(2, '0');
-                    const mes = String(dataAlvo.getMonth() + 1).padStart(2, '0');
-                    const ano = dataAlvo.getFullYear();
-                    const dataFormatada = `${dia}/${mes}/${ano}`;
+                // Configuração da Data
+                const dataString = dadosCliente.dataLiberacao || "2026-12-31T00:00:00";
+                const dataAlvo = new Date(dataString);
+                const timestampAlvo = dataAlvo.getTime();
 
-                    mensagemEl.innerHTML = `Uma surpresa muito especial já tem data marcada! No dia <strong>${dataFormatada}</strong>, um vídeo incrível será revelado. Fique de olho na contagem regressiva:`;
-                    mensagemEl.style.display = "block";
-                    contadorEl.style.display = "flex";
+                const dia = String(dataAlvo.getDate()).padStart(2, '0');
+                const mes = String(dataAlvo.getMonth() + 1).padStart(2, '0');
+                const ano = dataAlvo.getFullYear();
+                const dataFormatada = `${dia}/${mes}/${ano}`;
 
-                    const timestampAlvo = dataAlvo.getTime();
+                // Função que Roda a cada segundo para checar o tempo e o status
+                function atualizarTela() {
+                    const agora = new Date().getTime();
+                    const diferenca = timestampAlvo - agora;
+                    const tempoEsgotado = diferenca <= 0;
 
-                    setInterval(function() {
-                        const agora = new Date().getTime();
-                        const diferenca = timestampAlvo - agora;
-
+                    // LÓGICA DE VALIDAÇÃO DUPLA (Data zerou E Planilha diz 'video')
+                    if (dadosCliente.fase === "video" && tempoEsgotado) {
+                        contadorEl.style.display = "none";
+                        mensagemEl.innerHTML = `<strong>A espera acabou!</strong><br>Sua lembrança em vídeo está pronta. Clique no botão abaixo para se emocionar:`;
+                        
+                        // Configura e mostra o botão de tela cheia
+                        btnVideo.href = dadosCliente.linkVideoYoutube;
+                        btnVideo.style.display = "flex"; 
+                    } 
+                    // FASE TEASER (Ou o tempo não acabou, ou você ainda não mudou a planilha pra video)
+                    else {
+                        btnVideo.style.display = "none";
+                        
                         if (diferenca > 0) {
+                            // Contador rolando
+                            mensagemEl.innerHTML = `Uma surpresa muito especial já tem data marcada! No dia <strong>${dataFormatada}</strong>, um vídeo incrível será revelado. Fique de olho:`;
+                            contadorEl.style.display = "flex";
+
                             const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
                             const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                             const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
@@ -354,16 +393,16 @@
                             document.getElementById("minutos").innerText = String(minutos).padStart(2, '0');
                             document.getElementById("segundos").innerText = String(segundos).padStart(2, '0');
                         } else {
-                            contadorEl.innerHTML = "<p class='mensagem' style='font-weight: bold; color: var(--verde-insta);'>A qualquer momento a surpresa será liberada!</p>";
+                            // Tempo acabou, mas a planilha AINDA está como "teaser"
+                            contadorEl.innerHTML = "<p class='mensagem' style='font-weight: bold; color: var(--verde-insta); padding-top: 10px;'>Finalizando os últimos detalhes do seu vídeo...</p>";
                         }
-                    }, 1000);
-
-                } else if (dadosCliente.fase === "video") {
-                    videoEl.src = dadosCliente.linkVideoYoutube;
-                    videoEl.style.display = "block";
-                    mensagemEl.style.display = "none";
-                    contadorEl.style.display = "none"; 
+                    }
                 }
+
+                // Executa imediatamente e depois a cada 1 segundo
+                atualizarTela();
+                setInterval(atualizarTela, 1000);
+
             } catch (erro) {
                 console.error("Erro na integração:", erro);
                 tituloEl.innerText = "Erro de conexão.";
