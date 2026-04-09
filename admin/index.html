@@ -526,12 +526,57 @@
         renderListaImas(arrayImas.filter(i => String(i.id).toLowerCase().includes(t) || i.nomes.toLowerCase().includes(t)));
     }
 
+
+    // NOVA FUNÇÃO: UPLOAD REDUNDANTE PARA OS ÍMAS
+    async function fazerUploadRedundante(fC, ik) {
+        let urlOnion = "";
+        let urlImgBB = "";
+
+        // 1. Tenta OnionSys (Primário)
+        try {
+            const fd = new FormData(); fd.append("imagem", fC);
+            const rp = await fetch(API_ONIONSYS, {method:"POST", headers:{"Authorization":`Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id":"MiniMundo"}, body:fd});
+            const tx = await rp.text();
+            if (rp.ok) {
+                const rs = JSON.parse(tx);
+                urlOnion = (rs.arquivos && rs.arquivos.length > 0) ? rs.arquivos[0].url : (rs.url || rs.link || rs.URL || (rs.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${rs.filename}` : ""));
+                addLog("✅ Imagem salva no OnionSys.", "success");
+            }
+        } catch (e) {
+            addLog("⚠️ Erro OnionSys: Servidor indisponível.", "warn");
+        }
+
+        // 2. Tenta ImgBB (Secundário/Backup)
+        if (ik) {
+            try {
+                const fd2 = new FormData(); fd2.append("image", fC);
+                const r2 = await fetch(`https://api.imgbb.com/1/upload?key=${ik}`, {method:"POST", body:fd2});
+                const d2 = await r2.json();
+                if (d2.success) {
+                    urlImgBB = d2.data.url;
+                    addLog("✅ Imagem de backup salva no ImgBB.", "success");
+                }
+            } catch (e) {
+                addLog("⚠️ Erro ImgBB: Upload de backup falhou.", "warn");
+            }
+        }
+
+        if (!urlOnion && !urlImgBB) throw new Error("Ambos os servidores de imagem falharam.");
+
+        // Junta as URLs que deram certo, separadas por vírgula
+        let urlsFinais = [];
+        if (urlOnion) urlsFinais.push(urlOnion);
+        if (urlImgBB) urlsFinais.push(urlImgBB);
+        
+        return urlsFinais.join(",");
+    }
+    
     async function cadastrarIma() {
         const id = $('ima-id').value.trim();
         const nomes = $('ima-nomes').value.trim();
         const f = $('ima-foto').files;
         const video = $('ima-video').value.trim();
-        const dataOriginal = $('ima-data').value; // Vem como "2026-04-13T15:30"
+        const dataOriginal = $('ima-data').value; 
         const ik = $('imgbb-key').value.trim();
 
         if(!id || !nomes || f.length === 0) return mostrarAlerta("Atenção", "Preencha ID, Nomes e escolha uma Foto Inicial.", "warning");
@@ -541,15 +586,15 @@
         b.disabled = true; b.innerText = "⏳ Gerando...";
 
         try {
-            addLog(`Subindo foto do Ímã ${id}...`, "info");
-            const urlFoto = await fazerUploadInteligente(await comprimirImagem(f[0], 600, 600, 0.8), ik, false);
+            addLog(`Iniciando upload duplo da foto (Ímã ${id})...`, "info");
+            // USA A NOVA FUNÇÃO DE UPLOAD DUPLO AQUI
+            const urlsFotoDupla = await fazerUploadRedundante(await comprimirImagem(f[0], 600, 600, 0.8), ik);
             
-            // Formatar data para "YYYY-MM-DDTHH:MM:SS" pro front end do cliente ler perfeitamente
             let dataLiberacaoStr = "";
             if(dataOriginal) { dataLiberacaoStr = dataOriginal + ":00"; }
 
             addLog(`Salvando banco NFC...`, "info");
-            const p = { acao: "salvar_ima", id: id, nomes: nomes, foto: urlFoto, linkVideoYoutube: video, dataLiberacao: dataLiberacaoStr };
+            const p = { acao: "salvar_ima", id: id, nomes: nomes, foto: urlsFotoDupla, linkVideoYoutube: video, dataLiberacao: dataLiberacaoStr };
             
             const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) });
             const res = await r.json();
@@ -573,10 +618,12 @@
         $('edit-ima-nomes').value = i.nomes;
         $('edit-ima-video').value = i.linkVideoYoutube;
         $('edit-ima-foto-antiga').value = i.foto;
-        $('edit-ima-img-preview').src = i.foto || "logo.png";
+        
+        // No preview de edição, se houver vírgula, ele pega a primeira foto
+        $('edit-ima-img-preview').src = i.foto ? i.foto.split(',')[0].trim() : "logo.png";
+        
         $('edit-ima-foto').value = "";
         
-        // Colocar a data de volta no input "datetime-local" (requer formato YYYY-MM-DDTHH:MM)
         if(i.dataLiberacao) {
             $('edit-ima-data').value = String(i.dataLiberacao).substring(0, 16); 
         } else {
@@ -592,13 +639,14 @@
         
         try {
             const ik = $('imgbb-key').value.trim();
-            const idAtual = arrayImas.find(x => x.linha == parseInt($('edit-ima-linha').value)).id; // Mantém o ID
+            const idAtual = arrayImas.find(x => x.linha == parseInt($('edit-ima-linha').value)).id; 
             let fotoFinal = $('edit-ima-foto-antiga').value;
             const novaFoto = $('edit-ima-foto').files;
 
             if(novaFoto.length > 0) {
-                addLog(`Atualizando foto do Ímã...`, "info");
-                fotoFinal = await fazerUploadInteligente(await comprimirImagem(novaFoto[0], 600, 600, 0.8), ik, false);
+                addLog(`Atualizando imagem com upload duplo...`, "info");
+                // USA A NOVA FUNÇÃO DE UPLOAD DUPLO AQUI
+                fotoFinal = await fazerUploadRedundante(await comprimirImagem(novaFoto[0], 600, 600, 0.8), ik);
             }
 
             let dataLiberacaoStr = "";
