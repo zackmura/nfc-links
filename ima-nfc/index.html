@@ -38,7 +38,6 @@
             margin-bottom: 15px; 
         }
 
-        /* --- ESTILOS DO FUNDO ATRÁS DA FOTO --- */
         .burst-wrapper {
             position: relative;
             margin: 0 auto 15px;
@@ -69,7 +68,6 @@
         .burst-wrapper::before { left: -15px; }
         .burst-wrapper::after { right: -15px; }
 
-        /* --- CONTAINER DA FOTO E LOADER --- */
         .media-container {
             width: 220px;
             height: 220px;
@@ -86,10 +84,9 @@
             width: 100%;
             height: 100%;
             object-fit: cover; 
-            display: none; /* Escondidos até o JS mandar mostrar */
+            display: none; 
         }
 
-        /* Animação de carregamento elegante */
         .loader-animacao {
             width: 100%;
             height: 100%;
@@ -117,22 +114,51 @@
         .mensagem {
             font-size: 15px;
             line-height: 1.4;
-            margin-bottom: 25px;
+            margin-bottom: 15px; 
             padding: 0 15px;
         }
 
-        /* --- ESTILOS DA IMAGEM DO PRODUTO FÍSICO (EFEITO 3D REFINADO) --- */
+        .contador-container {
+            display: none; 
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .tempo-box {
+            background-color: white;
+            border: 2px solid var(--verde-insta);
+            border-radius: 8px;
+            padding: 8px 10px;
+            min-width: 50px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .tempo-box span {
+            display: block;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--marrom-mini);
+        }
+        
+        .tempo-box p {
+            margin: 0;
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--verde-insta);
+            margin-top: 2px;
+        }
+
         .imagem-produto {
             width: 100%;
-            max-width: 110px; /* Tamanho reduzido */
+            max-width: 110px; 
             margin: 0 auto 20px;
             display: block;
             border-radius: 8px;
-            /* Inclinação para a esquerda aumentada e ajustada: */
             transform: perspective(600px) rotateX(25deg) rotateY(-35deg) rotateZ(5deg);
-            /* Combinação de efeitos de sombra para simular uma superfície: */
-            filter: drop-shadow(-12px 18px 15px rgba(0,0,0,0.4)); /* Sombra de formato forte */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); /* Sombra de base para 'aterrar' o objeto */
+            filter: drop-shadow(-12px 18px 15px rgba(0,0,0,0.4)); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
         }
 
         .marketing-card {
@@ -197,7 +223,6 @@
         <div class="burst-wrapper">
             <div class="media-container">
                 <div id="loader-visual" class="loader-animacao">Preparando surpresa...</div>
-                
                 <img id="foto-cliente" src="" alt="Foto da Lembrança" class="foto-destaque">
                 <iframe id="video-cliente" src="" frameborder="0" allowfullscreen></iframe>
             </div>
@@ -205,6 +230,13 @@
 
         <h1 id="nomes-cliente">Só um instante...</h1>
         <p id="mensagem-cliente" class="mensagem">Acessando a sua lembrança exclusiva da Mini Mundo 3D.</p>
+
+        <div id="contador-regressivo" class="contador-container">
+            <div class="tempo-box"><span id="dias">00</span><p>Dias</p></div>
+            <div class="tempo-box"><span id="horas">00</span><p>Horas</p></div>
+            <div class="tempo-box"><span id="minutos">00</span><p>Min</p></div>
+            <div class="tempo-box"><span id="segundos">00</span><p>Seg</p></div>
+        </div>
 
         <img src="produto_ima.png" alt="Lembrança NFC Mini Mundo" class="imagem-produto">
 
@@ -231,6 +263,7 @@
             const fotoEl = document.getElementById("foto-cliente");
             const videoEl = document.getElementById("video-cliente");
             const loaderEl = document.getElementById("loader-visual");
+            const contadorEl = document.getElementById("contador-regressivo");
 
             if (!clienteId) {
                 tituloEl.innerText = "Aproxime seu celular!";
@@ -239,7 +272,7 @@
                 return;
             }
 
-            // ATENÇÃO: COLOQUE SUA URL DO GOOGLE APPS SCRIPT AQUI DENTRO DAS ASPAS!
+            // Sua URL da API mantida
             const webAppUrl = "https://script.google.com/macros/s/AKfycbxaubKWb7f9DiIlR8WLryYv8UClrCIbaSM4biGwgkwxUnDFGHsCsL7JQrLEGEZNwRvtdg/exec"; 
             
             try {
@@ -253,19 +286,55 @@
                     return;
                 }
 
-                // Dados chegaram! Vamos preencher a tela e sumir com o loader.
                 tituloEl.innerText = dadosCliente.nomes;
                 loaderEl.style.display = "none"; 
 
                 if (dadosCliente.fase === "teaser") {
                     fotoEl.src = dadosCliente.foto; 
                     fotoEl.style.display = "block";
-                    mensagemEl.innerText = dadosCliente.mensagemTeaser;
+                    
+                    // LÓGICA NOVA: Pegar a data da planilha e formatar
+                    // Se não tiver data na planilha, cai num valor padrão de segurança
+                    const dataString = dadosCliente.dataLiberacao || "2026-12-31T00:00:00";
+                    const dataAlvo = new Date(dataString);
+                    
+                    // Formata a data para exibir bonito (Ex: 13/04/2026)
+                    const dia = String(dataAlvo.getDate()).padStart(2, '0');
+                    const mes = String(dataAlvo.getMonth() + 1).padStart(2, '0');
+                    const ano = dataAlvo.getFullYear();
+                    const dataFormatada = `${dia}/${mes}/${ano}`;
+
+                    mensagemEl.innerHTML = `Uma surpresa muito especial já tem data marcada! No dia <strong>${dataFormatada}</strong>, um vídeo incrível será revelado. Fique de olho na contagem regressiva:`;
                     mensagemEl.style.display = "block";
+                    contadorEl.style.display = "flex";
+
+                    const timestampAlvo = dataAlvo.getTime();
+
+                    // Contador rodando
+                    setInterval(function() {
+                        const agora = new Date().getTime();
+                        const diferenca = timestampAlvo - agora;
+
+                        if (diferenca > 0) {
+                            const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+                            const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                            const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+                            const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+
+                            document.getElementById("dias").innerText = String(dias).padStart(2, '0');
+                            document.getElementById("horas").innerText = String(horas).padStart(2, '0');
+                            document.getElementById("minutos").innerText = String(minutos).padStart(2, '0');
+                            document.getElementById("segundos").innerText = String(segundos).padStart(2, '0');
+                        } else {
+                            contadorEl.innerHTML = "<p class='mensagem' style='font-weight: bold; color: var(--verde-insta);'>A qualquer momento a surpresa será liberada!</p>";
+                        }
+                    }, 1000);
+
                 } else if (dadosCliente.fase === "video") {
                     videoEl.src = dadosCliente.linkVideoYoutube;
                     videoEl.style.display = "block";
                     mensagemEl.style.display = "none";
+                    contadorEl.style.display = "none"; 
                 }
             } catch (erro) {
                 console.error("Erro na integração:", erro);
