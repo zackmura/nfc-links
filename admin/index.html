@@ -584,43 +584,45 @@
         return urlsFinais.join(",");
     }
 
-    async function cadastrarIma() {
+   async function cadastrarIma() {
         const id = $('ima-id').value.trim();
         const nomes = $('ima-nomes').value.trim();
-        const f = $('ima-foto').files;
+        const fFoto = $('ima-foto').files;
+        const fProd = document.createElement('input'); fProd.type = 'file'; // Simulando o input de produto se quiser adicionar no HTML
         const video = $('ima-video').value.trim();
         const dataOriginal = $('ima-data').value; 
         const ik = $('imgbb-key').value.trim();
 
-        if(!id || !nomes || f.length === 0) return mostrarAlerta("Atenção", "Preencha ID, Nomes e escolha uma Foto Inicial.", "warning");
-        if(!ik) { switchTab('config'); return addLog("ERRO: Coloque a chave do ImgBB nas configs!", "error"); }
+        // Adicione um input no seu HTML com id="ima-foto-produto" e use aqui:
+        const inputProd = document.getElementById("ima-foto-produto"); 
+
+        if(!id || !nomes || fFoto.length === 0 || !inputProd.files[0]) return mostrarAlerta("Atenção", "Preencha ID, Nomes e as DUAS fotos (Cliente e Produto).", "warning");
 
         const b = $('btn-salvar-ima');
         b.disabled = true; b.innerText = "⏳ Gerando...";
 
         try {
-            addLog(`Iniciando upload duplo da foto (Ímã ${id})...`, "info");
-            const urlsFotoDupla = await fazerUploadRedundante(await comprimirImagem(f[0], 600, 600, 0.8), ik);
+            addLog(`Subindo foto do cliente...`, "info");
+            const urlsCliente = await fazerUploadRedundante(await comprimirImagem(fFoto[0], 600, 600, 0.8), ik);
             
-            let dataLiberacaoStr = "";
-            if(dataOriginal) { dataLiberacaoStr = dataOriginal + ":00"; }
+            addLog(`Subindo foto do produto físico...`, "info");
+            const urlsProduto = await fazerUploadRedundante(await comprimirImagem(inputProd.files[0], 600, 600, 0.8), ik);
 
-            addLog(`Salvando no banco de dados...`, "info");
-            const p = { acao: "salvar_ima", id: id, nomes: nomes, foto: urlsFotoDupla, linkVideoYoutube: video, dataLiberacao: dataLiberacaoStr };
+            const p = { 
+                acao: "salvar_ima", id: id, nomes: nomes, foto: urlsCliente, 
+                linkVideoYoutube: video, dataLiberacao: dataOriginal ? dataOriginal + ":00" : "",
+                fotoProduto: urlsProduto 
+            };
             
             const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) });
             const res = await r.json();
 
             if(res.sucesso) {
-                mostrarAlerta("Ímã Pronto!", `Sucesso! Você pode copiar o link do cliente direto na lista abaixo.`, "success");
-                $('ima-id').value = ""; $('ima-nomes').value = ""; $('ima-foto').value = ""; $('ima-video').value = ""; $('ima-data').value = "";
+                mostrarAlerta("Sucesso!", "Ímã cadastrado com fotos personalizadas!", "success");
                 carregarImas();
-            } else throw new Error("Erro na API.");
-        } catch (e) {
-            addLog(`❌ ERRO NFC: ${e.message}`, "error");
-        } finally {
-            b.disabled = false; b.innerText = "✨ Gerar Ímã";
-        }
+            }
+        } catch (e) { addLog(`❌ ERRO: ${e.message}`, "error"); }
+        finally { b.disabled = false; b.innerText = "✨ Gerar Ímã"; }
     }
 
     function abrirModalEditarIma(l) {
