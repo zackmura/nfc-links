@@ -294,7 +294,7 @@
             <div class="tempo-box"><span id="segundos">00</span><p>Seg</p></div>
         </div>
 
-        <img src="produto_ima.png" alt="Lembrança NFC Mini Mundo" class="imagem-produto">
+       <img src="" alt="Lembrança NFC Mini Mundo" class="imagem-produto" style="display: none;">
 
         <div class="marketing-card">
             <p>Sua lembrança personalizada com <strong>NFC</strong> e <strong>impressão 3D</strong> de alta precisão.</p>
@@ -370,17 +370,25 @@
                     }
                 }
 
-                // 2. LÓGICA REDUNDANTE FOTO PRODUTO (3D ABAIXO)
+               // 2. LÓGICA REDUNDANTE FOTO PRODUTO (3D ABAIXO)
                 const imgProdEl = document.querySelector(".imagem-produto");
-                const urlsProd = dadosCliente.fotoProduto ? dadosCliente.fotoProduto.split(',') : [];
+                // Separa as urls e tira os espaços vazios
+                const urlsProdRaw = dadosCliente.fotoProduto ? String(dadosCliente.fotoProduto).split(',') : [];
+                const urlsProd = urlsProdRaw.map(u => u.trim()).filter(u => u !== "");
+
                 if (urlsProd.length > 0) {
-                    imgProdEl.src = urlsProd[0].trim();
+                    imgProdEl.src = urlsProd[0];
+                    imgProdEl.style.display = "block"; // Mostra apenas se a foto existir!
+                    
                     if (urlsProd.length > 1) {
-                        imgProdEl.onerror = () => { imgProdEl.onerror = null; imgProdEl.src = urlsProd[1].trim(); };
+                        imgProdEl.onerror = () => { 
+                            imgProdEl.onerror = null; 
+                            imgProdEl.src = urlsProd[1]; 
+                        };
                     }
                 } else {
-                    // Se não tiver foto do produto na planilha, mantém a 'produto_ima.png' como padrão
-                    imgProdEl.src = 'produto_ima.png';
+                    // Esconde de vez, não usamos foto de terceiros.
+                    imgProdEl.style.display = 'none';
                 }
                 
                 fotoEl.style.display = "block";
