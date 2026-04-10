@@ -369,6 +369,19 @@
                         };
                     }
                 }
+
+                // 2. LÓGICA REDUNDANTE FOTO PRODUTO (3D ABAIXO)
+                const imgProdEl = document.querySelector(".imagem-produto");
+                const urlsProd = dadosCliente.fotoProduto ? dadosCliente.fotoProduto.split(',') : [];
+                if (urlsProd.length > 0) {
+                    imgProdEl.src = urlsProd[0].trim();
+                    if (urlsProd.length > 1) {
+                        imgProdEl.onerror = () => { imgProdEl.onerror = null; imgProdEl.src = urlsProd[1].trim(); };
+                    }
+                } else {
+                    // Se não tiver foto do produto na planilha, mantém a 'produto_ima.png' como padrão
+                    imgProdEl.src = 'produto_ima.png';
+                }
                 
                 fotoEl.style.display = "block";
                 // ==========================================
