@@ -620,15 +620,27 @@
         finally { b.disabled = false; b.innerText = "✨ Gerar Ímã"; }
     }
 
-    function abrirModalEditarIma(l) {
+   function abrirModalEditarIma(l) {
         const i = arrayImas.find(x => x.linha === l);
         if(!i) return;
         $('edit-ima-linha').value = i.linha;
         $('edit-ima-nomes').value = i.nomes;
         $('edit-ima-video').value = i.linkVideoYoutube;
+        
+        // Preview da Foto do Cliente
         $('edit-ima-foto-antiga').value = i.foto;
         $('edit-ima-img-preview').src = i.foto ? i.foto.split(',')[0].trim() : "logo.png";
         $('edit-ima-foto').value = "";
+        
+        // Preview da Foto do Produto
+        $('edit-ima-foto-prod-antiga').value = i.fotoProduto || "";
+        if(i.fotoProduto) {
+            $('edit-ima-prod-preview').src = i.fotoProduto.split(',')[0].trim();
+            $('edit-ima-prod-preview').style.display = "block";
+        } else {
+            $('edit-ima-prod-preview').style.display = "none";
+        }
+        $('edit-ima-foto-prod').value = "";
         
         if(i.dataLiberacao) {
             $('edit-ima-data').value = String(i.dataLiberacao).substring(0, 16); 
@@ -646,12 +658,23 @@
         try {
             const ik = $('imgbb-key').value.trim();
             const idAtual = arrayImas.find(x => x.linha == parseInt($('edit-ima-linha').value)).id; 
+            
             let fotoFinal = $('edit-ima-foto-antiga').value;
             const novaFoto = $('edit-ima-foto').files;
+            
+            let fotoProdFinal = $('edit-ima-foto-prod-antiga').value;
+            const novaFotoProd = $('edit-ima-foto-prod').files;
 
+            // Upload de foto do cliente
             if(novaFoto.length > 0) {
-                addLog(`Atualizando imagem com upload duplo...`, "info");
+                addLog(`Atualizando foto do cliente...`, "info");
                 fotoFinal = await fazerUploadRedundante(await comprimirImagem(novaFoto[0], 600, 600, 0.8), ik);
+            }
+            
+            // Upload de foto do produto físico
+            if(novaFotoProd.length > 0) {
+                addLog(`Atualizando foto do produto...`, "info");
+                fotoProdFinal = await fazerUploadRedundante(await comprimirImagem(novaFotoProd[0], 600, 600, 0.8), ik);
             }
 
             let dataLiberacaoStr = "";
@@ -664,7 +687,8 @@
                 nomes: $('edit-ima-nomes').value, 
                 foto: fotoFinal, 
                 linkVideoYoutube: $('edit-ima-video').value, 
-                dataLiberacao: dataLiberacaoStr 
+                dataLiberacao: dataLiberacaoStr,
+                fotoProduto: fotoProdFinal // Nova variável da API
             };
 
             const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) });
