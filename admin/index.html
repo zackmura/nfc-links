@@ -346,34 +346,28 @@
 <div id="modal-editar-ima" class="modal-overlay">
     <div class="modal-box">
         <button class="btn-fechar-modal" onclick="$('modal-editar-ima').style.display='none'">×</button>
-        <h3 class="modal-title">✏️ Editar Ímã (Upgrade de Vídeo)</h3>
+        <h3 class="modal-title">✏️ Editar Ímã</h3>
         <input type="hidden" id="edit-ima-linha">
         <input type="hidden" id="edit-ima-foto-antiga">
-        
-        <div class="foto-atual-box">
+        <input type="hidden" id="edit-ima-foto-prod-antiga"> <div class="foto-atual-box">
             <img id="edit-ima-img-preview" src="">
-            <span>Deixe vazio para não alterar a foto.</span>
+            <span>Foto do Cliente (vazio para manter).</span>
         </div>
         <div class="input-group"><input type="file" id="edit-ima-foto" accept="image/*"></div>
         
-        <div class="input-group">
-            <label>Nomes do Casal/Crianças:</label>
-            <input type="text" id="edit-ima-nomes">
+        <div class="foto-atual-box">
+            <img id="edit-ima-prod-preview" src="" style="display:none; width:40px; height:40px; object-fit:cover; border-radius:6px;">
+            <span>Foto do Produto Físico (vazio p/ manter).</span>
         </div>
+        <div class="input-group"><input type="file" id="edit-ima-foto-prod" accept="image/*"></div>
         
-        <div class="input-group">
-            <label style="color:#d97706;">Novo Link do Vídeo (Venda de Upgrade!):</label>
-            <input type="text" id="edit-ima-video" style="border-color:#d97706; background:#fffbeb;">
-        </div>
-        
-        <div class="input-group">
-            <label>Nova Data de Liberação:</label>
-            <input type="datetime-local" id="edit-ima-data">
-        </div>
+        <div class="input-group"><label>Nomes do cliente:</label><input type="text" id="edit-ima-nomes"></div>
+        <div class="input-group"><label style="color:#d97706;">Novo Link do Vídeo (Upgrade!):</label><input type="text" id="edit-ima-video" style="border-color:#d97706; background:#fffbeb;"></div>
+        <div class="input-group"><label>Nova Data de Liberação:</label><input type="datetime-local" id="edit-ima-data"></div>
 
         <div style="display:flex; gap:10px; margin-top:15px;">
             <button id="btn-excluir-ima-modal" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoIma()">🗑️ Excluir</button>
-            <button id="btn-salvar-edicao-ima" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoIma()">💾 Atualizar Mágica</button>
+            <button id="btn-salvar-edicao-ima" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoIma()">💾 Atualizar</button>
         </div>
     </div>
 </div>
