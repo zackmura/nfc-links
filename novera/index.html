@@ -629,7 +629,14 @@
     </div>
 </div>
 
-<div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
+<div id="custom-modal" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert" id="modal-icone-alert">✨</span>
+        <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
+        <p class="modal-text-alert" id="modal-texto-alert">OK</p>
+        <button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button>
+    </div>
+</div>
 
 <div id="modal-confirmar" class="modal-overlay-alert">
     <div class="modal-box-alert">
@@ -1171,7 +1178,6 @@
     }
 
     async function darBaixaVenda(linha) {
-        // AQUI ESTAVA O SEU ERRO! Chamar o modal customizado do Novera que acabei de adicionar
         abrirConfirmacao("Confirmar Pagamento?", "Marcar venda como RECEBIDA hoje?", "💰", "#2e7d32", "#1b5e20", "💲 Receber", async () => {
             try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "atualizar_status_venda", linha: linha, status: "Pago", data_pg: new Date().toLocaleDateString('pt-BR') }) }); mostrarAlerta("Recebido!", "Baixa ok.", "success"); sincronizarDadosUnico(); } catch(e) {}
         });
@@ -1202,7 +1208,6 @@
         } catch(e) {}
     }
 
-    // AQUI TAMBÉM TINHA O ERRO DO MODAL DE EXCLUIR, CORRIGIDO
     function prepararExclusaoVenda(linha, cliente) { abrirConfirmacao("Excluir Venda?", `Apagar registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); mostrarAlerta("Excluído", "Venda apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
     // ================= DASHBOARD E RELATÓRIOS =================
