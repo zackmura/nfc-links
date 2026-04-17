@@ -629,14 +629,7 @@
     </div>
 </div>
 
-<div id="custom-modal" class="modal-overlay-alert">
-    <div class="modal-box-alert">
-        <span class="modal-icon-alert" id="modal-icone-alert">✨</span>
-        <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
-        <p class="modal-text-alert" id="modal-texto-alert">OK</p>
-        <button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button>
-    </div>
-</div>
+<div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
 
 <div id="modal-confirmar" class="modal-overlay-alert">
     <div class="modal-box-alert">
@@ -791,7 +784,7 @@
     }
 
     let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0; 
-    let acaoConfirmada = null; let chartRGBase = null, chartStatusBase = null;
+    let chartRGBase = null, chartStatusBase = null;
 
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
@@ -825,7 +818,7 @@
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-   function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
+    function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
         document.getElementById('modal-conf-title').innerText = titulo; 
         document.getElementById('modal-conf-title').style.color = corHex; 
         document.getElementById('modal-conf-icon').innerText = icone; 
@@ -836,7 +829,7 @@
         btn.style.background = corHex; 
         btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
         
-        // AQUI ESTAVA O ERRO! Faltava atrelar o clique do botão à função.
+        // AQUI ESTAVA O SEGREDO! O botão precisa executar a função.
         btn.onclick = function() {
             if (callback) callback();
             document.getElementById('modal-confirmar').style.display = 'none';
@@ -844,6 +837,7 @@
         
         document.getElementById('modal-confirmar').style.display = 'flex';
     }
+
     // ================= ABA ROTULOS =================
     function renderizarRotulos() {
         const lista = document.getElementById("lista-rotulos-cadastrados"), select = document.getElementById("n-produto");
