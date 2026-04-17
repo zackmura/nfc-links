@@ -825,13 +825,25 @@
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
-    function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
-        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; 
-        document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
-        const btn = document.getElementById('btn-confirmar-acao'); btn.innerText = textoBtn; btn.style.background = corHex; btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
-        acaoConfirmada = callback; document.getElementById('modal-confirmar').style.display = 'flex';
+   function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
+        document.getElementById('modal-conf-title').innerText = titulo; 
+        document.getElementById('modal-conf-title').style.color = corHex; 
+        document.getElementById('modal-conf-icon').innerText = icone; 
+        document.getElementById('texto-confirmar').innerText = texto;
+        
+        const btn = document.getElementById('btn-confirmar-acao'); 
+        btn.innerText = textoBtn; 
+        btn.style.background = corHex; 
+        btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
+        
+        // AQUI ESTAVA O ERRO! Faltava atrelar o clique do botão à função.
+        btn.onclick = function() {
+            if (callback) callback();
+            document.getElementById('modal-confirmar').style.display = 'none';
+        };
+        
+        document.getElementById('modal-confirmar').style.display = 'flex';
     }
-
     // ================= ABA ROTULOS =================
     function renderizarRotulos() {
         const lista = document.getElementById("lista-rotulos-cadastrados"), select = document.getElementById("n-produto");
