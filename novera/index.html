@@ -159,7 +159,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v3.0.0</span>
+        <span class="app-version">v3.1.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -188,7 +188,7 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v3.0.0</span>
+            <span class="app-version">v3.1.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -424,7 +424,7 @@
                 <div class="row">
                     <div class="col">
                         <label>Mês</label>
-                        <select id="f-v-mes" onchange="renderizarVendas()">
+                        <select id="f-v-mes" onchange="filtrarVendas()">
                             <option value="">Todos</option>
                             <option value="01">Jan</option><option value="02">Fev</option>
                             <option value="03">Mar</option><option value="04">Abr</option>
@@ -436,7 +436,7 @@
                     </div>
                     <div class="col">
                         <label>Status</label>
-                        <select id="f-v-status" onchange="renderizarVendas()">
+                        <select id="f-v-status" onchange="filtrarVendas()">
                             <option value="">Todos</option>
                             <option value="Pago">Pago</option>
                             <option value="Pendente">Pendente</option>
@@ -444,7 +444,7 @@
                     </div>
                     <div class="col">
                         <label>Sócio</label>
-                        <select id="f-v-socio" onchange="renderizarVendas()">
+                        <select id="f-v-socio" onchange="filtrarVendas()">
                             <option value="">Todos</option>
                         </select>
                     </div>
@@ -832,15 +832,16 @@
     }
 
     function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
-        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; 
-        document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
+        document.getElementById('modal-conf-title').innerText = titulo; 
+        document.getElementById('modal-conf-title').style.color = corHex; 
+        document.getElementById('modal-conf-icon').innerText = icone; 
+        document.getElementById('texto-confirmar').innerText = texto;
         
         const btn = document.getElementById('btn-confirmar-acao'); 
         btn.innerText = textoBtn; 
         btn.style.background = corHex; 
         btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
         
-        // CORREÇÃO: Vinculando a função de callback ao botão
         btn.onclick = function() {
             if (callback) callback();
             document.getElementById('modal-confirmar').style.display = 'none';
@@ -1064,8 +1065,11 @@
         
         const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); 
         document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
-        // Adiciona as opções no filtro de sócio da aba vendas
-        document.getElementById('f-v-socio').innerHTML = '<option value="">Todos</option>' + [...slist].map(s => `<option value="${s}">${s}</option>`).join('');
+        
+        const socioSelect = document.getElementById('f-v-socio');
+        const socioAtual = socioSelect.value;
+        socioSelect.innerHTML = '<option value="">Todos</option>' + [...slist].map(s => `<option value="${s}">${s}</option>`).join('');
+        socioSelect.value = socioAtual;
         
         filtrarVendas();
     }
@@ -1077,32 +1081,64 @@
         
         let filtradas = vendasGlobal.filter(v => {
             let pM = true, pS = true, pSo = true;
-            if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; }
+            if(fMes) { 
+                const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; 
+                if(mesVenda && mesVenda !== fMes) pM = false; 
+            }
             if(fStatus && v.status !== fStatus) pS = false; 
-            if(fSocio && (v.socio || '').toLowerCase() !== fSocio) pSo = false;
+            if(fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false;
+            
             return pM && pS && pSo;
         });
+        
         filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso));
 
         let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
-        if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } 
-        else {
+        
+        if (filtradas.length === 0) { 
+            html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; 
+        } else {
             filtradas.forEach(v => {
-                const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0;
-                const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val;
+                const val = parseDinheiro(v.valor_venda); 
+                tVend += val; 
+                tLuc += parseDinheiro(v.lucro); 
+                tItens += parseInt(v.qtd) || 0;
                 
-                // Botões de Ação Extras
+                const isP = v.status === 'Pago'; 
+                if(isP) tRec += val; else tDev += val;
+                
                 const btnAcaoExtra = isP 
                     ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>`
                     : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`;
 
-                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`;
+                html += `<div class="rotulo-card">
+                    <div class="rotulo-info">
+                        <h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4>
+                        <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p>
+                        <p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p>
+                        <p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                        <div class="custo-val">${safeFmt(v.valor_venda)}</div>
+                        <div style="display:flex; gap:5px;">
+                            ${btnAcaoExtra}
+                            ${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}
+                            <button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>
+                            <button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button>
+                        </div>
+                    </div>
+                </div>`;
             });
         }
-        document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens;
+        
+        document.getElementById('lista-vendas-cadastradas').innerHTML = html; 
+        document.getElementById('dash-v-total').innerText = fmt(tVend); 
+        document.getElementById('dash-v-receita').innerText = fmt(tRec); 
+        document.getElementById('dash-v-receber').innerText = fmt(tDev); 
+        document.getElementById('dash-v-lucro').innerText = fmt(tLuc); 
+        document.getElementById('dash-v-itens').innerText = tItens;
     }
 
-    // GERA RECIBO DIRETO DO CARTÃO DE VENDA
     async function gerarReciboUnico(linha) {
         const pedido = vendasGlobal.find(v => v.linha == linha);
         if (!pedido) return;
@@ -1134,7 +1170,6 @@
         } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); }
     }
 
-    // GERA COBRANÇA DIRETO DO CARTÃO DE VENDA
     async function gerarCobrancaUnica(linha) {
         const pedido = vendasGlobal.find(v => v.linha == linha);
         if (!pedido) return;
@@ -1302,7 +1337,7 @@
 
     function prepararExclusaoVenda(linha, cliente) { abrirConfirmacao("Excluir Venda?", `Apagar registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); mostrarAlerta("Excluído", "Venda apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
-    // ================= DASHBOARD =================
+    // ================= DASHBOARD E RELATÓRIOS =================
     function renderizarDashboard() {
         const dMes = document.getElementById('d-filtro-mes'), dAno = document.getElementById('d-filtro-ano');
         if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); }
