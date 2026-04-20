@@ -159,7 +159,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v2.0.0</span>
+        <span class="app-version">v3.0.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -188,7 +188,7 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v1.0.0</span>
+            <span class="app-version">v3.0.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -372,8 +372,8 @@
             <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()">Registrar Venda</button>
 
             <div class="filtro-box" style="background: #fdf5f7; border-color: #f3d8e2; margin-top: 35px;">
-                <div class="section-title" style="margin-top:0; border-left-color: var(--primary-dark); color: var(--primary-dark);">🧾 Gerador de Recibos</div>
-                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar o comprovante das compras pagas.</p>
+                <div class="section-title" style="margin-top:0; border-left-color: var(--primary-dark); color: var(--primary-dark);">🧾 Gerador Lote Recibos</div>
+                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar o comprovante de vários pedidos juntos.</p>
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col">
                         <label style="color: var(--primary-dark);">Selecione o Cliente</label>
@@ -393,8 +393,8 @@
             </div>
 
             <div class="filtro-box" style="background: #fff9e6; border-color: #ffeeba; margin-top: 35px;">
-                <div class="section-title" style="margin-top:0; border-left-color: #b45309; color: #b45309;">📱 Cobrança Rápida</div>
-                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Mensagem ou imagem amigável para mandar pro cliente.</p>
+                <div class="section-title" style="margin-top:0; border-left-color: #b45309; color: #b45309;">📱 Lote de Cobrança</div>
+                <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Mensagem ou imagem amigável para mandar pro cliente com todos os itens em aberto.</p>
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col">
                         <label style="color: #b45309;">Cliente Devedor</label>
@@ -419,8 +419,8 @@
                 </div>
             </div>
 
-            <div class="section-title" style="margin-top: 25px;">📊 Dashboard de Vendas</div>
-            <div class="filtro-box">
+            <div class="section-title" style="margin-top: 25px;">📊 Histórico de Vendas</div>
+            <div class="filtros-box">
                 <div class="row">
                     <div class="col">
                         <label>Mês</label>
@@ -440,6 +440,12 @@
                             <option value="">Todos</option>
                             <option value="Pago">Pago</option>
                             <option value="Pendente">Pendente</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Sócio</label>
+                        <select id="f-v-socio" onchange="renderizarVendas()">
+                            <option value="">Todos</option>
                         </select>
                     </div>
                 </div>
@@ -629,7 +635,14 @@
     </div>
 </div>
 
-<div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
+<div id="custom-modal" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert" id="modal-icone-alert">✨</span>
+        <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
+        <p class="modal-text-alert" id="modal-texto-alert">OK</p>
+        <button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button>
+    </div>
+</div>
 
 <div id="modal-confirmar" class="modal-overlay-alert">
     <div class="modal-box-alert">
@@ -784,7 +797,7 @@
     }
 
     let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0; 
-    let chartRGBase = null, chartStatusBase = null;
+    let acaoConfirmada = null; let chartRGBase = null, chartStatusBase = null;
 
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
@@ -819,17 +832,15 @@
     }
 
     function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
-        document.getElementById('modal-conf-title').innerText = titulo; 
-        document.getElementById('modal-conf-title').style.color = corHex; 
-        document.getElementById('modal-conf-icon').innerText = icone; 
-        document.getElementById('texto-confirmar').innerText = texto;
+        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; 
+        document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
         
         const btn = document.getElementById('btn-confirmar-acao'); 
         btn.innerText = textoBtn; 
         btn.style.background = corHex; 
         btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
         
-        // AQUI ESTAVA O SEGREDO! O botão precisa executar a função.
+        // CORREÇÃO: Vinculando a função de callback ao botão
         btn.onclick = function() {
             if (callback) callback();
             document.getElementById('modal-confirmar').style.display = 'none';
@@ -1022,7 +1033,7 @@
         }); 
     }
 
-    // ================= ABA VENDAS =================
+    // ================= ABA VENDAS E RECIBOS INDIVIDUAIS =================
     async function salvarVenda() {
         const py = { 
             data: document.getElementById('v-data').value, 
@@ -1050,17 +1061,26 @@
         const htmlClientes = '<option value="">Selecione...</option>' + [...dlist].map(c => `<option value="${c}">${c}</option>`).join('');
         document.getElementById('lista-clientes').innerHTML = [...dlist].map(c => `<option value="${c}">`).join('');
         document.getElementById('recibo-cliente').innerHTML = htmlClientes; document.getElementById('cobranca-cliente').innerHTML = htmlClientes;
-        const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
+        
+        const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); 
+        document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
+        // Adiciona as opções no filtro de sócio da aba vendas
+        document.getElementById('f-v-socio').innerHTML = '<option value="">Todos</option>' + [...slist].map(s => `<option value="${s}">${s}</option>`).join('');
         
         filtrarVendas();
     }
 
     function filtrarVendas() {
-        const fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value;
+        const fMes = document.getElementById('f-v-mes').value;
+        const fStatus = document.getElementById('f-v-status').value;
+        const fSocio = document.getElementById('f-v-socio').value.toLowerCase();
+        
         let filtradas = vendasGlobal.filter(v => {
-            let pM = true, pS = true;
+            let pM = true, pS = true, pSo = true;
             if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; }
-            if(fStatus && v.status !== fStatus) pS = false; return pM && pS;
+            if(fStatus && v.status !== fStatus) pS = false; 
+            if(fSocio && (v.socio || '').toLowerCase() !== fSocio) pSo = false;
+            return pM && pS && pSo;
         });
         filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso));
 
@@ -1070,13 +1090,79 @@
             filtradas.forEach(v => {
                 const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0;
                 const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val;
-                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`;
+                
+                // Botões de Ação Extras
+                const btnAcaoExtra = isP 
+                    ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>`
+                    : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`;
+
+                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`;
             });
         }
         document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens;
     }
 
-    // ================= NOME DINÂMICO NOS RECIBOS / COBRANÇAS =================
+    // GERA RECIBO DIRETO DO CARTÃO DE VENDA
+    async function gerarReciboUnico(linha) {
+        const pedido = vendasGlobal.find(v => v.linha == linha);
+        if (!pedido) return;
+        
+        document.getElementById('rec-cli-nome').innerText = pedido.cliente; 
+        document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR');
+        
+        const valor = parseDinheiro(pedido.valor_venda);
+        const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso;
+        const txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`;
+        
+        const htmlItem = `
+        <div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;">
+            <div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div>
+            <div style="font-weight: 700; color: #966178;">${fmt(valor)}</div>
+        </div>`;
+        
+        document.getElementById('rec-itens-lista').innerHTML = htmlItem; 
+        document.getElementById('rec-total').innerText = fmt(valor);
+
+        try {
+            const template = document.getElementById('recibo-template');
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png");
+            document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`;
+            document.getElementById('preview-title').innerText = "Recibo Pronto!";
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${pedido.cliente.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); };
+            document.getElementById('modal-recibo-preview').style.display = 'flex';
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); }
+    }
+
+    // GERA COBRANÇA DIRETO DO CARTÃO DE VENDA
+    async function gerarCobrancaUnica(linha) {
+        const pedido = vendasGlobal.find(v => v.linha == linha);
+        if (!pedido) return;
+
+        document.getElementById('cob-cli-nome').innerText = pedido.cliente;
+        const valor = parseDinheiro(pedido.valor_venda);
+        
+        const htmlItem = `
+        <div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;">
+            <div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div>
+            <div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div>
+        </div>`;
+        
+        document.getElementById('cob-itens-lista').innerHTML = htmlItem; 
+        document.getElementById('cob-total').innerText = fmt(valor);
+
+        try {
+            const template = document.getElementById('cobranca-template');
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png");
+            document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`;
+            document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!";
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${pedido.cliente.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); };
+            document.getElementById('modal-recibo-preview').style.display = 'flex';
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); }
+    }
+
+    // ================= NOME DINÂMICO NOS RECIBOS / COBRANÇAS EM LOTE =================
     function prepararRecibo() {
         const cliente = document.getElementById('recibo-cliente').value;
         const divNome = document.getElementById('div-recibo-nome');
@@ -1216,7 +1302,7 @@
 
     function prepararExclusaoVenda(linha, cliente) { abrirConfirmacao("Excluir Venda?", `Apagar registro de "${cliente}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Vendas", linha: linha }) }); mostrarAlerta("Excluído", "Venda apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} }); }
 
-    // ================= DASHBOARD E RELATÓRIOS =================
+    // ================= DASHBOARD =================
     function renderizarDashboard() {
         const dMes = document.getElementById('d-filtro-mes'), dAno = document.getElementById('d-filtro-ano');
         if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); }
