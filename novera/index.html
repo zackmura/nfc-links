@@ -29,14 +29,10 @@
         .app-container { width: 100%; max-width: 600px; position: relative; }
         
         /* HEADER E CONFIGURAÇÕES */
-        .header { 
-            text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); 
-            display: flex; flex-direction: column; align-items: center; position: relative; 
-        }
+        .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; position: relative; }
         .header img.logo { width: 140px; height: auto; margin-bottom: 5px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
         .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.7rem; text-transform: uppercase; letter-spacing: 3px; }
         
-        /* VERSÃO E BOTÃO CONFIG */
         .app-version { position: absolute; left: 15px; top: 15px; font-size: 0.65rem; font-weight: 800; color: #d1d5db; letter-spacing: 1px; z-index: 10;}
         .btn-settings { position: absolute; right: 0; top: 10px; background: transparent; border: none; font-size: 1.5rem; color: var(--primary-dark); cursor: pointer; transition: 0.2s; padding: 10px; border-radius: 50%; }
         .btn-settings:active { transform: rotate(45deg) scale(0.9); background: var(--border-color); }
@@ -44,12 +40,7 @@
         .card { background: var(--card-bg); padding: 25px 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); position: relative; }
 
         /* MENU INFERIOR NATIVO - 6 ITENS */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; 
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-between; 
-            align-items: center; padding: 12px 10px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); border-radius: 25px 25px 0 0; 
-            z-index: 1000; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(184, 124, 150, 0.1); 
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); border-radius: 25px 25px 0 0; z-index: 1000; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(184, 124, 150, 0.1); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #a1a1aa; text-decoration: none; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 0; }
         .nav-item .icon { font-size: 1.35rem; margin-bottom: 4px; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
         .nav-item.active { color: var(--primary-dark); }
@@ -67,6 +58,7 @@
         select { appearance: none; }
         textarea { resize: vertical; min-height: 80px; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(184, 124, 150, 0.15); }
+        input[type="file"] { background:#fff; border:2px dashed var(--border-color); padding:15px; text-align:center; cursor:pointer; color:#888; font-weight:600; font-size:0.8rem;}
         input[readonly] { background: #E8DDE1; color: #7a4a5e; border-color: transparent; font-weight: 800;}
         
         .resumo-box { background: linear-gradient(135deg, var(--primary-dark) 0%, #7a4a5e 100%); color: white; padding: 25px; border-radius: 16px; margin-top: 25px; box-shadow: 0 8px 25px rgba(150, 97, 120, 0.25);}
@@ -74,17 +66,26 @@
         .resumo-linha:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
         .custo-total { display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.25rem; font-weight: 800; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);}
         
+        .markup-area { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        @media (max-width: 480px) { .markup-area { grid-template-columns: 1fr; } }
+        .markup-box { background: #fdf5f7; border: 2px solid #f3d8e2; padding: 18px; border-radius: 12px; transition: 0.2s; }
+        .markup-title { color: var(--primary-dark); font-weight: 700; font-size: 0.75rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .markup-preco { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 5px; }
+        .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #7a4a5e; margin: 0; background: #E8DDE1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
+        
         .btn-salvar { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif;}
         .btn-salvar:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .btn-salvar:active { transform: translateY(2px); box-shadow: none; }
         .btn-salvar:disabled { background: #E8DDE1; color: #999; cursor: not-allowed; box-shadow: none; transform: none; }
 
+        /* LISTAS E IMAGENS */
         .rotulo-card { background: #fafafa; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
         .rotulo-card:hover { border-color: var(--primary); background: #fff; box-shadow: 0 4px 15px rgba(184, 124, 150, 0.1);}
         .rotulo-info h4 { margin: 0 0 5px; color: var(--brand-dark); font-size: 0.95rem; line-height: 1.3;}
         .rotulo-info p { margin: 0; color: var(--text-muted); font-size: 0.75rem; }
         .rotulo-badge { background: var(--primary-dark); color: white; padding: 5px 10px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px;}
         .custo-val { font-weight: 800; color: var(--primary-dark); font-size: 1.1rem; }
+        .list-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; margin-right: 12px; background: #fdf5f7; border: 1px solid var(--border-color); flex-shrink: 0; }
         
         .btn-acao { background: #fdf5f7; border: 1px solid #f3d8e2; font-size: 1.1rem; cursor: pointer; transition: 0.2s; border-radius: 10px; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center;}
         .btn-acao:active { transform: scale(0.9); }
@@ -93,6 +94,7 @@
         .status-badge { font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: 5px; vertical-align: middle;}
         .status-pago { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .status-pendente { background: #fef08a; color: #b45309; border: 1px solid #fde047; }
+        .status-baixa { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
         .filtro-box { background: #fdfbfb; border: 1px solid var(--border-color); padding: 18px; border-radius: 16px; margin-bottom: 20px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);}
         
@@ -105,7 +107,7 @@
         .dash-card.highlight h3 { color: #e8dde1; }
         .dash-card.highlight .valor { color: white; font-size: 2.2rem;}
         
-        /* RESTAURAÇÃO DAS CORES DO PAINEL DE VENDAS */
+        /* CORES RESTAURADAS PARA O PAINEL DE VENDAS */
         .dash-card.receita .valor { color: #2e7d32; }
         .dash-card.receber .valor { color: #b45309; }
 
@@ -129,7 +131,6 @@
         .btn-modal-confirm { flex: 1; color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; font-family: 'Montserrat', sans-serif; transition: 0.2s;}
         .btn-modal-confirm:active { transform: translateY(4px); box-shadow: 0 0 0 transparent !important; }
 
-        /* ESTILO DO OLHINHO E CARREGAMENTO */
         .password-wrapper { position: relative; display: flex; align-items: center; }
         .password-wrapper input { width: 100%; padding-right: 45px; }
         .toggle-eye { position: absolute; right: 10px; background: transparent; border: none; font-size: 1.3rem; cursor: pointer; color: var(--primary-dark); padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
@@ -157,7 +158,7 @@
 <!-- TELA DE LOGIN -->
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v4.2.0</span>
+        <span class="app-version">v4.3.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -180,14 +181,14 @@
 <div id="main-app" class="app-container" style="display: none;">
     <div class="card">
         
-        <!-- O FEEDBACK VISUAL QUE FALTAVA (AGORA É DINÂMICO) -->
+        <!-- O FEEDBACK VISUAL QUE FALTAVA -->
         <div id="global-loader" class="loading-overlay">
             <div class="spinner"></div>
             <p style="color: var(--primary-dark); font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Sincronizando...</p>
         </div>
 
         <div class="header">
-            <span class="app-version">v4.2.0</span>
+            <span class="app-version">v4.3.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -207,7 +208,7 @@
             <div id="lista-rotulos-cadastrados"></div>
         </div>
 
-        <!-- ABA FABRICA (PREFICIFICACAO E PRODUCAO) -->
+        <!-- ABA FABRICA -->
         <div id="tab-precificar" class="tab-content">
             <div class="section-title">🧪 Fabricar Novo Produto</div>
             <div class="row">
@@ -242,7 +243,7 @@
             </div>
         </div>
 
-        <!-- ABA ESTOQUE -->
+        <!-- ABA ESTOQUE (AGORA COM FOTO!) -->
         <div id="tab-estoque" class="tab-content">
             <div class="section-title" style="margin-top: 0;">📦 Produtos Prontos na Prateleira</div>
             <div class="filtro-box" style="padding: 10px 15px;">
@@ -318,7 +319,16 @@
                 <div class="col"><label>Data da Venda</label><input type="date" id="v-data"></div>
                 <div class="col"><label>Cliente</label><input type="text" id="v-cliente" list="lista-clientes" placeholder="Nome do Cliente"></div>
             </div>
-            <div class="input-group"><label>Produto (Estoque Disponível)</label><select id="v-produto" onchange="autoPreencherValorVenda()"><option value="">Aguardando dados...</option></select></div>
+            
+            <!-- NOVIDADE DA IMAGEM NA VENDA -->
+            <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <label>Produto (Estoque Disponível)</label>
+                    <select id="v-produto" onchange="autoPreencherValorVenda()" style="margin-bottom:0;"><option value="">Aguardando dados...</option></select>
+                </div>
+                <img id="v-produto-img-preview" src="logo.png" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); display: none;">
+            </div>
+
             <div class="row">
                 <div class="col"><label>Sócio / Vendedor</label><input type="text" id="v-socio" list="lista-socios-dinamica" placeholder="Ex: Natália"></div>
                 <div class="col"><label>Qtd</label><input type="number" id="v-qtd" value="1" oninput="autoPreencherValorVenda()"></div>
@@ -529,15 +539,26 @@
 
 <!-- MODAIS DE EDIÇÃO -->
 <div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><button class="btn-salvar" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
-<div id="modal-editar-estoque" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-estoque').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Ajuste Manual</h3><input type="hidden" id="edit-e-linha"><div class="input-group" style="text-align: left;"><label>Nome do Produto</label><input type="text" id="edit-e-nome" readonly></div><div class="input-group" style="text-align: left;"><label>Tipo</label><input type="text" id="edit-e-tipo"></div><div class="row" style="text-align: left;"><div class="col"><label>Qtd em Estoque</label><input type="number" id="edit-e-qtd"></div><div class="col"><label>Custo Und.</label><input type="text" id="edit-e-custo" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Preço de Venda Sugerido</label><input type="text" id="edit-e-preco" class="mask-money"></div><button class="btn-salvar" onclick="salvarEdicaoEstoque()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
-<div id="modal-editar-gasto" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-gasto').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Gasto</h3><input type="hidden" id="edit-g-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div><div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div><div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div><div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div><div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div><button class="btn-salvar" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
-<!-- MODAL EDIÇÃO DE VENDA (COM OBSERVAÇÃO) -->
-<div id="modal-editar-venda" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-venda').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Venda</h3><input type="hidden" id="edit-v-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div><div class="input-group" style="text-align: left;"><label>Produto Vendido</label><select id="edit-v-produto" onchange="autoPreencherEdicaoVenda()"></select></div><div class="input-group" style="text-align: left;"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div><div class="row" style="text-align: left;"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd" oninput="autoPreencherEdicaoVenda()"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div><div class="row" style="text-align: left;"><div class="col"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div><div class="input-group" style="text-align: left;"><label>Observação</label><textarea id="edit-v-observacao"></textarea></div><button class="btn-salvar" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+<!-- MODAL DE EDIÇÃO DE ESTOQUE COM FOTO -->
+<div id="modal-editar-estoque" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-estoque').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Ajuste do Estoque</h3><input type="hidden" id="edit-e-linha"><input type="hidden" id="edit-e-foto-antiga">
+<div class="foto-atual-box" style="display:flex; gap:10px; align-items:center; margin-bottom:10px; background:#f8fafc; padding:10px; border-radius:12px; border:1px solid var(--border-color);">
+    <img id="edit-e-img-preview" src="logo.png" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
+    <span style="font-size:0.75rem; color:#888;">Deixe vazio para manter a foto atual.</span>
+</div>
+<div class="input-group"><input type="file" id="edit-e-foto-nova" accept="image/*"></div>
+<div class="input-group" style="text-align: left;"><label>Nome do Produto</label><input type="text" id="edit-e-nome" readonly></div><div class="input-group" style="text-align: left;"><label>Tipo</label><input type="text" id="edit-e-tipo"></div><div class="row" style="text-align: left;"><div class="col"><label>Qtd em Estoque</label><input type="number" id="edit-e-qtd"></div><div class="col"><label>Custo Und.</label><input type="text" id="edit-e-custo" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Preço de Venda Sugerido</label><input type="text" id="edit-e-preco" class="mask-money"></div><button class="btn-salvar" onclick="salvarEdicaoEstoque()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+
+<div id="modal-editar-gasto" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-gasto').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Gasto</h3><input type="hidden" id="edit-g-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div><div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div><div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div><div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div><div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div><button class="btn-salvar" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
+<div id="modal-editar-venda" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px; text-align:left;"><button onclick="document.getElementById('modal-editar-venda').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark); text-align:center;">✏️ Editar Venda</h3><input type="hidden" id="edit-v-linha"><div class="row"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div><div class="input-group"><label>Produto Vendido</label><select id="edit-v-produto" onchange="autoPreencherEdicaoVenda()"></select></div><div class="input-group"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div><div class="row"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd" oninput="autoPreencherEdicaoVenda()"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div><div class="row"><div class="col"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div><div class="input-group"><label>Observação (Opcional)</label><textarea id="edit-v-observacao"></textarea></div><button class="btn-salvar" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
 <script>
     // AQUI VOCÊ COLA O LINK DA SUA API NOVA DO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
+
+    // CHAVES FIXAS COMO SOLICITADO
+    const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
+    const KEY_IMGBB = "a76cc9454f6c230b1b5b48b63ed9012e";
 
     function padronizarTexto(texto) {
         if (!texto) return "";
@@ -546,19 +567,68 @@
     }
 
     let rotulosGlobal = [], estoqueGlobal = [], gastosGlobal = [], vendasGlobal = [];
-    let usuarioLogado = "";
-    let dadosCarregados = false; 
-    let chartRGBase = null, chartStatusBase = null;
+    let usuarioLogado = ""; let dadosCarregados = false; 
 
-    // === NOVIDADE: FEEDBACK DE TELA DE CARREGAMENTO PARA TODAS AS AÇÕES ===
+    // ================= FUNÇÕES DE UPLOAD (A NOVA MÁGICA 4.3.0) =================
+    const fileToBase64 = f => new Promise((r, j) => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => r(rd.result.split(',')[1]); rd.onerror = e => j(e); });
+
+    function comprimirImagem(f, mW, mH, q) { 
+        return new Promise((r, j) => { 
+            if (!f.type.match(/image.*/)) return j(new Error(`Formato inválido.`)); 
+            const rd = new FileReader(); rd.readAsDataURL(f); 
+            rd.onload = e => { 
+                const i = new Image(); i.src = e.target.result; 
+                i.onload = () => { 
+                    let w = i.width, h = i.height; 
+                    if (w > h) { if (w > mW) { h = Math.round(h * mW / w); w = mW; } } 
+                    else { if (h > mH) { w = Math.round(w * mH / h); h = mH; } } 
+                    const cv = document.createElement('canvas'); cv.width = w; cv.height = h; 
+                    const cx = cv.getContext('2d'); cx.drawImage(i, 0, 0, w, h); 
+                    const nU = Date.now() + "_" + f.name.replace(/[^a-zA-Z0-9.]/g, '_').toLowerCase(); 
+                    cv.toBlob(b => b ? r(new File([b], nU, { type: 'image/jpeg' })) : j(new Error("Erro na Compressão")), 'image/jpeg', q); 
+                }; 
+            }; 
+        }); 
+    }
+
+    async function uploadDuplo(fileBlob) {
+        let urlOnion = "";
+        let urlImgBB = "";
+
+        // Tentativa 1: API Onionsys
+        try {
+            const fd = new FormData(); fd.append("imagem", fileBlob);
+            const res = await fetch("https://api.onionsys.com.br/api/novera/registrar/catalogo", {
+                method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}` }, body: fd
+            });
+            const text = await res.text();
+            if (res.ok) {
+                const data = JSON.parse(text);
+                urlOnion = (data.arquivos && data.arquivos.length > 0) ? data.arquivos[0].url : (data.url || data.link || (data.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${data.filename}` : ""));
+            }
+        } catch (e) { console.error("OnionSys erro:", e); }
+
+        // Tentativa 2: API ImgBB (Redundância)
+        try {
+            const fd2 = new FormData(); fd2.append("image", fileBlob);
+            const res2 = await fetch(`https://api.imgbb.com/1/upload?key=${KEY_IMGBB}`, { method: "POST", body: fd2 });
+            const data2 = await res2.json();
+            if (data2.success) urlImgBB = data2.data.url;
+        } catch (e) { console.error("ImgBB erro:", e); }
+
+        if (!urlOnion && !urlImgBB) throw new Error("Falha no upload em ambas as APIs.");
+        
+        // Retorna a string com as duas URLs separadas por vírgula (a primeira sendo a principal)
+        return [urlOnion, urlImgBB].filter(u => u).join(',');
+    }
+
+    // ================= FEEDBACK UX =================
     function mostrarLoading(mensagem) {
         const loader = document.getElementById("global-loader");
         loader.querySelector("p").innerText = mensagem;
         loader.style.display = "flex";
     }
-    function ocultarLoading() {
-        document.getElementById("global-loader").style.display = "none";
-    }
+    function ocultarLoading() { document.getElementById("global-loader").style.display = "none"; }
 
     async function sincronizarDadosUnico() {
         mostrarLoading("Sincronizando...");
@@ -580,64 +650,32 @@
                 renderizarDashboard();
                 
                 dadosCarregados = true;
-            } else {
-                mostrarAlerta("Erro de Sincronização", dados.erro, "error");
-            }
-        } catch(e) { 
-            console.error("Erro interno:", e);
-            mostrarAlerta("Falha de Conexão", "Verifique se você gerou uma Nova Implantação do Script.", "error"); 
-        } finally { 
-            ocultarLoading();
-        }
+            } else { mostrarAlerta("Erro de Sincronização", dados.erro, "error"); }
+        } catch(e) { mostrarAlerta("Falha de Conexão", "Verifique a implantação do App Script.", "error"); 
+        } finally { ocultarLoading(); }
     }
 
     function toggleSenha(inputId, btnElement) {
         const input = document.getElementById(inputId);
-        if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } 
-        else { input.type = "password"; btnElement.innerText = "🙈"; }
+        if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } else { input.type = "password"; btnElement.innerText = "🙈"; }
     }
 
     function iniciarSessaoLocal(usuario) {
-        localStorage.setItem('novera_last_user', usuario);
-        localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); 
-        usuarioLogado = usuario;
-        
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('main-app').style.display = 'block';
-        document.getElementById('cfg-user').value = usuario;
-        
+        localStorage.setItem('novera_last_user', usuario); localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); usuarioLogado = usuario;
+        document.getElementById('login-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; document.getElementById('cfg-user').value = usuario;
         if (!dadosCarregados) sincronizarDadosUnico();
     }
 
     function verificarLogin() {
-        const expires = localStorage.getItem('novera_session_expires');
-        const lastUser = localStorage.getItem('novera_last_user') || '';
-
-        if (expires && Date.now() < parseInt(expires)) {
-            iniciarSessaoLocal(lastUser);
-        } else {
-            document.getElementById('login-screen').style.display = 'block';
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('login-user').value = lastUser; 
-            document.getElementById('login-pass').value = ''; 
-        }
+        const expires = localStorage.getItem('novera_session_expires'); const lastUser = localStorage.getItem('novera_last_user') || '';
+        if (expires && Date.now() < parseInt(expires)) { iniciarSessaoLocal(lastUser); } else { document.getElementById('login-screen').style.display = 'block'; document.getElementById('main-app').style.display = 'none'; document.getElementById('login-user').value = lastUser; document.getElementById('login-pass').value = ''; }
     }
 
     async function fazerLogin() {
-        const user = document.getElementById('login-user').value.trim();
-        const pass = document.getElementById('login-pass').value.trim();
+        const user = document.getElementById('login-user').value.trim(); const pass = document.getElementById('login-pass').value.trim();
         if (!user || !pass) return mostrarAlerta("Atenção", "Preencha usuário e senha.", "warning");
-
-        const btn = document.getElementById('btn-login');
-        btn.disabled = true; btn.innerText = "⏳ ENTRANDO...";
-
-        try {
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) });
-            const json = await res.json();
-            if (json.sucesso) { iniciarSessaoLocal(json.usuario); } 
-            else { mostrarAlerta("Acesso Negado", json.erro, "error"); }
-        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
-        finally { btn.disabled = false; btn.innerText = "Entrar"; }
+        const btn = document.getElementById('btn-login'); btn.disabled = true; btn.innerText = "⏳ ENTRANDO...";
+        try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) }); const json = await res.json(); if (json.sucesso) { iniciarSessaoLocal(json.usuario); } else { mostrarAlerta("Acesso Negado", json.erro, "error"); } } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "Entrar"; }
     }
 
     function fazerLogout() { localStorage.removeItem('novera_session_expires'); dadosCarregados = false; verificarLogin(); }
@@ -646,77 +684,33 @@
         const atual = document.getElementById('cfg-senha-atual').value, nova = document.getElementById('cfg-nova-senha').value;
         if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha a senha atual e a nova.", "warning");
         mostrarLoading("Atualizando Senha...");
-        try {
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) });
-            const json = await res.json();
-            if(json.sucesso) { mostrarAlerta("Sucesso", "Senha alterada no banco!", "success"); document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = ""; } 
-            else { mostrarAlerta("Erro", json.erro, "error"); }
-        } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } 
-        finally { ocultarLoading(); }
+        try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Sucesso", "Senha alterada no banco!", "success"); document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = ""; } else { mostrarAlerta("Erro", json.erro, "error"); } } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { ocultarLoading(); }
     }
 
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
-    function safeFmt(val) {
-        if (val === "" || val == null) return "R$ 0,00"; 
-        if (typeof val === 'number') return fmt(val);
-        let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str));
-        let num = parseFloat(str.replace(/\./g, '').replace(',', '.')); return isNaN(num) ? "R$ 0,00" : fmt(num);
-    }
-    function parseDinheiro(val) {
-        if (val === "" || val == null) return 0;
-        if (typeof val === 'number') return val;
-        let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0;
-        return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
-    }
-
-    let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0; 
-    let acaoConfirmada = null;
-
-    document.addEventListener('input', function (e) {
-        if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
-            let val = e.target.value.replace(/\D/g, ''); if(val === "") { e.target.value = ""; return; }
-            val = (parseInt(val) / 100).toFixed(2) + ''; val = val.replace(".", ","); 
-            val = val.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,"); val = val.replace(/(\d)(\d{3}),/g, "$1.$2,");
-            e.target.value = "R$ " + val;
-            
-            if(e.target.id === 'g-valor') setTimeout(calcularTotalGasto, 10);
-            if(e.target.id === 'edit-g-valor') setTimeout(calcularEditGasto, 10);
-            if(e.target.id === 'p-preco-venda') setTimeout(autoSugerirPrecoFabrica, 10);
-        }
-    });
+    function safeFmt(val) { if (val === "" || val == null) return "R$ 0,00"; if (typeof val === 'number') return fmt(val); let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str)); let num = parseFloat(str.replace(/\./g, '').replace(',', '.')); return isNaN(num) ? "R$ 0,00" : fmt(num); }
+    function parseDinheiro(val) { if (val === "" || val == null) return 0; if (typeof val === 'number') return val; let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0; return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0; }
 
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
         document.getElementById('tab-' + tabId).classList.add('active');
-        if(tabId !== 'configuracoes' && tabId !== 'dashboard') { 
-            const navBtn = document.getElementById('nav-' + tabId);
-            if(navBtn) navBtn.classList.add('active'); 
-        }
+        if(tabId !== 'configuracoes' && tabId !== 'dashboard') { const navBtn = document.getElementById('nav-' + tabId); if(navBtn) navBtn.classList.add('active'); }
         if(tabId === 'gastos' && !document.getElementById('g-data').value) document.getElementById('g-data').valueAsDate = new Date();
         if(tabId === 'vendas' && !document.getElementById('v-data').value) document.getElementById('v-data').valueAsDate = new Date();
     }
     
     function mostrarAlerta(titulo, texto, tipo) { 
-        const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); 
-        const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
+        const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
         tituloEl.innerText = titulo; document.getElementById("modal-texto-alert").innerText = texto; 
-        if(tipo === "success") { icone.innerText = "✨"; tituloEl.style.color = "var(--primary-dark)"; btnEl.style.background = "var(--primary-dark)"; btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; } 
-        else if (tipo === "warning") { icone.innerText = "⚠️"; tituloEl.style.color = "#D4A373"; btnEl.style.background = "#D4A373"; btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; } 
-        else { icone.innerText = "❌"; tituloEl.style.color = "#A05252"; btnEl.style.background = "#A05252"; btnEl.style.boxShadow = "0 4px 0 #803f3f"; } 
+        if(tipo === "success") { icone.innerText = "✨"; tituloEl.style.color = "var(--primary-dark)"; btnEl.style.background = "var(--primary-dark)"; btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; } else if (tipo === "warning") { icone.innerText = "⚠️"; tituloEl.style.color = "#D4A373"; btnEl.style.background = "#D4A373"; btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; } else { icone.innerText = "❌"; tituloEl.style.color = "#A05252"; btnEl.style.background = "#A05252"; btnEl.style.boxShadow = "0 4px 0 #803f3f"; } 
         modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
     }
 
     function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
-        document.getElementById('modal-conf-title').innerText = titulo; 
-        document.getElementById('modal-conf-title').style.color = corHex; 
-        document.getElementById('modal-conf-icon').innerText = icone; 
-        document.getElementById('texto-confirmar').innerText = texto;
-        const btn = document.getElementById('btn-confirmar-acao'); 
-        btn.innerText = textoBtn; 
-        btn.style.background = corHex; 
-        btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
+        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
+        const btn = document.getElementById('btn-confirmar-acao'); btn.innerText = textoBtn; btn.style.background = corHex; btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
         btn.onclick = function() { if (callback) callback(); document.getElementById('modal-confirmar').style.display = 'none'; };
         document.getElementById('modal-confirmar').style.display = 'flex';
     }
@@ -737,9 +731,7 @@
         const essencia = padronizarTexto(document.getElementById('r-essencia').value), codForn = padronizarTexto(document.getElementById('r-codigo-forn').value), marca = padronizarTexto(document.getElementById('r-marca').value);
         if (!essencia) return mostrarAlerta("Atenção", "Preencha a Essência.", "warning");
         mostrarLoading("Salvando Rótulo...");
-        try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca }) }); const resultado = await res.json();
-            if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; sincronizarDadosUnico(); } else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); }
-        } catch (e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { ocultarLoading(); }
+        try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca }) }); const resultado = await res.json(); if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; sincronizarDadosUnico(); } else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); } } catch (e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { ocultarLoading(); }
     }
     function abrirModalEditarRotulo(linha) {
         const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return;
@@ -747,15 +739,9 @@
     }
     async function salvarEdicaoRotulo() {
         mostrarLoading("Atualizando...");
-        try { const py = { acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: padronizarTexto(document.getElementById('edit-r-essencia').value), codigo_forn: padronizarTexto(document.getElementById('edit-r-codigo-forn').value), marca: padronizarTexto(document.getElementById('edit-r-marca').value) };
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); }
-        } catch(e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { ocultarLoading(); }
+        try { const py = { acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: padronizarTexto(document.getElementById('edit-r-essencia').value), codigo_forn: padronizarTexto(document.getElementById('edit-r-codigo-forn').value), marca: padronizarTexto(document.getElementById('edit-r-marca').value) }; const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json(); if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); } } catch(e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { ocultarLoading(); }
     }
-    function prepararExclusaoRotulo(linha, codigo) { abrirConfirmacao("Excluir Identidade?", `Deseja excluir a essência ${codigo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
-        mostrarLoading("Excluindo...");
-        try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); mostrarAlerta("Excluído", "Identidade apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); }
-    }); }
+    function prepararExclusaoRotulo(linha, codigo) { abrirConfirmacao("Excluir Identidade?", `Deseja excluir a essência ${codigo}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { mostrarLoading("Excluindo..."); try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Tabela Rotulo Novera", linha: linha }) }); mostrarAlerta("Excluído", "Identidade apagada.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); } }); }
 
     // ================= FABRICA =================
     function calcularNovera() {
@@ -771,39 +757,93 @@
         if(!essBase || !tipoFinal || !qtdRendimento || !precoVendaStr) return mostrarAlerta("Atenção", "Preencha a Essência Base, Tipo, Rendimento e Preço.", "warning");
         const nomeProdutoFinal = `${tipoFinal} ${essBase} ${volume}ml`, precoVenda = parseDinheiro(precoVendaStr);
         mostrarLoading("Enviando Produção...");
-        try { const py = { acao: "salvar_producao_estoque", nome_produto: nomeProdutoFinal, tipo: tipoFinal, qtd: qtdRendimento, custo: fmtPlanilha(custoTotalGlobal), preco: fmtPlanilha(precoVenda) }; const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json();
-            if(json.sucesso) { mostrarAlerta("Produzido!", `O item ${nomeProdutoFinal} foi enviado para o Estoque.`, "success"); sincronizarDadosUnico(); }
-        } catch(e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { ocultarLoading(); }
+        try { const py = { acao: "salvar_producao_estoque", nome_produto: nomeProdutoFinal, tipo: tipoFinal, qtd: qtdRendimento, custo: fmtPlanilha(custoTotalGlobal), preco: fmtPlanilha(precoVenda) }; const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Produzido!", `O item ${nomeProdutoFinal} foi enviado para o Estoque.`, "success"); sincronizarDadosUnico(); } } catch(e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { ocultarLoading(); }
     }
 
-    // ================= ESTOQUE =================
+    // ================= ESTOQUE (AGORA COM FOTO) =================
     function renderizarEstoque() {
         const tBusca = padronizarTexto(document.getElementById('busca-estoque').value);
         let filtrados = estoqueGlobal.filter(e => { if(tBusca && !e.nome.toLowerCase().includes(tBusca) && !e.tipo.toLowerCase().includes(tBusca)) return false; return true; });
         const lista = document.getElementById('lista-estoque-cards');
         if(filtrados.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999;'>Estoque vazio.</p>"; document.getElementById('est-total-itens').innerText = "0"; document.getElementById('est-valor-total').innerText = "R$ 0,00"; return; }
+        
         let html = "", somaItens = 0, somaValor = 0;
         filtrados.forEach(e => {
             const qtdNum = parseFloat(e.qtd) || 0, custoNum = parseDinheiro(e.custo); somaItens += qtdNum; somaValor += (qtdNum * custoNum);
-            let corQtd = qtdNum < 2 ? "#ef4444" : "var(--brand-dark)", avisoBaixo = qtdNum < 2 ? `<span style="font-size:0.65rem; color:#ef4444; font-weight:800; border:1px solid #fecaca; padding:2px 6px; border-radius:4px; margin-left:5px;">Baixo Estoque</span>` : "";
-            html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${e.nome} ${avisoBaixo}</h4><p style="color:var(--primary); font-weight:700; margin-bottom:5px;">Venda: ${safeFmt(e.preco)}</p><p style="font-size:0.7rem; color:#888;">Custo da Fábrica: ${safeFmt(e.custo)} /un</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val" style="color:${corQtd};">${qtdNum} un</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarEstoque(${e.linha})" title="Ajustar Manualmente">✏️</button><button class="btn-acao" onclick="prepararExclusaoEstoque(${e.linha}, '${e.nome}')" title="Excluir">🗑️</button></div></div></div>`;
+            let corQtd = qtdNum < 5 ? "#ef4444" : "var(--brand-dark)", avisoBaixo = qtdNum < 5 ? `<span style="font-size:0.65rem; color:#ef4444; font-weight:800; border:1px solid #fecaca; padding:2px 6px; border-radius:4px; margin-left:5px;">Baixo</span>` : "";
+            
+            // TRATAMENTO DA IMAGEM E FALLBACK
+            let fotoUrls = e.foto ? e.foto.split(',') : [];
+            let urlPri = fotoUrls[0] || 'logo.png';
+            let urlSec = fotoUrls[1] || 'logo.png';
+
+            html += `<div class="rotulo-card" style="align-items:flex-start;">
+                <img src="${urlPri}" onerror="this.src='${urlSec}'; this.onerror=null;" class="list-img">
+                <div class="rotulo-info" style="flex:1;">
+                    <h4>${e.nome} ${avisoBaixo}</h4>
+                    <p style="color:var(--primary); font-weight:700; margin-bottom:5px;">Venda: ${safeFmt(e.preco)}</p>
+                    <p style="font-size:0.7rem; color:#888;">Custo Fábrica: ${safeFmt(e.custo)} /un</p>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                    <div class="custo-val" style="color:${corQtd};">${qtdNum} un</div>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-acao" onclick="abrirModalEditarEstoque(${e.linha})" title="Ajustar Manualmente">✏️</button>
+                        <button class="btn-acao" onclick="prepararExclusaoEstoque(${e.linha}, '${e.nome}')" title="Excluir">🗑️</button>
+                    </div>
+                </div>
+            </div>`;
         });
         lista.innerHTML = html; document.getElementById('est-total-itens').innerText = somaItens; document.getElementById('est-valor-total').innerText = fmt(somaValor);
     }
+
     function abrirModalEditarEstoque(linha) {
         const e = estoqueGlobal.find(x => x.linha === linha); if (!e) return;
-        document.getElementById('edit-e-linha').value = e.linha; document.getElementById('edit-e-nome').value = e.nome; document.getElementById('edit-e-tipo').value = e.tipo; document.getElementById('edit-e-qtd').value = e.qtd; document.getElementById('edit-e-custo').value = safeFmt(e.custo); document.getElementById('edit-e-preco').value = safeFmt(e.preco); document.getElementById('modal-editar-estoque').style.display = 'flex';
+        document.getElementById('edit-e-linha').value = e.linha; 
+        document.getElementById('edit-e-nome').value = e.nome; 
+        document.getElementById('edit-e-tipo').value = e.tipo; 
+        document.getElementById('edit-e-qtd').value = e.qtd; 
+        document.getElementById('edit-e-custo').value = safeFmt(e.custo); 
+        document.getElementById('edit-e-preco').value = safeFmt(e.preco); 
+        
+        let fotos = e.foto ? e.foto.split(',') : [];
+        document.getElementById('edit-e-img-preview').src = fotos[0] || 'logo.png';
+        document.getElementById('edit-e-foto-antiga').value = e.foto || '';
+        document.getElementById('edit-e-foto-nova').value = '';
+        
+        document.getElementById('modal-editar-estoque').style.display = 'flex';
     }
+
     async function salvarEdicaoEstoque() {
+        const fileInput = document.getElementById('edit-e-foto-nova');
+        let fotoFinal = document.getElementById('edit-e-foto-antiga').value;
+
+        if (fileInput.files.length > 0) {
+            mostrarLoading("Enviando Imagem...");
+            try {
+                const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8);
+                fotoFinal = await uploadDuplo(blob);
+            } catch (err) {
+                ocultarLoading();
+                return mostrarAlerta("Erro na Imagem", err.message, "error");
+            }
+        }
+
         mostrarLoading("Ajustando Estoque...");
-        try { const py = { acao: "atualizar_estoque", linha: document.getElementById('edit-e-linha').value, nome: document.getElementById('edit-e-nome').value, tipo: document.getElementById('edit-e-tipo').value, qtd: document.getElementById('edit-e-qtd').value, custo: document.getElementById('edit-e-custo').value, preco: document.getElementById('edit-e-preco').value };
-            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-estoque').style.display = 'none'; mostrarAlerta("Atualizado!", "Estoque ajustado.", "success"); sincronizarDadosUnico();
+        try { 
+            const py = { 
+                acao: "atualizar_estoque", linha: document.getElementById('edit-e-linha').value, 
+                nome: document.getElementById('edit-e-nome').value, tipo: document.getElementById('edit-e-tipo').value, 
+                qtd: document.getElementById('edit-e-qtd').value, custo: document.getElementById('edit-e-custo').value, 
+                preco: document.getElementById('edit-e-preco').value, foto: fotoFinal
+            };
+            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); 
+            document.getElementById('modal-editar-estoque').style.display = 'none'; 
+            mostrarAlerta("Atualizado!", "Estoque ajustado.", "success"); 
+            sincronizarDadosUnico();
         } catch(e) {} finally { ocultarLoading(); }
     }
-    function prepararExclusaoEstoque(linha, nome) { abrirConfirmacao("Excluir do Estoque?", `Apagar "${nome}" do estoque?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { 
-        mostrarLoading("Excluindo...");
-        try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Estoque", linha: linha }) }); mostrarAlerta("Excluído", "Produto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); }
-    }); }
+
+    function prepararExclusaoEstoque(linha, nome) { abrirConfirmacao("Excluir do Estoque?", `Apagar "${nome}" do estoque?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { mostrarLoading("Excluindo..."); try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Estoque", linha: linha }) }); mostrarAlerta("Excluído", "Produto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); } }); }
 
     // ================= GASTOS =================
     function calcularTotalGasto() { const qtd = parseFloat(document.getElementById('g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('g-valor').value); document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
@@ -840,15 +880,30 @@
         try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); mostrarAlerta("Excluído", "Gasto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); }
     }); }
 
-    // ================= VENDAS =================
+    // ================= VENDAS COM FOTO =================
     function autoPreencherValorVenda() {
-        const selecao = document.getElementById('v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao);
-        if(produtoEstoque) { const qtd = parseInt(document.getElementById('v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('v-valor').value = fmt(valorUnitario * qtd); } else { document.getElementById('v-valor').value = ""; }
+        const selecao = document.getElementById('v-produto').value;
+        const produtoEstoque = estoqueGlobal.find(e => e.nome === selecao);
+        const imgPrev = document.getElementById('v-produto-img-preview');
+        if(produtoEstoque) { 
+            const qtd = parseInt(document.getElementById('v-qtd').value) || 1;
+            const valorUnitario = parseDinheiro(produtoEstoque.preco); 
+            document.getElementById('v-valor').value = fmt(valorUnitario * qtd); 
+            let fotos = produtoEstoque.foto ? produtoEstoque.foto.split(',') : [];
+            imgPrev.src = fotos[0] || 'logo.png';
+            imgPrev.style.display = 'block';
+        } else { 
+            document.getElementById('v-valor').value = ""; 
+            imgPrev.style.display = 'none';
+        }
     }
+
     function autoPreencherEdicaoVenda() {
-        const selecao = document.getElementById('edit-v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao);
+        const selecao = document.getElementById('edit-v-produto').value;
+        const produtoEstoque = estoqueGlobal.find(e => e.nome === selecao);
         if(produtoEstoque) { const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); }
     }
+
     async function salvarVenda() {
         const py = { 
             data: document.getElementById('v-data').value, 
@@ -874,11 +929,11 @@
                 let msgSucesso = "Venda lançada e estoque baixado.";
                 if(qtdNoEstoque < py.qtd) { msgSucesso = `Venda Lançada, mas ATENÇÃO: O estoque ficou negativo.`; }
                 mostrarAlerta("Sucesso", msgSucesso, "success"); 
-                document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; document.getElementById('v-observacao').value = ""; sincronizarDadosUnico(); 
+                document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; document.getElementById('v-observacao').value = ""; 
+                document.getElementById('v-produto-img-preview').style.display = 'none';
+                sincronizarDadosUnico(); 
             }
-        } catch(e) {
-            mostrarAlerta("Erro", "A venda não foi salva. Falha de Conexão.", "error");
-        } finally { ocultarLoading(); }
+        } catch(e) { mostrarAlerta("Erro", "A venda não foi salva. Falha de Conexão.", "error"); } finally { ocultarLoading(); }
     }
 
     function renderizarVendas() {
@@ -949,7 +1004,7 @@
             const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d'), ctxSt = document.getElementById('chartStatusVendas').getContext('2d');
             if(chartRGBase) chartRGBase.destroy(); chartRGBase = new Chart(ctxRG, { type: 'bar', data: { labels: ['Caixa', 'Gastos'], datasets: [{ label: 'Valor', data: [tRec, tGas], backgroundColor: ['#2e7d32', '#c62828'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { display: false } } } });
             if(chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } });
-        }
+        } else { console.warn("Chart.js não carregou."); }
     }
 
     function abrirModalRelatorios() { document.getElementById('modal-relatorios').style.display = 'flex'; }
