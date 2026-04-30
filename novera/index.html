@@ -38,9 +38,15 @@
 
         .card { background: var(--card-bg); padding: 25px 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); position: relative; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; padding: 12px 5px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); border-radius: 25px 25px 0 0; z-index: 1000; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(184, 124, 150, 0.1); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #a1a1aa; text-decoration: none; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; width: 60px; }
-        .nav-item .icon { font-size: 1.4rem; margin-bottom: 4px; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
+        /* NAVEGAÇÃO INFERIOR REFORMULADA COM 6 ITENS */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-between; 
+            align-items: center; padding: 12px 10px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); border-radius: 25px 25px 0 0; 
+            z-index: 1000; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(184, 124, 150, 0.1); 
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #a1a1aa; text-decoration: none; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 0; }
+        .nav-item .icon { font-size: 1.35rem; margin-bottom: 4px; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
         .nav-item.active { color: var(--primary-dark); }
         .nav-item.active .icon { filter: grayscale(0%) opacity(1); transform: translateY(-3px) scale(1.1); }
 
@@ -60,6 +66,13 @@
         .resumo-linha { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; font-weight: 500; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 8px;}
         .resumo-linha:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
         .custo-total { display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.25rem; font-weight: 800; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);}
+        
+        .markup-area { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        @media (max-width: 480px) { .markup-area { grid-template-columns: 1fr; } }
+        .markup-box { background: #fdf5f7; border: 2px solid #f3d8e2; padding: 18px; border-radius: 12px; transition: 0.2s; }
+        .markup-title { color: var(--primary-dark); font-weight: 700; font-size: 0.75rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .markup-preco { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 5px; }
+        .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #7a4a5e; margin: 0; background: #E8DDE1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
         
         .btn-salvar { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif;}
         .btn-salvar:hover { background: var(--primary-dark); transform: translateY(-2px); }
@@ -140,7 +153,7 @@
 <!-- TELA DE LOGIN -->
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v4.0.0</span>
+        <span class="app-version">v4.1.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -155,7 +168,6 @@
                 <button type="button" class="toggle-eye" onclick="toggleSenha('login-pass', this)">🙈</button>
             </div>
         </div>
-        
         <button class="btn-salvar" id="btn-login" onclick="fazerLogin()" style="margin-top: 25px;">Entrar</button>
     </div>
 </div>
@@ -166,57 +178,37 @@
         
         <div id="global-loader" class="loading-overlay">
             <div class="spinner"></div>
-            <p style="color: var(--primary-dark); font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Sincronizando Banco...</p>
+            <p style="color: var(--primary-dark); font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Sincronizando...</p>
         </div>
 
         <div class="header">
-            <span class="app-version">v4.0.0</span>
+            <span class="app-version">v4.1.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
         </div>
 
-        <!-- ABA ROTULOS (APENAS ESSÊNCIA AGORA) -->
-        <div id="tab-rotulos" class="tab-content active">
-            <div class="section-title">✨ Nova Essência Mestre</div>
+        <!-- ABA ROTULOS -->
+        <div id="tab-rotulos" class="tab-content">
+            <div class="section-title">✨ Nova Essência Base</div>
             <div class="input-group"><label>Essência Original (Inspiração)</label><input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal..."></div>
             <div class="row">
                 <div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn" placeholder="Ex: 4953"></div>
                 <div class="col"><label>Marca Fornecedor</label><input type="text" id="r-marca" placeholder="Ex: Wanny"></div>
             </div>
-            <button class="btn-salvar" id="btn-salvar-rotulo" onclick="salvarRotulo()">Salvar Matéria-Prima</button>
+            <button class="btn-salvar" id="btn-salvar-rotulo" onclick="salvarRotulo()">Criar Essência Mestre</button>
 
-            <div class="section-title">📋 Essências no Banco</div>
+            <div class="section-title">📋 Dicionário Ativo</div>
             <div id="lista-rotulos-cadastrados"></div>
         </div>
 
-        <!-- ABA ESTOQUE (A NOVA MÁGICA 📦) -->
-        <div id="tab-estoque" class="tab-content">
-            <div class="section-title">📦 Produtos Prontos na Prateleira</div>
-            <div class="filtro-box" style="padding: 10px 15px;">
-                <input type="text" id="busca-estoque" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar no estoque..." onkeyup="renderizarEstoque()">
-            </div>
-            <div class="dash-grid">
-                <div class="dash-card" style="background:#fffbeb; border-color:#fde68a;">
-                    <h3 style="color:#b45309;">Total de Itens</h3>
-                    <p class="valor" id="est-total-itens" style="color:#b45309;">0</p>
-                </div>
-                <div class="dash-card" style="background:#f0fdf4; border-color:#bbf7d0;">
-                    <h3 style="color:#166534;">Valor em Estoque</h3>
-                    <p class="valor" id="est-valor-total" style="color:#166534;">R$ 0,00</p>
-                </div>
-            </div>
-            <div id="lista-estoque-cards"></div>
-        </div>
-
-        <!-- ABA FABRICA (PRECIFICAÇÃO E PRODUÇÃO) -->
+        <!-- ABA FABRICA (PREFICIFICACAO E PRODUCAO) -->
         <div id="tab-precificar" class="tab-content">
             <div class="section-title">🧪 Fabricar Novo Produto</div>
             <div class="row">
                 <div class="col"><label>Essência Base</label><select id="n-produto"><option value="">Aguardando dados...</option></select></div>
                 <div class="col"><label>Tipo do Produto Final</label><input type="text" id="n-tipo-final" list="lista-tipos-finais" placeholder="Ex: Home Spray"><datalist id="lista-tipos-finais"><option value="Home Spray"></option><option value="Perfume"></option><option value="Vela"></option><option value="Creme"></option></datalist></div>
             </div>
-            
             <div class="row">
                 <div class="col"><label>Custo Frag. (R$)</label><input type="number" id="n-custo-frag" value="20.69" step="0.01" oninput="calcularNovera()"></div>
                 <div class="col"><label>Qtd. Frag. (ml)</label><input type="number" id="n-qtd-frag" value="100" oninput="calcularNovera()"></div>
@@ -245,17 +237,83 @@
             </div>
         </div>
 
-        <!-- ABA VENDAS -->
-        <div id="tab-vendas" class="tab-content">
-            <div class="section-title">🛍️ Registrar Venda</div>
+        <!-- ABA ESTOQUE -->
+        <div id="tab-estoque" class="tab-content">
+            <div class="section-title" style="margin-top: 0;">📦 Produtos Prontos na Prateleira</div>
+            <div class="filtro-box" style="padding: 10px 15px;">
+                <input type="text" id="busca-estoque" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar no estoque..." onkeyup="renderizarEstoque()">
+            </div>
+            <div class="dash-grid">
+                <div class="dash-card" style="background:#fffbeb; border-color:#fde68a; cursor:default; transform:none;">
+                    <h3 style="color:#b45309;">Total de Itens</h3>
+                    <p class="valor" id="est-total-itens" style="color:#b45309;">0</p>
+                </div>
+                <div class="dash-card" style="background:#f0fdf4; border-color:#bbf7d0; cursor:default; transform:none;">
+                    <h3 style="color:#166534;">Valor em Estoque</h3>
+                    <p class="valor" id="est-valor-total" style="color:#166534;">R$ 0,00</p>
+                </div>
+            </div>
+            <div id="lista-estoque-cards"></div>
+        </div>
+
+        <!-- ABA GASTOS (TELA ORIGINAL RESTAURADA) -->
+        <div id="tab-gastos" class="tab-content">
+            <div class="section-title" style="margin-top:0;">💸 Registrar Novo Gasto</div>
+            <div class="row">
+                <div class="col"><label>Data da Compra</label><input type="date" id="g-data"></div>
+                <div class="col">
+                    <label>Local / Fornecedor</label>
+                    <input type="text" id="g-local" list="lista-locais" placeholder="Ex: Shopee">
+                    <datalist id="lista-locais"><option value="Wanny Essências"></option><option value="Shopee"></option><option value="Mercado Livre"></option><option value="Embalagens"></option></datalist>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Sócio / Investidor</label>
+                    <input type="text" id="g-socio" list="lista-socios" placeholder="Ex: Amor, Natália...">
+                    <datalist id="lista-socios"><option value="Amor"></option><option value="Natália"></option><option value="Mãe"></option><option value="Amor/Mãe"></option><option value="Natália/Mãe"></option></datalist>
+                </div>
+                <div class="col"><label>Item Comprado</label><input type="text" id="g-item" placeholder="Ex: Ess. Daslu"></div>
+            </div>
+            <div class="row">
+                <div class="col"><label>Quantidade</label><input type="number" id="g-qtd" value="1" oninput="calcularTotalGasto()"></div>
+                <div class="col"><label>Valor Unitário</label><input type="text" id="g-valor" class="mask-money" oninput="calcularTotalGasto()" placeholder="R$ 0,00"></div>
+            </div>
+            <div class="input-group"><label>Valor Total (Qtd x Unitário)</label><input type="text" id="g-total" class="mask-money" readonly></div>
+            <button class="btn-salvar" id="btn-salvar-gasto" onclick="salvarGasto()">Lançar Despesa</button>
+
+            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros</div>
+            <div class="filtro-box">
+                <div class="row">
+                    <div class="col">
+                        <label>Sócio</label>
+                        <select id="f-socio" onchange="renderizarGastos()">
+                            <option value="">Todos os Sócios</option>
+                            <option value="amor">Amor (Fernando)</option>
+                            <option value="natália">Natália</option>
+                            <option value="mãe">Mãe (Sogra)</option>
+                            <option value="amor/mãe">Amor/Mãe</option>
+                            <option value="natália/mãe">Natália/Mãe</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col"><label>Data Início</label><input type="date" id="f-data-ini" onchange="renderizarGastos()"></div>
+                    <div class="col"><label>Data Fim</label><input type="date" id="f-data-fim" onchange="renderizarGastos()"></div>
+                </div>
+            </div>
+            <div class="custo-total" style="background: var(--primary-dark); color: white; border: none; box-shadow: 0 5px 15px rgba(150, 97, 120, 0.3); margin-bottom: 20px;"><span>Total Filtrado:</span> <span id="g-total-dashboard">R$ 0,00</span></div>
+            <div id="lista-gastos-cadastrados"></div>
+        </div>
+
+        <!-- ABA VENDAS E RECIBOS/COBRANÇAS -->
+        <div id="tab-vendas" class="tab-content active">
+            <div class="section-title" style="margin-top:0;">🛍️ Registrar Venda</div>
             <div class="row">
                 <div class="col"><label>Data da Venda</label><input type="date" id="v-data"></div>
                 <div class="col"><label>Cliente</label><input type="text" id="v-cliente" list="lista-clientes" placeholder="Nome do Cliente"></div>
             </div>
-            <div class="input-group">
-                <!-- AGORA PUXA DO ESTOQUE -->
-                <label>Produto (Estoque Disponível)</label><select id="v-produto" onchange="autoPreencherValorVenda()"><option value="">Aguardando dados...</option></select>
-            </div>
+            <div class="input-group"><label>Produto (Estoque Disponível)</label><select id="v-produto" onchange="autoPreencherValorVenda()"><option value="">Aguardando dados...</option></select></div>
             <div class="row">
                 <div class="col"><label>Sócio / Vendedor</label><input type="text" id="v-socio" list="lista-socios-dinamica" placeholder="Ex: Natália"></div>
                 <div class="col"><label>Qtd</label><input type="number" id="v-qtd" value="1" oninput="autoPreencherValorVenda()"></div>
@@ -266,7 +324,7 @@
             </div>
             <button class="btn-salvar" id="btn-salvar-venda" onclick="salvarVenda()">Registrar Venda</button>
 
-            <!-- GERADOR EM LOTE -->
+            <!-- GERADOR DE RECIBOS (LOTE) -->
             <div class="filtro-box" style="background: #fdf5f7; border-color: #f3d8e2; margin-top: 35px;">
                 <div class="section-title" style="margin-top:0; border-left-color: var(--primary-dark); color: var(--primary-dark);">🧾 Gerador Lote Recibos</div>
                 <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar o comprovante de vários pedidos juntos.</p>
@@ -299,72 +357,90 @@
             <div class="section-title" style="margin-top: 25px;">📊 Histórico de Vendas</div>
             <div class="filtros-box">
                 <div class="row">
-                    <div class="col"><label>Mês</label><select id="f-v-mes" onchange="filtrarVendas()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
-                    <div class="col"><label>Status</label><select id="f-v-status" onchange="filtrarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
-                    <div class="col"><label>Sócio</label><select id="f-v-socio" onchange="filtrarVendas()"><option value="">Todos</option></select></div>
+                    <div class="col">
+                        <label>Mês</label>
+                        <select id="f-v-mes" onchange="filtrarVendas()">
+                            <option value="">Todos</option>
+                            <option value="01">Jan</option><option value="02">Fev</option>
+                            <option value="03">Mar</option><option value="04">Abr</option>
+                            <option value="05">Mai</option><option value="06">Jun</option>
+                            <option value="07">Jul</option><option value="08">Ago</option>
+                            <option value="09">Set</option><option value="10">Out</option>
+                            <option value="11">Nov</option><option value="12">Dez</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Status</label>
+                        <select id="f-v-status" onchange="filtrarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select>
+                    </div>
+                    <div class="col">
+                        <label>Sócio</label>
+                        <select id="f-v-socio" onchange="filtrarVendas()"><option value="">Todos</option></select>
+                    </div>
                 </div>
             </div>
             
             <div id="lista-vendas-cadastradas"></div>
-            <datalist id="lista-clientes"></datalist>
-            <datalist id="lista-socios-dinamica"></datalist>
+            <datalist id="lista-clientes"></datalist><datalist id="lista-socios-dinamica"></datalist>
         </div>
 
-        <!-- MENU AVANÇADO (MAIS) -->
-        <div id="tab-menu" class="tab-content">
-            <div class="section-title" style="margin-top:0;">🚀 Mais Ferramentas</div>
-            <div class="dash-grid">
-                <div class="dash-card" style="cursor:pointer; background:#f0fdf4; border-color:#bbf7d0;" onclick="switchTab('dashboard')"><h3>📊 Painel</h3><div class="valor" style="font-size:2rem; color:#166534;">📈</div></div>
-                <div class="dash-card" style="cursor:pointer; background:#fef2f2; border-color:#fecaca;" onclick="switchTab('gastos')"><h3>💸 Despesas</h3><div class="valor" style="font-size:2rem; color:#b91c1c;">💳</div></div>
-            </div>
-            
-            <div class="section-title" style="margin-top: 35px; border-left-color: #2C2A2B; color: #2C2A2B;">🖨️ Exportação de Dados</div>
-            <div class="filtros-box">
-                <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Baixe o Excel ou copie o resumo do fechamento baseado no filtro do mês abaixo.</p>
-                <div class="row" style="margin-bottom:10px;"><div class="col"><label>Mês:</label><select id="rel-mes" onchange="renderizarDashboard()"><option value="todos">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Ano:</label><select id="rel-ano" onchange="renderizarDashboard()"><option value="todos">Todos</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select></div></div>
-                <button class="btn-salvar" style="margin-top: 10px; background: #107c41; box-shadow: 0 4px 10px rgba(16, 124, 65, 0.3);" onclick="exportarExcel()">📊 Baixar Vendas (.CSV)</button>
-                <button class="btn-salvar" style="margin-top: 10px; background: #25D366; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="copiarFechamento()">📱 Copiar Fechamento p/ WhatsApp</button>
-            </div>
-            
-            <button class="btn-salvar" onclick="sincronizarDadosUnico()" style="margin-top: 20px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Sincronizar Banco Novamente</button>
-        </div>
-
-        <!-- ABA GASTOS (Escondida no Mais) -->
-        <div id="tab-gastos" class="tab-content">
-            <div class="section-title">💸 Registrar Novo Gasto</div>
-            <div class="row"><div class="col"><label>Data da Compra</label><input type="date" id="g-data"></div><div class="col"><label>Local / Fornecedor</label><input type="text" id="g-local" list="lista-locais"></div></div>
-            <div class="row"><div class="col"><label>Sócio</label><input type="text" id="g-socio" list="lista-socios"></div><div class="col"><label>Item Comprado</label><input type="text" id="g-item"></div></div>
-            <div class="row"><div class="col"><label>Quantidade</label><input type="number" id="g-qtd" value="1" oninput="calcularTotalGasto()"></div><div class="col"><label>Valor Unitário</label><input type="text" id="g-valor" class="mask-money" oninput="calcularTotalGasto()"></div></div>
-            <div class="input-group"><label>Valor Total</label><input type="text" id="g-total" class="mask-money" readonly></div>
-            <button class="btn-salvar" id="btn-salvar-gasto" onclick="salvarGasto()">Lançar Despesa</button>
-
-            <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros</div>
-            <div class="filtro-box">
-                <div class="row"><div class="col"><label>Data Início</label><input type="date" id="f-data-ini" onchange="renderizarGastos()"></div><div class="col"><label>Data Fim</label><input type="date" id="f-data-fim" onchange="renderizarGastos()"></div></div>
-            </div>
-            <div class="custo-total" style="background: var(--primary-dark); color: white;"><span>Total Filtrado:</span> <span id="g-total-dashboard">R$ 0,00</span></div>
-            <div id="lista-gastos-cadastrados"></div>
-            <datalist id="lista-locais"></datalist><datalist id="lista-socios"></datalist>
-        </div>
-
-        <!-- ABA DASHBOARD (Escondida no Mais) -->
+        <!-- ABA DASHBOARD GERAL (TELA ORIGINAL RESTAURADA) -->
         <div id="tab-dashboard" class="tab-content">
             <div class="section-title" style="margin-top:0;">📊 Visão Global da Novera</div>
-            <p style="font-size:0.75rem; color:#888;">Baseado no Mês/Ano selecionados na aba "Mais".</p>
-            <div id="card-lucro-real" class="dash-lucro-card"><h3>Dinheiro Limpo (Em Caixa)</h3><p id="d-lucro-real">R$ 0,00</p><p style="font-size: 0.7rem; font-weight: 500; margin-top: 5px; opacity: 0.8;">= Receitas Pagas - Gastos Totais</p></div>
-            <div class="dash-grid">
-                <div class="dash-card receita"><h5>Entradas (Pagas)</h5><p id="d-receitas">R$ 0,00</p></div>
-                <div class="dash-card"><h5>Saídas (Gastos)</h5><p id="d-gastos" style="color: #c62828;">R$ 0,00</p></div>
-                <div class="dash-card receber highlight" style="grid-column: span 2; background: #fff9e6; color: #b45309; box-shadow:none; border: 1px solid #ffeeba;"><h5 style="color: #b45309;">A Receber (Rodando/Fiado)</h5><p id="d-receber" style="color: #b45309;">R$ 0,00</p></div>
+            <div class="filtro-box">
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col">
+                        <label>Mês</label>
+                        <select id="d-filtro-mes" onchange="renderizarDashboard()">
+                            <option value="">Todos</option>
+                            <option value="01">Jan</option><option value="02">Fev</option>
+                            <option value="03">Mar</option><option value="04">Abr</option>
+                            <option value="05">Mai</option><option value="06">Jun</option>
+                            <option value="07">Jul</option><option value="08">Ago</option>
+                            <option value="09">Set</option><option value="10">Out</option>
+                            <option value="11">Nov</option><option value="12">Dez</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label>Ano</label>
+                        <select id="d-filtro-ano" onchange="renderizarDashboard()">
+                            <option value="">Todos</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <div class="section-title">🚀 Métricas de Sucesso</div>
-            <div class="dash-grid">
-                <div class="dash-card"><h5>🏆 Produto Campeão</h5><p id="d-produto-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p></div>
-                <div class="dash-card"><h5>⭐ Melhor Cliente</h5><p id="d-cliente-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p></div>
-                <div class="dash-card" style="grid-column: span 2;"><h5>🤝 Lucro por Sócio</h5><div id="d-socios-lucro" style="margin-top: 10px;"></div></div>
+            
+            <div id="card-lucro-real" class="dash-lucro-card">
+                <h3>Dinheiro Limpo (Em Caixa)</h3>
+                <p id="d-lucro-real">R$ 0,00</p>
+                <p style="font-size: 0.7rem; font-weight: 500; margin-top: 5px; opacity: 0.8;">= Receitas Pagas - Gastos Totais</p>
             </div>
+            
+            <div class="dash-grid">
+                <div class="dash-card receita" style="cursor:default; transform:none;"><h5>Entradas (Pagas)</h5><p id="d-receitas">R$ 0,00</p></div>
+                <div class="dash-card" style="cursor:default; transform:none;"><h5>Saídas (Gastos)</h5><p id="d-gastos" style="color: #c62828;">R$ 0,00</p></div>
+                <div class="dash-card receber highlight" style="grid-column: span 2; background: #fff9e6; color: #b45309; box-shadow:none; border: 1px solid #ffeeba; cursor:default; transform:none;">
+                    <h5 style="color: #b45309;">A Receber (Rodando/Fiado)</h5><p id="d-receber" style="color: #b45309;">R$ 0,00</p>
+                </div>
+            </div>
+            <div class="section-title">🚀 Métricas de Sucesso do Período</div>
+            <div class="dash-grid">
+                <div class="dash-card" style="cursor:default; transform:none;"><h5>🏆 Produto Campeão</h5><p id="d-produto-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p></div>
+                <div class="dash-card" style="cursor:default; transform:none;"><h5>⭐ Melhor Cliente</h5><p id="d-cliente-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p></div>
+                <div class="dash-card" style="grid-column: span 2; cursor:default; transform:none;"><h5>🤝 Lucro por Sócio</h5><div id="d-socios-lucro" style="margin-top: 10px;"></div></div>
+            </div>
+
             <div class="chart-container"><canvas id="chartReceitasGastos"></canvas></div>
             <div class="chart-container" style="max-width: 400px; margin: 0 auto 20px;"><canvas id="chartStatusVendas"></canvas></div>
+            
+            <!-- CENTRAL DE RELATÓRIOS -->
+            <div class="section-title" style="margin-top: 35px; border-left-color: #2C2A2B; color: #2C2A2B;">🖨️ Exportação e Relatórios</div>
+            <div class="row"><div class="col"><button class="btn-salvar" style="margin-top: 0; background: #2C2A2B; box-shadow: 0 4px 10px rgba(44, 42, 43, 0.3);" onclick="abrirModalRelatorios()">Gerar Relatórios</button></div></div>
+            <button class="btn-salvar" onclick="sincronizarDadosUnico()" style="margin-top: 20px; background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">🔄 Sincronizar Tudo Novamente</button>
         </div>
 
         <!-- ABA CONFIGURAÇÕES -->
@@ -380,17 +456,18 @@
 
     </div>
 
-    <!-- NAVEGAÇÃO INFERIOR NATIVA -->
+    <!-- NAVEGAÇÃO INFERIOR NATIVA (AGORA COM 6 ITENS ALINHADOS) -->
     <nav class="bottom-nav">
-        <a class="nav-item active" id="nav-rotulos" onclick="switchTab('rotulos')"><span class="icon">🏷️</span><span>Essências</span></a>
+        <a class="nav-item" id="nav-rotulos" onclick="switchTab('rotulos')"><span class="icon">🏷️</span><span>Essências</span></a>
         <a class="nav-item" id="nav-precificar" onclick="switchTab('precificar')"><span class="icon">🧪</span><span>Fábrica</span></a>
         <a class="nav-item" id="nav-estoque" onclick="switchTab('estoque')"><span class="icon">📦</span><span>Estoque</span></a>
-        <a class="nav-item" id="nav-vendas" onclick="switchTab('vendas')"><span class="icon">🛒</span><span>Vendas</span></a>
-        <a class="nav-item" id="nav-menu" onclick="switchTab('menu')"><span class="icon">☰</span><span>Mais</span></a>
+        <a class="nav-item" id="nav-gastos" onclick="switchTab('gastos')"><span class="icon">💸</span><span>Gastos</span></a>
+        <a class="nav-item active" id="nav-vendas" onclick="switchTab('vendas')"><span class="icon">🛒</span><span>Vendas</span></a>
+        <a class="nav-item" id="nav-dashboard" onclick="switchTab('dashboard')"><span class="icon">📊</span><span>Painel</span></a>
     </nav>
 </div>
 
-<!-- ================= TEMPLATES RECIBO E COBRANÇA ================= -->
+<!-- ================= TEMPLATES ESCONDIDOS (RECIBO E COBRANÇA) ================= -->
 <div id="recibo-template" style="position: absolute; left: -9999px; top: -9999px; width: 400px; background: #fff; padding: 40px; border-radius: 10px; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
     <div style="text-align: center; border-bottom: 2px dashed #E8DDE1; padding-bottom: 20px; margin-bottom: 20px;">
         <img src="logo.png" style="width: 120px; margin-bottom: 10px;" crossorigin="anonymous">
@@ -430,6 +507,7 @@
     </div>
 </div>
 
+<!-- ================= MODAIS DE SISTEMA E RELATÓRIOS ================= -->
 <div id="modal-recibo-preview" class="modal-overlay-alert" style="z-index: 10001;">
     <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 25px 20px; background: #fdfbfb;">
         <button onclick="document.getElementById('modal-recibo-preview').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
@@ -443,8 +521,22 @@
     </div>
 </div>
 
-<!-- ================= MODAIS DE SISTEMA ================= -->
+<div id="modal-relatorios" class="modal-overlay-alert" style="z-index: 10001;">
+    <div class="modal-box-alert" style="width: 95%; max-width: 400px; padding: 30px 20px;">
+        <button onclick="document.getElementById('modal-relatorios').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 5px; color: var(--brand-dark);">Central de Relatórios</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 25px;">Os dados gerados serão baseados no Mês e Ano filtrados no Painel.</p>
+
+        <button class="btn-salvar" style="margin-top: 10px; background: #107c41; box-shadow: 0 4px 10px rgba(16, 124, 65, 0.3);" onclick="exportarExcel()">📊 Baixar Vendas (.CSV)</button>
+        <button class="btn-salvar" style="margin-top: 10px; background: #25D366; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="copiarFechamento()">📱 Copiar Fechamento p/ WhatsApp</button>
+
+        <button class="btn-modal-cancel" style="margin-top: 25px; width: 100%;" onclick="document.getElementById('modal-relatorios').style.display='none'">Fechar</button>
+    </div>
+</div>
+
 <div id="custom-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert" id="modal-icone-alert">✨</span><h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3><p class="modal-text-alert" id="modal-texto-alert">OK</p><button id="btn-modal-ok" class="btn-modal-ok" onclick="document.getElementById('custom-modal').style.display='none'">Certo, entendi</button></div></div>
+
+<!-- ================= O MODAL DE CONFIRMAÇÃO ================= -->
 <div id="modal-confirmar" class="modal-overlay-alert">
     <div class="modal-box-alert">
         <span class="modal-icon-alert" id="modal-conf-icon">🗑️</span>
@@ -452,12 +544,12 @@
         <p class="modal-text-alert" id="texto-confirmar">Tem certeza?</p>
         <div style="display: flex; gap: 10px; margin-top: 15px;">
             <button class="btn-modal-cancel" onclick="document.getElementById('modal-confirmar').style.display='none'">Cancelar</button>
+            <!-- BOTÃO MAGICO REATIVADO -->
             <button class="btn-modal-confirm" id="btn-confirmar-acao">🗑️ Confirmar</button>
         </div>
     </div>
 </div>
 
-<!-- ================= MODAIS DE EDIÇÃO ================= -->
 <div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div><button class="btn-salvar" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 <div id="modal-editar-estoque" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-estoque').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Ajuste Manual</h3><input type="hidden" id="edit-e-linha"><div class="input-group" style="text-align: left;"><label>Nome do Produto</label><input type="text" id="edit-e-nome" readonly></div><div class="input-group" style="text-align: left;"><label>Tipo</label><input type="text" id="edit-e-tipo"></div><div class="row" style="text-align: left;"><div class="col"><label>Qtd em Estoque</label><input type="number" id="edit-e-qtd"></div><div class="col"><label>Custo Und.</label><input type="text" id="edit-e-custo" class="mask-money"></div></div><div class="input-group" style="text-align: left;"><label>Preço de Venda Sugerido</label><input type="text" id="edit-e-preco" class="mask-money"></div><button class="btn-salvar" onclick="salvarEdicaoEstoque()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 <div id="modal-editar-gasto" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-gasto').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Gasto</h3><input type="hidden" id="edit-g-linha"><div class="row" style="text-align: left;"><div class="col"><label>Data</label><input type="date" id="edit-g-data"></div><div class="col"><label>Sócio</label><input type="text" id="edit-g-socio" list="lista-socios"></div></div><div class="row" style="text-align: left;"><div class="col"><label>Local</label><input type="text" id="edit-g-local" list="lista-locais"></div></div><div class="input-group" style="text-align: left;"><label>Item</label><input type="text" id="edit-g-item"></div><div class="row" style="text-align: left;"><div class="col"><label>Quantidade</label><input type="number" id="edit-g-qtd" oninput="calcularEditGasto()"></div><div class="col"><label>Valor Unit.</label><input type="text" id="edit-g-valor" class="mask-money" oninput="calcularEditGasto()"></div></div><div class="input-group" style="text-align: left;"><label>Total</label><input type="text" id="edit-g-total" class="mask-money" readonly></div><button class="btn-salvar" onclick="salvarEdicaoGasto()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
@@ -496,7 +588,7 @@
                 renderizarRotulos();
                 renderizarOpcoesPrecificacao();
                 renderizarEstoque();
-                renderizarVendas(); // Vendas agora depende do Estoque
+                renderizarVendas();
                 renderizarDashboard();
                 
                 dadosCarregados = true;
@@ -504,7 +596,8 @@
                 mostrarAlerta("Erro de Sincronização", dados.erro, "error");
             }
         } catch(e) { 
-            mostrarAlerta("Falha de Conexão", "Não foi possível buscar os dados da planilha.", "error"); 
+            console.error(e);
+            mostrarAlerta("Falha de Conexão", "Verifique se você gerou uma Nova Implantação do Script.", "error"); 
         } finally { 
             loader.style.display = "none"; 
         }
@@ -599,7 +692,7 @@
     }
 
     let custoLiquidoGlobal = 0, custoInsumosGlobal = 0, custoTotalGlobal = 0; 
-    let acaoConfirmada = null; let chartRGBase = null, chartStatusBase = null;
+    let chartRGBase = null, chartStatusBase = null;
 
     document.addEventListener('input', function (e) {
         if (e.target && e.target.classList.contains('mask-money') && !e.target.readOnly) {
@@ -618,13 +711,14 @@
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        
         document.getElementById('tab-' + tabId).classList.add('active');
-        if(tabId !== 'configuracoes' && tabId !== 'dashboard') { 
+        
+        if(tabId !== 'configuracoes') { 
             const navBtn = document.getElementById('nav-' + tabId);
             if(navBtn) navBtn.classList.add('active'); 
-        } else {
-            document.getElementById('nav-menu').classList.add('active');
         }
+        
         if(tabId === 'gastos' && !document.getElementById('g-data').value) document.getElementById('g-data').valueAsDate = new Date();
         if(tabId === 'vendas' && !document.getElementById('v-data').value) document.getElementById('v-data').valueAsDate = new Date();
     }
@@ -640,8 +734,10 @@
     }
 
     function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
-        document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; 
-        document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
+        document.getElementById('modal-conf-title').innerText = titulo; 
+        document.getElementById('modal-conf-title').style.color = corHex; 
+        document.getElementById('modal-conf-icon').innerText = icone; 
+        document.getElementById('texto-confirmar').innerText = texto;
         
         const btn = document.getElementById('btn-confirmar-acao'); 
         btn.innerText = textoBtn; 
@@ -689,7 +785,7 @@
             const resultado = await res.json();
             if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; sincronizarDadosUnico(); } 
             else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); }
-        } catch (e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "CRIAR IDENTIDADE (N-XXXX)"; }
+        } catch (e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "Criar Essência Mestre"; }
     }
 
     function abrirModalEditarRotulo(linha) {
@@ -730,17 +826,14 @@
         
         custoLiquidoGlobal = custoLiquidoUni; custoInsumosGlobal = cInsumos; custoTotalGlobal = custoTotalUni;
         
-        // Atualiza a tela de fábrica
         document.getElementById('r-frascos').innerText = Math.floor(qtdFrascos) + " un";
         document.getElementById('r-custo-total').innerText = fmt(custoTotalUni);
         
-        // Auto-sugere o rendimento na caixinha final
         document.getElementById('p-rendimento').value = Math.floor(qtdFrascos);
         autoSugerirPrecoFabrica();
     }
 
     function autoSugerirPrecoFabrica() {
-        // Se o usuario não digitou nada, sugere 3x o custo
         if(!document.getElementById('p-preco-venda').value) {
             document.getElementById('p-preco-venda').value = fmt(custoTotalGlobal * 3);
         }
@@ -930,8 +1023,7 @@
         }); 
     }
 
-    // ================= ABA VENDAS =================
-    
+    // ================= ABA VENDAS E RECIBOS INDIVIDUAIS =================
     function autoPreencherValorVenda() {
         const selecao = document.getElementById('v-produto').value;
         const produtoEstoque = estoqueGlobal.find(e => e.nome === selecao);
@@ -967,7 +1059,6 @@
         
         if(!py.data || !py.cliente || !py.produto || !py.valorStr) return mostrarAlerta("Atenção", "Preencha todos os campos obrigatórios.", "warning");
         
-        // Agora busca o custo direto do estoque
         const produtoEstoque = estoqueGlobal.find(e => e.nome === py.produto);
         const cUnd = produtoEstoque ? parseDinheiro(produtoEstoque.custo) : 0; 
         const valVenda = parseDinheiro(py.valorStr); 
@@ -975,10 +1066,8 @@
         const lucro = valVenda - cTot; 
         const mkp = cTot > 0 ? (lucro / cTot) : 1;
 
-        // Checagem de estoque antes de vender
         const qtdNoEstoque = produtoEstoque ? parseFloat(produtoEstoque.qtd) : 0;
         if(qtdNoEstoque < py.qtd) {
-            // Apenas alerta visual, mas permite vender (pode ser encomenda)
             alert(`Aviso: Você está vendendo ${py.qtd} unidades, mas só tem ${qtdNoEstoque} no estoque.`);
         }
 
@@ -991,17 +1080,18 @@
     }
 
     function renderizarVendas() {
-        // Datalist de Clientes
         const dlist = new Set(vendasGlobal.map(v => String(v.cliente).trim())); 
         const htmlClientes = '<option value="">Selecione...</option>' + [...dlist].map(c => `<option value="${c}">${c}</option>`).join('');
         document.getElementById('lista-clientes').innerHTML = [...dlist].map(c => `<option value="${c}">`).join('');
-        document.getElementById('recibo-cliente').innerHTML = htmlClientes; document.getElementById('cobranca-cliente').innerHTML = htmlClientes;
         
-        // Datalist de Sócios
         const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); 
         document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join('');
         
-        // Puxa Produtos do Estoque para a tela de Vendas
+        const socioSelect = document.getElementById('f-v-socio');
+        const socioAtual = socioSelect.value;
+        socioSelect.innerHTML = '<option value="">Todos</option>' + [...slist].map(s => `<option value="${s}">${s}</option>`).join('');
+        socioSelect.value = socioAtual;
+        
         let htmlVendas = '<option value="">Selecione do Estoque...</option>';
         estoqueGlobal.forEach(e => {
             htmlVendas += `<option value="${e.nome}">${e.nome} (Estoque: ${e.qtd})</option>`;
@@ -1013,131 +1103,123 @@
     }
 
     function filtrarVendas() {
-        const fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value;
+        const fMes = document.getElementById('f-v-mes').value;
+        const fStatus = document.getElementById('f-v-status').value;
+        const fSocio = document.getElementById('f-v-socio').value.toLowerCase();
+        
         let filtradas = vendasGlobal.filter(v => {
-            let pM = true, pS = true;
+            let pM = true, pS = true, pSo = true;
             if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; }
-            if(fStatus && v.status !== fStatus) pS = false; return pM && pS;
+            if(fStatus && v.status !== fStatus) pS = false; 
+            if(fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false;
+            
+            return pM && pS && pSo;
         });
+        
         filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso));
 
         let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
-        if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } 
-        else {
+        
+        if (filtradas.length === 0) { 
+            html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; 
+        } else {
             filtradas.forEach(v => {
-                const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0;
-                const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val;
-                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)}</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`;
+                const val = parseDinheiro(v.valor_venda); 
+                tVend += val; 
+                tLuc += parseDinheiro(v.lucro); 
+                tItens += parseInt(v.qtd) || 0;
+                
+                const isP = v.status === 'Pago'; 
+                if(isP) tRec += val; else tDev += val;
+                
+                const btnAcaoExtra = isP 
+                    ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>`
+                    : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`;
+
+                html += `<div class="rotulo-card">
+                    <div class="rotulo-info">
+                        <h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4>
+                        <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p>
+                        <p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p>
+                        <p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+                        <div class="custo-val">${safeFmt(v.valor_venda)}</div>
+                        <div style="display:flex; gap:5px;">
+                            ${btnAcaoExtra}
+                            ${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}
+                            <button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>
+                            <button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button>
+                        </div>
+                    </div>
+                </div>`;
             });
         }
-        document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens;
+        
+        document.getElementById('lista-vendas-cadastradas').innerHTML = html; 
+        document.getElementById('dash-v-total').innerText = fmt(tVend); 
+        document.getElementById('dash-v-receita').innerText = fmt(tRec); 
+        document.getElementById('dash-v-receber').innerText = fmt(tDev); 
+        document.getElementById('dash-v-lucro').innerText = fmt(tLuc); 
+        document.getElementById('dash-v-itens').innerText = tItens;
     }
 
-    // ================= NOME DINÂMICO NOS RECIBOS / COBRANÇAS =================
-    function prepararRecibo() {
-        const cliente = document.getElementById('recibo-cliente').value;
-        const divNome = document.getElementById('div-recibo-nome');
-        const inputNome = document.getElementById('recibo-nome-exibicao');
-        const container = document.getElementById('recibo-pedidos-lista');
-        const btn = document.getElementById('btn-gerar-recibo');
-
-        if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none'; return; }
-
-        inputNome.value = cliente; divNome.style.display = 'block';
-
-        let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente); 
-        pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso));
+    async function gerarReciboUnico(linha) {
+        const pedido = vendasGlobal.find(v => v.linha == linha);
+        if (!pedido) return;
         
-        if (pedidos.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido encontrado.</p>'; } 
-        else {
-            let html = '';
-            pedidos.forEach(p => {
-                const dataCompra = p.dataVendaDisplay || p.dataVendaIso, statusTexto = p.status === 'Pago' ? `<span style="color:#2e7d32;">Pago: ${p.dataPgtoDisplay || '?'}</span>` : `<span style="color:#b45309;">Pendente</span>`;
-                html += `<label class="checkbox-recibo"><input type="checkbox" class="chk-item-recibo" value="${p.linha}" checked><div class="chk-info"><span class="chk-title">${p.qtd}x ${p.produto}</span><span class="chk-desc">Data: ${dataCompra} | ${statusTexto}</span></div><div class="chk-val">${safeFmt(p.valor_venda)}</div></label>`;
-            });
-            container.innerHTML = html;
-        }
-        container.style.display = 'block'; btn.style.display = 'block';
-    }
-
-    async function montarRecibo() {
-        const clienteReal = document.getElementById('recibo-cliente').value; 
-        const clienteNomeExibicao = document.getElementById('recibo-nome-exibicao').value.trim() || clienteReal;
-        const checkboxes = document.querySelectorAll('.chk-item-recibo:checked');
-        
-        if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Deixe pelo menos um pedido marcado para o recibo.", "warning");
-        const btnGerar = document.getElementById('btn-gerar-recibo'); btnGerar.innerText = "⏳ Gerando..."; btnGerar.disabled = true;
-
-        document.getElementById('rec-cli-nome').innerText = clienteNomeExibicao; 
+        document.getElementById('rec-cli-nome').innerText = pedido.cliente; 
         document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR');
         
-        let htmlItens = "", somaTotal = 0;
-        checkboxes.forEach(chk => {
-            const pedido = vendasGlobal.find(v => v.linha == chk.value);
-            if(pedido) {
-                const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor;
-                const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = pedido.status === 'Pago' ? `Pago: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente';
-                htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`;
-            }
-        });
-        document.getElementById('rec-itens-lista').innerHTML = htmlItens; document.getElementById('rec-total').innerText = fmt(somaTotal);
+        const valor = parseDinheiro(pedido.valor_venda);
+        const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso;
+        const txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`;
+        
+        const htmlItem = `
+        <div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;">
+            <div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div>
+            <div style="font-weight: 700; color: #966178;">${fmt(valor)}</div>
+        </div>`;
+        
+        document.getElementById('rec-itens-lista').innerHTML = htmlItem; 
+        document.getElementById('rec-total').innerText = fmt(valor);
 
         try {
             const template = document.getElementById('recibo-template');
-            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png");
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png");
             document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`;
             document.getElementById('preview-title').innerText = "Recibo Pronto!";
-            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${clienteNomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); };
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${pedido.cliente.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); };
             document.getElementById('modal-recibo-preview').style.display = 'flex';
-        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { btnGerar.innerText = "📸 Gerar Imagem do Recibo"; btnGerar.disabled = false; }
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); }
     }
 
-    function prepararCobranca() {
-        const cliente = document.getElementById('cobranca-cliente').value;
-        const divNome = document.getElementById('div-cobranca-nome');
-        const inputNome = document.getElementById('cobranca-nome-exibicao');
+    async function gerarCobrancaUnica(linha) {
+        const pedido = vendasGlobal.find(v => v.linha == linha);
+        if (!pedido) return;
 
-        if (!cliente) { divNome.style.display = 'none'; return; }
-        inputNome.value = cliente; divNome.style.display = 'block';
-    }
-
-    function copiarPendenciasWhats() {
-        const cliReal = document.getElementById('cobranca-cliente').value; 
-        if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning");
-        const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal;
+        document.getElementById('cob-cli-nome').innerText = pedido.cliente;
+        const valor = parseDinheiro(pedido.valor_venda);
         
-        let pends = vendasGlobal.filter(p => p.cliente.trim() === cliReal && p.status === 'Pendente'), txt = `Olá ${cliDisplay}, tudo bem com você? Passando aqui pela Novera Scent ✨\n\nEsse é um resuminho dos seus pedidos em aberto com a gente:\n\n`, tot = 0;
-        if(pends.length === 0) return mostrarAlerta("Aviso", "Este cliente não tem pendências.", "success");
-        pends.forEach(p => { const val = parseDinheiro(p.valor_venda); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(val)}\n`; tot += val; }); txt += `\n*Total em aberto: ${fmt(tot)}*\n\nQualquer dúvida, é só chamar!`;
-        navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success"));
-    }
-
-    async function montarCobranca() {
-        const cliReal = document.getElementById('cobranca-cliente').value;
-        if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente devedor.", "warning");
-        const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal;
+        const htmlItem = `
+        <div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;">
+            <div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div>
+            <div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div>
+        </div>`;
         
-        let pends = vendasGlobal.filter(p => p.cliente.trim() === cliReal && p.status === 'Pendente');
-        if(pends.length === 0) return mostrarAlerta("Aviso", "Este cliente não tem pendências.", "success");
-
-        const btnGerar = document.getElementById('btn-gerar-cobranca'); btnGerar.innerText = "⏳..."; btnGerar.disabled = true;
-
-        document.getElementById('cob-cli-nome').innerText = cliDisplay;
-        let htmlItens = "", somaTotal = 0;
-        pends.forEach(pedido => {
-            const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor;
-            htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`;
-        });
-        document.getElementById('cob-itens-lista').innerHTML = htmlItens; document.getElementById('cob-total').innerText = fmt(somaTotal);
+        document.getElementById('cob-itens-lista').innerHTML = htmlItem; 
+        document.getElementById('cob-total').innerText = fmt(valor);
 
         try {
             const template = document.getElementById('cobranca-template');
-            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png");
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png");
             document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`;
             document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!";
-            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${cliDisplay.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); };
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${pedido.cliente.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); };
             document.getElementById('modal-recibo-preview').style.display = 'flex';
-        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { btnGerar.innerText = "📸 Imagem"; btnGerar.disabled = false; }
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); }
     }
 
     async function darBaixaVenda(linha) {
@@ -1157,14 +1239,13 @@
         const py = { 
             data: document.getElementById('edit-v-data').value, 
             cliente: padronizarTexto(document.getElementById('edit-v-cliente').value), 
-            produto: document.getElementById('edit-v-produto').value, 
+            produto: padronizarTexto(document.getElementById('edit-v-produto').value), 
             socio: padronizarTexto(document.getElementById('edit-v-socio').value), 
             qtd: parseInt(document.getElementById('edit-v-qtd').value) || 1, 
             valorStr: document.getElementById('edit-v-valor').value, 
             status: document.getElementById('edit-v-status').value 
         };
         const valVenda = parseDinheiro(py.valorStr);
-        // Atualiza baseando no estoque atual
         const produtoEstoque = estoqueGlobal.find(e => e.nome === py.produto);
         let cUnd = produtoEstoque ? parseDinheiro(produtoEstoque.custo) : parseDinheiro(vOrig.custo_und); 
         const cTot = cUnd * py.qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1; const dPg = py.status === "Pago" ? (vOrig.dataPgtoDisplay || new Date().toLocaleDateString('pt-BR')) : "";
