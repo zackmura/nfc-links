@@ -785,7 +785,7 @@
         let html = "", somaItens = 0, somaValor = 0;
         filtrados.forEach(e => {
             const qtdNum = parseFloat(e.qtd) || 0, custoNum = parseDinheiro(e.custo); somaItens += qtdNum; somaValor += (qtdNum * custoNum);
-            let corQtd = qtdNum < 5 ? "#ef4444" : "var(--brand-dark)", avisoBaixo = qtdNum < 5 ? `<span style="font-size:0.65rem; color:#ef4444; font-weight:800; border:1px solid #fecaca; padding:2px 6px; border-radius:4px; margin-left:5px;">Baixo Estoque</span>` : "";
+            let corQtd = qtdNum < 2 ? "#ef4444" : "var(--brand-dark)", avisoBaixo = qtdNum < 2 ? `<span style="font-size:0.65rem; color:#ef4444; font-weight:800; border:1px solid #fecaca; padding:2px 6px; border-radius:4px; margin-left:5px;">Baixo Estoque</span>` : "";
             html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${e.nome} ${avisoBaixo}</h4><p style="color:var(--primary); font-weight:700; margin-bottom:5px;">Venda: ${safeFmt(e.preco)}</p><p style="font-size:0.7rem; color:#888;">Custo da Fábrica: ${safeFmt(e.custo)} /un</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val" style="color:${corQtd};">${qtdNum} un</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarEstoque(${e.linha})" title="Ajustar Manualmente">✏️</button><button class="btn-acao" onclick="prepararExclusaoEstoque(${e.linha}, '${e.nome}')" title="Excluir">🗑️</button></div></div></div>`;
         });
         lista.innerHTML = html; document.getElementById('est-total-itens').innerText = somaItens; document.getElementById('est-valor-total').innerText = fmt(somaValor);
