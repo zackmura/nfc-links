@@ -1,4 +1,4 @@
-const CACHE_NAME = 'novera-erp-v1';
+const CACHE_NAME = 'novera-erp-v4.2';
 // Arquivos essenciais usando caminhos relativos
 const urlsToCache = [
   './',
@@ -8,20 +8,17 @@ const urlsToCache = [
   './logo-512.png'
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
-  );
+// Instala o Service Worker
+self.addEventListener('install', (event) => {
+    self.skipWaiting(); // Força a atualização imediata se houver novo código
 });
 
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        return response || fetch(event.request);
-      })
-  );
+// Ativa e limpa caches antigos
+self.addEventListener('activate', (event) => {
+    event.waitUntil(clients.claim());
+});
+
+// Intercepta as requisições (mantendo sempre online para buscar os dados frescos do Google)
+self.addEventListener('fetch', (event) => {
+    event.respondWith(fetch(event.request));
 });
