@@ -11,7 +11,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Novera ERP">
     
-    <!-- CDNs (Gráficos e PDFs) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -87,7 +86,7 @@
         .rotulo-info h4 { margin: 0 0 5px; color: var(--brand-dark); font-size: 0.95rem; line-height: 1.3;}
         .rotulo-info p { margin: 0; color: var(--text-muted); font-size: 0.75rem; }
         .rotulo-badge { background: var(--primary-dark); color: white; padding: 5px 10px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px;}
-        .custo-val { font-weight: 800; color: var(--primary-dark); font-size: 1.1rem; text-align: right;}
+        .custo-val { font-weight: 800; color: var(--primary-dark); font-size: 1.1rem; }
         .list-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; margin-right: 12px; background: #fdf5f7; border: 1px solid var(--border-color); flex-shrink: 0; transition: transform 0.2s; cursor: zoom-in;}
         .list-img:active { transform: scale(0.9); }
         
@@ -162,7 +161,7 @@
 <!-- TELA DE LOGIN -->
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v4.5.0</span>
+        <span class="app-version">v4.6.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -191,7 +190,7 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v4.5.0</span>
+            <span class="app-version">v4.6.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -256,6 +255,7 @@
                 </div>
             </div>
 
+            <!-- NOVA BUSCA CORRIGIDA DE ESTOQUE -->
             <div class="filtro-box" style="padding: 10px 15px;">
                 <input type="text" id="busca-estoque" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar no estoque..." onkeyup="renderizarEstoque()">
             </div>
@@ -300,15 +300,12 @@
             <button class="btn-salvar" id="btn-salvar-gasto" onclick="salvarGasto()">Lançar Despesa</button>
 
             <div class="section-title" style="margin-top: 35px;">📊 Dashboard e Filtros</div>
-            
             <div class="filtro-box">
-                <!-- NOVA BUSCA INSTANTÂNEA DE GASTOS -->
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col">
                         <input type="text" id="busca-gastos" placeholder="🔍 Buscar por item, local ou sócio..." onkeyup="renderizarGastos()">
                     </div>
                 </div>
-                
                 <div class="row">
                     <div class="col">
                         <label>Sócio</label>
@@ -572,6 +569,17 @@
     let usuarioLogado = ""; let dadosCarregados = false; 
     let chartRGBase = null, chartStatusBase = null;
 
+    // A MÁGICA SEGURA E DEFINITIVA PARA CORRIGIR TEXTOS E NÚMEROS DO ESTOQUE
+    function parseDinheiro(val) { 
+        if (val === "" || val == null) return 0; 
+        if (typeof val === 'number') return val; 
+        let str = String(val).trim();
+        str = str.replace(/R\$\s?/gi, '');
+        if (str.includes(',') && str.includes('.')) { str = str.replace(/\./g, '').replace(',', '.'); } 
+        else if (str.includes(',')) { str = str.replace(',', '.'); }
+        return parseFloat(str) || 0; 
+    }
+
     // ================= FUNÇÕES DE ZOOM IMAGEM =================
     function abrirModalImagem(src) {
         if(!src || src.includes('logo.png')) return; 
@@ -670,7 +678,6 @@
     const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const fmtPlanilha = val => "R$ " + val.toFixed(2).replace('.', ',');
     function safeFmt(val) { if (val === "" || val == null) return "R$ 0,00"; if (typeof val === 'number') return fmt(val); let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return fmt(parseFloat(str)); let num = parseFloat(str.replace(/\./g, '').replace(',', '.')); return isNaN(num) ? "R$ 0,00" : fmt(num); }
-    function parseDinheiro(val) { if (val === "" || val == null) return 0; if (typeof val === 'number') return val; let str = String(val).replace(/[R$\s]/g, ''); if (str.includes('.') && !str.includes(',')) return parseFloat(str) || 0; return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0; }
 
     function switchTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -739,15 +746,27 @@
         } catch(e) { mostrarAlerta("Erro", "Falha de conexão.", "error"); } finally { ocultarLoading(); } 
     }
 
-    // ================= ESTOQUE =================
+    // ================= ESTOQUE (AGORA SOMA PELO PREÇO DE VENDA E FILTRO PERFEITO) =================
     function renderizarEstoque() {
-        const tBusca = padronizarTexto(document.getElementById('busca-estoque').value);
-        let filtrados = estoqueGlobal.filter(e => { if(tBusca && !e.nome.toLowerCase().includes(tBusca) && !e.tipo.toLowerCase().includes(tBusca)) return false; return true; });
+        const tBusca = document.getElementById('busca-estoque').value.toLowerCase().trim();
+        let filtrados = estoqueGlobal.filter(e => { 
+            if (!tBusca) return true;
+            const txtAll = (e.nome + " " + e.tipo + " " + (e.codigo || "")).toLowerCase();
+            return txtAll.includes(tBusca); 
+        });
+        
         const lista = document.getElementById('lista-estoque-cards');
         if(filtrados.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999;'>Estoque vazio.</p>"; document.getElementById('est-total-itens').innerText = "0"; document.getElementById('est-valor-total').innerText = "R$ 0,00"; return; }
+        
         let html = "", somaItens = 0, somaValor = 0;
+        
         filtrados.forEach(e => {
-            const qtdNum = parseFloat(e.qtd) || 0, custoNum = parseDinheiro(e.custo); somaItens += qtdNum; somaValor += (qtdNum * custoNum);
+            const qtdNum = parseFloat(e.qtd) || 0;
+            const precoNum = parseDinheiro(e.preco); 
+            
+            somaItens += qtdNum; 
+            somaValor += (qtdNum * precoNum); // AGORA SOMA PELO PREÇO! O TOTAL VAI BATER!
+            
             let corQtd = qtdNum < 5 ? "#ef4444" : "var(--brand-dark)", avisoBaixo = qtdNum < 5 ? `<span style="font-size:0.65rem; color:#ef4444; font-weight:800; border:1px solid #fecaca; padding:2px 6px; border-radius:4px; margin-left:5px;">Baixo</span>` : "";
             let fotoUrls = e.foto ? e.foto.split(',') : []; let urlPri = fotoUrls[0] || 'logo.png'; let urlSec = fotoUrls[1] || 'logo.png';
             let codigoBadge = e.codigo ? `<span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${e.codigo}</span>` : '';
@@ -767,11 +786,12 @@
         });
         lista.innerHTML = html; document.getElementById('est-total-itens').innerText = somaItens; document.getElementById('est-valor-total').innerText = fmt(somaValor);
     }
+    
     function abrirModalEditarEstoque(linha) { const e = estoqueGlobal.find(x => x.linha === linha); if (!e) return; document.getElementById('edit-e-linha').value = e.linha; document.getElementById('edit-e-nome').value = e.nome; document.getElementById('edit-e-tipo').value = e.tipo; document.getElementById('edit-e-qtd').value = e.qtd; document.getElementById('edit-e-custo').value = safeFmt(e.custo); document.getElementById('edit-e-preco').value = safeFmt(e.preco); document.getElementById('edit-e-codigo').value = e.codigo || ''; let fotos = e.foto ? e.foto.split(',') : []; document.getElementById('edit-e-img-preview').src = fotos[0] || 'logo.png'; document.getElementById('edit-e-foto-antiga').value = e.foto || ''; document.getElementById('edit-e-foto-nova').value = ''; document.getElementById('modal-editar-estoque').style.display = 'flex'; }
     async function salvarEdicaoEstoque() { const fileInput = document.getElementById('edit-e-foto-nova'); let fotoFinal = document.getElementById('edit-e-foto-antiga').value; if (fileInput.files.length > 0) { mostrarLoading("Enviando Imagem..."); try { const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8); fotoFinal = await uploadDuplo(blob); } catch (err) { ocultarLoading(); return mostrarAlerta("Erro na Imagem", err.message, "error"); } } mostrarLoading("Ajustando Estoque..."); try { const py = { acao: "atualizar_estoque", linha: document.getElementById('edit-e-linha').value, nome: document.getElementById('edit-e-nome').value, tipo: document.getElementById('edit-e-tipo').value, qtd: document.getElementById('edit-e-qtd').value, custo: document.getElementById('edit-e-custo').value, preco: document.getElementById('edit-e-preco').value, foto: fotoFinal, codigo: document.getElementById('edit-e-codigo').value }; await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-estoque').style.display = 'none'; mostrarAlerta("Atualizado!", "Estoque ajustado.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); } }
     function prepararExclusaoEstoque(linha, nome) { abrirConfirmacao("Excluir do Estoque?", `Apagar "${nome}" do estoque?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { mostrarLoading("Excluindo..."); try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Estoque", linha: linha }) }); mostrarAlerta("Excluído", "Produto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); } }); }
 
-    // ====== NOVO MÁGICO: GERADOR DE CATÁLOGO NATIVO NO SERVIDOR ======
+    // ================= NOVO MÁGICO: GERADOR DE CATÁLOGO NATIVO NO SERVIDOR =================
     function abrirModalCatalogo() {
         const tipos = new Set(estoqueGlobal.map(e => padronizarTexto(e.tipo)).filter(t => t));
         let html = '<option value="todos">Todos os Produtos</option>';
@@ -787,7 +807,7 @@
         const filtroTipo = document.getElementById('cat-filtro-tipo').value;
         document.getElementById('modal-gerar-catalogo').style.display = 'none';
         
-        mostrarLoading("Gerando PDF (Pode levar alguns segundos)...");
+        mostrarLoading("Gerando PDF...");
 
         try {
             const res = await fetch(API_NOVERA, {
@@ -810,7 +830,7 @@
                 
                 mostrarAlerta("Sucesso", "Catálogo baixado com sucesso!", "success");
             } else {
-                mostrarAlerta("Aviso", json.erro, "warning");
+                mostrarAlerta("Aviso", json.erro || "Nenhum produto encontrado.", "warning");
             }
         } catch (e) {
             mostrarAlerta("Erro", "Falha de conexão ao gerar o PDF.", "error");
@@ -828,7 +848,7 @@
         const fSocio = document.getElementById('f-socio').value.toLowerCase();
         const fIni = document.getElementById('f-data-ini').value;
         const fFim = document.getElementById('f-data-fim').value;
-        const tBusca = padronizarTexto(document.getElementById('busca-gastos').value);
+        const tBusca = document.getElementById('busca-gastos').value.toLowerCase().trim();
         
         let filtrados = gastosGlobal.filter(g => { 
             let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio);
@@ -838,7 +858,7 @@
             
             let passBusca = true;
             if (tBusca) {
-                const txtAll = padronizarTexto(g.item + " " + g.local + " " + g.socio);
+                const txtAll = (g.item + " " + g.local + " " + g.socio).toLowerCase();
                 if (!txtAll.includes(tBusca)) passBusca = false;
             }
             
@@ -873,9 +893,8 @@
         const slist = new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s)); document.getElementById('lista-socios-dinamica').innerHTML = [...slist].map(s => `<option value="${s}">`).join(''); const socioSelect = document.getElementById('f-v-socio'), socioAtual = socioSelect.value; socioSelect.innerHTML = '<option value="">Todos</option>' + [...slist].map(s => `<option value="${s}">${s}</option>`).join(''); socioSelect.value = socioAtual; 
         let htmlVendas = '<option value="">Selecione do Estoque...</option>'; 
         
-        // AGORA EXIBE O CÓDIGO NOVERA NA SELEÇÃO DE VENDA
         estoqueGlobal.forEach(e => { 
-            let exibeCodigo = e.codigo ? e.codigo + ' ' : '';
+            let exibeCodigo = e.codigo ? e.codigo + ' - ' : '';
             htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Estoque: ${e.qtd})</option>`; 
         }); 
         
