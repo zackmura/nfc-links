@@ -68,13 +68,6 @@
         .resumo-linha:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
         .custo-total { display: flex; justify-content: space-between; margin-top: 15px; font-size: 1.25rem; font-weight: 800; background: rgba(255,255,255,0.15); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);}
         
-        .markup-area { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        @media (max-width: 480px) { .markup-area { grid-template-columns: 1fr; } }
-        .markup-box { background: #fdf5f7; border: 2px solid #f3d8e2; padding: 18px; border-radius: 12px; transition: 0.2s; }
-        .markup-title { color: var(--primary-dark); font-weight: 700; font-size: 0.75rem; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .markup-preco { font-size: 1.5rem; font-weight: 800; color: var(--brand-dark); margin: 0 0 5px; }
-        .markup-lucro { font-size: 0.8rem; font-weight: 600; color: #7a4a5e; margin: 0; background: #E8DDE1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
-        
         .btn-salvar { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px; transition: 0.2s; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.35); font-family: 'Montserrat', sans-serif;}
         .btn-salvar:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .btn-salvar:active { transform: translateY(2px); box-shadow: none; }
@@ -113,8 +106,20 @@
         .dash-card.highlight h3 { color: #e8dde1; }
         .dash-card.highlight .valor { color: white; font-size: 2.2rem;}
         
+        /* CORES DO PAINEL DE VENDAS E DASHBOARD */
         .dash-card.receita .valor { color: #2e7d32; }
         .dash-card.receber .valor { color: #b45309; }
+        .dash-card.patrimonio { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; border: none; box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3); grid-column: span 2; }
+        .dash-card.patrimonio h3 { color: #bfdbfe; }
+        .dash-card.patrimonio .valor { color: white; font-size: 2.5rem; }
+
+        /* LISTA RANKING DASHBOARD */
+        .ranking-list { list-style: none; padding: 0; margin: 0; text-align: left; }
+        .ranking-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--border-color); font-size: 0.85rem; }
+        .ranking-item:last-child { border-bottom: none; padding-bottom: 0;}
+        .ranking-pos { font-weight: 900; color: var(--primary-dark); margin-right: 8px; font-size: 1rem; width: 20px; display:inline-block;}
+        .ranking-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--brand-dark); font-weight: 600;}
+        .ranking-val { font-weight: 800; color: #2e7d32; margin-left: 10px;}
 
         .chart-container { background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(184, 124, 150, 0.05);}
         .dash-lucro-card { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(46, 125, 50, 0.3); transition: background 0.3s ease;}
@@ -141,6 +146,7 @@
         .toggle-eye { position: absolute; right: 10px; background: transparent; border: none; font-size: 1.3rem; cursor: pointer; color: var(--primary-dark); padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .toggle-eye:active { transform: scale(0.8); }
         
+        /* TELA DE LOADING DE FEEDBACK (MELHORIA UX) */
         .loading-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(253, 251, 251, 0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px; backdrop-filter: blur(5px); }
         .spinner { border: 5px solid #f3d8e2; border-top: 5px solid var(--primary-dark); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px;}
         
@@ -168,7 +174,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v6.0.0</span>
+        <span class="app-version">v6.1.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -196,7 +202,7 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v6.0.0</span>
+            <span class="app-version">v6.1.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -424,6 +430,7 @@
 
         <div id="tab-dashboard" class="tab-content">
             <div class="section-title" style="margin-top:0;">📊 Visão Global da Novera</div>
+            
             <div class="filtro-box">
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col"><label>Mês</label><select id="d-filtro-mes" onchange="renderizarDashboard()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div>
@@ -431,24 +438,53 @@
                 </div>
             </div>
             
-            <div id="card-lucro-real" class="dash-lucro-card">
-                <h3>Dinheiro Limpo (Em Caixa)</h3>
-                <p id="d-lucro-real">R$ 0,00</p>
-                <p style="font-size: 0.7rem; font-weight: 500; margin-top: 5px; opacity: 0.8;">= Receitas Pagas - Gastos Totais</p>
-            </div>
-            
-            <div class="dash-grid">
-                <div class="dash-card receita" style="cursor:default; transform:none;"><h3>Entradas (Pagas)</h3><p class="valor" id="d-receitas">R$ 0,00</p></div>
-                <div class="dash-card" style="cursor:default; transform:none;"><h3>Saídas (Gastos)</h3><p class="valor" id="d-gastos" style="color: #c62828;">R$ 0,00</p></div>
-                <div class="dash-card receber highlight" style="grid-column: span 2; background: #fff9e6; color: #b45309; box-shadow:none; border: 1px solid #ffeeba; cursor:default; transform:none;">
-                    <h3 style="color: #b45309;">A Receber (Rodando/Fiado)</h3><p class="valor" id="d-receber" style="color: #b45309;">R$ 0,00</p>
+            <div class="dash-grid" style="margin-bottom: 12px;">
+                <div class="dash-card patrimonio">
+                    <h3>👑 Patrimônio Novera</h3>
+                    <p class="valor" id="d-patrimonio">R$ 0,00</p>
+                    <p style="font-size: 0.65rem; margin-top: 5px; opacity: 0.8;">Soma: Dinheiro em Caixa + Valor em Estoque + Fiado a Receber</p>
                 </div>
             </div>
-            <div class="section-title">🚀 Métricas de Sucesso do Período</div>
+            
+            <div class="section-title" style="margin-top: 25px;">💰 Financeiro do Período</div>
+            <div id="card-lucro-real" class="dash-lucro-card" style="margin-bottom: 12px; padding: 20px;">
+                <h3 style="font-size:0.75rem;">Dinheiro Limpo (Em Caixa)</h3>
+                <p id="d-lucro-real" style="font-size:2rem;">R$ 0,00</p>
+                <p style="font-size: 0.65rem; margin-top: 5px; opacity: 0.8;">(Receitas Pagas - Gastos Totais)</p>
+            </div>
             <div class="dash-grid">
-                <div class="dash-card" style="cursor:default; transform:none;"><h3>🏆 Produto Campeão</h3><p class="valor" id="d-produto-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p></div>
-                <div class="dash-card" style="cursor:default; transform:none;"><h3>⭐ Melhor Cliente</h3><p class="valor" id="d-cliente-top" style="font-size: 0.9rem; color: var(--primary-dark); margin-top:5px;">-</p></div>
-                <div class="dash-card" style="grid-column: span 2; cursor:default; transform:none;"><h3>🤝 Lucro por Sócio</h3><div id="d-socios-lucro" style="margin-top: 10px;"></div></div>
+                <div class="dash-card receita" style="cursor:default; transform:none; padding:15px;"><h3>Entradas (Pagas)</h3><p class="valor" id="d-receitas" style="font-size:1.3rem;">R$ 0,00</p></div>
+                <div class="dash-card receber" style="cursor:default; transform:none; padding:15px; background: #fff9e6; border: 1px solid #ffeeba;"><h3>A Receber (Fiado)</h3><p class="valor" id="d-receber" style="font-size:1.3rem;">R$ 0,00</p></div>
+                <div class="dash-card" style="cursor:default; transform:none; padding:15px;"><h3>Saídas (Gastos)</h3><p class="valor" id="d-gastos" style="color: #c62828; font-size:1.3rem;">R$ 0,00</p></div>
+                <div class="dash-card highlight" style="cursor:default; transform:none; padding:15px; grid-column: span 1; background: var(--primary-dark);"><h3>Lucro Projetado</h3><p class="valor" id="d-lucro-projetado" style="font-size:1.3rem;">R$ 0,00</p></div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">📦 Estoque Atual</div>
+            <div class="dash-grid">
+                <div class="dash-card" style="background:#f8fafc; border-color:#e2e8f0; cursor:default; transform:none;">
+                    <h3 style="color:#475569;">Itens Físicos</h3>
+                    <p class="valor" id="d-estoque-itens" style="color:#0f172a; font-size:1.5rem;">0</p>
+                </div>
+                <div class="dash-card" style="background:#f0fdf4; border-color:#bbf7d0; cursor:default; transform:none;">
+                    <h3 style="color:#166534;">Valor do Estoque</h3>
+                    <p class="valor" id="d-estoque-valor" style="color:#166534; font-size:1.5rem;">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">🚀 Desempenho Comercial</div>
+            <div class="dash-grid">
+                <div class="dash-card" style="cursor:default; transform:none; grid-column: span 2; text-align: left;">
+                    <h3 style="margin-bottom: 10px;">🏆 Top 3 Produtos</h3>
+                    <ul class="ranking-list" id="d-ranking-produtos"></ul>
+                </div>
+                <div class="dash-card" style="cursor:default; transform:none; grid-column: span 2; text-align: left;">
+                    <h3 style="margin-bottom: 10px;">⭐ Top 3 Clientes</h3>
+                    <ul class="ranking-list" id="d-ranking-clientes"></ul>
+                </div>
+                <div class="dash-card" style="grid-column: span 2; cursor:default; transform:none; text-align: left;">
+                    <h3 style="margin-bottom: 10px;">🤝 Divisão de Lucros Projetada</h3>
+                    <div id="d-socios-lucro"></div>
+                </div>
             </div>
 
             <div class="chart-container"><canvas id="chartReceitasGastos"></canvas></div>
@@ -1045,7 +1081,7 @@
     async function salvarEdicaoGasto() { mostrarLoading("Salvando Despesa..."); try { const py = { acao: "atualizar_gasto", linha: document.getElementById('edit-g-linha').value, data: document.getElementById('edit-g-data').value, local: padronizarTexto(document.getElementById('edit-g-local').value), socio: padronizarTexto(document.getElementById('edit-g-socio').value), item: padronizarTexto(document.getElementById('edit-g-item').value), qtd: document.getElementById('edit-g-qtd').value, valor: document.getElementById('edit-g-valor').value, total: document.getElementById('edit-g-total').value }; await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }); document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); } }
     function prepararExclusaoGasto(linha, item) { abrirConfirmacao("Excluir Despesa?", `Apagar a despesa "${item}"?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", async () => { mostrarLoading("Excluindo..."); try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Gastos", linha: linha }) }); mostrarAlerta("Excluído", "Gasto apagado.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); } }); }
 
-    // ================= VENDAS =================
+    // ================= VENDAS E RECIBOS =================
     function autoPreencherValorVenda() { const selecao = document.getElementById('v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao), imgPrev = document.getElementById('v-produto-img-preview'); if(produtoEstoque) { const qtd = parseInt(document.getElementById('v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('v-valor').value = fmt(valorUnitario * qtd); let fotos = produtoEstoque.foto ? produtoEstoque.foto.split(',') : []; imgPrev.src = fotos[0] || 'logo.png'; imgPrev.style.display = 'block'; } else { document.getElementById('v-valor').value = ""; imgPrev.style.display = 'none'; } }
     function autoPreencherEdicaoVenda() { const selecao = document.getElementById('edit-v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao); if(produtoEstoque) { const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); } }
     
@@ -1166,8 +1202,10 @@
         document.getElementById('rec-itens-lista').innerHTML = htmlItens; document.getElementById('rec-total').innerText = fmt(somaTotal); 
         try { 
             const template = document.getElementById('recibo-template'); 
+            template.style.display = 'block'; 
             const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
             const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
             document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
             document.getElementById('preview-title').innerText = "Recibo Pronto!"; 
             document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${clienteNomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
@@ -1189,8 +1227,10 @@
         document.getElementById('rec-itens-lista').innerHTML = htmlItem; document.getElementById('rec-total').innerText = fmt(valor); 
         try { 
             const template = document.getElementById('recibo-template'); 
+            template.style.display = 'block'; 
             const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
             const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
             document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
             document.getElementById('preview-title').innerText = "Recibo Pronto!"; 
             document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
@@ -1226,8 +1266,10 @@
         document.getElementById('cob-itens-lista').innerHTML = htmlItens; document.getElementById('cob-total').innerText = fmt(somaTotal); 
         try { 
             const template = document.getElementById('cobranca-template'); 
+            template.style.display = 'block'; 
             const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
             const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
             document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
             document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; 
             document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${cliDisplay.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
@@ -1248,8 +1290,10 @@
         document.getElementById('cob-itens-lista').innerHTML = htmlItem; document.getElementById('cob-total').innerText = fmt(valor); 
         try { 
             const template = document.getElementById('cobranca-template'); 
+            template.style.display = 'block'; 
             const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
             const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
             document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
             document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; 
             document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
@@ -1269,16 +1313,44 @@
         const fM = dMes.value, fA = dAno.value; let pfx = fA && fM ? `${fA}-${fM}` : fA;
         const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true), gDash = gastosGlobal.filter(g => pfx ? (g.dataIso && g.dataIso.startsWith(pfx)) : true);
 
-        let tRec = 0, tPend = 0, tGas = 0, mProd = {}, mCli = {}, mSoc = {};
-        vDash.forEach(v => { const val = parseDinheiro(v.valor_venda), luc = parseDinheiro(v.lucro), q = parseInt(v.qtd) || 1; if (v.status === 'Pago') tRec += val; else tPend += val; if(v.produto) mProd[v.produto] = (mProd[v.produto] || 0) + q; if(v.cliente) mCli[v.cliente] = (mCli[v.cliente] || 0) + val; if(v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; });
-        gDash.forEach(g => tGas += parseDinheiro(g.total)); const lReal = tRec - tGas;
+        let tRec = 0, tPend = 0, tGas = 0, tLucroTotal = 0, mProd = {}, mCli = {}, mSoc = {};
+        
+        vDash.forEach(v => { 
+            const val = parseDinheiro(v.valor_venda), luc = parseDinheiro(v.lucro), q = parseInt(v.qtd) || 1; 
+            if (v.status === 'Pago') tRec += val; else tPend += val; 
+            tLucroTotal += luc;
+            if(v.produto) mProd[v.produto] = (mProd[v.produto] || 0) + q; 
+            if(v.cliente) mCli[v.cliente] = (mCli[v.cliente] || 0) + val; 
+            if(v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; 
+        });
+        gDash.forEach(g => tGas += parseDinheiro(g.total)); 
+        
+        const lReal = tRec - tGas;
 
-        document.getElementById('d-lucro-real').innerText = fmt(lReal); document.getElementById('card-lucro-real').classList.toggle('negativo', lReal < 0);
-        document.getElementById('d-receitas').innerText = fmt(tRec); document.getElementById('d-gastos').innerText = fmt(tGas); document.getElementById('d-receber').innerText = fmt(tPend);
+        let estItens = 0, estValor = 0;
+        estoqueGlobal.forEach(e => {
+            let q = parseFloat(e.qtd) || 0;
+            if (q > 0) { estItens += q; estValor += (q * parseDinheiro(e.preco)); }
+        });
 
-        let topP = "-", mxP = 0; for(let p in mProd) { if(mProd[p] > mxP) { mxP = mProd[p]; topP = p; } }
-        let topC = "-", mxC = 0; for(let c in mCli) { if(mCli[c] > mxC) { mxC = mCli[c]; topC = c; } }
-        document.getElementById('d-produto-top').innerText = topP !== "-" ? `${topP} (${mxP} un)` : "-"; document.getElementById('d-cliente-top').innerText = topC !== "-" ? `${topC} (${fmt(mxC)})` : "-";
+        const patrimonio = lReal + tPend + estValor;
+
+        document.getElementById('d-patrimonio').innerText = fmt(patrimonio);
+        document.getElementById('d-lucro-real').innerText = fmt(lReal); 
+        document.getElementById('card-lucro-real').classList.toggle('negativo', lReal < 0);
+        document.getElementById('d-receitas').innerText = fmt(tRec); 
+        document.getElementById('d-gastos').innerText = fmt(tGas); 
+        document.getElementById('d-receber').innerText = fmt(tPend);
+        document.getElementById('d-lucro-projetado').innerText = fmt(tLucroTotal);
+        
+        document.getElementById('d-estoque-itens').innerText = estItens;
+        document.getElementById('d-estoque-valor').innerText = fmt(estValor);
+
+        let arrProd = Object.keys(mProd).map(k => ({nome: k, qtd: mProd[k]})).sort((a,b) => b.qtd - a.qtd).slice(0, 3);
+        let arrCli = Object.keys(mCli).map(k => ({nome: k, val: mCli[k]})).sort((a,b) => b.val - a.val).slice(0, 3);
+        
+        document.getElementById('d-ranking-produtos').innerHTML = arrProd.length ? arrProd.map((p, i) => `<li class="ranking-item"><span class="ranking-pos">#${i+1}</span><span class="ranking-name">${p.nome}</span><span class="ranking-val">${p.qtd} un</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>";
+        document.getElementById('d-ranking-clientes').innerHTML = arrCli.length ? arrCli.map((c, i) => `<li class="ranking-item"><span class="ranking-pos">#${i+1}</span><span class="ranking-name">${c.nome}</span><span class="ranking-val">${fmt(c.val)}</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>";
         
         let hSoc = ""; for(let s in mSoc) { hSoc += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mSoc[s])}</strong></div>`; }
         document.getElementById('d-socios-lucro').innerHTML = hSoc || "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros.</p>";
@@ -1315,9 +1387,9 @@
         const dMesSel = document.getElementById('d-filtro-mes'), dMesText = dMesSel.options[dMesSel.selectedIndex].text;
         const dAno = document.getElementById('d-filtro-ano').value || 'Todo o Período';
         
-        let lReal = document.getElementById('d-lucro-real').innerText, entradas = document.getElementById('d-receitas').innerText, saidas = document.getElementById('d-gastos').innerText, aReceber = document.getElementById('d-receber').innerText;
+        let lReal = document.getElementById('d-lucro-real').innerText, entradas = document.getElementById('d-receitas').innerText, saidas = document.getElementById('d-gastos').innerText, aReceber = document.getElementById('d-receber').innerText, patrimonio = document.getElementById('d-patrimonio').innerText;
 
-        let txt = `📊 *FECHAMENTO NOVERA SCENT* 📊\n🗓️ Período: ${dMesText} ${dAno}\n\n📈 *Entradas (Pagas):* ${entradas}\n📉 *Saídas (Gastos):* ${saidas}\n⏳ *A Receber (Fiado):* ${aReceber}\n💰 *Caixa Líquido:* ${lReal}\n\n🤝 *Divisão de Lucros Projetada:*\n`;
+        let txt = `📊 *FECHAMENTO NOVERA SCENT* 📊\n🗓️ Período: ${dMesText} ${dAno}\n\n👑 *Patrimônio Total:* ${patrimonio}\n\n📈 *Entradas (Pagas):* ${entradas}\n📉 *Saídas (Gastos):* ${saidas}\n⏳ *A Receber (Fiado):* ${aReceber}\n💰 *Caixa Líquido:* ${lReal}\n\n🤝 *Divisão de Lucros Projetada:*\n`;
 
         const fM = document.getElementById('d-filtro-mes').value, fA = document.getElementById('d-filtro-ano').value;
         let pfx = fA && fM ? `${fA}-${fM}` : fA;
@@ -1333,7 +1405,7 @@
         navigator.clipboard.writeText(txt).then(() => { mostrarAlerta("Copiado!", "Resumo do fechamento copiado.", "success"); }).catch(err => { mostrarAlerta("Erro", "Falha ao copiar texto.", "error"); });
     }
 
-    // 15. INICIALIZAÇÃO
+    // 13. INICIALIZAÇÃO
     window.onload = () => { 
         verificarLogin(); 
         document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || '';
