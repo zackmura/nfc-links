@@ -174,7 +174,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v6.2.2</span>
+        <span class="app-version">v6.3.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         
@@ -198,11 +198,11 @@
         
         <div id="global-loader" class="loading-overlay">
             <div class="spinner"></div>
-            <p style="color: var(--primary-dark); font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Sincronizando...</p>
+            <p style="color: var(--primary-dark); font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Aguarde...</p>
         </div>
 
         <div class="header">
-            <span class="app-version">v6.2.2</span>
+            <span class="app-version">v6.3.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -385,7 +385,11 @@
                             <div class="col"><label>Status</label><select id="f-v-status" onchange="filtrarVendas()"><option value="">Todos</option><option value="Pago">Pago</option><option value="Pendente">Pendente</option></select></div>
                         </div>
                         <div class="row">
-                            <div class="col"><label>Cliente</label><select id="f-v-cliente" onchange="filtrarVendas()"><option value="">Todos</option></select></div>
+                            <div class="col">
+                                <label>Cliente</label>
+                                <input type="text" id="f-v-cliente" list="f-lista-clientes" placeholder="Buscar cliente..." oninput="filtrarVendas()">
+                                <datalist id="f-lista-clientes"></datalist>
+                            </div>
                             <div class="col"><label>Sócio</label><select id="f-v-socio" onchange="filtrarVendas()"><option value="">Todos</option></select></div>
                         </div>
                     </div>
@@ -413,14 +417,17 @@
                 </div>
 
                 <div class="filtro-box" style="background: #fff9e6; border-color: #ffeeba; margin-top: 25px;">
-                    <div class="section-title" style="margin-top:0; border-left-color: #b45309; color: #b45309;">📱 Lote de Cobrança</div>
-                    <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Mensagem amigável para mandar pro cliente com todos os itens PENDENTES.</p>
+                    <div class="section-title" style="margin-top:0; border-left-color: #b45309; color: #b45309;">📱 Pendências e Cobrança</div>
+                    <p style="font-size: 0.75rem; color: #888; margin-top: 0; margin-bottom: 15px;">Selecione o cliente para gerar imagem de cobrança, mandar texto no Whatsapp, ou dar Baixa de pagamento em todos de uma vez.</p>
                     <div class="row" style="margin-bottom: 0;"><div class="col"><label style="color: #b45309;">Cliente Devedor</label><select id="cobranca-cliente" onchange="prepararCobranca()"><option value="">Nenhum devedor...</option></select></div></div>
                     <div class="row" id="div-cobranca-nome" style="display:none; margin-bottom: 0px; margin-top: 10px;"><div class="col"><label style="color: #b45309;">Nome na Mensagem (Editável)</label><input type="text" id="cobranca-nome-exibicao" placeholder="Como você quer chamar o cliente..."></div></div>
                     
+                    <div id="cobranca-pedidos-lista" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; margin-top: 15px; display: none;"></div>
+
                     <div class="row" id="div-cobranca-botoes" style="margin-top: 15px; margin-bottom: 0; display: none;">
-                        <div class="col"><button class="btn-salvar" style="margin-top: 0; background: #25D366; color: white; padding: 12px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="copiarPendenciasWhats()">📋 Texto</button></div>
-                        <div class="col"><button class="btn-salvar" id="btn-gerar-cobranca" style="margin-top: 0; background: #b45309; color: white; padding: 12px; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.3);" onclick="montarCobranca()">📸 Imagem</button></div>
+                        <div class="col"><button class="btn-salvar" style="margin-top: 0; background: #25D366; color: white; padding: 12px; font-size:0.8rem; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);" onclick="copiarPendenciasWhats()">📋 Texto</button></div>
+                        <div class="col"><button class="btn-salvar" style="margin-top: 0; background: #b45309; color: white; padding: 12px; font-size:0.8rem; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.3);" onclick="montarCobranca()">📸 Img</button></div>
+                        <div class="col"><button class="btn-salvar" style="margin-top: 0; background: #2e7d32; color: white; padding: 12px; font-size:0.8rem; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);" onclick="darBaixaVendaLote()">💲 Pagar</button></div>
                     </div>
                 </div>
             </div>
@@ -567,7 +574,7 @@
     <div class="modal-box-alert" style="width: 95%; max-width: 400px; padding: 30px 20px;">
         <button onclick="document.getElementById('modal-gerar-catalogo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
         <h3 class="modal-title-alert" style="margin-bottom: 5px; color: var(--brand-dark);">📄 Catálogo Novera</h3>
-        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Personalize o seu catálogo em PDF.</p>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Filtre o tipo de produto que deseja incluir no catálogo em PDF.</p>
         
         <div style="text-align: left; margin-bottom: 15px;">
             <label style="margin-bottom:10px;">Categorias (Tipos)</label>
@@ -876,32 +883,15 @@
 
     function autoPreencherValorVenda() { const selecao = document.getElementById('v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao), imgPrev = document.getElementById('v-produto-img-preview'); if(produtoEstoque) { const qtd = parseInt(document.getElementById('v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('v-valor').value = fmt(valorUnitario * qtd); let fotos = produtoEstoque.foto ? produtoEstoque.foto.split(',') : []; imgPrev.src = fotos[0] || 'logo.png'; imgPrev.style.display = 'block'; } else { document.getElementById('v-valor').value = ""; imgPrev.style.display = 'none'; } }
     function autoPreencherEdicaoVenda() { const selecao = document.getElementById('edit-v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao); if(produtoEstoque) { const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); } }
-    
-    async function salvarVenda() { 
-        const py = { data: document.getElementById('v-data').value, cliente: padronizarTexto(document.getElementById('v-cliente').value), produto: document.getElementById('v-produto').value, socio: padronizarTexto(document.getElementById('v-socio').value), qtd: parseInt(document.getElementById('v-qtd').value) || 1, valorStr: document.getElementById('v-valor').value, status: document.getElementById('v-status').value, observacao: document.getElementById('v-observacao').value }; 
-        const valVenda = parseDinheiro(py.valorStr); 
-        if(!py.data || !py.cliente || !py.produto || valVenda < 0) return mostrarAlerta("Atenção", "Preencha todos os campos obrigatórios.", "warning"); 
-        const produtoEstoque = estoqueGlobal.find(e => e.nome === py.produto), cUnd = produtoEstoque ? parseDinheiro(produtoEstoque.custo) : 0, cTot = cUnd * py.qtd, lucro = valVenda - cTot, mkp = cTot > 0 ? (lucro / cTot) : 1, qtdNoEstoque = produtoEstoque ? parseFloat(produtoEstoque.qtd) : 0; 
-        
-        mostrarLoading("Registrando Venda..."); 
-        try { 
-            const envio = { acao: "salvar_venda", data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: py.status === "Pago" ? py.data : "", observacao: py.observacao }; 
-            const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); const json = await res.json(); 
-            if(json.sucesso) { 
-                let msgSucesso = "Venda lançada e estoque baixado."; 
-                if(qtdNoEstoque < py.qtd) { msgSucesso = `Venda Lançada, mas ATENÇÃO: O estoque ficou negativo.`; } 
-                mostrarAlerta("Sucesso", msgSucesso, "success"); 
-                document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; document.getElementById('v-observacao').value = ""; document.getElementById('v-produto-img-preview').style.display = 'none'; 
-                sincronizarDadosUnico(); 
-            } 
-        } catch(e) { mostrarAlerta("Erro", "A venda não foi salva. Falha de Conexão.", "error"); } finally { ocultarLoading(); } 
-    }
+    async function salvarVenda() { const py = { data: document.getElementById('v-data').value, cliente: padronizarTexto(document.getElementById('v-cliente').value), produto: document.getElementById('v-produto').value, socio: padronizarTexto(document.getElementById('v-socio').value), qtd: parseInt(document.getElementById('v-qtd').value) || 1, valorStr: document.getElementById('v-valor').value, status: document.getElementById('v-status').value, observacao: document.getElementById('v-observacao').value }; const valVenda = parseDinheiro(py.valorStr); if(!py.data || !py.cliente || !py.produto || valVenda < 0) return mostrarAlerta("Atenção", "Preencha todos os campos obrigatórios.", "warning"); const produtoEstoque = estoqueGlobal.find(e => e.nome === py.produto), cUnd = produtoEstoque ? parseDinheiro(produtoEstoque.custo) : 0, cTot = cUnd * py.qtd, lucro = valVenda - cTot, mkp = cTot > 0 ? (lucro / cTot) : 1, qtdNoEstoque = produtoEstoque ? parseFloat(produtoEstoque.qtd) : 0; mostrarLoading("Registrando Venda..."); try { const envio = { acao: "salvar_venda", data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: py.status === "Pago" ? py.data : "", observacao: py.observacao }; const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }); const json = await res.json(); if(json.sucesso) { let msgSucesso = "Venda lançada e estoque baixado."; if(qtdNoEstoque < py.qtd) { msgSucesso = `Venda Lançada, mas ATENÇÃO: O estoque ficou negativo.`; } mostrarAlerta("Sucesso", msgSucesso, "success"); document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; document.getElementById('v-observacao').value = ""; document.getElementById('v-produto-img-preview').style.display = 'none'; sincronizarDadosUnico(); } } catch(e) { mostrarAlerta("Erro", "A venda não foi salva. Falha de Conexão.", "error"); } finally { ocultarLoading(); } }
     
     function renderizarVendas() { 
         const dlist = new Set(vendasGlobal.map(v => String(v.cliente).trim())); 
         document.getElementById('lista-clientes').innerHTML = [...dlist].map(c => `<option value="${c}">`).join(''); 
+        
         const dlistPagos = new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()));
         document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + [...dlistPagos].map(c => `<option value="${c}">${c}</option>`).join(''); 
+        
         const dlistPendentes = new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()));
         document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + [...dlistPendentes].map(c => `<option value="${c}">${c}</option>`).join(''); 
 
@@ -924,22 +914,244 @@
     }
     
     function filtrarVendas() { 
-        const fDia = document.getElementById('f-v-dia').value, fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value, fSocio = document.getElementById('f-v-socio').value.toLowerCase(), fCliente = document.getElementById('f-v-cliente').value.toLowerCase(); 
-        let filtradas = vendasGlobal.filter(v => { let pD = true, pM = true, pS = true, pSo = true, pC = true; if(fDia) { if (v.dataVendaIso !== fDia) pD = false; } if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; } if(fStatus && v.status !== fStatus) pS = false; if(fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; if(fCliente && String(v.cliente || '').toLowerCase() !== fCliente) pC = false; return pD && pM && pS && pSo && pC; }); 
+        const fDia = document.getElementById('f-v-dia').value;
+        const fMes = document.getElementById('f-v-mes').value;
+        const fStatus = document.getElementById('f-v-status').value;
+        const fSocio = document.getElementById('f-v-socio').value.toLowerCase(); 
+        const fCliente = document.getElementById('f-v-cliente').value.toLowerCase(); 
+        
+        let filtradas = vendasGlobal.filter(v => { 
+            let pD = true, pM = true, pS = true, pSo = true, pC = true; 
+            if(fDia) { if (v.dataVendaIso !== fDia) pD = false; }
+            if(fMes) { const mesVenda = v.dataVendaIso ? v.dataVendaIso.split('-')[1] : null; if(mesVenda && mesVenda !== fMes) pM = false; } 
+            if(fStatus && v.status !== fStatus) pS = false; 
+            if(fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; 
+            if(fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; 
+            return pD && pM && pS && pSo && pC; 
+        }); 
+        
         filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); 
         let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = ""; 
-        if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else { filtradas.forEach(v => { const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0; const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val; const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`; const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : ""; html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`; }); } 
+        
+        if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else { 
+            filtradas.forEach(v => { 
+                const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0; 
+                const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val; 
+                const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`; 
+                const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : ""; 
+                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoVenda(${v.linha}, '${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`; 
+            }); 
+        } 
         document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens; 
     }
 
-    function prepararRecibo() { const cliente = document.getElementById('recibo-cliente').value, divNome = document.getElementById('div-recibo-nome'), inputNome = document.getElementById('recibo-nome-exibicao'), container = document.getElementById('recibo-pedidos-lista'), btn = document.getElementById('btn-gerar-recibo'); if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pago'); pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); if (pedidos.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido PAGO encontrado.</p>'; } else { let html = ''; pedidos.forEach(p => { const dataCompra = p.dataVendaDisplay || p.dataVendaIso, statusTexto = `<span style="color:#2e7d32;">Pago: ${p.dataPgtoDisplay || '?'}</span>`; html += `<label class="checkbox-recibo"><input type="checkbox" class="chk-item-recibo" value="${p.linha}" checked><div class="chk-info"><span class="chk-title">${p.qtd}x ${p.produto}</span><span class="chk-desc">Data: ${dataCompra} | ${statusTexto}</span></div><div class="chk-val">${safeFmt(p.valor_venda)}</div></label>`; }); container.innerHTML = html; } container.style.display = 'block'; btn.style.display = 'block'; }
-    async function montarRecibo() { const clienteReal = document.getElementById('recibo-cliente').value, clienteNomeExibicao = document.getElementById('recibo-nome-exibicao').value.trim() || clienteReal, checkboxes = document.querySelectorAll('.chk-item-recibo:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Deixe pelo menos um pedido marcado para o recibo.", "warning"); mostrarLoading("Gerando Recibo..."); document.getElementById('rec-cli-nome').innerText = clienteNomeExibicao; document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); let htmlItens = "", somaTotal = 0; checkboxes.forEach(chk => { const pedido = vendasGlobal.find(v => v.linha == chk.value); if(pedido) { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = pedido.status === 'Pago' ? `Pago: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente'; htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; } }); document.getElementById('rec-itens-lista').innerHTML = htmlItens; document.getElementById('rec-total').innerText = fmt(somaTotal); try { const template = document.getElementById('recibo-template'); template.style.display = 'block'; const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; document.getElementById('preview-title').innerText = "Recibo Pronto!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${clienteNomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } }
-    async function gerarReciboUnico(linha) { const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome no Recibo"); if (nomeExibicao === null) return; mostrarLoading("Gerando Recibo..."); document.getElementById('rec-cli-nome').innerText = nomeExibicao; document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); const valor = parseDinheiro(pedido.valor_venda), dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; document.getElementById('rec-itens-lista').innerHTML = htmlItem; document.getElementById('rec-total').innerText = fmt(valor); try { const template = document.getElementById('recibo-template'); template.style.display = 'block'; const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; document.getElementById('preview-title').innerText = "Recibo Pronto!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } }
+    function prepararRecibo() { 
+        const cliente = document.getElementById('recibo-cliente').value, divNome = document.getElementById('div-recibo-nome'), inputNome = document.getElementById('recibo-nome-exibicao'), container = document.getElementById('recibo-pedidos-lista'), btn = document.getElementById('btn-gerar-recibo'); 
+        if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none'; return; } 
+        inputNome.value = cliente; divNome.style.display = 'block'; 
+        
+        let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pago'); 
+        pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); 
+        
+        if (pedidos.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido PAGO encontrado.</p>'; } else { 
+            let html = ''; 
+            pedidos.forEach(p => { 
+                const dataCompra = p.dataVendaDisplay || p.dataVendaIso, statusTexto = `<span style="color:#2e7d32;">Pago: ${p.dataPgtoDisplay || '?'}</span>`; 
+                html += `<label class="checkbox-recibo"><input type="checkbox" class="chk-item-recibo" value="${p.linha}" checked><div class="chk-info"><span class="chk-title">${p.qtd}x ${p.produto}</span><span class="chk-desc">Data: ${dataCompra} | ${statusTexto}</span></div><div class="chk-val">${safeFmt(p.valor_venda)}</div></label>`; 
+            }); 
+            container.innerHTML = html; 
+        } 
+        container.style.display = 'block'; btn.style.display = 'block'; 
+    }
+    
+    async function montarRecibo() { 
+        const clienteReal = document.getElementById('recibo-cliente').value, clienteNomeExibicao = document.getElementById('recibo-nome-exibicao').value.trim() || clienteReal, checkboxes = document.querySelectorAll('.chk-item-recibo:checked'); 
+        if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Deixe pelo menos um pedido marcado para o recibo.", "warning"); 
+        mostrarLoading("Gerando Recibo..."); 
+        document.getElementById('rec-cli-nome').innerText = clienteNomeExibicao; document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); 
+        let htmlItens = "", somaTotal = 0; 
+        checkboxes.forEach(chk => { const pedido = vendasGlobal.find(v => v.linha == chk.value); if(pedido) { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = pedido.status === 'Pago' ? `Pago: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente'; htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; } }); 
+        document.getElementById('rec-itens-lista').innerHTML = htmlItens; document.getElementById('rec-total').innerText = fmt(somaTotal); 
+        try { 
+            const template = document.getElementById('recibo-template'); 
+            template.style.display = 'block'; 
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
+            document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
+            document.getElementById('preview-title').innerText = "Recibo Pronto!"; 
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${clienteNomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
+            document.getElementById('modal-recibo-preview').style.display = 'flex'; 
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } 
+    }
+    
+    async function gerarReciboUnico(linha) { 
+        const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; 
+        
+        let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome no Recibo");
+        if (nomeExibicao === null) return; 
 
-    function prepararCobranca() { const cliente = document.getElementById('cobranca-cliente').value, divNome = document.getElementById('div-cobranca-nome'), inputNome = document.getElementById('cobranca-nome-exibicao'), divBotoes = document.getElementById('div-cobranca-botoes'); if (!cliente) { divNome.style.display = 'none'; if(divBotoes) divBotoes.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; if(divBotoes) divBotoes.style.display = 'flex'; }
-    function copiarPendenciasWhats() { const cliReal = document.getElementById('cobranca-cliente').value; if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; let pends = vendasGlobal.filter(p => p.cliente.trim() === cliReal && p.status === 'Pendente'), txt = `Olá ${cliDisplay}, tudo bem com você? Passando aqui pela Novera Scent ✨\n\nEsse é um resuminho dos seus pedidos em aberto com a gente:\n\n`, tot = 0; if(pends.length === 0) return mostrarAlerta("Aviso", "Este cliente não tem pendências.", "success"); pends.forEach(p => { const val = parseDinheiro(p.valor_venda); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(val)}\n`; tot += val; }); txt += `\n*Total em aberto: ${fmt(tot)}*\n\nQualquer dúvida, é só chamar!`; navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success")); }
-    async function montarCobranca() { const cliReal = document.getElementById('cobranca-cliente').value; if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente devedor.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; let pends = vendasGlobal.filter(p => p.cliente.trim() === cliReal && p.status === 'Pendente'); if(pends.length === 0) return mostrarAlerta("Aviso", "Este cliente não tem pendências.", "success"); mostrarLoading("Gerando Imagem..."); document.getElementById('cob-cli-nome').innerText = cliDisplay; let htmlItens = "", somaTotal = 0; pends.forEach(pedido => { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; }); document.getElementById('cob-itens-lista').innerHTML = htmlItens; document.getElementById('cob-total').innerText = fmt(somaTotal); try { const template = document.getElementById('cobranca-template'); template.style.display = 'block'; const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${cliDisplay.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } }
-    async function gerarCobrancaUnica(linha) { const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome na Cobrança"); if (nomeExibicao === null) return; mostrarLoading("Gerando Imagem..."); document.getElementById('cob-cli-nome').innerText = nomeExibicao; const valor = parseDinheiro(pedido.valor_venda); const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; document.getElementById('cob-itens-lista').innerHTML = htmlItem; document.getElementById('cob-total').innerText = fmt(valor); try { const template = document.getElementById('cobranca-template'); template.style.display = 'block'; const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } }
+        mostrarLoading("Gerando Recibo..."); 
+        document.getElementById('rec-cli-nome').innerText = nomeExibicao; 
+        document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); 
+        const valor = parseDinheiro(pedido.valor_venda), dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; 
+        const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; 
+        document.getElementById('rec-itens-lista').innerHTML = htmlItem; document.getElementById('rec-total').innerText = fmt(valor); 
+        try { 
+            const template = document.getElementById('recibo-template'); 
+            template.style.display = 'block'; 
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
+            document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
+            document.getElementById('preview-title').innerText = "Recibo Pronto!"; 
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
+            document.getElementById('modal-recibo-preview').style.display = 'flex'; 
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } 
+    }
+
+    function prepararCobranca() { 
+        const cliente = document.getElementById('cobranca-cliente').value, 
+              divNome = document.getElementById('div-cobranca-nome'), 
+              inputNome = document.getElementById('cobranca-nome-exibicao'),
+              container = document.getElementById('cobranca-pedidos-lista'),
+              divBotoes = document.getElementById('div-cobranca-botoes');
+              
+        if (!cliente) { 
+            divNome.style.display = 'none'; 
+            container.style.display = 'none';
+            if(divBotoes) divBotoes.style.display = 'none';
+            return; 
+        } 
+        inputNome.value = cliente; 
+        divNome.style.display = 'block'; 
+        
+        let pends = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pendente'); 
+        pends.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); 
+        
+        if (pends.length === 0) { 
+            container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhuma pendência encontrada para este cliente.</p>'; 
+        } else { 
+            let html = ''; 
+            pends.forEach(p => { 
+                const dataCompra = p.dataVendaDisplay || p.dataVendaIso; 
+                html += `<label class="checkbox-recibo" style="border-color:#ffeeba; background:#fff9e6;"><input type="checkbox" class="chk-item-cobranca" value="${p.linha}" checked><div class="chk-info"><span class="chk-title" style="color:#b45309;">${p.qtd}x ${p.produto}</span><span class="chk-desc">Data: ${dataCompra}</span></div><div class="chk-val" style="color:#b45309;">${safeFmt(p.valor_venda)}</div></label>`; 
+            }); 
+            container.innerHTML = html; 
+        } 
+        container.style.display = 'block';
+        if(divBotoes) divBotoes.style.display = 'flex';
+    }
+    
+    function copiarPendenciasWhats() { 
+        const cliReal = document.getElementById('cobranca-cliente').value; 
+        if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning"); 
+        const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; 
+        
+        const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked');
+        if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning");
+        
+        let txt = `Olá ${cliDisplay}, tudo bem com você? Passando aqui pela Novera Scent ✨\n\nEsse é um resuminho dos seus pedidos em aberto com a gente:\n\n`;
+        let tot = 0; 
+        
+        checkboxes.forEach(chk => {
+            const p = vendasGlobal.find(v => v.linha == chk.value);
+            if(p) {
+                const val = parseDinheiro(p.valor_venda); 
+                txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${p.produto} | 💰 ${fmt(val)}\n`; 
+                tot += val; 
+            }
+        }); 
+        txt += `\n*Total em aberto: ${fmt(tot)}*\n\nQualquer dúvida, é só chamar!`; 
+        navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success")); 
+    }
+    
+    async function montarCobranca() { 
+        const cliReal = document.getElementById('cobranca-cliente').value; 
+        if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente devedor.", "warning"); 
+        const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; 
+        
+        const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked');
+        if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning");
+        
+        mostrarLoading("Gerando Imagem..."); 
+        document.getElementById('cob-cli-nome').innerText = cliDisplay; 
+        let htmlItens = "", somaTotal = 0; 
+        
+        checkboxes.forEach(chk => { 
+            const pedido = vendasGlobal.find(v => v.linha == chk.value); 
+            if(pedido) {
+                const valor = parseDinheiro(pedido.valor_venda); 
+                somaTotal += valor; 
+                htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; 
+            }
+        }); 
+        
+        document.getElementById('cob-itens-lista').innerHTML = htmlItens; 
+        document.getElementById('cob-total').innerText = fmt(somaTotal); 
+        
+        try { 
+            const template = document.getElementById('cobranca-template'); 
+            template.style.display = 'block'; 
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
+            document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
+            document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; 
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${cliDisplay.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
+            document.getElementById('modal-recibo-preview').style.display = 'flex'; 
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } 
+    }
+
+    async function darBaixaVendaLote() { 
+        const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked');
+        if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido para dar baixa.", "warning");
+        
+        let linhas = [];
+        checkboxes.forEach(chk => linhas.push(chk.value));
+        
+        abrirConfirmacao("Confirmar Pagamento?", `Marcar ${linhas.length} venda(s) como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Confirmar", async () => { 
+            mostrarLoading("Processando Pagamento..."); 
+            try { 
+                await fetch(API_NOVERA, { 
+                    method: "POST", 
+                    body: JSON.stringify({ 
+                        acao: "atualizar_status_venda_lote", 
+                        linhas: linhas, 
+                        status: "Pago"
+                    }) 
+                }); 
+                mostrarAlerta("Recebido!", "Baixa em lote concluída com sucesso.", "success"); 
+                sincronizarDadosUnico(); 
+            } catch(e) {
+                mostrarAlerta("Erro", "Falha de Conexão.", "error");
+            } finally { ocultarLoading(); } 
+        }); 
+    }
+    
+    async function gerarCobrancaUnica(linha) { 
+        const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; 
+        
+        let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome na Cobrança");
+        if (nomeExibicao === null) return; 
+
+        mostrarLoading("Gerando Imagem..."); 
+        document.getElementById('cob-cli-nome').innerText = nomeExibicao; 
+        const valor = parseDinheiro(pedido.valor_venda); 
+        const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B;">${pedido.qtd}x ${pedido.produto}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; 
+        document.getElementById('cob-itens-lista').innerHTML = htmlItem; document.getElementById('cob-total').innerText = fmt(valor); 
+        try { 
+            const template = document.getElementById('cobranca-template'); 
+            template.style.display = 'block'; 
+            const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); 
+            const base64image = canvas.toDataURL("image/png"); 
+            template.style.display = 'none'; 
+            document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; 
+            document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; 
+            document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; 
+            document.getElementById('modal-recibo-preview').style.display = 'flex'; 
+        } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } 
+    }
 
     async function darBaixaVenda(linha) { abrirConfirmacao("Confirmar Pagamento?", "Marcar venda como RECEBIDA hoje?", "💰", "#2e7d32", "#1b5e20", "💲 Receber", async () => { mostrarLoading("Processando..."); try { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "atualizar_status_venda", linha: linha, status: "Pago", data_pg: new Date().toLocaleDateString('pt-BR') }) }); mostrarAlerta("Recebido!", "Baixa ok.", "success"); sincronizarDadosUnico(); } catch(e) {} finally { ocultarLoading(); } }); }
     function abrirModalEditarVenda(linha) { const v = vendasGlobal.find(x => x.linha === linha); if (!v) return; document.getElementById('edit-v-linha').value = v.linha; document.getElementById('edit-v-data').value = v.dataVendaIso; document.getElementById('edit-v-cliente').value = v.cliente; document.getElementById('edit-v-produto').value = v.produto; document.getElementById('edit-v-socio').value = v.socio; document.getElementById('edit-v-qtd').value = v.qtd; document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); document.getElementById('edit-v-status').value = v.status; document.getElementById('edit-v-observacao').value = v.observacao || ""; document.getElementById('modal-editar-venda').style.display = 'flex'; }
@@ -952,7 +1164,7 @@
     function exportarExcel() { const dMes = document.getElementById('d-filtro-mes').value, dAno = document.getElementById('d-filtro-ano').value; let pfx = dAno && dMes ? `${dAno}-${dMes}` : dAno; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); if(vDash.length === 0) return mostrarAlerta("Aviso", "Nenhuma venda neste período.", "warning"); let csvContent = "data:text/csv;charset=utf-8,Data,Cliente,Produto,Socio,Quantidade,Valor,Status,Custo Und,Custo Total,Lucro,Markup,Data Pagamento,Observacao\n"; vDash.forEach(v => { let obsLimpa = v.observacao ? v.observacao.replace(/\n/g, ' ').replace(/"/g, '""') : ''; let row = [v.dataVendaDisplay, `"${v.cliente}"`, `"${v.produto}"`, v.socio, v.qtd, `"${v.valor_venda}"`, v.status, `"${v.custo_und}"`, `"${v.custo_total}"`, `"${v.lucro}"`, `"${v.markup}"`, v.dataPgtoDisplay || "", `"${obsLimpa}"`]; csvContent += row.join(",") + "\n"; }); const encodedUri = encodeURI(csvContent), link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `Vendas_Novera_${pfx || 'Tudo'}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
     function copiarFechamento() { const dMesSel = document.getElementById('d-filtro-mes'), dMesText = dMesSel.options[dMesSel.selectedIndex].text; const dAno = document.getElementById('d-filtro-ano').value || 'Todo o Período'; let lReal = document.getElementById('d-lucro-real').innerText, entradas = document.getElementById('d-receitas').innerText, saidas = document.getElementById('d-gastos').innerText, aReceber = document.getElementById('d-receber').innerText, patrimonio = document.getElementById('d-patrimonio').innerText; let txt = `📊 *FECHAMENTO NOVERA SCENT* 📊\n🗓️ Período: ${dMesText} ${dAno}\n\n👑 *Patrimônio Total:* ${patrimonio}\n\n📈 *Entradas (Pagas):* ${entradas}\n📉 *Saídas (Gastos):* ${saidas}\n⏳ *A Receber (Fiado):* ${aReceber}\n💰 *Caixa Líquido:* ${lReal}\n\n🤝 *Divisão de Lucros Projetada:*\n`; const fM = document.getElementById('d-filtro-mes').value, fA = document.getElementById('d-filtro-ano').value; let pfx = fA && fM ? `${fA}-${fM}` : fA; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); let mSoc = {}; vDash.forEach(v => { const luc = parseDinheiro(v.lucro); if(v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; }); let sociosText = ""; for(let s in mSoc) { sociosText += `▪️ ${s}: ${fmt(mSoc[s])}\n`; } txt += sociosText || "Nenhum lucro.\n"; txt += `\n✨ _Bora pra cima!_ 🚀`; navigator.clipboard.writeText(txt).then(() => { mostrarAlerta("Copiado!", "Resumo do fechamento copiado.", "success"); }).catch(err => { mostrarAlerta("Erro", "Falha ao copiar texto.", "error"); }); }
 
-    // 16. INICIALIZAÇÃO
+    // 15. INICIALIZAÇÃO E LISTENER DO MODAL DOC
     window.onload = () => { verificarLogin(); document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || ''; };
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
 </script>
