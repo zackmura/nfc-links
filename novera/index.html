@@ -30,7 +30,6 @@
         }
         .app-container { width: 100%; max-width: 600px; position: relative; }
         
-        /* HEADER E CONFIGURAÇÕES */
         .header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; position: relative; }
         .header img.logo { width: 140px; height: auto; margin-bottom: 5px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(184, 124, 150, 0.15)); }
         .header h1 { margin: 0; color: var(--logo-text); font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.7rem; text-transform: uppercase; letter-spacing: 3px; }
@@ -41,7 +40,6 @@
 
         .card { background: var(--card-bg); padding: 25px 20px; border-radius: 20px; box-shadow: 0 15px 35px rgba(184, 124, 150, 0.1); border: 1px solid rgba(184, 124, 150, 0.05); position: relative; }
 
-        /* MENU INFERIOR NATIVO - 6 ITENS */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; box-shadow: 0 -5px 20px rgba(184, 124, 150, 0.15); border-radius: 25px 25px 0 0; z-index: 1000; padding-bottom: calc(12px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(184, 124, 150, 0.1); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #a1a1aa; text-decoration: none; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s ease; flex: 1; min-width: 0; }
         .nav-item .icon { font-size: 1.35rem; margin-bottom: 4px; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
@@ -76,7 +74,6 @@
         .btn-ai { background: var(--ai-color); box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3); margin-top: 0; padding: 12px; font-size: 0.85rem;}
         .btn-ai:hover { background: #3367d6; }
 
-        /* LISTAS E IMAGENS */
         .rotulo-card { background: #fafafa; border: 1px solid var(--border-color); padding: 15px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
         .rotulo-card:hover { border-color: var(--primary); background: #fff; box-shadow: 0 4px 15px rgba(184, 124, 150, 0.1);}
         .rotulo-info h4 { margin: 0 0 5px; color: var(--brand-dark); font-size: 0.95rem; line-height: 1.3;}
@@ -106,14 +103,12 @@
         .dash-card.highlight h3 { color: #e8dde1; }
         .dash-card.highlight .valor { color: white; font-size: 2.2rem;}
         
-        /* CORES DO PAINEL DE VENDAS E DASHBOARD */
         .dash-card.receita .valor { color: #2e7d32; }
         .dash-card.receber .valor { color: #b45309; }
         .dash-card.patrimonio { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; border: none; box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3); grid-column: span 2; }
         .dash-card.patrimonio h3 { color: #bfdbfe; }
         .dash-card.patrimonio .valor { color: white; font-size: 2.5rem; }
 
-        /* LISTA RANKING DASHBOARD */
         .ranking-list { list-style: none; padding: 0; margin: 0; text-align: left; }
         .ranking-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--border-color); font-size: 0.85rem; }
         .ranking-item:last-child { border-bottom: none; padding-bottom: 0;}
@@ -129,7 +124,6 @@
         .dash-socios-linha { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border-color); font-size: 0.95rem; font-weight: 600;}
         .dash-socios-linha:last-child { border-bottom: none; padding-bottom: 0; }
 
-        /* MODAIS GLOBAIS E DE CONFIRMAÇÃO */
         .modal-overlay-alert { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;}
         .modal-box-alert { background: #fff; width: 90%; max-width: 380px; border-radius: 24px; padding: 30px 20px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s ease-out; position: relative; max-height: 90vh; overflow-y: auto;}
         .modal-icon-alert { font-size: 3.5rem; margin-bottom: 10px; display: inline-block;}
@@ -146,7 +140,6 @@
         .toggle-eye { position: absolute; right: 10px; background: transparent; border: none; font-size: 1.3rem; cursor: pointer; color: var(--primary-dark); padding: 5px; transition: 0.2s; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .toggle-eye:active { transform: scale(0.8); }
         
-        /* TELA DE LOADING DE FEEDBACK (MELHORIA UX) */
         .loading-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(253, 251, 251, 0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; border-radius: 20px; backdrop-filter: blur(5px); }
         .spinner { border: 5px solid #f3d8e2; border-top: 5px solid var(--primary-dark); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px;}
         
@@ -158,7 +151,6 @@
         .chk-desc { font-size: 0.7rem; color: #888; margin-top: 3px;}
         .chk-val { font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;}
         
-        /* ESTILO DO PREVIEW IA */
         .ai-choice-container { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
         .ai-img-box { flex: 1; background: #f0f7ff; padding: 10px; border-radius: 12px; border: 2px dashed var(--border-color); cursor: pointer; transition: 0.2s; }
         .ai-img-box.selected { border-color: var(--ai-color); background: #e6f0fa; box-shadow: 0 4px 10px rgba(66, 133, 244, 0.2); }
@@ -169,7 +161,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* Estilos Novos (Sub-Abas de Navegação Interna) */
         .sub-nav-container { display: flex; background: #E8DDE1; border-radius: 12px; margin-bottom: 20px; padding: 4px; overflow-x: auto;}
         .sub-nav-btn { flex: 1; border: none; background: transparent; font-weight: 800; color: #7a4a5e; padding: 12px; transition: 0.2s; opacity: 0.7; font-family: 'Montserrat', sans-serif; white-space: nowrap; min-width: 100px; cursor: pointer;}
         .sub-nav-btn.active { background: #fff; border-radius: 10px; color: var(--primary-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.1); opacity: 1; }
@@ -185,7 +176,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v7.1.1 (Opt)</span>
+        <span class="app-version">v7.2.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         <div class="input-group" style="text-align: left;"><label>Usuário</label><input type="text" id="login-user" placeholder="Ex: Fernando"></div>
@@ -202,7 +193,7 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v7.1.1 (Opt)</span>
+            <span class="app-version">v7.2.0</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -285,7 +276,11 @@
                     <div class="col"><label>Valor Previsto (Total)</label><input type="text" id="c-valor" class="mask-money" placeholder="R$ 0,00"></div>
                 </div>
                 <button class="btn-salvar" onclick="salvarCompra()">Adicionar à Lista</button>
+                
                 <div class="section-title" style="margin-top: 35px;">🛒 Fila de Compras</div>
+                <div class="filtro-box" style="padding: 10px 15px; margin-bottom: 15px;">
+                    <input type="text" id="busca-compras" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar item ou categoria..." onkeyup="renderizarCompras()">
+                </div>
                 <div id="lista-compras-cards"></div>
             </div>
 
@@ -316,7 +311,8 @@
                 <div id="lista-gastos-cadastrados"></div>
             </div>
             
-            <datalist id="lista-locais"><option value="Wanny Essências"></option><option value="Shopee"></option><option value="Mercado Livre"></option><option value="Embalagens"></option></datalist>
+            <datalist id="lista-locais"></datalist>
+            <datalist id="lista-socios"></datalist>
         </div>
 
         <div id="tab-vendas" class="tab-content active">
@@ -338,7 +334,11 @@
                 </div>
                 <div class="input-group"><label>Observações / Detalhes</label><textarea id="e-obs" placeholder="Preferência de cor, presente, etc..."></textarea></div>
                 <button class="btn-salvar" onclick="salvarEncomenda()">Salvar Pedido</button>
+                
                 <div class="section-title" style="margin-top: 35px;">📦 Fila de Produção</div>
+                <div class="filtro-box" style="padding: 10px 15px; margin-bottom: 15px;">
+                    <input type="text" id="busca-encomendas" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar cliente ou item..." onkeyup="renderizarEncomendas()">
+                </div>
                 <div id="lista-encomendas-cards"></div>
             </div>
 
@@ -482,7 +482,7 @@
         <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Filtre o tipo de produto que deseja incluir no catálogo em PDF.</p>
         <div style="text-align: left; margin-bottom: 15px;"><label style="margin-bottom:10px;">Categorias (Tipos)</label><div id="cat-checkbox-container" style="max-height: 150px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;"></div></div>
         <div style="text-align: left; margin-bottom: 15px;"><label class="checkbox-recibo" style="margin-bottom: 8px;"><input type="checkbox" id="cat-filtro-estoque" checked><div class="chk-info"><span class="chk-title" style="font-size: 0.85rem;">Apenas com Estoque</span><span class="chk-desc" style="font-size: 0.7rem;">Oculta produtos esgotados</span></div></label><label class="checkbox-recibo"><input type="checkbox" id="cat-filtro-exibir-qtd"><div class="chk-info"><span class="chk-title" style="font-size: 0.85rem;">Exibir Qtd. no PDF</span><span class="chk-desc" style="font-size: 0.7rem;">Mostra quantas unidades restam</span></div></label></div>
-        <button class="btn-salvar" style="margin-top: 5px; background: var(--primary-dark); box-shadow: 0 4px 10px rgba(150, 97, 120, 0.3);" onclick="gerarCatalogoPDF()">⬇️ Gerar e Baixar PDF</button>
+        <button class="btn-salvar" style="margin-top: 5px; background: var(--primary-dark); box-shadow: 0 4px 10px rgba(150, 97, 120, 0.3);" onclick="gerarCatalogoPDFFrontend()">⬇️ Baixar PDF Localmente</button>
     </div>
 </div>
 
@@ -614,7 +614,6 @@
     function safeFmt(val) { return fmt(parseDinheiro(val)); }
     function dataBR(isoStr) { if(!isoStr) return ""; const p = isoStr.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
 
-    // --- MÉTODOS NOVOS PARA FORMATAR NOME + CÓDIGO (V7.1.1) ---
     function formatarNomeProdutoHtml(nome, tipo) { 
         const prod = estoqueGlobal.find(e => e.nome === nome); 
         if (prod && prod.codigo) { 
@@ -736,6 +735,31 @@
         } 
     }
 
+    // --- POPULANDO LISTAS DINAMICAS ---
+    function atualizarDatalistsDinamicos() {
+        // SÓCIOS (Vem de Vendas e Gastos)
+        let sociosSet = new Set();
+        vendasGlobal.forEach(v => { if(v.socio) sociosSet.add(String(v.socio).trim()) });
+        gastosGlobal.forEach(g => { if(g.socio) sociosSet.add(String(g.socio).trim()) });
+        let sociosHtml = [...sociosSet].sort((a,b)=>a.localeCompare(b)).map(s => `<option value="${s}">`).join('');
+        document.getElementById('lista-socios').innerHTML = sociosHtml;
+        document.getElementById('lista-socios-dinamica').innerHTML = sociosHtml;
+        
+        let filtroSocioV = document.getElementById('f-v-socio'); let sVAtual = filtroSocioV.value;
+        filtroSocioV.innerHTML = '<option value="">Todos</option>' + [...sociosSet].sort((a,b)=>a.localeCompare(b)).map(s => `<option value="${s}">${s}</option>`).join('');
+        filtroSocioV.value = sVAtual;
+
+        let filtroSocioG = document.getElementById('f-socio'); let sGAtual = filtroSocioG.value;
+        filtroSocioG.innerHTML = '<option value="">Todos</option>' + [...sociosSet].sort((a,b)=>a.localeCompare(b)).map(s => `<option value="${s}">${s}</option>`).join('');
+        filtroSocioG.value = sGAtual;
+
+        // LOCAIS DE COMPRA (Vem de Gastos)
+        let locaisSet = new Set();
+        gastosGlobal.forEach(g => { if(g.local) locaisSet.add(String(g.local).trim()) });
+        let locaisHtml = [...locaisSet].sort((a,b)=>a.localeCompare(b)).map(l => `<option value="${l}">`).join('');
+        document.getElementById('lista-locais').innerHTML = locaisHtml;
+    }
+
     // --- SINCRONIZAÇÃO E LOGIN ---
     async function sincronizarDadosUnico() { 
         mostrarLoading("Sincronizando Banco..."); 
@@ -750,6 +774,8 @@
                 vendasGlobal = dados.vendas || []; 
                 encomendasGlobal = dados.encomendas || []; 
                 comprasGlobal = dados.compras || [];
+                
+                atualizarDatalistsDinamicos();
                 
                 renderizarRotulos(); 
                 renderizarOpcoesPrecificacao(); 
@@ -844,7 +870,6 @@
         const lista = document.getElementById("lista-rotulos-cadastrados"); 
         if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; return; } 
         let htmlLista = ""; 
-        
         rotulosGlobal.sort((a,b) => a.essencia.localeCompare(b.essencia)).forEach(r => { 
             htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Tabela Rotulo Novera', ${r.linha}, '${r.codigo}')" title="Excluir">🗑️</button></div></div></div>`; 
         }); 
@@ -956,7 +981,7 @@
         .then(() => sincronizarDadosUnico());
     }
 
-    // --- ESTOQUE ---
+    // --- ESTOQUE E NOVO CATÁLOGO FRONTEND ---
     function renderizarEstoque() {
         const tBusca = document.getElementById('busca-estoque').value.toLowerCase().trim();
         let filtrados = estoqueGlobal.filter(e => { 
@@ -1064,19 +1089,120 @@
         } catch(e) {} 
     }
 
-    // --- COMPRAS ---
+    function abrirModalCatalogo() {
+        const tipos = new Set(estoqueGlobal.map(e => padronizarTexto(e.tipo)).filter(t => t));
+        let html = `<label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom:10px; cursor:pointer;"><input type="checkbox" id="cat-todas" onchange="toggleTodasCategorias(this)" checked style="width:16px; height:16px; flex-shrink:0;"> <strong>Selecionar Todas</strong></label><div style="border-top:1px dashed #E8DDE1; margin-bottom:10px;"></div>`;
+        [...tipos].forEach(t => { 
+            let nomeBonito = t.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); 
+            html += `<label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:8px; cursor:pointer;"><input type="checkbox" class="chk-cat-tipo" value="${t}" checked onchange="verificarCategorias()" style="width:16px; height:16px; flex-shrink:0;"> ${nomeBonito}</label>`; 
+        });
+        document.getElementById('cat-checkbox-container').innerHTML = html;
+        document.getElementById('modal-gerar-catalogo').style.display = 'flex';
+    }
+
+    function toggleTodasCategorias(source) { const checkboxes = document.querySelectorAll('.chk-cat-tipo'); checkboxes.forEach(cb => cb.checked = source.checked); }
+    function verificarCategorias() { const checkboxes = document.querySelectorAll('.chk-cat-tipo'); const todas = document.getElementById('cat-todas'); const marcadas = document.querySelectorAll('.chk-cat-tipo:checked').length; todas.checked = (marcadas === checkboxes.length); }
+
+    // GERADOR DE CATÁLOGO NO FRONTEND (MUITO MAIS RÁPIDO)
+    async function gerarCatalogoPDFFrontend() {
+        const checkboxes = document.querySelectorAll('.chk-cat-tipo:checked');
+        if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos uma categoria.", "warning");
+        const tiposSelecionados = Array.from(checkboxes).map(cb => String(cb.value).toLowerCase().trim());
+        const apenasEstoque = document.getElementById('cat-filtro-estoque').checked;
+        const exibirQtd = document.getElementById('cat-filtro-exibir-qtd').checked;
+
+        document.getElementById('modal-gerar-catalogo').style.display = 'none';
+        mostrarLoading("Montando Catálogo...");
+
+        let itensFiltrados = estoqueGlobal.filter(e => {
+            let tipoStr = String(e.tipo).toLowerCase().trim();
+            if (tiposSelecionados.indexOf(tipoStr) === -1) return false;
+            let q = parseFloat(e.qtd) || 0;
+            if (apenasEstoque && q <= 0) return false;
+            return true;
+        });
+
+        if (itensFiltrados.length === 0) {
+            ocultarLoading();
+            return mostrarAlerta("Aviso", "Nenhum produto encontrado para estes filtros.", "warning");
+        }
+
+        // Construindo o HTML invisível para o PDF
+        let html = `<div id="catalogo-export" style="padding: 30px; font-family: 'Montserrat', sans-serif; color: #2C2A2B; background: #fff;">
+            <div style="text-align: center; border-bottom: 2px solid #E8DDE1; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="color: #966178; font-family: 'Playfair Display', serif; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 3px;">Novera Scent</h1>
+                <h2 style="font-size: 16px; font-weight: 500; margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px;">Catálogo de Produtos</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 15px;">`;
+
+        itensFiltrados.forEach(e => {
+            let nomeSemTipo = e.nome.replace(new RegExp('^' + e.tipo + '\\s*', 'i'), '').trim().replace(/^[- ]+/, "");
+            let nomeCompleto = e.codigo ? `${e.codigo} - Inspiração: ${nomeSemTipo}` : `Inspiração: ${nomeSemTipo}`;
+            
+            let fotoUrls = e.foto ? e.foto.split(',') : [];
+            let urlImg = fotoUrls[0] ? fotoUrls[0] : '';
+            let imgTag = urlImg ? `<img src="${urlImg}" crossorigin="anonymous" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #E8DDE1; flex-shrink: 0;">` : `<div style="width: 80px; height: 80px; background: #fdf5f7; border-radius: 8px; border: 1px solid #E8DDE1; display:flex; align-items:center; justify-content:center; color:#966178; font-weight:bold; font-size:20px; flex-shrink: 0;">NS</div>`;
+            
+            let qtdHtml = exibirQtd ? (parseFloat(e.qtd) > 0 ? `<div style="font-size: 10px; color: #2e7d32; font-weight: 800; margin-top: 5px;">📦 Estoque: ${e.qtd} un</div>` : `<div style="font-size: 10px; color: #991b1b; font-weight: 800; margin-top: 5px;">🚫 ESGOTADO</div>`) : "";
+
+            html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #E8DDE1; border-radius: 12px; padding: 15px; page-break-inside: avoid;">
+                <div style="display: flex; gap: 15px; align-items: center; overflow: hidden;">
+                    ${imgTag}
+                    <div style="min-width: 0;">
+                        <p style="margin: 0 0 5px 0; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nomeCompleto}</p>
+                        <span style="background: #fdf5f7; color: #966178; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${e.tipo}</span>
+                        ${qtdHtml}
+                    </div>
+                </div>
+                <div style="font-weight: 800; font-size: 18px; color: #966178; flex-shrink: 0; padding-left: 10px;">
+                    ${safeFmt(e.preco)}
+                </div>
+            </div>`;
+        });
+
+        html += `</div><div style="text-align: center; margin-top: 30px; font-size: 10px; color: #888; border-top: 1px solid #E8DDE1; padding-top: 15px;">Atualizado em ${new Date().toLocaleDateString('pt-BR')}</div></div>`;
+
+        let tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.left = '-9999px';
+        document.body.appendChild(tempDiv);
+
+        try {
+            let opt = {
+                margin:       10,
+                filename:     `Catalogo_Novera_${new Date().getTime()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true }, // CORS VITAL PARA AS IMAGENS DO FRONTEND
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            await html2pdf().set(opt).from(tempDiv.firstChild).save();
+            mostrarAlerta("Sucesso", "Catálogo gerado e baixado!", "success");
+        } catch(err) {
+            mostrarAlerta("Erro", "Falha ao gerar o PDF da imagem.", "error");
+        } finally {
+            document.body.removeChild(tempDiv);
+            ocultarLoading();
+        }
+    }
+
+    // --- COMPRAS E GASTOS ---
     function renderizarCompras() { 
         const fila = document.getElementById('lista-compras-cards'); 
-        if (comprasGlobal.length === 0) {
-            fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma compra planejada.</p>";
-            return;
-        }
+        const tBusca = document.getElementById('busca-compras').value.toLowerCase().trim();
+        
         let pends = comprasGlobal.filter(c => c.status !== 'Comprado');
-        pends.sort((a,b) => new Date(a.dataPrevista) - new Date(b.dataPrevista));
-        if (pends.length === 0) {
-            fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo comprado!</p>"; 
-            return;
+        if (tBusca) {
+            pends = pends.filter(c => (c.item + " " + c.categoria).toLowerCase().includes(tBusca));
         }
+        
+        pends.sort((a,b) => new Date(a.dataPrevista) - new Date(b.dataPrevista));
+        
+        if (comprasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma compra planejada.</p>"; return; }
+        if (pends.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo comprado ou não encontrado!</p>"; return; }
+
         const hojeIso = new Date().toISOString().split('T')[0];
         let html = ""; 
         pends.forEach(c => { 
@@ -1096,7 +1222,6 @@
         const val = document.getElementById('c-valor').value; 
         if(!data || !item) return mostrarAlerta("Atenção", "Preencha a Data e o Item.", "warning"); 
         
-        // Optimistic UI
         comprasGlobal.push({ linha: Date.now(), dataPrevista: data, dataDisplay: dataBR(data), item: item, categoria: cat, qtd: qtd, valor_previsto: parseDinheiro(val), status: 'Pendente' });
         renderizarCompras();
         mostrarAlerta("Adicionado", "Item na lista de compras.", "success"); 
@@ -1126,7 +1251,6 @@
         const valorUnit = document.getElementById('mc-valor-unit').value;
         const total = document.getElementById('mc-total').value;
 
-        // Optimistic UI
         if(c) c.status = 'Comprado';
         document.getElementById('modal-comprar-item').style.display = 'none';
         renderizarCompras();
@@ -1136,14 +1260,12 @@
         .then(()=>sincronizarDadosUnico());
     }
 
-    // --- GASTOS LIVRES ---
     function calcularTotalGasto() { const qtd = parseFloat(document.getElementById('g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('g-valor').value); document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
     
     function salvarGasto() { 
         const data = document.getElementById('g-data').value, local = padronizarTexto(document.getElementById('g-local').value), socio = padronizarTexto(document.getElementById('g-socio').value), item = padronizarTexto(document.getElementById('g-item').value), qtd = document.getElementById('g-qtd').value, valor = parseDinheiro(document.getElementById('g-valor').value), total = parseDinheiro(document.getElementById('g-total').value); 
         if(!data || !item || valor === 0) return mostrarAlerta("Atenção", "Preencha a Data, Item e Valor.", "warning"); 
         
-        // Optimistic UI
         gastosGlobal.push({ linha: Date.now(), dataIso: data, dataDisplay: dataBR(data), local: local, socio: socio, item: item, qtd: qtd, valor: valor, total: total });
         renderizarGastos();
         mostrarAlerta("Sucesso", "Despesa lançada.", "success"); 
@@ -1175,23 +1297,28 @@
     function abrirModalEditarGasto(linha) { const g = gastosGlobal.find(x => x.linha === linha); if (!g) return; document.getElementById('edit-g-linha').value = g.linha; document.getElementById('edit-g-data').value = g.dataIso; document.getElementById('edit-g-socio').value = g.socio; document.getElementById('edit-g-local').value = g.local; document.getElementById('edit-g-item').value = g.item; document.getElementById('edit-g-qtd').value = g.qtd; document.getElementById('edit-g-valor').value = safeFmt(g.valor); document.getElementById('edit-g-total').value = safeFmt(g.total); document.getElementById('modal-editar-gasto').style.display = 'flex'; }
     function salvarEdicaoGasto() { 
         const py = { acao: "atualizar_gasto", linha: document.getElementById('edit-g-linha').value, data: document.getElementById('edit-g-data').value, local: padronizarTexto(document.getElementById('edit-g-local').value), socio: padronizarTexto(document.getElementById('edit-g-socio').value), item: padronizarTexto(document.getElementById('edit-g-item').value), qtd: document.getElementById('edit-g-qtd').value, valor: document.getElementById('edit-g-valor').value, total: document.getElementById('edit-g-total').value }; 
-        // Optimistic UI
         let g = gastosGlobal.find(x => x.linha == py.linha);
         if(g) { g.dataIso = py.data; g.dataDisplay = dataBR(py.data); g.local = py.local; g.socio = py.socio; g.item = py.item; g.qtd = py.qtd; g.valor = parseDinheiro(py.valor); g.total = parseDinheiro(py.total); }
         renderizarGastos();
         document.getElementById('modal-editar-gasto').style.display = 'none'; 
         mostrarAlerta("Atualizado!", "Edição salva.", "success"); 
-        
         fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }).then(()=>sincronizarDadosUnico()); 
     }
 
-    // --- ENCOMENDAS ---
+    // --- ENCOMENDAS E VENDAS ---
     function renderizarEncomendas() { 
         const fila = document.getElementById('lista-encomendas-cards'); 
-        if (encomendasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma encomenda ativa.</p>"; return; }
+        const tBusca = document.getElementById('busca-encomendas').value.toLowerCase().trim();
+        
         let pendentes = encomendasGlobal.filter(e => e.status !== 'Entregue');
+        if (tBusca) {
+            pendentes = pendentes.filter(e => (e.cliente + " " + e.item).toLowerCase().includes(tBusca));
+        }
+        
         pendentes.sort((a,b) => new Date(b.dataPedido) - new Date(a.dataPedido));
-        if (pendentes.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo Entregue!</p>"; return; }
+        
+        if (encomendasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma encomenda ativa.</p>"; return; }
+        if (pendentes.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo Entregue ou Não Encontrado!</p>"; return; }
 
         let html = ""; 
         pendentes.forEach(e => { 
@@ -1219,7 +1346,7 @@
     function mudarStatusEncomenda(linha, novoStatus) { 
         let e = encomendasGlobal.find(x => x.linha == linha);
         if(e) e.status = novoStatus;
-        renderizarEncomendas();
+        renderizarEncomendas(); // OPTIMISTIC UI sem loading na tela toda
         fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "atualizar_encomenda_status", linha: linha, status: novoStatus }) }).then(()=>sincronizarDadosUnico()); 
     }
 
@@ -1237,7 +1364,6 @@
         mostrarAlerta("Preenchido!", "Preenchemos o PDV para você. Confira os dados e lance a venda.", "success");
     }
 
-    // --- VENDAS (PDV E LOTE) ---
     function autoPreencherValorVenda() { 
         const selecao = document.getElementById('v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao), imgPrev = document.getElementById('v-produto-img-preview'); 
         if(produtoEstoque) { 
@@ -1263,11 +1389,9 @@
         const lucro = valVenda - cTot;
         const mkp = cTot > 0 ? (lucro / cTot) : 1;
         
-        // Optimistic UI: Salvar Venda
         const dPg = status === "Pago" ? data : "";
         vendasGlobal.push({ linha: Date.now(), dataVendaIso: data, dataVendaDisplay: dataBR(data), cliente: cliente, produto: produto, socio: socio, qtd: qtd, valor_venda: valVenda, status: status, custo_und: cUnd, custo_total: cTot, lucro: lucro, markup: (mkp * 100).toFixed(2) + "%", dataPgtoDisplay: dataBR(dPg), observacao: observacao });
         
-        // Optimistic UI: Baixar Estoque
         if (produtoEstoque) produtoEstoque.qtd = (parseFloat(produtoEstoque.qtd) - qtd);
         
         renderizarVendas();
@@ -1287,12 +1411,6 @@
         
         const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b));
         document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); 
-
-        const slist = [...new Set(vendasGlobal.map(v => String(v.socio || '').trim()).filter(s => s))].sort((a,b)=>a.localeCompare(b)); 
-        document.getElementById('lista-socios-dinamica').innerHTML = slist.map(s => `<option value="${s}">`).join(''); 
-        const socioSelect = document.getElementById('f-v-socio'), socioAtual = socioSelect.value; 
-        socioSelect.innerHTML = '<option value="">Todos</option>' + slist.map(s => `<option value="${s}">${s}</option>`).join(''); 
-        socioSelect.value = socioAtual; 
         
         let htmlVendas = '<option value="">Selecione do Estoque...</option>'; 
         estoqueGlobal.sort((a,b)=>a.nome.localeCompare(b.nome)).forEach(e => { 
@@ -1328,7 +1446,8 @@
                 const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val; 
                 const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`; 
                 const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : ""; 
-                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="badge-status ${isP ? 'b-ok' : 'b-hoje'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${v.produto} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`; 
+                const nomeHtml = formatarNomeProdutoHtml(v.produto, 'venda');
+                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`; 
             }); 
         } 
         document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens; 
@@ -1368,8 +1487,7 @@
             if(pedido) { 
                 const valor = parseDinheiro(pedido.valor_venda); 
                 somaTotal += valor; 
-                const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso;
-                const txtPago = pedido.status === 'Pago' ? `Pago: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente'; 
+                const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = pedido.status === 'Pago' ? `Pago: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente'; 
                 const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'recibo');
                 htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; 
             } 
@@ -1398,9 +1516,7 @@
         mostrarLoading("Gerando Recibo..."); 
         document.getElementById('rec-cli-nome').innerText = nomeExibicao; 
         document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); 
-        const valor = parseDinheiro(pedido.valor_venda);
-        const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso;
-        const txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; 
+        const valor = parseDinheiro(pedido.valor_venda), dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; 
         
         const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'recibo');
         const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; 
@@ -1565,7 +1681,6 @@
 
     function prepararExclusaoRegistro(aba, linha, desc) { 
         abrirConfirmacao("Confirmar Exclusão?", `Apagar "${desc}" de ${aba}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", () => { 
-            
             // Optimistic UI
             if(aba === 'Estoque') estoqueGlobal = estoqueGlobal.filter(x => x.linha != linha);
             if(aba === 'Vendas') vendasGlobal = vendasGlobal.filter(x => x.linha != linha);
