@@ -184,11 +184,182 @@ function verificarCategorias() { const checkboxes = document.querySelectorAll('.
 
 async function gerarCatalogoPDFFrontend() { const checkboxes = document.querySelectorAll('.chk-cat-tipo:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos uma categoria.", "warning"); const tiposSelecionados = Array.from(checkboxes).map(cb => String(cb.value).toLowerCase().trim()); const apenasEstoque = document.getElementById('cat-filtro-estoque').checked; const exibirQtd = document.getElementById('cat-filtro-exibir-qtd').checked; document.getElementById('modal-gerar-catalogo').style.display = 'none'; mostrarLoading("Montando Catálogo..."); let itensFiltrados = estoqueGlobal.filter(e => { let tipoStr = String(e.tipo).toLowerCase().trim(); if (tiposSelecionados.indexOf(tipoStr) === -1) return false; let q = parseFloat(e.qtd) || 0; if (apenasEstoque && q <= 0) return false; return true; }); if (itensFiltrados.length === 0) { ocultarLoading(); return mostrarAlerta("Aviso", "Nenhum produto encontrado para estes filtros.", "warning"); } let html = `<div id="catalogo-export" style="padding: 30px; font-family: 'Montserrat', sans-serif; color: #2C2A2B; background: #fff;"><div style="text-align: center; border-bottom: 2px solid #E8DDE1; padding-bottom: 20px; margin-bottom: 30px;"><h1 style="color: #966178; font-family: 'Playfair Display', serif; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 3px;">Novera Scent</h1><h2 style="font-size: 16px; font-weight: 500; margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px;">Catálogo de Produtos</h2></div><div style="display: flex; flex-direction: column; gap: 15px;">`; itensFiltrados.forEach(e => { let nomeSemTipo = e.nome.replace(new RegExp('^' + e.tipo + '\\s*', 'i'), '').trim().replace(/^[- ]+/, ""); let nomeCompleto = e.codigo ? `${e.codigo} - Inspiração: ${nomeSemTipo}` : `Inspiração: ${nomeSemTipo}`; let fotoUrls = e.foto ? e.foto.split(',') : []; let urlImg = fotoUrls[0] ? fotoUrls[0] : ''; let imgTag = urlImg ? `<img src="${urlImg}" crossorigin="anonymous" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #E8DDE1; flex-shrink: 0;">` : `<div style="width: 80px; height: 80px; background: #fdf5f7; border-radius: 8px; border: 1px solid #E8DDE1; display:flex; align-items:center; justify-content:center; color:#966178; font-weight:bold; font-size:20px; flex-shrink: 0;">NS</div>`; let qtdHtml = exibirQtd ? (parseFloat(e.qtd) > 0 ? `<div style="font-size: 10px; color: #2e7d32; font-weight: 800; margin-top: 5px;">📦 Estoque: ${e.qtd} un</div>` : `<div style="font-size: 10px; color: #991b1b; font-weight: 800; margin-top: 5px;">🚫 ESGOTADO</div>`) : ""; html += `<div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #E8DDE1; border-radius: 12px; padding: 15px; page-break-inside: avoid;"><div style="display: flex; gap: 15px; align-items: center; overflow: hidden;">${imgTag}<div style="min-width: 0;"><p style="margin: 0 0 5px 0; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nomeCompleto}</p><span style="background: #fdf5f7; color: #966178; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${e.tipo}</span>${qtdHtml}</div></div><div style="font-weight: 800; font-size: 18px; color: #966178; flex-shrink: 0; padding-left: 10px;">${safeFmt(e.preco)}</div></div>`; }); html += `</div><div style="text-align: center; margin-top: 30px; font-size: 10px; color: #888; border-top: 1px solid #E8DDE1; padding-top: 15px;">Atualizado em ${new Date().toLocaleDateString('pt-BR')}</div></div>`; let tempDiv = document.createElement('div'); tempDiv.innerHTML = html; tempDiv.style.position = 'absolute'; tempDiv.style.left = '-9999px'; document.body.appendChild(tempDiv); try { let opt = { margin: 10, filename: `Catalogo_Novera_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }; await html2pdf().set(opt).from(tempDiv.firstChild).save(); mostrarAlerta("Sucesso", "Catálogo gerado e baixado!", "success"); } catch(err) { mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error"); } finally { document.body.removeChild(tempDiv); ocultarLoading(); } }
 
-function renderizarCompras() { const fila = document.getElementById('lista-compras-cards'); const tBusca = document.getElementById('busca-compras').value.toLowerCase().trim(); let pends = comprasGlobal.filter(c => c.status !== 'Comprado'); if (tBusca) { pends = pends.filter(c => (c.item + " " + c.categoria).toLowerCase().includes(tBusca)); } pends.sort((a,b) => new Date(a.dataPrevista) - new Date(b.dataPrevista)); if (comprasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma compra planejada.</p>"; return; } if (pends.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo comprado ou não encontrado!</p>"; return; } const hojeIso = new Date().toISOString().split('T')[0]; let html = ""; pends.forEach(c => { let classBadge = "b-futuro"; let textoBadge = "No prazo"; if (c.dataPrevista < hojeIso) { classBadge = "b-atrasado"; textoBadge = "Atrasado"; } else if (c.dataPrevista === hojeIso) { classBadge = "b-hoje"; textoBadge = "Hoje"; } html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${c.item} <span class="badge-status ${classBadge}" style="margin-left:5px;">${textoBadge}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Previsto: ${c.dataDisplay}</p><p><b>${c.qtd}x</b> • Categoria: ${c.categoria}</p><p style="font-size:0.7rem; color:#888; font-weight:700; margin-top:3px;">Orçamento: ${safeFmt(c.valor_previsto)}</p></div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><button class="btn-salvar" style="margin-top:0; padding:10px 15px; font-size:0.8rem; background:#2e7d32;" onclick="abrirModalCompra(${c.linha})">✔️ Comprar</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Compras', ${c.linha}, '${c.item}')">🗑️</button></div></div>`; }); fila.innerHTML = html; }
-function salvarCompra() { const data = document.getElementById('c-data').value; const cat = padronizarTexto(document.getElementById('c-categoria').value); const item = padronizarTexto(document.getElementById('c-item').value); const qtd = document.getElementById('c-qtd').value; const val = document.getElementById('c-valor').value; if(!data || !item) return mostrarAlerta("Atenção", "Preencha a Data e o Item.", "warning"); comprasGlobal.push({ linha: Date.now(), dataPrevista: data, dataDisplay: dataBR(data), item: item, categoria: cat, qtd: qtd, valor_previsto: parseDinheiro(val), status: 'Pendente' }); renderizarCompras(); mostrarAlerta("Adicionado", "Item na lista de compras.", "success"); document.getElementById('c-item').value = ""; document.getElementById('c-valor').value = ""; fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_compra", data: data, categoria: cat, item: item, qtd: qtd, valor: fmtPlanilha(parseDinheiro(val)) }) }).then(()=>sincronizarDadosUnico()); }
-function abrirModalCompra(linha) { const c = comprasGlobal.find(x => x.linha === linha); if(!c) return; document.getElementById('mc-linha').value = c.linha; document.getElementById('mc-qtd').value = c.qtd; document.getElementById('mc-item-nome').innerText = c.item; document.getElementById('mc-valor-unit').value = safeFmt(c.valor_previsto); calcularTotalCompraModal(); document.getElementById('modal-comprar-item').style.display = 'flex'; }
-function calcularTotalCompraModal() { const q = parseFloat(document.getElementById('mc-qtd').value)||1; const vu = parseDinheiro(document.getElementById('mc-valor-unit').value); document.getElementById('mc-total').value = fmt(q * vu); }
-function confirmarCompraModal() { const linha = document.getElementById('mc-linha').value; const c = comprasGlobal.find(x => x.linha == linha); const local = padronizarTexto(document.getElementById('mc-local').value); const socio = padronizarTexto(document.getElementById('mc-socio').value); const valorUnit = document.getElementById('mc-valor-unit').value; const total = document.getElementById('mc-total').value; if(c) c.status = 'Comprado'; document.getElementById('modal-comprar-item').style.display = 'none'; renderizarCompras(); mostrarAlerta("Pronto!", "Baixa dada e Gasto registrado.", "success"); fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "marcar_comprado", linha: linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(parseDinheiro(valorUnit)), total: fmtPlanilha(parseDinheiro(total)) }) }).then(()=>sincronizarDadosUnico()); }
+function renderizarCompras() { 
+    const fila = document.getElementById('lista-compras-cards'); 
+    const tBusca = document.getElementById('busca-compras').value.toLowerCase().trim();
+    
+    let pends = comprasGlobal.filter(c => c.status !== 'Comprado');
+    if (tBusca) {
+        pends = pends.filter(c => (c.item + " " + c.categoria).toLowerCase().includes(tBusca));
+    }
+    
+    pends.sort((a,b) => new Date(a.dataPrevista) - new Date(b.dataPrevista));
+    
+    if (comprasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma compra planejada.</p>"; return; }
+    if (pends.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo comprado ou não encontrado!</p>"; return; }
+
+    const hojeIso = new Date().toISOString().split('T')[0];
+    let html = ""; 
+    
+    pends.forEach(c => { 
+        let classBadge = "b-futuro"; let textoBadge = "No prazo";
+        if (c.dataPrevista < hojeIso) { classBadge = "b-atrasado"; textoBadge = "Atrasado"; }
+        else if (c.dataPrevista === hojeIso) { classBadge = "b-hoje"; textoBadge = "Hoje"; }
+        
+        html += `
+        <div class="rotulo-card" style="gap: 12px; align-items: center;">
+            <input type="checkbox" class="chk-item-compra-lote" value="${c.linha}" style="width:22px; height:22px; accent-color:var(--primary-dark); cursor:pointer; margin:0; flex-shrink:0;">
+            <div class="rotulo-info" style="flex:1; min-width:0;">
+                <h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.item} <span class="badge-status ${classBadge}" style="margin-left:5px;">${textoBadge}</span></h4>
+                <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Previsto: ${c.dataDisplay}</p>
+                <p><b>${c.qtd}x</b> • Categoria: ${c.categoria}</p>
+                <p style="font-size:0.7rem; color:#888; font-weight:700; margin-top:3px;">Unitário: ${safeFmt(c.valor_previsto)}</p>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;">
+                <button class="btn-salvar" style="margin-top:0; padding:8px 12px; font-size:0.75rem; background:#2e7d32;" onclick="abrirModalCompra(${c.linha})" title="Efetuar Compra">✔️ Lançar</button>
+                <div style="display:flex; gap:4px;">
+                    <button class="btn-acao" onclick="abrirModalEditarCompra(${c.linha})" title="Editar">✏️</button>
+                    <button class="btn-acao" onclick="prepararExclusaoRegistro('Compras', ${c.linha}, '${c.item}')" title="Excluir">🗑️</button>
+                </div>
+            </div>
+        </div>`; 
+    }); 
+    fila.innerHTML = html; 
+}
+
+function salvarCompra() { 
+    const data = document.getElementById('c-data').value;
+    const cat = padronizarTexto(document.getElementById('c-categoria').value);
+    const item = padronizarTexto(document.getElementById('c-item').value);
+    const qtd = document.getElementById('c-qtd').value;
+    const val = document.getElementById('c-valor').value; 
+    
+    if(!data || !item) return mostrarAlerta("Atenção", "Preencha a Data e o Item.", "warning"); 
+    
+    comprasGlobal.push({ linha: Date.now(), dataPrevista: data, dataDisplay: dataBR(data), item: item, categoria: cat, qtd: qtd, valor_previsto: parseDinheiro(val), status: 'Pendente' });
+    renderizarCompras();
+    mostrarAlerta("Adicionado", "Item na lista de compras.", "success"); 
+    document.getElementById('c-item').value = ""; document.getElementById('c-valor').value = ""; 
+    
+    fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_compra", data: data, categoria: cat, item: item, qtd: qtd, valor: fmtPlanilha(parseDinheiro(val)) }) })
+    .then(()=>sincronizarDadosUnico()); 
+}
+
+function abrirModalCompra(linha) { 
+    const c = comprasGlobal.find(x => x.linha === linha); if(!c) return;
+    document.getElementById('mc-linha').value = c.linha;
+    document.getElementById('mc-qtd').value = c.qtd;
+    document.getElementById('mc-item-nome').innerText = c.item;
+    document.getElementById('mc-valor-unit').value = safeFmt(c.valor_previsto);
+    calcularTotalCompraModal();
+    document.getElementById('modal-comprar-item').style.display = 'flex';
+}
+
+function calcularTotalCompraModal() { 
+    const q = parseFloat(document.getElementById('mc-qtd').value)||1; 
+    const vu = parseDinheiro(document.getElementById('mc-valor-unit').value); 
+    document.getElementById('mc-total').value = fmt(q * vu); 
+}
+
+function confirmarCompraModal() {
+    const linha = document.getElementById('mc-linha').value;
+    const c = comprasGlobal.find(x => x.linha == linha);
+    const local = padronizarTexto(document.getElementById('mc-local').value);
+    const socio = padronizarTexto(document.getElementById('mc-socio').value);
+    const valorUnit = document.getElementById('mc-valor-unit').value;
+    const total = document.getElementById('mc-total').value;
+
+    if(c) c.status = 'Comprado';
+    document.getElementById('modal-comprar-item').style.display = 'none';
+    renderizarCompras();
+    mostrarAlerta("Pronto!", "Baixa dada e Gasto registrado.", "success");
+    
+    fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "marcar_comprado", linha: linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(parseDinheiro(valorUnit)), total: fmtPlanilha(parseDinheiro(total)) }) })
+    .then(()=>sincronizarDadosUnico());
+}
+
+function abrirModalEditarCompra(linha) {
+    const c = comprasGlobal.find(x => x.linha === linha);
+    if (!c) return;
+    document.getElementById('edit-c-linha').value = c.linha;
+    document.getElementById('edit-c-item').value = c.item;
+    document.getElementById('edit-c-qtd').value = c.qtd;
+    document.getElementById('edit-c-valor').value = safeFmt(c.valor_previsto);
+    document.getElementById('edit-c-data').value = c.dataPrevista;
+    document.getElementById('edit-c-categoria').value = c.categoria;
+    document.getElementById('modal-editar-compra').style.display = 'flex';
+}
+
+function salvarEdicaoCompra() {
+    const linha = document.getElementById('edit-c-linha').value;
+    const item = padronizarTexto(document.getElementById('edit-c-item').value);
+    const qtd = document.getElementById('edit-c-qtd').value;
+    const valor = parseDinheiro(document.getElementById('edit-c-valor').value);
+    const data = document.getElementById('edit-c-data').value;
+    const cat = padronizarTexto(document.getElementById('edit-c-categoria').value);
+
+    let c = comprasGlobal.find(x => x.linha == linha);
+    if(c) {
+        c.item = item; c.qtd = qtd; c.valor_previsto = valor; c.dataPrevista = data; c.dataDisplay = dataBR(data); c.categoria = cat;
+    }
+    renderizarCompras();
+    document.getElementById('modal-editar-compra').style.display = 'none';
+    mostrarAlerta("Atualizado!", "Planejamento alterado.", "success");
+
+    const py = { acao: "excluir_registro", aba: "Compras", linha: linha };
+    fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }).then(() => {
+        fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_compra", data: data, categoria: cat, item: item, qtd: qtd, valor: fmtPlanilha(valor) }) }).then(() => sincronizarDadosUnico());
+    });
+}
+
+function abrirModalCompraLote() {
+    const marcados = document.querySelectorAll('.chk-item-compra-lote:checked');
+    if (marcados.length === 0) return mostrarAlerta("Aviso", "Selecione ao menos um item da fila para lançar.", "warning");
+    document.getElementById('modal-comprar-lote').style.display = 'flex';
+}
+
+async function confirmarCompraLoteModal() {
+    const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked');
+    const local = padronizarTexto(document.getElementById('mcl-local').value);
+    const socio = padronizarTexto(document.getElementById('mcl-socio').value);
+    
+    if(!local || !socio) return mostrarAlerta("Atenção", "Informe o Fornecedor e o Sócio.", "warning");
+    
+    checkboxes.forEach(chk => {
+        let c = comprasGlobal.find(x => x.linha == chk.value);
+        if(c) c.status = 'Comprado';
+    });
+    
+    document.getElementById('modal-comprar-lote').style.display = 'none';
+    renderizarCompras();
+    mostrarAlerta("Lote Enviado!", "Os itens foram processados.", "success");
+
+    for (let chk of checkboxes) {
+        let c = comprasGlobal.find(x => x.linha == chk.value);
+        if(c) {
+            let totalGasto = (parseFloat(c.qtd) || 1) * parseFloat(c.valor_previsto);
+            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "marcar_comprado", linha: c.linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(c.valor_previsto), total: fmtPlanilha(totalGasto) }) });
+        }
+    }
+    sincronizarDadosUnico();
+}
+
+function excluirComprasEmLote() {
+    const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked');
+    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Marque os itens que deseja excluir.", "warning");
+    
+    abrirConfirmacao("Excluir Selecionados?", `Deseja apagar os ${checkboxes.length} itens marcados?`, "🗑️", "#A05252", "#803f3f", "🗑️ Confirmar", async () => {
+        checkboxes.forEach(chk => { comprasGlobal = comprasGlobal.filter(x => x.linha != chk.value); });
+        renderizarCompras();
+        mostrarAlerta("Removidos!", "Itens apagados.", "success");
+
+        for (let chk of checkboxes) {
+            await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "excluir_registro", aba: "Compras", linha: chk.value }) });
+        }
+        sincronizarDadosUnico();
+    });
+}
+
 function calcularTotalGasto() { const qtd = parseFloat(document.getElementById('g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('g-valor').value); document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
 function salvarGasto() { const data = document.getElementById('g-data').value, local = padronizarTexto(document.getElementById('g-local').value), socio = padronizarTexto(document.getElementById('g-socio').value), item = padronizarTexto(document.getElementById('g-item').value), qtd = document.getElementById('g-qtd').value, valor = parseDinheiro(document.getElementById('g-valor').value), total = parseDinheiro(document.getElementById('g-total').value); if(!data || !item || valor === 0) return mostrarAlerta("Atenção", "Preencha a Data, Item e Valor.", "warning"); gastosGlobal.push({ linha: Date.now(), dataIso: data, dataDisplay: dataBR(data), local: local, socio: socio, item: item, qtd: qtd, valor: valor, total: total }); renderizarGastos(); mostrarAlerta("Sucesso", "Despesa lançada.", "success"); document.getElementById('g-item').value = ""; document.getElementById('g-valor').value = ""; document.getElementById('g-total').value = ""; fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "salvar_gasto", data: data, local: local, socio: socio, item: item, qtd: qtd, valor: fmtPlanilha(valor), total: fmtPlanilha(total) }) }).then(()=>sincronizarDadosUnico()); }
 function renderizarGastos() { const fSocio = document.getElementById('f-socio').value.toLowerCase(); const fIni = document.getElementById('f-data-ini').value; const fFim = document.getElementById('f-data-fim').value; const tBusca = document.getElementById('busca-gastos').value.toLowerCase().trim(); let filtrados = gastosGlobal.filter(g => { let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio); let passData = true; if(fIni && g.dataIso < fIni) passData = false; if(fFim && g.dataIso > fFim) passData = false; let passBusca = true; if (tBusca) { const txtAll = (g.item + " " + g.local + " " + g.socio).toLowerCase(); if (!txtAll.includes(tBusca)) passBusca = false; } return passSocio && passData && passBusca; }); filtrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso)); let somaTotal = 0, html = ""; if (filtrados.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else { filtrados.forEach(g => { somaTotal += parseDinheiro(g.total); html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4><p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p><p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Gastos', ${g.linha}, '${g.item}')">🗑️</button></div></div></div>`; }); } document.getElementById('lista-gastos-cadastrados').innerHTML = html; document.getElementById('g-total-dashboard').innerText = fmt(somaTotal); }
