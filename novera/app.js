@@ -234,3 +234,105 @@ async function gerarCatalogoPDFFrontend() { const checkboxes = document.querySel
         document.getElementById('cfg-imgbb-key').value = localStorage.getItem('novera_imgbb_key') || ''; 
         document.getElementById('cfg-onionsys-key').value = localStorage.getItem('novera_onionsys_key') || ''; 
     };
+
+// ==========================================
+// FUNÇÕES DE IMAGEM, UPLOAD E MODAIS EXTRAS
+// ==========================================
+
+// --- ZOOM DE IMAGEM ---
+function abrirModalImagem(src) { 
+    if(!src || src.includes('placeholder')) return; 
+    document.getElementById('img-zoom-src').src = src; 
+    document.getElementById('modal-zoom-imagem').style.display = 'flex'; 
+}
+
+function fecharModalImagem() { 
+    document.getElementById('modal-zoom-imagem').style.display = 'none'; 
+    document.getElementById('img-zoom-src').src = ""; 
+}
+
+// --- NOME NO RECIBO / COBRANÇA ---
+function pedirNomeDocumento(nomeOriginal, titulo) { 
+    return new Promise((resolve) => { 
+        document.getElementById('modal-doc-titulo').innerText = titulo; 
+        const input = document.getElementById('modal-doc-nome-input'); 
+        input.value = nomeOriginal; 
+        document.getElementById('modal-nome-documento').style.display = 'flex'; 
+        setTimeout(() => input.focus(), 100); 
+        
+        const btnConfirmar = document.getElementById('btn-modal-doc-confirmar'); 
+        const btnCancelar = document.getElementById('btn-modal-doc-cancelar'); 
+        
+        const removerListeners = () => { 
+            btnConfirmar.removeEventListener('click', onConfirmar); 
+            btnCancelar.removeEventListener('click', onCancelar); 
+            window.cancelarNomeDoc = null; 
+        }; 
+        
+        const onConfirmar = () => { 
+            document.getElementById('modal-nome-documento').style.display = 'none'; 
+            removerListeners(); 
+            resolve(input.value.trim() === "" ? nomeOriginal : input.value.trim()); 
+        }; 
+        
+        const onCancelar = () => { 
+            document.getElementById('modal-nome-documento').style.display = 'none'; 
+            removerListeners(); 
+            resolve(null); 
+        }; 
+        
+        window.cancelarNomeDoc = onCancelar; 
+        btnConfirmar.addEventListener('click', onConfirmar); 
+        btnCancelar.addEventListener('click', onCancelar); 
+    }); 
+}
+
+// --- COMPRESSÃO E UPLOAD DE FOTOS ---
+const fileToBase64 = f => new Promise((r, j) => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => r(rd.result.split(',')[1]); rd.onerror = e => j(e); });
+
+function comprimirImagem(f, mW, mH, q) { 
+    return new Promise((r, j) => { 
+        if (!f.type.match(/image.*/)) return j(new Error(`Formato inválido.`)); 
+        const rd = new FileReader(); 
+        rd.readAsDataURL(f); 
+        rd.onload = e => { 
+            const i = new Image(); 
+            i.src = e.target.result; 
+            i.onload = () => { 
+                let w = i.width, h = i.height; 
+                if (w > h) { if (w > mW) { h = Math.round(h * mW / w); w = mW; } } 
+                else { if (h > mH) { w = Math.round(w * mH / h); h = mH; } } 
+                const cv = document.createElement('canvas'); 
+                cv.width = w; cv.height = h; 
+                const cx = cv.getContext('2d'); 
+                cx.drawImage(i, 0, 0, w, h); 
+                cv.toBlob(b => b ? r(new File([b], "img.jpg", { type: 'image/jpeg' })) : j(new Error("Erro na Compressão")), 'image/jpeg', q); 
+            }; 
+        }; 
+    }); 
+}
+
+async function uploadDuplo(fileBlob) { 
+    let urlOnion = "", urlImgBB = ""; 
+    try { 
+        const fd = new FormData(); 
+        fd.append("imagem", fileBlob); 
+        const res = await fetch("https://api.onionsys.com.br/api/novera/registrar/catalogo", { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}` }, body: fd }); 
+        const text = await res.text(); 
+        if (res.ok) { 
+            const data = JSON.parse(text); 
+            urlOnion = (data.arquivos && data.arquivos.length > 0) ? data.arquivos[0].url : (data.url || data.link || (data.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${data.filename}` : "")); 
+        } 
+    } catch (e) {} 
+    
+    try { 
+        const fd2 = new FormData(); 
+        fd2.append("image", fileBlob); 
+        const res2 = await fetch(`https://api.imgbb.com/1/upload?key=${KEY_IMGBB}`, { method: "POST", body: fd2 }); 
+        const data2 = await res2.json(); 
+        if (data2.success) urlImgBB = data2.data.url; 
+    } catch (e) {} 
+    
+    if (!urlOnion && !urlImgBB) throw new Error("Falha no upload."); 
+    return [urlOnion, urlImgBB].filter(u => u).join(','); 
+}
