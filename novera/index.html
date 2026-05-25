@@ -109,25 +109,32 @@
                 <button id="btn-sub-despesas" class="sub-nav-btn" onclick="toggleGastosTab('despesas')">💸 Despesas Livres</button>
             </div>
 
-            <div id="gastos-compras-view">
-                <div class="section-title" style="margin-top:0;">📝 Planejar Nova Compra</div>
-                <div class="row">
-                    <div class="col"><label>Data Limite</label><input type="date" id="c-data"></div>
-                    <div class="col"><label>Categoria</label><input type="text" id="c-categoria" list="lista-categorias-compras" placeholder="Ex: Fragâncias"><datalist id="lista-categorias-compras"><option value="Fragâncias"></option><option value="Base/Álcool"></option><option value="Frascos/Vidraria"></option><option value="Embalagens"></option><option value="Filamento PLA"></option></datalist></div>
-                </div>
-                <div class="input-group"><label>O que precisa comprar?</label><input type="text" id="c-item" placeholder="Ex: 1L Base, Frascos de 250ml, Bobina PLA Branca..."></div>
-                <div class="row">
-                    <div class="col"><label>Qtd</label><input type="number" id="c-qtd" value="1"></div>
-                    <div class="col"><label>Valor Previsto (Total)</label><input type="text" id="c-valor" class="mask-money" placeholder="R$ 0,00"></div>
-                </div>
-                <button class="btn-salvar" onclick="salvarCompra()">Adicionar à Lista</button>
-                <div class="section-title" style="margin-top: 35px;">🛒 Fila de Compras</div>
-                <div class="filtro-box" style="padding: 10px 15px; margin-bottom: 15px;">
-                    <input type="text" id="busca-compras" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar item ou categoria..." onkeyup="renderizarCompras()">
-                </div>
-                <div id="lista-compras-cards"></div>
+          <div id="gastos-compras-view">
+            <div class="section-title" style="margin-top:0;">📝 Planejar Nova Compra</div>
+            <div class="row">
+                <div class="col"><label>Data Limite</label><input type="date" id="c-data"></div>
+                <div class="col"><label>Categoria</label><input type="text" id="c-categoria" list="lista-categorias-compras" placeholder="Ex: Fragâncias"><datalist id="lista-categorias-compras"><option value="Fragâncias"></option><option value="Base/Álcool"></option><option value="Frascos/Vidraria"></option><option value="Embalagens"></option><option value="Filamento PLA"></option></datalist></div>
             </div>
-
+            <div class="input-group"><label>O que precisa comprar?</label><input type="text" id="c-item" placeholder="Ex: 1L Base, Frascos de 250ml, Bobina PLA Branca..."></div>
+            <div class="row">
+                <div class="col"><label>Qtd</label><input type="number" id="c-qtd" value="1"></div>
+                <div class="col"><label>Valor Previsto (Unitário)</label><input type="text" id="c-valor" class="mask-money" placeholder="R$ 0,00"></div>
+            </div>
+            <button class="btn-salvar" onclick="salvarCompra()">Adicionar à Lista</button>
+        
+            <div class="section-title" style="margin-top: 35px;">🛒 Fila de Compras</div>
+            <div class="filtro-box" style="padding: 10px 15px; margin-bottom: 15px;">
+                <input type="text" id="busca-compras" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar item ou categoria..." onkeyup="renderizarCompras()">
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <button class="btn-salvar" style="margin-top:0; background:var(--primary-dark); padding:12px; font-size:0.8rem;" onclick="abrirModalCompraLote()">✔️ Lançar Selecionados</button>
+                <button class="btn-salvar" style="margin-top:0; background:#A05252; padding:12px; font-size:0.8rem; box-shadow:0 5px 15px rgba(160,82,82,0.3);" onclick="excluirComprasEmLote()">🗑️ Apagar Selecionados</button>
+            </div>
+        
+            <div id="lista-compras-cards"></div>
+        </div>
+            
             <div id="gastos-despesas-view" style="display: none;">
                 <div class="section-title" style="margin-top:0;">💸 Lançamento Manual</div>
                 <div class="row">
@@ -394,6 +401,39 @@
 
 <div id="modal-editar-venda" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px; text-align:left;"><button onclick="document.getElementById('modal-editar-venda').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark); text-align:center;">✏️ Editar Venda</h3><input type="hidden" id="edit-v-linha"><div class="row"><div class="col"><label>Data</label><input type="date" id="edit-v-data"></div><div class="col"><label>Cliente</label><input type="text" id="edit-v-cliente" list="lista-clientes"></div></div><div class="input-group"><label>Produto Vendido</label><select id="edit-v-produto" onchange="autoPreencherEdicaoVenda()"></select></div><div class="input-group"><label>Sócio</label><input type="text" id="edit-v-socio" list="lista-socios-dinamica"></div><div class="row"><div class="col"><label>Qtd</label><input type="number" id="edit-v-qtd" oninput="autoPreencherEdicaoVenda()"></div><div class="col"><label>Valor Total</label><input type="text" id="edit-v-valor" class="mask-money"></div></div><div class="row"><div class="col"><label>Status PG</label><select id="edit-v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div><div class="input-group"><label>Observação (Opcional)</label><textarea id="edit-v-observacao"></textarea></div><button class="btn-salvar" onclick="salvarEdicaoVenda()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
+<div id="modal-editar-compra" class="modal-overlay-alert">
+    <div class="modal-box-alert" style="padding-top: 40px;">
+        <button onclick="document.getElementById('modal-editar-compra').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Planejamento</h3>
+        <input type="hidden" id="edit-c-linha">
+        <div class="input-group" style="text-align: left;"><label>Item / Produto Nome</label><input type="text" id="edit-c-item"></div>
+        <div class="row" style="text-align: left;">
+            <div class="col"><label>Quantidade</label><input type="number" id="edit-c-qtd"></div>
+            <div class="col"><label>Valor Unitário Previsto</label><input type="text" id="edit-c-valor" class="mask-money"></div>
+        </div>
+        <div class="row" style="text-align: left;">
+            <div class="col"><label>Data Limite</label><input type="date" id="edit-c-data"></div>
+            <div class="col"><label>Categoria</label><input type="text" id="edit-c-categoria" list="lista-categorias-compras"></div>
+        </div>
+        <button class="btn-salvar" onclick="salvarEdicaoCompra()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
+    </div>
+</div>
+
+<div id="modal-comprar-lote" class="modal-overlay-alert" style="z-index: 10002;">
+    <div class="modal-box-alert" style="width: 95%; max-width: 350px;">
+        <button onclick="document.getElementById('modal-comprar-lote').style.display='none';" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 10px;">Efetuar Compras</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Lançar todos os itens marcados diretamente para as despesas ativas.</p>
+        <div class="input-group" style="text-align: left;"><label>Fornecedor / Local da Compra</label><input type="text" id="mcl-local" list="lista-locais" placeholder="Ex: Mercado Livre"></div>
+        <div class="input-group" style="text-align: left;"><label>Sócio / Responsável</label><input type="text" id="mcl-socio" list="lista-socios" placeholder="Quem pagou?"></div>
+        <div style="display: flex; gap: 10px; margin-top:15px;">
+            <button class="btn-modal-cancel" onclick="document.getElementById('modal-comprar-lote').style.display='none'">Cancelar</button>
+            <button class="btn-modal-confirm" style="background:#2e7d32;" onclick="confirmarCompraLoteModal()">✔️ Confirmar Lote</button>
+        </div>
+    </div>
+</div>
+
+    
 <div id="recibo-template" style="position: absolute; left: -9999px; top: -9999px; width: 400px; background: #fff; padding: 40px; border-radius: 10px; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
     <div style="text-align: center; border-bottom: 2px dashed #E8DDE1; padding-bottom: 20px; margin-bottom: 20px;">
         <img src="logo.png" style="width: 120px; margin-bottom: 10px;" crossorigin="anonymous">
