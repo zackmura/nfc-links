@@ -143,9 +143,44 @@ input[readonly] { background: #E8DDE1; color: #7a4a5e; border-color: transparent
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-.sub-nav-container { display: flex; background: #E8DDE1; border-radius: 12px; margin-bottom: 20px; padding: 4px; overflow-x: auto;}
-.sub-nav-btn { flex: 1; border: none; background: transparent; font-weight: 800; color: #7a4a5e; padding: 12px; transition: 0.2s; opacity: 0.7; font-family: 'Montserrat', sans-serif; white-space: nowrap; min-width: 100px; cursor: pointer;}
-.sub-nav-btn.active { background: #fff; border-radius: 10px; color: var(--primary-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.1); opacity: 1; }
+/* Estilos Novos (Sub-Abas de Navegação Interna) */
+.sub-nav-container { 
+    display: flex; 
+    background: #E8DDE1; 
+    border-radius: 12px; 
+    margin-bottom: 20px; 
+    padding: 4px; 
+    overflow-x: auto;
+    gap: 8px; /* Espaço entre os botões */
+    -webkit-overflow-scrolling: touch; /* Rolar suave no celular */
+    scrollbar-width: none; /* Esconder scrollbar Firefox */
+    -ms-overflow-style: none; /* Esconder scrollbar IE */
+}
+.sub-nav-container::-webkit-scrollbar { 
+    display: none; /* Esconder scrollbar Chrome/Safari */
+}
+
+.sub-nav-btn { 
+    flex: 0 0 auto; /* Impede o botão de espremer, deixando rolar pro lado */
+    border: none; 
+    background: transparent; 
+    font-weight: 800; 
+    color: #7a4a5e; 
+    padding: 10px 16px; 
+    font-size: 0.8rem;
+    transition: 0.2s; 
+    opacity: 0.7; 
+    font-family: 'Montserrat', sans-serif; 
+    white-space: nowrap; 
+    cursor: pointer;
+    border-radius: 10px;
+}
+.sub-nav-btn.active { 
+    background: #fff; 
+    color: var(--primary-dark); 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+    opacity: 1; 
+}
 
 .badge-status { font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
 .b-atrasado { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
