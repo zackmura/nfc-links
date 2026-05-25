@@ -176,7 +176,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v7.2.0</span>
+        <span class="app-version">v7.2.1 (Security & UX)</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         <div class="input-group" style="text-align: left;"><label>Usuário</label><input type="text" id="login-user" placeholder="Ex: Fernando"></div>
@@ -193,7 +193,7 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v7.2.0</span>
+            <span class="app-version">v7.2.1</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -237,7 +237,7 @@
             <div class="filtro-box" style="background:#fdf5f7; border-color:#f3d8e2;">
                 <div class="row">
                     <div class="col"><label style="color:var(--primary-dark);">Rendimento Real (Un)</label><input type="number" id="p-rendimento" value="1" min="1"></div>
-                    <div class="col"><label style="color:var(--primary-dark);">Preço Sugerido (R$)</label><input type="text" id="p-preco-venda" class="mask-money" placeholder="R$ 0,00"></div>
+                    <div class="col"><label style="color:var(--primary-dark);">Preço Sugerido</label><input type="text" id="p-preco-venda" class="mask-money" placeholder="R$ 0,00"></div>
                 </div>
                 <button class="btn-salvar" onclick="salvarProducaoEstoque()" style="margin-top: 10px; background:var(--primary-dark);">🏭 Enviar Produção p/ Estoque</button>
             </div>
@@ -384,7 +384,7 @@
 
         <div id="tab-dashboard" class="tab-content">
             <div class="section-title" style="margin-top:0;">📊 Visão Global</div>
-            <div class="filtro-box"><div class="row" style="margin-bottom: 0;"><div class="col"><label>Mês</label><select id="d-filtro-mes" onchange="renderizarDashboard()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Ano</label><select id="d-filtro-ano" onchange="renderizarDashboard()"><option value="">Todos</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option><option value="2027">2027</option></select></div></div></div>
+            <div class="filtro-box"><div class="row" style="margin-bottom: 0;"><div class="col"><label>Mês</label><select id="d-filtro-mes" onchange="renderizarDashboard()"><option value="">Todos</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option></select></div><div class="col"><label>Ano</label><select id="d-filtro-ano" onchange="renderizarDashboard()"></select></div></div></div>
             <div class="dash-grid" style="margin-bottom: 12px;"><div class="dash-card patrimonio"><h3>👑 Patrimônio Novera</h3><p class="valor" id="d-patrimonio">R$ 0,00</p><p style="font-size: 0.65rem; margin-top: 5px; opacity: 0.8;">Caixa + Estoque + Fiado</p></div></div>
             <div class="section-title" style="margin-top: 25px;">💰 Financeiro do Período</div>
             <div id="card-lucro-real" class="dash-lucro-card" style="margin-bottom: 12px; padding: 20px;"><h3 style="font-size:0.75rem;">Dinheiro Limpo (Caixa)</h3><p id="d-lucro-real" style="font-size:2rem;">R$ 0,00</p><p style="font-size: 0.65rem; margin-top: 5px; opacity: 0.8;">(Receitas Pagas - Gastos Totais)</p></div>
@@ -405,10 +405,14 @@
         </div>
 
         <div id="tab-configuracoes" class="tab-content">
-            <div class="section-title">🤖 Inteligência Artificial</div>
-            <div class="input-group"><label>Chave de API Gemini</label><div class="password-wrapper"><input type="password" id="cfg-ai-key" placeholder="Cole sua chave aqui..."><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-ai-key', this)">🙈</button></div><p style="font-size:0.65rem; color:#888; margin-top:8px;">Sua chave fica salva <strong style="color:var(--primary-dark);">apenas neste aparelho</strong>.</p></div>
-            <button class="btn-salvar btn-ai" onclick="salvarConfiguracoesIA()">Salvar Chave IA</button>
-            <div class="section-title" style="margin-top: 35px;">⚙️ Alterar Senha</div>
+            <div class="section-title">🤖 Chaves e Segurança</div>
+            <p style="font-size:0.65rem; color:#888; margin-top:0px;">Essas chaves são salvas <strong style="color:var(--primary-dark);">apenas neste aparelho</strong> por segurança.</p>
+            <div class="input-group" style="margin-top:15px;"><label>Chave Gemini API (Gerar Cenários)</label><div class="password-wrapper"><input type="password" id="cfg-ai-key" placeholder="Cole sua chave aqui..."><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-ai-key', this)">🙈</button></div></div>
+            <div class="input-group"><label>Chave ImgBB (Armazenamento de Fotos)</label><div class="password-wrapper"><input type="password" id="cfg-imgbb-key" placeholder="Padrão do sistema..."><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-imgbb-key', this)">🙈</button></div></div>
+            <div class="input-group"><label>Token OnionSys (Armazenamento Secundário)</label><div class="password-wrapper"><input type="password" id="cfg-onionsys-key" placeholder="Padrão do sistema..."><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-onionsys-key', this)">🙈</button></div></div>
+            <button class="btn-salvar btn-ai" style="background:var(--primary-dark);" onclick="salvarConfiguracoesChaves()">💾 Salvar Todas as Chaves</button>
+            
+            <div class="section-title" style="margin-top: 35px;">⚙️ Alterar Senha de Acesso</div>
             <div class="input-group"><label>Usuário Logado</label><input type="text" id="cfg-user" readonly></div>
             <div class="input-group"><label>Senha Atual</label><div class="password-wrapper"><input type="password" id="cfg-senha-atual"><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-senha-atual', this)">🙈</button></div></div>
             <div class="input-group"><label>Nova Senha</label><div class="password-wrapper"><input type="password" id="cfg-nova-senha"><button type="button" class="toggle-eye" onclick="toggleSenha('cfg-nova-senha', this)">🙈</button></div></div>
@@ -482,7 +486,7 @@
         <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Filtre o tipo de produto que deseja incluir no catálogo em PDF.</p>
         <div style="text-align: left; margin-bottom: 15px;"><label style="margin-bottom:10px;">Categorias (Tipos)</label><div id="cat-checkbox-container" style="max-height: 150px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;"></div></div>
         <div style="text-align: left; margin-bottom: 15px;"><label class="checkbox-recibo" style="margin-bottom: 8px;"><input type="checkbox" id="cat-filtro-estoque" checked><div class="chk-info"><span class="chk-title" style="font-size: 0.85rem;">Apenas com Estoque</span><span class="chk-desc" style="font-size: 0.7rem;">Oculta produtos esgotados</span></div></label><label class="checkbox-recibo"><input type="checkbox" id="cat-filtro-exibir-qtd"><div class="chk-info"><span class="chk-title" style="font-size: 0.85rem;">Exibir Qtd. no PDF</span><span class="chk-desc" style="font-size: 0.7rem;">Mostra quantas unidades restam</span></div></label></div>
-        <button class="btn-salvar" style="margin-top: 5px; background: var(--primary-dark); box-shadow: 0 4px 10px rgba(150, 97, 120, 0.3);" onclick="gerarCatalogoPDFFrontend()">⬇️ Baixar PDF Localmente</button>
+        <button class="btn-salvar" style="margin-top: 5px; background: var(--primary-dark); box-shadow: 0 4px 10px rgba(150, 97, 120, 0.3);" onclick="gerarCatalogoPDFFrontend()">⬇️ Gerar e Baixar PDF</button>
     </div>
 </div>
 
@@ -585,16 +589,29 @@
 </div>
 
 <script>
-    // URL DA SUA API NO GOOGLE APPS SCRIPT
+    // AQUI VOCÊ COLA O LINK DA SUA API NOVA DO GOOGLE SCRIPT
     const API_NOVERA = "https://script.google.com/macros/s/AKfycbw5QCnqlZvEuDcAc54M42EvkIsVJ5U6tYfyv0Fv3HidzHtqEwQOlXo9tT_ePLUo_hd4Pw/exec";
 
-    const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
-    const KEY_IMGBB = "a76cc9454f6c230b1b5b48b63ed9012e";
+    // As chaves de API agora são lidas do armazenamento local (localStorage) para não ficarem expostas no GitHub
+    let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
+    let KEY_IMGBB = localStorage.getItem('novera_imgbb_key') || "";
 
     let rotulosGlobal = [], estoqueGlobal = [], gastosGlobal = [], vendasGlobal = [];
     let encomendasGlobal = [], comprasGlobal = [];
     let usuarioLogado = ""; let dadosCarregados = false; 
     let chartRGBase = null, chartStatusBase = null;
+
+    // A MÁGICA DA MÁSCARA DE DINHEIRO (Foi adicionada aqui o formatador enquanto digita!)
+    document.addEventListener('input', function (e) {
+        if (e.target.classList.contains('mask-money')) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value === "") { e.target.value = ""; return; }
+            value = (parseInt(value) / 100).toFixed(2) + '';
+            value = value.replace(".", ",");
+            value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+            e.target.value = "R$ " + value;
+        }
+    });
 
     // --- FUNÇÕES DE UTILIDADE E FORMATAÇÃO ---
     function padronizarTexto(texto) { 
@@ -737,7 +754,6 @@
 
     // --- POPULANDO LISTAS DINAMICAS ---
     function atualizarDatalistsDinamicos() {
-        // SÓCIOS (Vem de Vendas e Gastos)
         let sociosSet = new Set();
         vendasGlobal.forEach(v => { if(v.socio) sociosSet.add(String(v.socio).trim()) });
         gastosGlobal.forEach(g => { if(g.socio) sociosSet.add(String(g.socio).trim()) });
@@ -753,7 +769,6 @@
         filtroSocioG.innerHTML = '<option value="">Todos</option>' + [...sociosSet].sort((a,b)=>a.localeCompare(b)).map(s => `<option value="${s}">${s}</option>`).join('');
         filtroSocioG.value = sGAtual;
 
-        // LOCAIS DE COMPRA (Vem de Gastos)
         let locaisSet = new Set();
         gastosGlobal.forEach(g => { if(g.local) locaisSet.add(String(g.local).trim()) });
         let locaisHtml = [...locaisSet].sort((a,b)=>a.localeCompare(b)).map(l => `<option value="${l}">`).join('');
@@ -845,6 +860,19 @@
         localStorage.removeItem('novera_session_expires'); 
         dadosCarregados = false; 
         verificarLogin(); 
+    }
+
+    // SALVAR CHAVES DE FORMA SEGURA LOCALMENTE
+    function salvarConfiguracoesChaves() { 
+        const keyGemini = document.getElementById('cfg-ai-key').value.trim();
+        const keyImgBB = document.getElementById('cfg-imgbb-key').value.trim();
+        const keyOnionSys = document.getElementById('cfg-onionsys-key').value.trim();
+        
+        if(keyGemini) localStorage.setItem('novera_ai_key', keyGemini);
+        if(keyImgBB) { localStorage.setItem('novera_imgbb_key', keyImgBB); KEY_IMGBB = keyImgBB; }
+        if(keyOnionSys) { localStorage.setItem('novera_onionsys_key', keyOnionSys); TOKEN_ONIONSYS = keyOnionSys; }
+
+        mostrarAlerta("Salvo!", "Suas chaves foram gravadas no aparelho de forma segura.", "success");
     }
     
     async function alterarSenha() { 
@@ -1056,14 +1084,16 @@
                 const response = await fetch(imgSrc); 
                 const blob = await response.blob(); 
                 const file = new File([blob], "produto_ia.jpg", { type: "image/jpeg" }); 
+                if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes.");
                 fotoFinal = await uploadDuplo(file); 
             } catch(e) { 
-                ocultarLoading(); return mostrarAlerta("Erro", "Falha ao salvar foto da IA.", "error"); 
+                ocultarLoading(); return mostrarAlerta("Erro", "Falha ao salvar foto da IA. Faltam as chaves na Configuração?", "error"); 
             } 
         } else if (fileInput.files.length > 0 && escolha === 'original') { 
             mostrarLoading("Enviando Nova Imagem..."); 
             try { 
-                const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8); 
+                const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8);
+                if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves de imagem ausentes. Vá em configurações."); 
                 fotoFinal = await uploadDuplo(blob); 
             } catch (err) { 
                 ocultarLoading(); return mostrarAlerta("Erro na Imagem", err.message, "error"); 
@@ -1174,7 +1204,7 @@
                 margin:       10,
                 filename:     `Catalogo_Novera_${new Date().getTime()}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true }, // CORS VITAL PARA AS IMAGENS DO FRONTEND
+                html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
@@ -1305,7 +1335,7 @@
         fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }).then(()=>sincronizarDadosUnico()); 
     }
 
-    // --- ENCOMENDAS E VENDAS ---
+    // --- ENCOMENDAS ---
     function renderizarEncomendas() { 
         const fila = document.getElementById('lista-encomendas-cards'); 
         const tBusca = document.getElementById('busca-encomendas').value.toLowerCase().trim();
@@ -1346,7 +1376,7 @@
     function mudarStatusEncomenda(linha, novoStatus) { 
         let e = encomendasGlobal.find(x => x.linha == linha);
         if(e) e.status = novoStatus;
-        renderizarEncomendas(); // OPTIMISTIC UI sem loading na tela toda
+        renderizarEncomendas(); // OPTIMISTIC UI 
         fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "atualizar_encomenda_status", linha: linha, status: novoStatus }) }).then(()=>sincronizarDadosUnico()); 
     }
 
@@ -1364,6 +1394,7 @@
         mostrarAlerta("Preenchido!", "Preenchemos o PDV para você. Confira os dados e lance a venda.", "success");
     }
 
+    // --- VENDAS (PDV E LOTE) ---
     function autoPreencherValorVenda() { 
         const selecao = document.getElementById('v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao), imgPrev = document.getElementById('v-produto-img-preview'); 
         if(produtoEstoque) { 
@@ -1447,7 +1478,7 @@
                 const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`; 
                 const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : ""; 
                 const nomeHtml = formatarNomeProdutoHtml(v.produto, 'venda');
-                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`; 
+                html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p><p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button></div></div></div>`; 
             }); 
         } 
         document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens; 
@@ -1516,7 +1547,9 @@
         mostrarLoading("Gerando Recibo..."); 
         document.getElementById('rec-cli-nome').innerText = nomeExibicao; 
         document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); 
-        const valor = parseDinheiro(pedido.valor_venda), dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; 
+        const valor = parseDinheiro(pedido.valor_venda);
+        const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso;
+        const txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; 
         
         const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'recibo');
         const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; 
@@ -1640,8 +1673,6 @@
         checkboxes.forEach(chk => linhas.push(chk.value));
         
         abrirConfirmacao("Confirmar Pagamento?", `Marcar ${linhas.length} venda(s) como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Confirmar", () => { 
-            
-            // Optimistic UI
             linhas.forEach(linha => {
                 let v = vendasGlobal.find(x => x.linha == linha);
                 if(v) { v.status = 'Pago'; v.dataPgtoDisplay = dataBR(new Date().toISOString().split('T')[0]); }
@@ -1681,7 +1712,6 @@
 
     function prepararExclusaoRegistro(aba, linha, desc) { 
         abrirConfirmacao("Confirmar Exclusão?", `Apagar "${desc}" de ${aba}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", () => { 
-            // Optimistic UI
             if(aba === 'Estoque') estoqueGlobal = estoqueGlobal.filter(x => x.linha != linha);
             if(aba === 'Vendas') vendasGlobal = vendasGlobal.filter(x => x.linha != linha);
             if(aba === 'Gastos' || aba === 'Custos') gastosGlobal = gastosGlobal.filter(x => x.linha != linha);
@@ -1699,7 +1729,6 @@
 
     function darBaixaVenda(linha) { 
         abrirConfirmacao("Confirmar Pagamento?", "Marcar venda como RECEBIDA hoje?", "💰", "#2e7d32", "#1b5e20", "💲 Receber", () => { 
-            // Optimistic UI
             let v = vendasGlobal.find(x => x.linha == linha);
             if(v) { v.status = 'Pago'; v.dataPgtoDisplay = dataBR(new Date().toISOString().split('T')[0]); }
             renderizarVendas();
@@ -1745,7 +1774,6 @@
         const mkp = cTot > 0 ? (lucro / cTot) : 1; 
         const dPg = py.status === "Pago" ? (vOrig.dataPgtoDisplay || new Date().toLocaleDateString('pt-BR')) : ""; 
         
-        // Optimistic UI
         if(vOrig) {
             vOrig.dataVendaIso = py.data; vOrig.dataVendaDisplay = dataBR(py.data); vOrig.cliente = py.cliente; vOrig.produto = py.produto; vOrig.socio = py.socio; vOrig.qtd = py.qtd; vOrig.valor_venda = valVenda; vOrig.status = py.status; vOrig.observacao = py.observacao;
         }
@@ -1875,8 +1903,21 @@
 
     // --- INICIALIZAÇÃO ---
     window.onload = () => { 
+        // Inicializa anos automáticos
+        const selectAno = document.getElementById('d-filtro-ano');
+        selectAno.innerHTML = '<option value="">Todos</option>';
+        const anoAtual = new Date().getFullYear();
+        for (let i = 2024; i <= anoAtual + 1; i++) {
+            selectAno.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+        
+        calcularNovera();
         verificarLogin(); 
+        
+        // Puxa as chaves do armazenamento local para a aba de config
         document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || ''; 
+        document.getElementById('cfg-imgbb-key').value = localStorage.getItem('novera_imgbb_key') || ''; 
+        document.getElementById('cfg-onionsys-key').value = localStorage.getItem('novera_onionsys_key') || ''; 
     };
     
     if ('serviceWorker' in navigator) { 
