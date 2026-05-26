@@ -1,10 +1,12 @@
-const CACHE_NAME = 'novera-erp-v7.3.1';
+const CACHE_NAME = 'novera-erp-v7.3.2';
 const urlsToCache = [
   './',
   './index.html',
+  './app.js',
+  './style.css',
   './manifest.json',
   './logo-192.png',
-  './logo-512.png'
+  './logo-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
@@ -23,7 +25,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   // Não faz cache de requisições de API (evita travamento de dados)
-  if (event.request.url.includes('script.google.com') || event.request.url.includes('api.imgbb.com')) {
+  if (event.request.url.includes('script.google.com') || event.request.url.includes('api.imgbb.com') || event.request.url.includes('api.onionsys.com.br')) {
       return; 
   }
   
