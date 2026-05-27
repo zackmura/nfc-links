@@ -32,10 +32,16 @@
 
 <div id="main-app" class="app-container" style="display: none;">
     <div class="card">
-        
+        <div id="global-loader" class="loading-overlay">
+            <div class="spinner"></div>
+            <p style="color: var(--primary-dark); font-weight: 800; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Sincronizando...</p>
+        </div>
+
         <div class="header">
             <span class="app-version">v7.4.0</span>
+            
             <div id="sync-status" class="sync-status" title="Status da Nuvem">☁️</div>
+            
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
