@@ -21,7 +21,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v7.5.1</span>
+        <span class="app-version">v7.6.0</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         <div class="input-group" style="text-align: left;"><label>Usuário</label><input type="text" id="login-user" placeholder="Ex: Fernando"></div>
@@ -38,7 +38,8 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v7.5.1</span>
+            <span class="app-version">v7.6.0</span>
+            <div id="sync-status" class="sync-status" title="Status da Nuvem">☁️</div>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
@@ -89,13 +90,18 @@
                 <div class="resumo-linha"><span>Rendimento Calculado</span> <span id="r-frascos">0 un</span></div>
                 <div class="custo-total"><span>Custo por Unidade</span> <span id="r-custo-total">R$ 0,00</span></div>
             </div>
+            
             <div class="section-title">📦 Lançar Produção no Estoque</div>
             <div class="filtro-box" style="background:#fdf5f7; border-color:#f3d8e2;">
                 <div class="row">
                     <div class="col"><label style="color:var(--primary-dark);">Rendimento Real (Un)</label><input type="number" id="p-rendimento" value="1" min="1"></div>
                     <div class="col"><label style="color:var(--primary-dark);">Preço Sugerido</label><input type="text" id="p-preco-venda" class="mask-money" placeholder="R$ 0,00"></div>
                 </div>
-                <button class="btn-salvar" onclick="salvarProducaoEstoque()" style="margin-top: 10px; background:var(--primary-dark);">🏭 Enviar Produção p/ Estoque</button>
+                <div class="input-group">
+                    <label style="color:var(--primary-dark);">Enviar para qual Local?</label>
+                    <input type="text" id="p-local" list="lista-locais-estoque" placeholder="Ex: Sede, Casa, Loja..." value="Sede">
+                </div>
+                <button class="btn-salvar" onclick="salvarProducaoEstoque()" style="margin-top: 5px; background:var(--primary-dark);">🏭 Enviar Produção p/ Estoque</button>
             </div>
         </div>
 
@@ -104,9 +110,14 @@
             <div class="row" style="margin-bottom: 15px;">
                 <div class="col"><button class="btn-salvar" style="margin-top:0; background: var(--primary-dark);" onclick="abrirModalCatalogo()">📄 Gerar Catálogo em PDF</button></div>
             </div>
-            <div class="filtro-box" style="padding: 10px 15px;">
-                <input type="text" id="busca-estoque" class="search-bar" style="margin: 0; border: none; box-shadow: none;" placeholder="🔍 Buscar no estoque..." onkeyup="renderizarEstoque()">
+            
+            <div class="filtro-box" style="padding: 10px 15px; display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="busca-estoque" class="search-bar" style="margin: 0; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; width: 100%; box-sizing: border-box;" placeholder="🔍 Buscar no estoque..." onkeyup="renderizarEstoque()">
+                <select id="f-e-local" onchange="renderizarEstoque()" style="margin: 0; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; width: 100%; box-sizing: border-box; background: #fff; color: var(--brand-dark); font-weight: 600;">
+                    <option value="">📍 Todos os Locais</option>
+                </select>
             </div>
+            
             <div class="dash-grid">
                 <div class="dash-card" style="background:#fffbeb; border-color:#fde68a; cursor:default; transform:none;"><h3 style="color:#b45309;">Total de Itens</h3><p class="valor" id="est-total-itens" style="color:#b45309;">0</p></div>
                 <div class="dash-card" style="background:#f0fdf4; border-color:#bbf7d0; cursor:default; transform:none;"><h3 style="color:#166534;">Valor em Estoque</h3><p class="valor" id="est-valor-total" style="color:#166534;">R$ 0,00</p></div>
@@ -173,6 +184,7 @@
             
             <datalist id="lista-locais"></datalist>
             <datalist id="lista-socios"></datalist>
+            <datalist id="lista-locais-estoque"></datalist>
         </div>
 
         <div id="tab-vendas" class="tab-content active">
@@ -189,6 +201,7 @@
                 <div class="row"><div class="col"><label>Sócio</label><input type="text" id="v-socio" list="lista-socios-dinamica"></div><div class="col"><label>Qtd</label><input type="number" id="v-qtd" value="1" oninput="autoPreencherValorVenda()"></div></div>
                 <div class="row"><div class="col"><label>Total Venda</label><input type="text" id="v-valor" class="mask-money"></div><div class="col"><label>Status PG</label><select id="v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div>
                 <div class="input-group"><label>Observação (Opcional)</label><textarea id="v-observacao"></textarea></div>
+                <input type="hidden" id="v-produto-local">
                 <button class="btn-salvar" onclick="salvarVenda()">Registrar Venda</button>
 
                 <div class="section-title" style="margin-top: 35px;">📊 Histórico de Vendas</div>
@@ -321,7 +334,6 @@
     </nav>
 </div>
 
-<!-- ================= MODAIS ================= -->
 <div id="modal-zoom-imagem" class="modal-overlay-alert" style="z-index: 10005; flex-direction: column; padding: 20px; align-items: center; justify-content: center;" onclick="fecharModalImagem()">
     <div style="position: relative; width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: flex-end;">
         <button style="background: var(--primary-dark); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); margin-bottom: 10px;" onclick="fecharModalImagem()">×</button>
@@ -450,8 +462,14 @@
         </div>
         <div class="input-group" style="text-align: left;"><label>Nome do Produto</label><input type="text" id="edit-e-nome" readonly></div>
         <div class="input-group" style="text-align: left;"><label>Tipo</label><input type="text" id="edit-e-tipo"></div>
-        <div class="row" style="text-align: left;"><div class="col"><label>Qtd em Estoque</label><input type="number" id="edit-e-qtd"></div><div class="col"><label>Custo Und.</label><input type="text" id="edit-e-custo" class="mask-money"></div></div>
-        <div class="input-group" style="text-align: left;"><label>Preço Sugerido</label><input type="text" id="edit-e-preco" class="mask-money"></div>
+        <div class="row" style="text-align: left;">
+            <div class="col"><label>Qtd</label><input type="number" id="edit-e-qtd"></div>
+            <div class="col"><label>Local Atual</label><input type="text" id="edit-e-local" list="lista-locais-estoque"></div>
+        </div>
+        <div class="row" style="text-align: left;">
+            <div class="col"><label>Custo Und.</label><input type="text" id="edit-e-custo" class="mask-money"></div>
+            <div class="col"><label>Venda</label><input type="text" id="edit-e-preco" class="mask-money"></div>
+        </div>
         <button class="btn-salvar" onclick="salvarEdicaoEstoque()" style="margin-bottom: 0;">💾 Salvar Tudo</button>
     </div>
 </div>
