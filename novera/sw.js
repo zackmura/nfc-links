@@ -1,11 +1,11 @@
-const CACHE_NAME = 'novera-erp-v7.4.3;
+const CACHE_NAME = 'novera-erp-v7.6.0';
 const urlsToCache = [
   './',
   './index.html',
   './app.js',
   './style.css',
   './manifest.json',
-  './logo-192.png',
+  './logo.png',
   './logo-512.png',
   'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
@@ -24,7 +24,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Não faz cache de requisições de API (evita travamento de dados)
   if (event.request.url.includes('script.google.com') || event.request.url.includes('api.imgbb.com') || event.request.url.includes('api.onionsys.com.br')) {
       return; 
   }
@@ -50,7 +49,6 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// Remove caches antigos
 self.addEventListener('activate', event => {
   const cacheAllowlist = [CACHE_NAME];
   event.waitUntil(
