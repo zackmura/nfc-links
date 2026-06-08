@@ -21,7 +21,7 @@
 
 <div id="login-screen" class="app-container" style="display: none;">
     <div class="card" style="text-align: center; margin-top: 50px;">
-        <span class="app-version">v7.5.0</span>
+        <span class="app-version">v7.5.1</span>
         <img src="logo.png" alt="Novera Scent" class="logo" style="width: 160px; margin-bottom: 15px; filter: drop-shadow(0 8px 15px rgba(184, 124, 150, 0.2));" onerror="this.src='logo.jpeg'; this.onerror=null;">
         <h2 style="color: var(--primary-dark); margin-bottom: 30px; font-family: 'Playfair Display', serif;">Acesso Restrito</h2>
         <div class="input-group" style="text-align: left;"><label>Usuário</label><input type="text" id="login-user" placeholder="Ex: Fernando"></div>
@@ -38,14 +38,12 @@
         </div>
 
         <div class="header">
-            <span class="app-version">v7.5.0</span>
-            <div id="sync-status" class="sync-status" title="Status da Nuvem">☁️</div>
+            <span class="app-version">v7.5.1</span>
             <button class="btn-settings" onclick="switchTab('configuracoes')" title="Configurações">⚙️</button>
             <img src="logo.png" alt="Novera Scent Logo" class="logo" crossorigin="anonymous" onerror="this.src='logo.jpeg'; this.onerror=null;">
             <h1>Novera Scent</h1>
         </div>
 
-        <!-- ABA ROTULOS -->
         <div id="tab-rotulos" class="tab-content">
             <div class="section-title">✨ Nova Essência Base</div>
             <div class="input-group"><label>Essência Original (Inspiração)</label><input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal..."></div>
@@ -53,7 +51,7 @@
                 <div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn" placeholder="Ex: 4953"></div>
                 <div class="col"><label>Marca Fornecedor</label><input type="text" id="r-marca" placeholder="Ex: Wanny"></div>
             </div>
-            <div class="input-group">
+            <div class="input-group" style="text-align: left;">
                 <label>Gênero Olfativo</label>
                 <select id="r-genero">
                     <option value="">Unissex / Indefinido</option>
@@ -63,11 +61,12 @@
                 </select>
             </div>
             <button class="btn-salvar" onclick="salvarRotulo()">Criar Essência Mestre</button>
+            
             <div class="section-title">📋 Dicionário Ativo</div>
+            <div id="resumo-essencias" class="dash-grid" style="margin-bottom: 15px; gap: 8px;"></div>
             <div id="lista-rotulos-cadastrados"></div>
         </div>
 
-        <!-- ABA FABRICA -->
         <div id="tab-precificar" class="tab-content">
             <div class="section-title">🧪 Fabricar Novo Produto</div>
             <div class="row">
@@ -100,7 +99,6 @@
             </div>
         </div>
 
-        <!-- ABA ESTOQUE -->
         <div id="tab-estoque" class="tab-content">
             <div class="section-title" style="margin-top: 0;">📦 Produtos Prontos na Prateleira</div>
             <div class="row" style="margin-bottom: 15px;">
@@ -116,7 +114,6 @@
             <div id="lista-estoque-cards"></div>
         </div>
 
-        <!-- ABA COMPRAS E GASTOS -->
         <div id="tab-gastos" class="tab-content">
             <div class="sub-nav-container">
                 <button id="btn-sub-compras" class="sub-nav-btn active" onclick="toggleGastosTab('compras')">📝 Planejar Compras</button>
@@ -178,7 +175,6 @@
             <datalist id="lista-socios"></datalist>
         </div>
 
-        <!-- ABA VENDAS E ENCOMENDAS -->
         <div id="tab-vendas" class="tab-content active">
             <div class="sub-nav-container">
                 <button id="btn-sub-registro" class="sub-nav-btn active" onclick="toggleVendasTab('registro')">🛒 PDV Rápido</button>
@@ -416,18 +412,28 @@
     </div>
 </div>
 
-<!-- MODAIS DE EDIÇÃO -->
-<div id="modal-editar-rotulo" class="modal-overlay-alert"><div class="modal-box-alert" style="padding-top: 40px;"><button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button><h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3><input type="hidden" id="edit-r-linha"><div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div><div class="row" style="text-align: left;"><div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div><div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div></div>
-<div class="input-group" style="text-align: left;">
-    <label>Gênero Olfativo</label>
-    <select id="edit-r-genero">
-        <option value="">Unissex / Indefinido</option>
-        <option value="Feminino">Feminino</option>
-        <option value="Masculino">Masculino</option>
-        <option value="Infantil">Infantil</option>
-    </select>
+<div id="modal-editar-rotulo" class="modal-overlay-alert">
+    <div class="modal-box-alert" style="padding-top: 40px;">
+        <button onclick="document.getElementById('modal-editar-rotulo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Editar Identidade</h3>
+        <input type="hidden" id="edit-r-linha">
+        <div class="input-group" style="text-align: left;"><label>Essência Original</label><input type="text" id="edit-r-essencia"></div>
+        <div class="row" style="text-align: left;">
+            <div class="col"><label>Cód. Fornecedor</label><input type="text" id="edit-r-codigo-forn"></div>
+            <div class="col"><label>Marca Fornecedor</label><input type="text" id="edit-r-marca"></div>
+        </div>
+        <div class="input-group" style="text-align: left;">
+            <label>Gênero Olfativo</label>
+            <select id="edit-r-genero">
+                <option value="">Unissex / Indefinido</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Infantil">Infantil</option>
+            </select>
+        </div>
+        <button class="btn-salvar" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
+    </div>
 </div>
-<button class="btn-salvar" onclick="salvarEdicaoRotulo()" style="margin-bottom: 0;">💾 Salvar Alterações</button></div></div>
 
 <div id="modal-editar-estoque" class="modal-overlay-alert">
     <div class="modal-box-alert" style="padding-top: 40px;">
@@ -486,7 +492,6 @@
     </div>
 </div>
 
-<!-- TEMPLATES OCULTOS PARA O CANVAS -->
 <div id="recibo-template" style="position: absolute; left: -9999px; top: -9999px; width: 400px; background: #fff; padding: 40px; border-radius: 10px; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
     <div style="text-align: center; border-bottom: 2px dashed #E8DDE1; padding-bottom: 20px; margin-bottom: 20px;">
         <img src="logo.png" style="width: 120px; margin-bottom: 10px;" crossorigin="anonymous">
