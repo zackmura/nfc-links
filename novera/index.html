@@ -197,11 +197,25 @@
             <div id="vendas-registro-view">
                 <div class="section-title" style="margin-top:0;">🛍️ PDV (Baixa de Estoque)</div>
                 <div class="row"><div class="col"><label>Data da Venda</label><input type="date" id="v-data"></div><div class="col"><label>Cliente</label><input type="text" id="v-cliente" list="lista-clientes"></div></div>
-                <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 15px;"><div style="flex: 1;"><label>Produto (Do Estoque)</label><select id="v-produto" onchange="autoPreencherValorVenda()" style="margin-bottom:0;"><option value="">Aguardando...</option></select></div><img id="v-produto-img-preview" src="logo.png" onclick="abrirModalImagem(this.src)" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); display: none; cursor: zoom-in;"></div>
+                
+                <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label>Produto (Do Estoque)</label>
+                        <select id="v-produto" onchange="autoPreencherValorVenda()" style="margin-bottom:0;"><option value="">Aguardando...</option></select>
+                    </div>
+                    <img id="v-produto-img-preview" src="logo.png" onclick="abrirModalImagem(this.src)" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); display: none; cursor: zoom-in;">
+                </div>
+                
+                <div class="input-group">
+                    <label>Retirar Produto de Qual Local?</label>
+                    <select id="v-local-estoque" style="background:#fef08a; border-color:#fde047; color:#b45309;">
+                        <option value="">Selecione o Produto Primeiro...</option>
+                    </select>
+                </div>
+
                 <div class="row"><div class="col"><label>Sócio</label><input type="text" id="v-socio" list="lista-socios-dinamica"></div><div class="col"><label>Qtd</label><input type="number" id="v-qtd" value="1" oninput="autoPreencherValorVenda()"></div></div>
                 <div class="row"><div class="col"><label>Total Venda</label><input type="text" id="v-valor" class="mask-money"></div><div class="col"><label>Status PG</label><select id="v-status"><option value="Pendente">Pendente</option><option value="Pago">Pago</option></select></div></div>
                 <div class="input-group"><label>Observação (Opcional)</label><textarea id="v-observacao"></textarea></div>
-                <input type="hidden" id="v-produto-local">
                 <button class="btn-salvar" onclick="salvarVenda()">Registrar Venda</button>
 
                 <div class="section-title" style="margin-top: 35px;">📊 Histórico de Vendas</div>
@@ -280,7 +294,6 @@
                     </div>
                 </div>
             </div>
-            
             <datalist id="lista-clientes"></datalist><datalist id="lista-socios-dinamica"></datalist>
         </div>
 
@@ -451,7 +464,9 @@
     <div class="modal-box-alert" style="padding-top: 40px;">
         <button onclick="document.getElementById('modal-editar-estoque').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
         <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark);">✏️ Ajuste de Estoque</h3>
+        
         <input type="hidden" id="edit-e-linha"><input type="hidden" id="edit-e-foto-antiga"><input type="hidden" id="edit-e-codigo">
+        
         <div style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid var(--border-color); margin-bottom:15px; text-align:center;">
             <p style="font-size:0.75rem; color:#888; margin-top:0; margin-bottom:10px; font-weight:bold;">Sua Foto Base:</p>
             <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px; justify-content:center;"><img id="edit-e-img-preview" src="logo.png" style="width:70px; height:70px; object-fit:cover; border-radius:8px; cursor:zoom-in;" onclick="abrirModalImagem(this.src)"></div>
@@ -460,16 +475,20 @@
             <div id="ai-preview-box" class="ai-choice-container" style="display:none;"><div class="ai-img-box selected" id="box-foto-original" onclick="selecionarFotoIA('original')"><img id="img-original-preview" src="logo.png"><p>Original</p></div><div class="ai-img-box" id="box-foto-ia" onclick="selecionarFotoIA('ia')"><img id="ai-img-result" src=""><p>Nova (IA)</p></div></div>
             <input type="hidden" id="escolha-foto-ia" value="original">
         </div>
+        
         <div class="input-group" style="text-align: left;"><label>Nome do Produto</label><input type="text" id="edit-e-nome" readonly></div>
         <div class="input-group" style="text-align: left;"><label>Tipo</label><input type="text" id="edit-e-tipo"></div>
-        <div class="row" style="text-align: left;">
-            <div class="col"><label>Qtd</label><input type="number" id="edit-e-qtd"></div>
-            <div class="col"><label>Local Atual</label><input type="text" id="edit-e-local" list="lista-locais-estoque"></div>
-        </div>
+        
         <div class="row" style="text-align: left;">
             <div class="col"><label>Custo Und.</label><input type="text" id="edit-e-custo" class="mask-money"></div>
             <div class="col"><label>Venda</label><input type="text" id="edit-e-preco" class="mask-money"></div>
         </div>
+
+        <div class="section-title" style="margin: 20px 0 10px; border-left-color: #25D366; color: #166534;">📍 Distribuição por Local</div>
+        <div id="edit-e-locais-container">
+            </div>
+        <button class="btn-acao" style="width:100%; height:40px; margin-bottom:15px; border:1px dashed #25D366; background:#f0fdf4; color:#166534; border-radius: 12px; font-size: 0.8rem; font-weight: bold;" onclick="adicionarLinhaLocal('', 0)">+ Adicionar Novo Local</button>
+
         <button class="btn-salvar" onclick="salvarEdicaoEstoque()" style="margin-bottom: 0;">💾 Salvar Tudo</button>
     </div>
 </div>
