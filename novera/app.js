@@ -6,11 +6,13 @@ let KEY_IMGBB = localStorage.getItem('novera_imgbb_key') || "";
 let rotulosGlobal = [], estoqueGlobal = [], gastosGlobal = [], vendasGlobal = [];
 let encomendasGlobal = [], comprasGlobal = [];
 let logsGlobal = []; 
-let usuarioLogado = ""; 
-let usuarioCargo = ""; // NOVO: Armazena o cargo (Admin ou Vendedor)
-let dadosCarregados = false; 
-let chartRGBase = null, chartStatusBase = null;
 
+// === VARIÁVEIS DE SESSÃO E CARGO ===
+let usuarioLogado = ""; 
+let usuarioCargo = ""; 
+let dadosCarregados = false; 
+
+let chartRGBase = null, chartStatusBase = null;
 let estoqueAgrupado = {};
 
 document.addEventListener('input', function (e) {
@@ -85,9 +87,10 @@ function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, cal
 }
 
 function switchTab(tabId) { 
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active')); 
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); 
+    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active')); 
     
-    // Proteção de Rota (Impede vendedor de burlar ocultação pelo console)
+    // PROTEÇÃO: Se for vendedor tentando burlar o menu, joga pra vendas.
     if(usuarioCargo !== 'Admin' && tabId !== 'vendas' && tabId !== 'configuracoes') tabId = 'vendas';
     
     const navBtnTarget = document.getElementById('tab-' + tabId);
@@ -135,58 +138,56 @@ function atualizarDatalistsDinamicos() {
     }
 }
 
-// === NOVO: APLICAÇÃO DE RESTRIÇÕES DE ACESSO E CARGOS ===
+// === NOVO: APLICAÇÃO DE PERMISSÕES ===
 function aplicarPermissoes() {
     const isAdmin = (usuarioCargo === 'Admin');
     
-    // Oculta/Exibe navegação inferior
     document.getElementById('nav-rotulos').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-precificar').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-estoque').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-gastos').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-dashboard').style.display = isAdmin ? 'flex' : 'none';
     
-    // Se for Vendedor, joga direto pra aba de vendas e oculta outras configurações
+    const btnAdmin = document.querySelector('button[onclick="switchTab(\'logs\')"]');
+    const btnChaves = document.querySelector('.btn-ai[onclick="salvarConfiguracoesChaves()"]');
+
     if (!isAdmin) {
         switchTab('vendas');
         
-        // Bloquear edição de nome do Sócio/Vendedor na hora da venda
         const inputSocio = document.getElementById('v-socio');
-        if (inputSocio) {
-            inputSocio.value = usuarioLogado;
-            inputSocio.readOnly = true;
-            inputSocio.style.background = "#E8DDE1";
-            inputSocio.style.color = "#7a4a5e";
-        }
+        if (inputSocio) { inputSocio.value = usuarioLogado; inputSocio.readOnly = true; inputSocio.style.background = "#E8DDE1"; inputSocio.style.color = "#7a4a5e"; }
         
-        // Bloquear alteração do valor da venda
         const inputValorVenda = document.getElementById('v-valor');
-        if(inputValorVenda) {
-            inputValorVenda.readOnly = true;
-            inputValorVenda.style.background = "#E8DDE1";
-            inputValorVenda.style.color = "#7a4a5e";
-        }
+        if(inputValorVenda) { inputValorVenda.readOnly = true; inputValorVenda.style.background = "#E8DDE1"; inputValorVenda.style.color = "#7a4a5e"; }
 
-        // Esconder chaves de API e botões de Auditoria nas configurações
-        const btnAdmin = document.querySelector('button[onclick="switchTab(\'logs\')"]');
-        if(btnAdmin) {
-            btnAdmin.style.display = 'none';
-            btnAdmin.previousElementSibling.style.display = 'none'; // Titulo Administração
-        }
-        const btnChaves = document.querySelector('.btn-ai[onclick="salvarConfiguracoesChaves()"]');
+        if(btnAdmin) { btnAdmin.style.display = 'none'; if(btnAdmin.previousElementSibling) btnAdmin.previousElementSibling.style.display = 'none'; }
         if (btnChaves) {
             btnChaves.style.display = 'none';
             document.getElementById('cfg-ai-key').parentElement.parentElement.style.display = 'none';
             document.getElementById('cfg-imgbb-key').parentElement.parentElement.style.display = 'none';
             document.getElementById('cfg-onionsys-key').parentElement.parentElement.style.display = 'none';
-            btnChaves.previousElementSibling.style.display = 'none'; // Aviso de chaves
-            btnChaves.previousElementSibling.previousElementSibling.style.display = 'none'; // Titulo Chaves
+            if(btnChaves.previousElementSibling) { btnChaves.previousElementSibling.style.display = 'none'; if(btnChaves.previousElementSibling.previousElementSibling) btnChaves.previousElementSibling.previousElementSibling.style.display = 'none'; }
+        }
+    } else {
+        const inputSocio = document.getElementById('v-socio');
+        if (inputSocio) { inputSocio.readOnly = false; inputSocio.style.background = "#fafafa"; inputSocio.style.color = "var(--brand-dark)"; }
+        
+        const inputValorVenda = document.getElementById('v-valor');
+        if(inputValorVenda) { inputValorVenda.readOnly = false; inputValorVenda.style.background = "#fafafa"; inputValorVenda.style.color = "var(--brand-dark)"; }
+
+        if(btnAdmin) { btnAdmin.style.display = 'block'; if(btnAdmin.previousElementSibling) btnAdmin.previousElementSibling.style.display = 'block'; }
+        if (btnChaves) {
+            btnChaves.style.display = 'block';
+            document.getElementById('cfg-ai-key').parentElement.parentElement.style.display = 'block';
+            document.getElementById('cfg-imgbb-key').parentElement.parentElement.style.display = 'block';
+            document.getElementById('cfg-onionsys-key').parentElement.parentElement.style.display = 'block';
+            if(btnChaves.previousElementSibling) { btnChaves.previousElementSibling.style.display = 'block'; if(btnChaves.previousElementSibling.previousElementSibling) btnChaves.previousElementSibling.previousElementSibling.style.display = 'block'; }
         }
     }
 }
 
 async function sincronizarDadosUnico() { 
-    mostrarLoading("Sincronizando..."); 
+    mostrarLoading("Sincronizando Banco..."); 
     try { 
         const res = await fetch(API_NOVERA + "?acao=listar_tudo&_t=" + new Date().getTime()); 
         if (!res.ok) throw new Error("Status API: " + res.status);
@@ -195,7 +196,7 @@ async function sincronizarDadosUnico() {
             rotulosGlobal = dados.rotulos || []; estoqueGlobal = dados.estoque || []; gastosGlobal = dados.gastos || []; vendasGlobal = dados.vendas || []; encomendasGlobal = dados.encomendas || []; comprasGlobal = dados.compras || [];
             logsGlobal = dados.logs || [];
             
-            // ISOLAMENTO DE DADOS (Vendedores só veem suas próprias vendas)
+            // ISOLAR DADOS DO VENDEDOR
             if (usuarioCargo !== 'Admin') {
                 vendasGlobal = vendasGlobal.filter(v => String(v.socio).toLowerCase().trim() === usuarioLogado.toLowerCase().trim());
             }
@@ -225,14 +226,14 @@ function toggleSenha(inputId, btnElement) { const input = document.getElementByI
 
 function iniciarSessaoLocal(usuario, cargo) { 
     localStorage.setItem('novera_last_user', usuario); 
-    localStorage.setItem('novera_user_cargo', cargo); // SALVA CARGO
+    localStorage.setItem('novera_user_cargo', cargo || 'Vendedor'); 
     localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); 
     usuarioLogado = usuario; 
-    usuarioCargo = cargo;
+    usuarioCargo = cargo || 'Vendedor';
     document.getElementById('login-screen').style.display = 'none'; 
     document.getElementById('main-app').style.display = 'block'; 
     document.getElementById('cfg-user').value = usuario; 
-    aplicarPermissoes(); // CHAMA AS REGRAS DE TELA
+    aplicarPermissoes(); // APLICA RBAC
     if (!dadosCarregados) sincronizarDadosUnico(); 
 }
 
@@ -250,15 +251,12 @@ function verificarLogin() {
 async function fazerLogin() { const user = document.getElementById('login-user').value.trim(); const pass = document.getElementById('login-pass').value.trim(); if (!user || !pass) return mostrarAlerta("Atenção", "Preencha usuário e senha.", "warning"); const btn = document.getElementById('btn-login'); btn.disabled = true; btn.innerText = "⏳ ENTRANDO..."; try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "login", usuario: user, senha: pass }) }); const json = await res.json(); if (json.sucesso) { iniciarSessaoLocal(json.usuario, json.cargo); } else { mostrarAlerta("Acesso Negado", json.erro, "error"); } } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { btn.disabled = false; btn.innerText = "Entrar"; } }
 function fazerLogout() { localStorage.removeItem('novera_session_expires'); localStorage.removeItem('novera_user_cargo'); dadosCarregados = false; verificarLogin(); }
 function salvarConfiguracoesChaves() { const keyGemini = document.getElementById('cfg-ai-key').value.trim(); const keyImgBB = document.getElementById('cfg-imgbb-key').value.trim(); const keyOnionSys = document.getElementById('cfg-onionsys-key').value.trim(); if(keyGemini) localStorage.setItem('novera_ai_key', keyGemini); if(keyImgBB) { localStorage.setItem('novera_imgbb_key', keyImgBB); KEY_IMGBB = keyImgBB; } if(keyOnionSys) { localStorage.setItem('novera_onionsys_key', keyOnionSys); TOKEN_ONIONSYS = keyOnionSys; } mostrarAlerta("Salvo!", "Suas chaves foram gravadas.", "success"); }
-async function alterarSenha() { const atual = document.getElementById('cfg-senha-atual').value; const nova = document.getElementById('cfg-nova-senha').value; if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha as senhas.", "warning"); mostrarLoading("Atualizando Senha..."); try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Sucesso", "Senha alterada!", "success"); document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = ""; } else { mostrarAlerta("Erro", json.erro, "error"); } } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { ocultarLoading(); } }
+async function alterarSenha() { const atual = document.getElementById('cfg-senha-atual').value; const nova = document.getElementById('cfg-nova-senha').value; if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha as senhas.", "warning"); mostrarLoading("Atualizando Senha..."); try { const res = await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) }); const json = await res.json(); if(json.sucesso) { mostrarAlerta("Sucesso", "Senha alterada!", "success"); document.getElementById('cfg-senha-atual').value = ""; document.getElementById('cfg-nova-senha').value = ""; } else { mostrarAlerta("Erro", json.erro, "error"); } } catch(e) { mostrarAlerta("Erro", "Falha na conexão.", "error"); } finally { ocultarLoading(); } }
 
 function renderizarLogs() {
     const container = document.getElementById('lista-logs');
     if (!container) return;
-    if (logsGlobal.length === 0) {
-        container.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum registro encontrado.</p>";
-        return;
-    }
+    if (logsGlobal.length === 0) { container.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum registro encontrado.</p>"; return; }
     let html = "";
     logsGlobal.forEach(log => {
         let corBadge = "#966178";
@@ -272,9 +270,7 @@ function renderizarLogs() {
                     <span style="font-weight:800; font-size:0.75rem; color:var(--brand-dark);">👤 ${log.usuario}</span>
                     <span style="font-size:0.65rem; color:#888;">🕒 ${log.dataHora}</span>
                 </div>
-                <div style="margin-bottom:4px;">
-                    <span style="background:${corBadge}; color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:800; letter-spacing:0.5px;">${log.acao}</span>
-                </div>
+                <div style="margin-bottom:4px;"><span style="background:${corBadge}; color:white; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:800; letter-spacing:0.5px;">${log.acao}</span></div>
                 <p style="font-size:0.75rem; color:#666; margin:0; line-height:1.4;">${log.detalhe}</p>
             </div>
         </div>`;
@@ -296,27 +292,7 @@ async function salvarProducaoEstoque() { const essBaseVal = document.getElementB
 function renderizarEstoque() { const tBusca = document.getElementById('busca-estoque').value.toLowerCase().trim(); const dFiltroLocal = document.getElementById('f-e-local'); const localSelecionado = dFiltroLocal ? dFiltroLocal.value.trim() : ""; let arrEstoque = Object.values(estoqueAgrupado); arrEstoque = arrEstoque.filter(e => { if (!tBusca) return true; return (e.nome + " " + e.tipo + " " + (e.codigo || "")).toLowerCase().includes(tBusca); }); if (localSelecionado) { arrEstoque = arrEstoque.filter(e => e.locais[localSelecionado] !== undefined && e.locais[localSelecionado] > 0); } arrEstoque.sort((a, b) => { let qA = localSelecionado ? (a.locais[localSelecionado] || 0) : a.totalQtd; let qB = localSelecionado ? (b.locais[localSelecionado] || 0) : b.totalQtd; if (qA > 0 && qB <= 0) return -1; if (qA <= 0 && qB > 0) return 1; return String(b.codigo||"").localeCompare(String(a.codigo||"")); }); const lista = document.getElementById('lista-estoque-cards'); if(arrEstoque.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999;'>Estoque vazio.</p>"; document.getElementById('est-total-itens').innerText = "0"; document.getElementById('est-valor-total').innerText = "R$ 0,00"; return; } let html = "", somaItens = 0, somaValor = 0; arrEstoque.forEach(e => { const qtdExibicao = localSelecionado ? (e.locais[localSelecionado] || 0) : e.totalQtd; const precoNum = parseDinheiro(e.preco); somaItens += qtdExibicao; somaValor += (qtdExibicao * precoNum); let corQtd = qtdExibicao <= 0 ? "#991b1b" : (qtdExibicao < 5 ? "#ef4444" : "var(--brand-dark)"); let avisoQtd = qtdExibicao <= 0 ? `<span class="badge-status b-atrasado" style="margin-left:5px;">ESGOTADO</span>` : (qtdExibicao < 5 ? `<span class="badge-status b-hoje" style="margin-left:5px;">Baixo</span>` : ""); let opacidade = qtdExibicao <= 0 ? "opacity: 0.65; filter: grayscale(50%);" : ""; let fotoUrls = e.foto ? e.foto.split(',') : []; let urlPri = fotoUrls[0] || 'logo.png'; let codigoBadge = e.codigo ? `<span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${e.codigo}</span>` : ''; let locaisHtml = `<div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:5px;">`; for(let loc in e.locais) { if(e.locais[loc] > 0) { locaisHtml += `<span style="background:#f3f4f6; color:#4b5563; padding:3px 8px; border-radius:6px; font-size:0.65rem; font-weight:700; border:1px solid #e5e7eb;">📍 ${loc}: <b style="color:var(--primary-dark);">${e.locais[loc]}</b></span>`; } } locaisHtml += `</div>`; if (qtdExibicao <= 0) locaisHtml = ""; const nomeEncode = encodeURIComponent(e.nome); html += `<div class="rotulo-card" style="align-items:flex-start; ${opacidade}"><img src="${urlPri}" onerror="this.src='logo.png';" class="list-img" onclick="abrirModalImagem(this.src)"><div class="rotulo-info" style="flex:1;"><h4>${codigoBadge}${e.nome} ${avisoQtd}</h4><p style="color:var(--primary); font-weight:700; margin-bottom:2px;">Venda: ${safeFmt(e.preco)}</p><p style="font-size:0.7rem; color:#888; margin-bottom:0;">Custo Fábrica: ${safeFmt(e.custo)}</p>${locaisHtml}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val" style="color:${corQtd};">${qtdExibicao} un</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarEstoque('${nomeEncode}')" title="Editar Distribução">✏️</button></div></div></div>`; }); lista.innerHTML = html; document.getElementById('est-total-itens').innerText = somaItens; document.getElementById('est-valor-total').innerText = fmt(somaValor); }
 function abrirModalEditarEstoque(nomeEncoded) { const nomeDecoded = decodeURIComponent(nomeEncoded); const e = estoqueAgrupado[padronizarTexto(nomeDecoded)]; if (!e) return; document.getElementById('edit-e-nome').value = e.nome; document.getElementById('edit-e-tipo').value = e.tipo; document.getElementById('edit-e-custo').value = safeFmt(e.custo); document.getElementById('edit-e-preco').value = safeFmt(e.preco); document.getElementById('edit-e-codigo').value = e.codigo || ''; let fotos = e.foto ? e.foto.split(',') : []; document.getElementById('edit-e-img-preview').src = fotos[0] || 'logo.png'; document.getElementById('img-original-preview').src = fotos[0] || 'logo.png'; document.getElementById('edit-e-foto-antiga').value = e.foto || ''; document.getElementById('edit-e-foto-nova').value = ''; document.getElementById('ai-preview-box').style.display = 'none'; const container = document.getElementById('edit-e-locais-container'); container.innerHTML = ''; for(let loc in e.locais) { adicionarLinhaLocal(loc, e.locais[loc]); } if(Object.keys(e.locais).length === 0) adicionarLinhaLocal('Sede', 0); document.getElementById('modal-editar-estoque').style.display = 'flex'; }
 function adicionarLinhaLocal(loc = '', qtd = 0) { const div = document.createElement('div'); div.className = 'row edit-local-row'; div.style.marginBottom = '5px'; div.innerHTML = `<div class="col"><input type="text" class="edit-l-nome" value="${loc}" list="lista-locais-estoque" placeholder="Ex: Sede, Casa..."></div><div class="col" style="flex:0.4"><input type="number" class="edit-l-qtd" value="${qtd}" min="0"></div><button class="btn-acao" style="margin-top:2px; height: 46px; background:#fff0f6; border-color:#fce7f3; color:#be185d;" onclick="this.parentElement.remove()" title="Remover Local">🗑️</button>`; document.getElementById('edit-e-locais-container').appendChild(div); }
-
-async function salvarEdicaoEstoque() { 
-    const fileInput = document.getElementById('edit-e-foto-nova'); let fotoFinal = document.getElementById('edit-e-foto-antiga').value; const escolha = document.getElementById('escolha-foto-ia').value; 
-    if (escolha === 'ia') { mostrarLoading("Enviando IA..."); try { const imgSrc = document.getElementById('ai-img-result').src; const response = await fetch(imgSrc); const blob = await response.blob(); const file = new File([blob], "produto_ia.jpg", { type: "image/jpeg" }); if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(file); } catch(e) { ocultarLoading(); return mostrarAlerta("Erro", "Falha ao salvar foto da IA.", "error"); } } else if (fileInput.files.length > 0 && escolha === 'original') { mostrarLoading("Enviando Imagem..."); try { const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8); if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(blob); } catch (err) { ocultarLoading(); return mostrarAlerta("Erro", err.message, "error"); } } 
-    
-    const nome = document.getElementById('edit-e-nome').value; const tipo = document.getElementById('edit-e-tipo').value; const c = parseDinheiro(document.getElementById('edit-e-custo').value); const p = parseDinheiro(document.getElementById('edit-e-preco').value); const cod = document.getElementById('edit-e-codigo').value; 
-    const rows = document.querySelectorAll('.edit-local-row'); const distribuicao = []; 
-    rows.forEach(r => { let loc = r.querySelector('.edit-l-nome').value.trim(); let q = parseFloat(r.querySelector('.edit-l-qtd').value) || 0; if(loc) distribuicao.push({ local: loc, qtd: q }); }); 
-    
-    const oldE = estoqueAgrupado[padronizarTexto(nome)];
-    const oldTotal = oldE ? oldE.totalQtd : 0;
-    const newTotal = distribuicao.reduce((sum, d) => sum + d.qtd, 0);
-    const descLocais = distribuicao.length > 0 ? distribuicao.map(d => `${d.qtd} no(a) ${d.local}`).join(' e ') : "Estoque Zerado";
-    const msgLog = `📦 Ajuste [${nome}]: Tinha ${oldTotal} un -> Ficou com ${newTotal} un. (${descLocais})`;
-
-    document.getElementById('modal-editar-estoque').style.display = 'none'; mostrarLoading("Atualizando Servidor..."); 
-    try { 
-        const py = { usuario: usuarioLogado, acao: "atualizar_estoque_multilocal", nome: nome, tipo: tipo, custo: fmtPlanilha(c), preco: fmtPlanilha(p), foto: fotoFinal, codigo: cod, distribuicao: distribuicao, log_detalhe: msgLog }; 
-        fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }).then(() => { mostrarAlerta("Atualizado!", "Estoque Multi-Local ajustado.", "success"); sincronizarDadosUnico(); }); 
-    } catch(e) {} 
-}
+async function salvarEdicaoEstoque() { const fileInput = document.getElementById('edit-e-foto-nova'); let fotoFinal = document.getElementById('edit-e-foto-antiga').value; const escolha = document.getElementById('escolha-foto-ia').value; if (escolha === 'ia') { mostrarLoading("Enviando IA..."); try { const imgSrc = document.getElementById('ai-img-result').src; const response = await fetch(imgSrc); const blob = await response.blob(); const file = new File([blob], "produto_ia.jpg", { type: "image/jpeg" }); if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(file); } catch(e) { ocultarLoading(); return mostrarAlerta("Erro", "Falha ao salvar foto da IA.", "error"); } } else if (fileInput.files.length > 0 && escolha === 'original') { mostrarLoading("Enviando Imagem..."); try { const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8); if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(blob); } catch (err) { ocultarLoading(); return mostrarAlerta("Erro", err.message, "error"); } } const nome = document.getElementById('edit-e-nome').value; const tipo = document.getElementById('edit-e-tipo').value; const c = parseDinheiro(document.getElementById('edit-e-custo').value); const p = parseDinheiro(document.getElementById('edit-e-preco').value); const cod = document.getElementById('edit-e-codigo').value; const rows = document.querySelectorAll('.edit-local-row'); const distribuicao = []; rows.forEach(r => { let loc = r.querySelector('.edit-l-nome').value.trim(); let q = parseFloat(r.querySelector('.edit-l-qtd').value) || 0; if(loc) distribuicao.push({ local: loc, qtd: q }); }); const oldE = estoqueAgrupado[padronizarTexto(nome)]; const oldTotal = oldE ? oldE.totalQtd : 0; const newTotal = distribuicao.reduce((sum, d) => sum + d.qtd, 0); const descLocais = distribuicao.length > 0 ? distribuicao.map(d => `${d.qtd} no(a) ${d.local}`).join(' e ') : "Estoque Zerado"; const msgLog = `📦 Ajuste [${nome}]: Tinha ${oldTotal} un -> Ficou com ${newTotal} un. (${descLocais})`; document.getElementById('modal-editar-estoque').style.display = 'none'; mostrarLoading("Atualizando Servidor..."); try { const py = { usuario: usuarioLogado, acao: "atualizar_estoque_multilocal", nome: nome, tipo: tipo, custo: fmtPlanilha(c), preco: fmtPlanilha(p), foto: fotoFinal, codigo: cod, distribuicao: distribuicao, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }).then(() => { mostrarAlerta("Atualizado!", "Estoque Multi-Local ajustado.", "success"); sincronizarDadosUnico(); }); } catch(e) {} }
 
 function abrirModalCatalogo() { const tipos = new Set(estoqueGlobal.map(e => padronizarTexto(e.tipo)).filter(t => t)); let html = `<label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom:10px; cursor:pointer;"><input type="checkbox" id="cat-todas" onchange="toggleTodasCategorias(this)" checked style="width:16px; height:16px; flex-shrink:0;"> <strong>Selecionar Todas</strong></label><div style="border-top:1px dashed #E8DDE1; margin-bottom:10px;"></div>`; [...tipos].forEach(t => { let nomeBonito = t.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); html += `<label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:8px; cursor:pointer;"><input type="checkbox" class="chk-cat-tipo" value="${t}" checked onchange="verificarCategorias()" style="width:16px; height:16px; flex-shrink:0;"> ${nomeBonito}</label>`; }); document.getElementById('cat-checkbox-container').innerHTML = html; document.getElementById('modal-gerar-catalogo').style.display = 'flex'; }
 function toggleTodasCategorias(source) { const checkboxes = document.querySelectorAll('.chk-cat-tipo'); checkboxes.forEach(cb => cb.checked = source.checked); }
@@ -331,7 +307,7 @@ function confirmarCompraModal() { const linha = document.getElementById('mc-linh
 function abrirModalEditarCompra(linha) { const c = comprasGlobal.find(x => x.linha === linha); if (!c) return; document.getElementById('edit-c-linha').value = c.linha; document.getElementById('edit-c-item').value = c.item; document.getElementById('edit-c-qtd').value = c.qtd; document.getElementById('edit-c-valor').value = safeFmt(c.valor_previsto); document.getElementById('edit-c-data').value = c.dataPrevista; document.getElementById('edit-c-categoria').value = c.categoria; document.getElementById('modal-editar-compra').style.display = 'flex'; }
 function salvarEdicaoCompra() { const linha = document.getElementById('edit-c-linha').value; const item = padronizarTexto(document.getElementById('edit-c-item').value); const qtd = document.getElementById('edit-c-qtd').value; const valor = parseDinheiro(document.getElementById('edit-c-valor').value); const data = document.getElementById('edit-c-data').value; const cat = padronizarTexto(document.getElementById('edit-c-categoria').value); document.getElementById('modal-editar-compra').style.display = 'none'; mostrarLoading("Atualizando..."); const msgLog = `✏️ Atualizou planejamento de compra: ${qtd}x [${item}]`; const py = { usuario: usuarioLogado, acao: "excluir_registro", aba: "Compras", linha: linha }; fetch(API_NOVERA, { method: "POST", body: JSON.stringify(py) }).then(() => { fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_compra", data: data, categoria: cat, item: item, qtd: qtd, valor: fmtPlanilha(valor), log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Atualizado!", "Planejamento alterado.", "success"); sincronizarDadosUnico(); }); }); }
 function abrirModalCompraLote() { const marcados = document.querySelectorAll('.chk-item-compra-lote:checked'); if (marcados.length === 0) return mostrarAlerta("Aviso", "Selecione ao menos um item da fila para lançar.", "warning"); document.getElementById('modal-comprar-lote').style.display = 'flex'; }
-async function confirmarCompraLoteModal() { const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked'); const local = padronizarTexto(document.getElementById('mcl-local').value); const socio = padronizarTexto(document.getElementById('mcl-socio').value); if(!local || !socio) return mostrarAlerta("Atenção", "Informe o Fornecedor e o Sócio.", "warning"); document.getElementById('modal-comprar-lote').style.display = 'none'; mostrarLoading("Lançando Lote..."); let itensStr = []; for (let chk of checkboxes) { let c = comprasGlobal.find(x => x.linha == chk.value); if(c) { itensStr.push(c.item); let totalGasto = (parseFloat(c.qtd) || 1) * parseFloat(c.valor_previsto); await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "marcar_comprado", linha: c.linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(c.valor_previsto), total: fmtPlanilha(totalGasto), log_detalhe: `🛒 Compra em lote: ${c.item}` }) }); } } mostrarAlerta("Lote Enviado!", "Itens processados.", "success"); sincronizarDadosUnico(); }
+async function confirmarCompraLoteModal() { const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked'); const local = padronizarTexto(document.getElementById('mcl-local').value); const socio = padronizarTexto(document.getElementById('mcl-socio').value); if(!local || !socio) return mostrarAlerta("Atenção", "Informe o Fornecedor e o Sócio.", "warning"); document.getElementById('modal-comprar-lote').style.display = 'none'; mostrarLoading("Lançando Lote..."); let itensStr = []; for (let chk of checkboxes) { let c = comprasGlobal.find(x => x.linha == chk.value); if(c) { itensStr.push(c.item); let totalGasto = (parseFloat(c.qtd) || 1) * parseFloat(c.valor_previsto); await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "marcar_comprado", linha: c.linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(c.valor_previsto), total: fmtPlanilha(totalGasto), log_detalhe: `🛒 Compra em lote: ${c.item}` }) }); } } mostrarAlerta("Lote Enviado!", "Os itens foram processados.", "success"); sincronizarDadosUnico(); }
 function excluirComprasEmLote() { const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Marque os itens.", "warning"); abrirConfirmacao("Excluir Selecionados?", `Deseja apagar ${checkboxes.length} itens marcados?`, "🗑️", "#A05252", "#803f3f", "🗑️ Confirmar", async () => { mostrarLoading("Apagando..."); for (let chk of checkboxes) { await fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "excluir_registro", aba: "Compras", linha: chk.value, log_detalhe: `🗑️ Excluiu compra em lote.` }) }); } mostrarAlerta("Removidos!", "Itens apagados.", "success"); sincronizarDadosUnico(); }); }
 
 function calcularTotalGasto() { const qtd = parseFloat(document.getElementById('g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('g-valor').value); document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
@@ -346,64 +322,16 @@ function salvarEncomenda() { const data = document.getElementById('e-data').valu
 function mudarStatusEncomenda(linha, novoStatus) { let e = encomendasGlobal.find(x => x.linha == linha); if(!e) return; mostrarLoading("Atualizando..."); const msgLog = `🔄 Pedido de ${e.cliente} marcado como ${novoStatus}`; fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_encomenda_status", linha: linha, status: novoStatus, log_detalhe: msgLog }) }).then(()=>sincronizarDadosUnico()); }
 function puxarVendaDeEncomenda(linha) { const e = encomendasGlobal.find(x => x.linha == linha); if(!e) return; toggleVendasTab('registro'); document.getElementById('v-cliente').value = e.cliente; document.getElementById('v-qtd').value = e.qtd; document.getElementById('v-observacao').value = "REF ENCOMENDA: " + e.item; const dropdownProd = document.getElementById('v-produto'); let options = Array.from(dropdownProd.options); let achou = options.find(opt => opt.value.toLowerCase() === e.item.toLowerCase()); if(achou) { dropdownProd.value = achou.value; autoPreencherValorVenda(); } mostrarAlerta("Preenchido!", "Preenchemos o PDV para você.", "success"); }
 
-// --- VENDAS (PDV COM CONTROLE DE PREÇO PARA VENDEDORES) ---
-function autoPreencherValorVenda() { 
-    const selecao = document.getElementById('v-produto').value; const nomePadronizado = padronizarTexto(selecao); const prodAgrupado = estoqueAgrupado[nomePadronizado]; const imgPrev = document.getElementById('v-produto-img-preview'); const comboLocal = document.getElementById('v-local-estoque'); 
-    if(comboLocal) comboLocal.innerHTML = ''; 
-    if(prodAgrupado && prodAgrupado.totalQtd > 0) { 
-        const qtd = parseInt(document.getElementById('v-qtd').value) || 1; 
-        const valorUnitario = parseDinheiro(prodAgrupado.preco); 
-        document.getElementById('v-valor').value = fmt(valorUnitario * qtd); 
-        let fotos = prodAgrupado.foto ? prodAgrupado.foto.split(',') : []; imgPrev.src = fotos[0] || 'logo.png'; imgPrev.style.display = 'block'; 
-        if(comboLocal) { let count = 0; for(let loc in prodAgrupado.locais) { if (prodAgrupado.locais[loc] > 0) { comboLocal.innerHTML += `<option value="${loc}">${loc} (Disp: ${prodAgrupado.locais[loc]})</option>`; count++; } } if (count === 0) comboLocal.innerHTML = `<option value="">Sem estoque</option>`; } 
-    } else { 
-        document.getElementById('v-valor').value = ""; imgPrev.style.display = 'none'; 
-        if(comboLocal) comboLocal.innerHTML = `<option value="">Selecione o Produto Primeiro...</option>`; 
-    } 
-}
+function autoPreencherValorVenda() { const selecao = document.getElementById('v-produto').value; const nomePadronizado = padronizarTexto(selecao); const prodAgrupado = estoqueAgrupado[nomePadronizado]; const imgPrev = document.getElementById('v-produto-img-preview'); const comboLocal = document.getElementById('v-local-estoque'); if(comboLocal) comboLocal.innerHTML = ''; if(prodAgrupado && prodAgrupado.totalQtd > 0) { const qtd = parseInt(document.getElementById('v-qtd').value) || 1; const valorUnitario = parseDinheiro(prodAgrupado.preco); document.getElementById('v-valor').value = fmt(valorUnitario * qtd); let fotos = prodAgrupado.foto ? prodAgrupado.foto.split(',') : []; imgPrev.src = fotos[0] || 'logo.png'; imgPrev.style.display = 'block'; if(comboLocal) { let count = 0; for(let loc in prodAgrupado.locais) { if (prodAgrupado.locais[loc] > 0) { comboLocal.innerHTML += `<option value="${loc}">${loc} (Disp: ${prodAgrupado.locais[loc]})</option>`; count++; } } if (count === 0) comboLocal.innerHTML = `<option value="">Sem estoque</option>`; } } else { document.getElementById('v-valor').value = ""; imgPrev.style.display = 'none'; if(comboLocal) comboLocal.innerHTML = `<option value="">Selecione o Produto Primeiro...</option>`; } }
 function autoPreencherEdicaoVenda() { const selecao = document.getElementById('edit-v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao); if(produtoEstoque) { const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); } }
+function salvarVenda() { const data = document.getElementById('v-data').value, cliente = padronizarTexto(document.getElementById('v-cliente').value), produto = document.getElementById('v-produto').value; const socio = (usuarioCargo === 'Admin') ? padronizarTexto(document.getElementById('v-socio').value) : padronizarTexto(usuarioLogado); const elLocal = document.getElementById('v-local-estoque'); const localRetirada = elLocal ? elLocal.value : ""; const qtd = parseInt(document.getElementById('v-qtd').value) || 1, valorStr = document.getElementById('v-valor').value, status = document.getElementById('v-status').value, observacao = document.getElementById('v-observacao').value; const valVenda = parseDinheiro(valorStr); if(!data || !cliente || !produto || valVenda < 0 || !localRetirada) return mostrarAlerta("Atenção", "Preencha todos os campos e o Local do Estoque.", "warning"); const prodAgrupado = estoqueAgrupado[padronizarTexto(produto)]; const cUnd = prodAgrupado ? parseDinheiro(prodAgrupado.custo) : 0; const cTot = cUnd * qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1; const dPg = status === "Pago" ? data : ""; mostrarLoading("Registrando..."); const msgLog = `🛒 Venda: ${qtd}x [${produto}] para ${cliente}. Local: ${localRetirada} (${status})`; const envio = { usuario: usuarioLogado, acao: "salvar_venda", data: data, cliente: cliente, produto: produto, socio: socio, qtd: qtd, valor_venda: fmtPlanilha(valVenda), status: status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: dPg, observacao: observacao, local_estoque: localRetirada, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }).then(() => { mostrarAlerta("Sucesso", "Venda lançada.", "success"); document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; document.getElementById('v-observacao').value = ""; document.getElementById('v-produto-img-preview').style.display = 'none'; if(elLocal) elLocal.innerHTML = '<option value="">Selecione o Produto Primeiro...</option>'; sincronizarDadosUnico(); }); }
 
-function salvarVenda() { 
-    const data = document.getElementById('v-data').value;
-    const cliente = padronizarTexto(document.getElementById('v-cliente').value);
-    const produto = document.getElementById('v-produto').value;
-    
-    // NOVO: Se for vendedor, crava o nome dele no banco.
-    const socio = (usuarioCargo === 'Admin') ? padronizarTexto(document.getElementById('v-socio').value) : padronizarTexto(usuarioLogado);
-    
-    const elLocal = document.getElementById('v-local-estoque'); const localRetirada = elLocal ? elLocal.value : ""; 
-    const qtd = parseInt(document.getElementById('v-qtd').value) || 1;
-    const valorStr = document.getElementById('v-valor').value;
-    const status = document.getElementById('v-status').value;
-    const observacao = document.getElementById('v-observacao').value;
-
-    const valVenda = parseDinheiro(valorStr); 
-    if(!data || !cliente || !produto || valVenda < 0 || !localRetirada) return mostrarAlerta("Atenção", "Preencha todos os campos e o Local do Estoque.", "warning"); 
-    
-    const prodAgrupado = estoqueAgrupado[padronizarTexto(produto)]; const cUnd = prodAgrupado ? parseDinheiro(prodAgrupado.custo) : 0; const cTot = cUnd * qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1; const dPg = status === "Pago" ? data : ""; 
-    mostrarLoading("Registrando..."); const msgLog = `🛒 Venda: ${qtd}x [${produto}] para ${cliente}. Local: ${localRetirada} (${status})`; 
-    const envio = { usuario: usuarioLogado, acao: "salvar_venda", data: data, cliente: cliente, produto: produto, socio: socio, qtd: qtd, valor_venda: fmtPlanilha(valVenda), status: status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: dPg, observacao: observacao, local_estoque: localRetirada, log_detalhe: msgLog }; 
-    fetch(API_NOVERA, { method: "POST", body: JSON.stringify(envio) }).then(() => { mostrarAlerta("Sucesso", "Venda lançada.", "success"); document.getElementById('v-cliente').value = ""; document.getElementById('v-valor').value = ""; document.getElementById('v-observacao').value = ""; document.getElementById('v-produto-img-preview').style.display = 'none'; if(elLocal) elLocal.innerHTML = '<option value="">Selecione o Produto Primeiro...</option>'; sincronizarDadosUnico(); }); 
-}
-
-function renderizarVendas() { 
-    const dlist = [...new Set(vendasGlobal.map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('lista-clientes').innerHTML = dlist.map(c => `<option value="${c}">`).join(''); 
-    const dlistPagos = [...new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + dlistPagos.map(c => `<option value="${c}">${c}</option>`).join(''); 
-    const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); 
-    let htmlVendas = '<option value="">Selecione do Estoque...</option>'; Object.values(estoqueAgrupado).sort((a,b)=>String(b.codigo||"").localeCompare(String(a.codigo||""))).forEach(e => { if (e.totalQtd > 0) { let exibeCodigo = e.codigo ? e.codigo + ' - ' : ''; htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Total: ${e.totalQtd})</option>`; } }); 
-    const fvClienteSelect = document.getElementById('f-v-cliente'); const fvClienteAtual = fvClienteSelect.value; fvClienteSelect.innerHTML = '<option value="">Todos</option>' + dlist.map(c => `<option value="${c}">${c}</option>`).join(''); fvClienteSelect.value = fvClienteAtual; document.getElementById("v-produto").innerHTML = htmlVendas; document.getElementById("edit-v-produto").innerHTML = htmlVendas; 
-    filtrarVendas(); 
-}
-
+function renderizarVendas() { const dlist = [...new Set(vendasGlobal.map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('lista-clientes').innerHTML = dlist.map(c => `<option value="${c}">`).join(''); const dlistPagos = [...new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + dlistPagos.map(c => `<option value="${c}">${c}</option>`).join(''); const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); let htmlVendas = '<option value="">Selecione do Estoque...</option>'; Object.values(estoqueAgrupado).sort((a,b)=>String(b.codigo||"").localeCompare(String(a.codigo||""))).forEach(e => { if (e.totalQtd > 0) { let exibeCodigo = e.codigo ? e.codigo + ' - ' : ''; htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Total: ${e.totalQtd})</option>`; } }); const fvClienteSelect = document.getElementById('f-v-cliente'); const fvClienteAtual = fvClienteSelect.value; fvClienteSelect.innerHTML = '<option value="">Todos</option>' + dlist.map(c => `<option value="${c}">${c}</option>`).join(''); fvClienteSelect.value = fvClienteAtual; document.getElementById("v-produto").innerHTML = htmlVendas; document.getElementById("edit-v-produto").innerHTML = htmlVendas; filtrarVendas(); }
 function filtrarVendas() { 
     const isAdmin = (usuarioCargo === 'Admin');
     const fTipoData = document.getElementById('f-v-tipo-data') ? document.getElementById('f-v-tipo-data').value : 'venda'; const fDia = document.getElementById('f-v-dia').value, fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value, fSocio = document.getElementById('f-v-socio').value.toLowerCase(), fCliente = document.getElementById('f-v-cliente').value.toLowerCase(); 
-    let filtradas = vendasGlobal.filter(v => { 
-        let pD = true, pM = true, pS = true, pSo = true, pC = true; let dataAlvoIso = ""; if (fTipoData === 'venda') { dataAlvoIso = v.dataVendaIso; } else { if (v.dataPgtoDisplay) { const parts = v.dataPgtoDisplay.split('/'); if (parts.length === 3) dataAlvoIso = `${parts[2]}-${parts[1]}-${parts[0]}`; } } if(fDia) { if (dataAlvoIso !== fDia) pD = false; } if(fMes) { const mesAlvo = dataAlvoIso ? dataAlvoIso.split('-')[1] : null; if(mesAlvo && mesAlvo !== fMes) pM = false; } if(fStatus && v.status !== fStatus) pS = false; if(fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; if(fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; return pD && pM && pS && pSo && pC; 
-    }); 
-    filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); 
-    let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = ""; 
-    
+    let filtradas = vendasGlobal.filter(v => { let pD = true, pM = true, pS = true, pSo = true, pC = true; let dataAlvoIso = ""; if (fTipoData === 'venda') { dataAlvoIso = v.dataVendaIso; } else { if (v.dataPgtoDisplay) { const parts = v.dataPgtoDisplay.split('/'); if (parts.length === 3) dataAlvoIso = `${parts[2]}-${parts[1]}-${parts[0]}`; } } if(fDia) { if (dataAlvoIso !== fDia) pD = false; } if(fMes) { const mesAlvo = dataAlvoIso ? dataAlvoIso.split('-')[1] : null; if(mesAlvo && mesAlvo !== fMes) pM = false; } if(fStatus && v.status !== fStatus) pS = false; if(fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; if(fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; return pD && pM && pS && pSo && pC; }); 
+    filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = ""; 
     if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else { 
         filtradas.forEach(v => { 
             const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0; const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val; 
@@ -411,14 +339,15 @@ function filtrarVendas() {
             const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : ""; 
             const nomeHtml = formatarNomeProdutoHtml(v.produto, 'venda'); 
             
-            // NOVO: Controle de Ocultação
             const txtLucro = isAdmin ? `<p style="font-size:0.7rem; color:#2e7d32; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>` : '';
             const btnApagar = isAdmin ? `<button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button>` : '';
 
             html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p>${txtLucro}${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>${btnApagar}</div></div></div>`; 
         }); 
     } 
-    document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); document.getElementById('dash-v-lucro').innerText = fmt(tLuc); document.getElementById('dash-v-itens').innerText = tItens; 
+    document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); 
+    if (document.getElementById('dash-v-lucro')) document.getElementById('dash-v-lucro').innerText = isAdmin ? fmt(tLuc) : "---"; 
+    document.getElementById('dash-v-itens').innerText = tItens; 
 }
 
 function prepararRecibo() { const cliente = document.getElementById('recibo-cliente').value, divNome = document.getElementById('div-recibo-nome'), inputNome = document.getElementById('recibo-nome-exibicao'), container = document.getElementById('recibo-pedidos-lista'), btn = document.getElementById('btn-gerar-recibo'); if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pago'); pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); if (pedidos.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido PAGO encontrado.</p>'; } else { let html = ''; pedidos.forEach(p => { const dataCompra = p.dataVendaDisplay || p.dataVendaIso, statusTexto = `<span style="color:#2e7d32;">Pago: ${p.dataPgtoDisplay || '?'}</span>`; const nomeHtml = formatarNomeProdutoHtml(p.produto, 'recibo'); html += `<label class="checkbox-recibo"><input type="checkbox" class="chk-item-recibo" value="${p.linha}" checked><div class="chk-info"><span class="chk-title">${p.qtd}x ${nomeHtml}</span><span class="chk-desc">Data: ${dataCompra} | ${statusTexto}</span></div><div class="chk-val">${safeFmt(p.valor_venda)}</div></label>`; }); container.innerHTML = html; } container.style.display = 'block'; btn.style.display = 'block'; }
@@ -429,6 +358,7 @@ function copiarPendenciasWhats() { const cliReal = document.getElementById('cobr
 async function montarCobranca() { const cliReal = document.getElementById('cobranca-cliente').value; if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente devedor.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning"); mostrarLoading("Gerando Imagem..."); document.getElementById('cob-cli-nome').innerText = cliDisplay; let htmlItens = "", somaTotal = 0; checkboxes.forEach(chk => { const pedido = vendasGlobal.find(v => v.linha == chk.value); if(pedido) { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'cobranca'); htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; } }); document.getElementById('cob-itens-lista').innerHTML = htmlItens; document.getElementById('cob-total').innerText = fmt(somaTotal); try { const template = document.getElementById('cobranca-template'); template.style.display = 'block'; const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${cliDisplay.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } }
 function darBaixaVendaLote() { const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione o pedido para dar baixa.", "warning"); let linhas = []; checkboxes.forEach(chk => linhas.push(chk.value)); abrirConfirmacao("Confirmar Pagamento?", `Marcar ${linhas.length} venda(s) como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Confirmar", () => { mostrarLoading("Salvando..."); const msgLog = `💰 Deu baixa em ${linhas.length} parcela(s) -> PAGO`; fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: linhas, status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa em lote concluída.", "success"); sincronizarDadosUnico(); }); }); }
 async function gerarCobrancaUnica(linha) { const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome na Cobrança"); if (nomeExibicao === null) return; mostrarLoading("Gerando..."); document.getElementById('cob-cli-nome').innerText = nomeExibicao; const valor = parseDinheiro(pedido.valor_venda); const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'cobranca'); const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; document.getElementById('cob-itens-lista').innerHTML = htmlItem; document.getElementById('cob-total').innerText = fmt(valor); try { const template = document.getElementById('cobranca-template'); template.style.display = 'block'; const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block;">`; document.getElementById('preview-title').innerText = "Imagem Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; } catch (error) { mostrarAlerta("Erro", "Falha ao gerar.", "error"); } finally { ocultarLoading(); } }
+
 function prepararExclusaoRegistro(aba, linha, desc) { abrirConfirmacao("Confirmar Exclusão?", `Apagar "${desc}" de ${aba}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", () => { mostrarLoading("Apagando..."); const msgLog = `🗑️ Apagou o registro: [${desc}] da aba ${aba}`; fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "excluir_registro", aba: aba, linha: linha, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Excluído", "Registro apagado.", "success"); sincronizarDadosUnico(); }); }); }
 function darBaixaVenda(linha) { abrirConfirmacao("Confirmar Pagamento?", "Marcar venda como RECEBIDA hoje?", "💰", "#2e7d32", "#1b5e20", "💲 Receber", () => { mostrarLoading("Salvando..."); const msgLog = `💲 Deu baixa individual na venda -> PAGO`; fetch(API_NOVERA, { method: "POST", body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: [linha], status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa ok.", "success"); sincronizarDadosUnico(); }); }); }
 function abrirModalEditarVenda(linha) { const v = vendasGlobal.find(x => x.linha === linha); if (!v) return; document.getElementById('edit-v-linha').value = v.linha; document.getElementById('edit-v-data').value = v.dataVendaIso; document.getElementById('edit-v-cliente').value = v.cliente; document.getElementById('edit-v-produto').value = v.produto; document.getElementById('edit-v-socio').value = v.socio; document.getElementById('edit-v-qtd').value = v.qtd; document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); document.getElementById('edit-v-status').value = v.status; document.getElementById('edit-v-observacao').value = v.observacao || ""; document.getElementById('modal-editar-venda').style.display = 'flex'; }
