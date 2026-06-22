@@ -46,6 +46,14 @@
         </div>
 
         <div id="tab-rotulos" class="tab-content">
+
+            <div class="section-title">📋 Dicionário Ativo</div>
+            
+            <button class="btn-salvar" style="background: var(--brand-dark); margin-bottom: 15px; margin-top: 0;" onclick="abrirModalEtiquetaAmostras()">🏷️ Gerar Etiqueta de Amostras (PDF)</button>
+            
+            <div id="resumo-essencias" class="dash-grid" style="margin-bottom: 15px; gap: 8px;"></div>
+            <div id="lista-rotulos-cadastrados"></div>
+            
             <div class="section-title">✨ Nova Essência Base</div>
             <div class="input-group"><label>Essência Original (Inspiração)</label><input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal..."></div>
             <div class="row">
@@ -575,6 +583,34 @@
     </div>
     <div style="text-align: center; margin-top: 30px; font-size: 0.75rem; color: #888;">
         <p style="margin:0;">Qualquer dúvida, é só nos chamar.</p>
+    </div>
+</div>
+
+<div id="modal-gerar-etiqueta" class="modal-overlay-alert" style="z-index: 10001;">
+    <div class="modal-box-alert" style="width: 95%; max-width: 400px; padding: 30px 20px;">
+        <button onclick="document.getElementById('modal-gerar-etiqueta').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 5px; color: var(--brand-dark);">🏷️ Etiqueta da Caixinha</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Selecione quais essências estão nas amostras.</p>
+        
+        <div style="text-align: left; margin-bottom: 15px;">
+            <div id="etiqueta-checkbox-container" style="max-height: 250px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;"></div>
+        </div>
+        
+        <button class="btn-salvar" style="margin-top: 5px; background: var(--primary-dark); box-shadow: 0 4px 10px rgba(150, 97, 120, 0.3);" onclick="gerarEtiquetaPDF()">⬇️ Baixar PDF (11 x 8,5 cm)</button>
+    </div>
+</div>
+
+<div id="etiqueta-template" style="display: none; width: 110mm; height: 85mm; background: #fff; padding: 5mm; box-sizing: border-box; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
+    <h3 style="text-align: center; font-size: 14px; margin: 0 0 10px; color: #966178; text-transform: uppercase; font-family: 'Playfair Display', serif; letter-spacing: 1px;">Novera Scent - Amostras</h3>
+    <div style="display: flex; gap: 4mm; height: calc(100% - 25px);">
+        <div style="flex: 1; font-size: 10px;">
+            <div style="font-weight: 900; border-bottom: 1px solid #f3d8e2; padding-bottom: 3px; margin-bottom: 5px; color: #be185d; font-size: 11px;">FEMININO</div>
+            <div id="etq-fem-list" style="display: flex; flex-direction: column; gap: 3px;"></div>
+        </div>
+        <div style="flex: 1; font-size: 10px;">
+            <div style="font-weight: 900; border-bottom: 1px solid #e0f2fe; padding-bottom: 3px; margin-bottom: 5px; color: #0369a1; font-size: 11px;">MASCULINO</div>
+            <div id="etq-masc-list" style="display: flex; flex-direction: column; gap: 3px;"></div>
+        </div>
     </div>
 </div>
 
