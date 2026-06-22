@@ -45,16 +45,8 @@
             <h1>Novera Scent</h1>
         </div>
 
-        <div id="tab-rotulos" class="tab-content">
-
-            <div class="section-title">📋 Dicionário Ativo</div>
-            
-            <button class="btn-salvar" style="background: var(--brand-dark); margin-bottom: 15px; margin-top: 0;" onclick="abrirModalEtiquetaAmostras()">🏷️ Gerar Etiqueta de Amostras (PDF)</button>
-            
-            <div id="resumo-essencias" class="dash-grid" style="margin-bottom: 15px; gap: 8px;"></div>
-            <div id="lista-rotulos-cadastrados"></div>
-            
-            <div class="section-title">✨ Nova Essência Base</div>
+<div id="tab-rotulos" class="tab-content">
+            <div class="section-title" style="margin-top: 0;">✨ Nova Essência Base</div>
             <div class="input-group"><label>Essência Original (Inspiração)</label><input type="text" id="r-essencia" placeholder="Ex: Daslu, Scandal..."></div>
             <div class="row">
                 <div class="col"><label>Cód. Fornecedor</label><input type="text" id="r-codigo-forn" placeholder="Ex: 4953"></div>
@@ -72,11 +64,13 @@
             <button class="btn-salvar" onclick="salvarRotulo()">Criar Essência Mestre</button>
             
             <div class="section-title">📋 Dicionário Ativo</div>
+            <button class="btn-salvar" style="background: var(--brand-dark); margin-bottom: 15px; margin-top: 0;" onclick="abrirModalEtiquetaAmostras()">🏷️ Gerar Etiqueta de Amostras (PDF)</button>
             <div id="resumo-essencias" class="dash-grid" style="margin-bottom: 15px; gap: 8px;"></div>
             <div id="lista-rotulos-cadastrados"></div>
         </div>
 
         <div id="tab-precificar" class="tab-content">
+            <!-- Seu tab-precificar continua EXATAMENTE igual aqui -->
             <div class="section-title">🧪 Fabricar Novo Produto</div>
             <div class="row">
                 <div class="col"><label>Essência Base</label><select id="n-produto"><option value="">Aguardando dados...</option></select></div>
@@ -121,9 +115,23 @@
             
             <div class="filtro-box" style="padding: 10px 15px; display: flex; flex-direction: column; gap: 10px;">
                 <input type="text" id="busca-estoque" class="search-bar" style="margin: 0; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; width: 100%; box-sizing: border-box;" placeholder="🔍 Buscar no estoque..." onkeyup="renderizarEstoque()">
-                <select id="f-e-local" onchange="renderizarEstoque()" style="margin: 0; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; width: 100%; box-sizing: border-box; background: #fff; color: var(--brand-dark); font-weight: 600;">
-                    <option value="">📍 Todos os Locais</option>
-                </select>
+                
+                <div class="row" style="margin-bottom: 0;">
+                    <div class="col">
+                        <select id="f-e-local" onchange="renderizarEstoque()" style="margin: 0; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; width: 100%; box-sizing: border-box; background: #fff; color: var(--brand-dark); font-weight: 600;">
+                            <option value="">📍 Todos os Locais</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select id="f-e-genero" onchange="renderizarEstoque()" style="margin: 0; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; width: 100%; box-sizing: border-box; background: #fff; color: var(--brand-dark); font-weight: 600;">
+                            <option value="">⚧️ Todos os Gêneros</option>
+                            <option value="Feminino">Feminino</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Infantil">Infantil</option>
+                            <option value="Unissex">Unissex</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             
             <div class="dash-grid">
@@ -417,8 +425,20 @@
     <div class="modal-box-alert" style="width: 95%; max-width: 400px; padding: 30px 20px;">
         <button onclick="document.getElementById('modal-gerar-catalogo').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
         <h3 class="modal-title-alert" style="margin-bottom: 5px; color: var(--brand-dark);">📄 Catálogo Novera</h3>
-        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Filtre o tipo de produto que deseja incluir no catálogo em PDF.</p>
-        <div style="text-align: left; margin-bottom: 15px;"><label style="margin-bottom:10px;">Categorias (Tipos)</label><div id="cat-checkbox-container" style="max-height: 150px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;"></div></div>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Filtre o tipo de produto e gênero que deseja incluir no PDF.</p>
+        
+        <div style="text-align: left; margin-bottom: 15px;"><label style="margin-bottom:10px;">Categorias (Tipos)</label><div id="cat-checkbox-container" style="max-height: 120px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px;"></div></div>
+        
+        <div style="text-align: left; margin-bottom: 15px;">
+            <label style="margin-bottom:10px;">Gêneros Olfativos</label>
+            <div style="background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem;"><input type="checkbox" class="chk-cat-genero" value="Feminino" checked style="width:16px; height:16px;"> Feminino</label>
+                <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem;"><input type="checkbox" class="chk-cat-genero" value="Masculino" checked style="width:16px; height:16px;"> Masculino</label>
+                <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem;"><input type="checkbox" class="chk-cat-genero" value="Unissex" checked style="width:16px; height:16px;"> Unissex</label>
+                <label style="display:flex; align-items:center; gap:5px; font-size:0.75rem;"><input type="checkbox" class="chk-cat-genero" value="Infantil" checked style="width:16px; height:16px;"> Infantil</label>
+            </div>
+        </div>
+
         <div style="text-align: left; margin-bottom: 15px;"><label class="checkbox-recibo" style="margin-bottom: 8px;"><input type="checkbox" id="cat-filtro-estoque" checked><div class="chk-info"><span class="chk-title" style="font-size: 0.85rem;">Apenas com Estoque</span><span class="chk-desc" style="font-size: 0.7rem;">Oculta produtos esgotados</span></div></label><label class="checkbox-recibo"><input type="checkbox" id="cat-filtro-exibir-qtd"><div class="chk-info"><span class="chk-title" style="font-size: 0.85rem;">Exibir Qtd. no PDF</span><span class="chk-desc" style="font-size: 0.7rem;">Mostra quantas unidades restam</span></div></label></div>
         <button class="btn-salvar" style="margin-top: 5px; background: var(--primary-dark); box-shadow: 0 4px 10px rgba(150, 97, 120, 0.3);" onclick="gerarCatalogoPDFFrontend()">⬇️ Gerar e Baixar PDF</button>
     </div>
