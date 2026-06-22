@@ -5,10 +5,10 @@ let KEY_IMGBB = localStorage.getItem('novera_imgbb_key') || "";
 
 let rotulosGlobal = [], estoqueGlobal = [], gastosGlobal = [], vendasGlobal = [];
 let encomendasGlobal = [], comprasGlobal = [];
-let logsGlobal = []; 
-let usuarioLogado = ""; 
-let usuarioCargo = ""; 
-let dadosCarregados = false; 
+let logsGlobal = [];
+let usuarioLogado = "";
+let usuarioCargo = "";
+let dadosCarregados = false;
 
 let chartRGBase = null, chartStatusBase = null;
 let estoqueAgrupado = {};
@@ -22,176 +22,176 @@ document.addEventListener('input', function (e) {
         value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
         e.target.value = "R$ " + value;
 
-        if(e.target.id === 'g-valor') calcularTotalGasto();
-        if(e.target.id === 'edit-g-valor') calcularEditGasto();
-        if(e.target.id === 'mc-valor-unit') calcularTotalCompraModal();
+        if (e.target.id === 'g-valor') calcularTotalGasto();
+        if (e.target.id === 'edit-g-valor') calcularEditGasto();
+        if (e.target.id === 'mc-valor-unit') calcularTotalCompraModal();
     }
 });
 
 function padronizarTexto(texto) { return texto ? String(texto).trim().replace(/\s+/g, ' ').toLowerCase().replace(/(?:^|\s)\S/g, a => a.toUpperCase()) : ""; }
-const fmt = val => "R$ " + (Number(val)||0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const fmtPlanilha = val => "R$ " + (Number(val)||0).toFixed(2).replace('.', ',');
+const fmt = val => "R$ " + (Number(val) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtPlanilha = val => "R$ " + (Number(val) || 0).toFixed(2).replace('.', ',');
 
-function parseDinheiro(val) { 
-    if (!val) return 0; 
-    if (typeof val === 'number') return val; 
-    let str = String(val).trim().replace(/R\$\s?/gi, ''); 
-    if (str.includes(',') && str.includes('.')) str = str.replace(/\./g, '').replace(',', '.'); 
-    else if (str.includes(',')) str = str.replace(',', '.'); 
-    return parseFloat(str) || 0; 
+function parseDinheiro(val) {
+    if (!val) return 0;
+    if (typeof val === 'number') return val;
+    let str = String(val).trim().replace(/R\$\s?/gi, '');
+    if (str.includes(',') && str.includes('.')) str = str.replace(/\./g, '').replace(',', '.');
+    else if (str.includes(',')) str = str.replace(',', '.');
+    return parseFloat(str) || 0;
 }
 
 function safeFmt(val) { return fmt(parseDinheiro(val)); }
-function dataBR(isoStr) { if(!isoStr) return ""; const p = isoStr.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
+function dataBR(isoStr) { if (!isoStr) return ""; const p = isoStr.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
 
-function formatarNomeProdutoHtml(nome, tipo) { 
-    const prod = estoqueGlobal.find(e => e.nome === nome); 
-    if (prod && prod.codigo) { 
-        if(tipo === 'cobranca') return `<span style="background:#fff9e6; border:1px solid #fde047; color:#b45309; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:900; margin-right:5px; display:inline-block; transform:translateY(-1px);">${prod.codigo}</span>${nome}`; 
-        else return `<span style="background:#fdf5f7; border:1px solid #f3d8e2; color:#966178; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:900; margin-right:5px; display:inline-block; transform:translateY(-1px);">${prod.codigo}</span>${nome}`; 
-    } 
-    return nome; 
+function formatarNomeProdutoHtml(nome, tipo) {
+    const prod = estoqueGlobal.find(e => e.nome === nome);
+    if (prod && prod.codigo) {
+        if (tipo === 'cobranca') return `<span style="background:#fff9e6; border:1px solid #fde047; color:#b45309; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:900; margin-right:5px; display:inline-block; transform:translateY(-1px);">${prod.codigo}</span>${nome}`;
+        else return `<span style="background:#fdf5f7; border:1px solid #f3d8e2; color:#966178; padding:2px 6px; border-radius:4px; font-size:0.65rem; font-weight:900; margin-right:5px; display:inline-block; transform:translateY(-1px);">${prod.codigo}</span>${nome}`;
+    }
+    return nome;
 }
 
-function formatarNomeProdutoTexto(nome) { 
-    const prod = estoqueGlobal.find(e => e.nome === nome); 
-    if (prod && prod.codigo) return `[${prod.codigo}] ${nome}`; 
-    return nome; 
+function formatarNomeProdutoTexto(nome) {
+    const prod = estoqueGlobal.find(e => e.nome === nome);
+    if (prod && prod.codigo) return `[${prod.codigo}] ${nome}`;
+    return nome;
 }
 
-function mostrarLoading(m) { 
+function mostrarLoading(m) {
     const syncEl = document.getElementById("sync-status");
-    if(syncEl) { syncEl.innerText = "🔄"; syncEl.classList.add('spin-anim'); }
-    if (!dadosCarregados) { const l = document.getElementById("global-loader"); if(l) { l.querySelector("p").innerText = m; l.style.display = "flex"; } }
+    if (syncEl) { syncEl.innerText = "🔄"; syncEl.classList.add('spin-anim'); }
+    if (!dadosCarregados) { const l = document.getElementById("global-loader"); if (l) { l.querySelector("p").innerText = m; l.style.display = "flex"; } }
 }
-function ocultarLoading() { 
+function ocultarLoading() {
     const syncEl = document.getElementById("sync-status");
-    if(syncEl) { syncEl.classList.remove('spin-anim'); syncEl.innerText = "✔️"; setTimeout(() => { if(syncEl.innerText === "✔️") syncEl.innerText = "☁️"; }, 3000); }
-    const l = document.getElementById("global-loader"); if(l) l.style.display = "none";
+    if (syncEl) { syncEl.classList.remove('spin-anim'); syncEl.innerText = "✔️"; setTimeout(() => { if (syncEl.innerText === "✔️") syncEl.innerText = "☁️"; }, 3000); }
+    const l = document.getElementById("global-loader"); if (l) l.style.display = "none";
 }
-function mostrarAlerta(titulo, texto, tipo) { 
-    const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert"); 
-    tituloEl.innerText = titulo; document.getElementById("modal-texto-alert").innerText = texto; 
-    if(tipo === "success") { icone.innerText = "✨"; tituloEl.style.color = "var(--primary-dark)"; btnEl.style.background = "var(--primary-dark)"; btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; } 
-    else if (tipo === "warning") { icone.innerText = "⚠️"; tituloEl.style.color = "#D4A373"; btnEl.style.background = "#D4A373"; btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; } 
-    else { icone.innerText = "❌"; tituloEl.style.color = "#A05252"; btnEl.style.background = "#A05252"; btnEl.style.boxShadow = "0 4px 0 #803f3f"; } 
-    modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50); 
+function mostrarAlerta(titulo, texto, tipo) {
+    const modal = document.getElementById("custom-modal"); const icone = document.getElementById("modal-icone-alert"); const btnEl = document.getElementById("btn-modal-ok"); const tituloEl = document.getElementById("modal-titulo-alert");
+    tituloEl.innerText = titulo; document.getElementById("modal-texto-alert").innerText = texto;
+    if (tipo === "success") { icone.innerText = "✨"; tituloEl.style.color = "var(--primary-dark)"; btnEl.style.background = "var(--primary-dark)"; btnEl.style.boxShadow = "0 4px 0 #7a4a5e"; }
+    else if (tipo === "warning") { icone.innerText = "⚠️"; tituloEl.style.color = "#D4A373"; btnEl.style.background = "#D4A373"; btnEl.style.boxShadow = "0 4px 0 #bc8f5f"; }
+    else { icone.innerText = "❌"; tituloEl.style.color = "#A05252"; btnEl.style.background = "#A05252"; btnEl.style.boxShadow = "0 4px 0 #803f3f"; }
+    modal.style.display = "flex"; if ("vibrate" in navigator) navigator.vibrate(50);
 }
-function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) { 
-    document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto; 
-    const btn = document.getElementById('btn-confirmar-acao'); btn.innerText = textoBtn; btn.style.background = corHex; btn.style.boxShadow = `0 4px 0 ${sombraHex}`; 
-    btn.onclick = function() { if (callback) callback(); document.getElementById('modal-confirmar').style.display = 'none'; }; 
-    document.getElementById('modal-confirmar').style.display = 'flex'; 
+function abrirConfirmacao(titulo, texto, icone, corHex, sombraHex, textoBtn, callback) {
+    document.getElementById('modal-conf-title').innerText = titulo; document.getElementById('modal-conf-title').style.color = corHex; document.getElementById('modal-conf-icon').innerText = icone; document.getElementById('texto-confirmar').innerText = texto;
+    const btn = document.getElementById('btn-confirmar-acao'); btn.innerText = textoBtn; btn.style.background = corHex; btn.style.boxShadow = `0 4px 0 ${sombraHex}`;
+    btn.onclick = function () { if (callback) callback(); document.getElementById('modal-confirmar').style.display = 'none'; };
+    document.getElementById('modal-confirmar').style.display = 'flex';
 }
 
-function switchTab(tabId) { 
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); 
-    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active')); 
-    
-    if(usuarioCargo !== 'Admin' && tabId !== 'vendas' && tabId !== 'configuracoes') tabId = 'vendas';
-    
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+
+    if (usuarioCargo !== 'Admin' && tabId !== 'vendas' && tabId !== 'configuracoes') tabId = 'vendas';
+
     const navBtnTarget = document.getElementById('tab-' + tabId);
-    if(navBtnTarget) navBtnTarget.classList.add('active'); 
-    
-    if(tabId !== 'configuracoes' && tabId !== 'dashboard') { const navBtn = document.getElementById('nav-' + tabId); if(navBtn) navBtn.classList.add('active'); } 
-    if (tabId === 'dashboard') { setTimeout(() => { renderizarDashboard(); }, 50); } 
-    if (tabId === 'logs') { renderizarLogs(); } 
-    if(tabId === 'gastos' && !document.getElementById('g-data').value) { document.getElementById('g-data').valueAsDate = new Date(); document.getElementById('c-data').valueAsDate = new Date(); } 
-    if(tabId === 'vendas' && !document.getElementById('v-data').value) { document.getElementById('v-data').valueAsDate = new Date(); document.getElementById('e-data').valueAsDate = new Date(); } 
+    if (navBtnTarget) navBtnTarget.classList.add('active');
+
+    if (tabId !== 'configuracoes' && tabId !== 'dashboard') { const navBtn = document.getElementById('nav-' + tabId); if (navBtn) navBtn.classList.add('active'); }
+    if (tabId === 'dashboard') { setTimeout(() => { renderizarDashboard(); }, 50); }
+    if (tabId === 'logs') { renderizarLogs(); }
+    if (tabId === 'gastos' && !document.getElementById('g-data').value) { document.getElementById('g-data').valueAsDate = new Date(); document.getElementById('c-data').valueAsDate = new Date(); }
+    if (tabId === 'vendas' && !document.getElementById('v-data').value) { document.getElementById('v-data').valueAsDate = new Date(); document.getElementById('e-data').valueAsDate = new Date(); }
 }
 
-function toggleVendasTab(tab) { 
-    const vReg = document.getElementById('vendas-registro-view'), vLot = document.getElementById('vendas-lotes-view'), vEnc = document.getElementById('vendas-encomendas-view'); 
-    const btnReg = document.getElementById('btn-sub-registro'), btnLot = document.getElementById('btn-sub-lotes'), btnEnc = document.getElementById('btn-sub-encomendas'); 
-    document.querySelectorAll('.sub-nav-btn', document.getElementById('tab-vendas')).forEach(b => {b.classList.remove('active');}); 
-    vReg.style.display = 'none'; vLot.style.display = 'none'; vEnc.style.display = 'none'; 
-    if (tab === 'registro') { vReg.style.display = 'block'; btnReg.classList.add('active'); } else if (tab === 'lotes') { vLot.style.display = 'block'; btnLot.classList.add('active'); } else { vEnc.style.display = 'block'; btnEnc.classList.add('active'); } 
+function toggleVendasTab(tab) {
+    const vReg = document.getElementById('vendas-registro-view'), vLot = document.getElementById('vendas-lotes-view'), vEnc = document.getElementById('vendas-encomendas-view');
+    const btnReg = document.getElementById('btn-sub-registro'), btnLot = document.getElementById('btn-sub-lotes'), btnEnc = document.getElementById('btn-sub-encomendas');
+    document.querySelectorAll('.sub-nav-btn', document.getElementById('tab-vendas')).forEach(b => { b.classList.remove('active'); });
+    vReg.style.display = 'none'; vLot.style.display = 'none'; vEnc.style.display = 'none';
+    if (tab === 'registro') { vReg.style.display = 'block'; btnReg.classList.add('active'); } else if (tab === 'lotes') { vLot.style.display = 'block'; btnLot.classList.add('active'); } else { vEnc.style.display = 'block'; btnEnc.classList.add('active'); }
 }
 
-function toggleGastosTab(tab) { 
-    const gDes = document.getElementById('gastos-despesas-view'), gComp = document.getElementById('gastos-compras-view'); 
-    const btnDes = document.getElementById('btn-sub-despesas'), btnComp = document.getElementById('btn-sub-compras'); 
-    document.querySelectorAll('.sub-nav-btn', document.getElementById('tab-gastos')).forEach(b => {b.classList.remove('active');}); 
-    gDes.style.display = 'none'; gComp.style.display = 'none'; 
-    if(tab === 'despesas') { gDes.style.display = 'block'; btnDes.classList.add('active'); } else { gComp.style.display = 'block'; btnComp.classList.add('active'); } 
+function toggleGastosTab(tab) {
+    const gDes = document.getElementById('gastos-despesas-view'), gComp = document.getElementById('gastos-compras-view');
+    const btnDes = document.getElementById('btn-sub-despesas'), btnComp = document.getElementById('btn-sub-compras');
+    document.querySelectorAll('.sub-nav-btn', document.getElementById('tab-gastos')).forEach(b => { b.classList.remove('active'); });
+    gDes.style.display = 'none'; gComp.style.display = 'none';
+    if (tab === 'despesas') { gDes.style.display = 'block'; btnDes.classList.add('active'); } else { gComp.style.display = 'block'; btnComp.classList.add('active'); }
 }
 
 function atualizarDatalistsDinamicos() {
-    let sociosSet = new Set(); vendasGlobal.forEach(v => { if(v.socio) sociosSet.add(String(v.socio).trim()) }); gastosGlobal.forEach(g => { if(g.socio) sociosSet.add(String(g.socio).trim()) });
-    let sociosHtml = [...sociosSet].sort((a,b)=>a.localeCompare(b)).map(s => `<option value="${s}">`).join(''); document.getElementById('lista-socios').innerHTML = sociosHtml; document.getElementById('lista-socios-dinamica').innerHTML = sociosHtml;
-    let filtroSocioV = document.getElementById('f-v-socio'); let sVAtual = filtroSocioV.value; filtroSocioV.innerHTML = '<option value="">Todos</option>' + [...sociosSet].sort((a,b)=>a.localeCompare(b)).map(s => `<option value="${s}">${s}</option>`).join(''); filtroSocioV.value = sVAtual;
-    let filtroSocioG = document.getElementById('f-socio'); let sGAtual = filtroSocioG.value; filtroSocioG.innerHTML = '<option value="">Todos</option>' + [...sociosSet].sort((a,b)=>a.localeCompare(b)).map(s => `<option value="${s}">${s}</option>`).join(''); filtroSocioG.value = sGAtual;
-    
-    let locaisGastosSet = new Set(); gastosGlobal.forEach(g => { if(g.local) locaisGastosSet.add(String(g.local).trim()) }); let locaisHtml = [...locaisGastosSet].sort((a,b)=>a.localeCompare(b)).map(l => `<option value="${l}">`).join(''); document.getElementById('lista-locais').innerHTML = locaisHtml;
-    
-    let locaisEstoqueSet = new Set(); estoqueGlobal.forEach(e => { if(e.local) locaisEstoqueSet.add(String(e.local).trim()) }); let locEstHtml = [...locaisEstoqueSet].sort((a,b)=>a.localeCompare(b)).map(l => `<option value="${l}">`).join('');
-    const dLocal = document.getElementById('lista-locais-estoque'); if(dLocal) dLocal.innerHTML = locEstHtml;
-    
+    let sociosSet = new Set(); vendasGlobal.forEach(v => { if (v.socio) sociosSet.add(String(v.socio).trim()) }); gastosGlobal.forEach(g => { if (g.socio) sociosSet.add(String(g.socio).trim()) });
+    let sociosHtml = [...sociosSet].sort((a, b) => a.localeCompare(b)).map(s => `<option value="${s}">`).join(''); document.getElementById('lista-socios').innerHTML = sociosHtml; document.getElementById('lista-socios-dinamica').innerHTML = sociosHtml;
+    let filtroSocioV = document.getElementById('f-v-socio'); let sVAtual = filtroSocioV.value; filtroSocioV.innerHTML = '<option value="">Todos</option>' + [...sociosSet].sort((a, b) => a.localeCompare(b)).map(s => `<option value="${s}">${s}</option>`).join(''); filtroSocioV.value = sVAtual;
+    let filtroSocioG = document.getElementById('f-socio'); let sGAtual = filtroSocioG.value; filtroSocioG.innerHTML = '<option value="">Todos</option>' + [...sociosSet].sort((a, b) => a.localeCompare(b)).map(s => `<option value="${s}">${s}</option>`).join(''); filtroSocioG.value = sGAtual;
+
+    let locaisGastosSet = new Set(); gastosGlobal.forEach(g => { if (g.local) locaisGastosSet.add(String(g.local).trim()) }); let locaisHtml = [...locaisGastosSet].sort((a, b) => a.localeCompare(b)).map(l => `<option value="${l}">`).join(''); document.getElementById('lista-locais').innerHTML = locaisHtml;
+
+    let locaisEstoqueSet = new Set(); estoqueGlobal.forEach(e => { if (e.local) locaisEstoqueSet.add(String(e.local).trim()) }); let locEstHtml = [...locaisEstoqueSet].sort((a, b) => a.localeCompare(b)).map(l => `<option value="${l}">`).join('');
+    const dLocal = document.getElementById('lista-locais-estoque'); if (dLocal) dLocal.innerHTML = locEstHtml;
+
     const filtroLocal = document.getElementById('f-e-local');
     if (filtroLocal) {
         let fAtual = filtroLocal.value;
-        filtroLocal.innerHTML = '<option value="">📍 Todos os Locais</option>' + [...locaisEstoqueSet].sort((a,b)=>a.localeCompare(b)).map(l => `<option value="${l}">Apenas: ${l}</option>`).join('');
+        filtroLocal.innerHTML = '<option value="">📍 Todos os Locais</option>' + [...locaisEstoqueSet].sort((a, b) => a.localeCompare(b)).map(l => `<option value="${l}">Apenas: ${l}</option>`).join('');
         filtroLocal.value = fAtual;
     }
 }
 
 function aplicarPermissoes() {
     const isAdmin = (usuarioCargo === 'Admin');
-    
+
     document.getElementById('nav-rotulos').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-precificar').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-estoque').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-gastos').style.display = isAdmin ? 'flex' : 'none';
     document.getElementById('nav-dashboard').style.display = isAdmin ? 'flex' : 'none';
-    
+
     const btnAdmin = document.querySelector('button[onclick="switchTab(\'logs\')"]');
     const btnChaves = document.querySelector('.btn-ai[onclick="salvarConfiguracoesChaves()"]');
 
     if (!isAdmin) {
         switchTab('vendas');
-        
+
         const inputSocio = document.getElementById('v-socio');
         if (inputSocio) { inputSocio.value = usuarioLogado; inputSocio.readOnly = true; inputSocio.style.background = "#E8DDE1"; inputSocio.style.color = "#7a4a5e"; }
-        
-        const inputValorVenda = document.getElementById('v-valor');
-        if(inputValorVenda) { inputValorVenda.readOnly = true; inputValorVenda.style.background = "#E8DDE1"; inputValorVenda.style.color = "#7a4a5e"; }
 
-        if(btnAdmin) { btnAdmin.style.display = 'none'; if(btnAdmin.previousElementSibling) btnAdmin.previousElementSibling.style.display = 'none'; }
+        const inputValorVenda = document.getElementById('v-valor');
+        if (inputValorVenda) { inputValorVenda.readOnly = true; inputValorVenda.style.background = "#E8DDE1"; inputValorVenda.style.color = "#7a4a5e"; }
+
+        if (btnAdmin) { btnAdmin.style.display = 'none'; if (btnAdmin.previousElementSibling) btnAdmin.previousElementSibling.style.display = 'none'; }
         if (btnChaves) {
             btnChaves.style.display = 'none';
             document.getElementById('cfg-ai-key').parentElement.parentElement.style.display = 'none';
             document.getElementById('cfg-imgbb-key').parentElement.parentElement.style.display = 'none';
             document.getElementById('cfg-onionsys-key').parentElement.parentElement.style.display = 'none';
-            if(btnChaves.previousElementSibling) { btnChaves.previousElementSibling.style.display = 'none'; if(btnChaves.previousElementSibling.previousElementSibling) btnChaves.previousElementSibling.previousElementSibling.style.display = 'none'; }
+            if (btnChaves.previousElementSibling) { btnChaves.previousElementSibling.style.display = 'none'; if (btnChaves.previousElementSibling.previousElementSibling) btnChaves.previousElementSibling.previousElementSibling.style.display = 'none'; }
         }
     } else {
         const inputSocio = document.getElementById('v-socio');
         if (inputSocio) { inputSocio.readOnly = false; inputSocio.style.background = "#fafafa"; inputSocio.style.color = "var(--brand-dark)"; }
-        
-        const inputValorVenda = document.getElementById('v-valor');
-        if(inputValorVenda) { inputValorVenda.readOnly = false; inputValorVenda.style.background = "#fafafa"; inputValorVenda.style.color = "var(--brand-dark)"; }
 
-        if(btnAdmin) { btnAdmin.style.display = 'block'; if(btnAdmin.previousElementSibling) btnAdmin.previousElementSibling.style.display = 'block'; }
+        const inputValorVenda = document.getElementById('v-valor');
+        if (inputValorVenda) { inputValorVenda.readOnly = false; inputValorVenda.style.background = "#fafafa"; inputValorVenda.style.color = "var(--brand-dark)"; }
+
+        if (btnAdmin) { btnAdmin.style.display = 'block'; if (btnAdmin.previousElementSibling) btnAdmin.previousElementSibling.style.display = 'block'; }
         if (btnChaves) {
             btnChaves.style.display = 'block';
             document.getElementById('cfg-ai-key').parentElement.parentElement.style.display = 'block';
             document.getElementById('cfg-imgbb-key').parentElement.parentElement.style.display = 'block';
             document.getElementById('cfg-onionsys-key').parentElement.parentElement.style.display = 'block';
-            if(btnChaves.previousElementSibling) { btnChaves.previousElementSibling.style.display = 'block'; if(btnChaves.previousElementSibling.previousElementSibling) btnChaves.previousElementSibling.previousElementSibling.style.display = 'block'; }
+            if (btnChaves.previousElementSibling) { btnChaves.previousElementSibling.style.display = 'block'; if (btnChaves.previousElementSibling.previousElementSibling) btnChaves.previousElementSibling.previousElementSibling.style.display = 'block'; }
         }
     }
 }
 
-async function sincronizarDadosUnico() { 
-    mostrarLoading("Sincronizando..."); 
-    try { 
-        const res = await fetch(API_NOVERA + "?acao=listar_tudo&_t=" + new Date().getTime()); 
+async function sincronizarDadosUnico() {
+    mostrarLoading("Sincronizando...");
+    try {
+        const res = await fetch(API_NOVERA + "?acao=listar_tudo&_t=" + new Date().getTime());
         if (!res.ok) throw new Error("Status API: " + res.status);
-        const dados = await res.json(); 
-        if (dados.sucesso) { 
+        const dados = await res.json();
+        if (dados.sucesso) {
             rotulosGlobal = dados.rotulos || []; estoqueGlobal = dados.estoque || []; gastosGlobal = dados.gastos || []; vendasGlobal = dados.vendas || []; encomendasGlobal = dados.encomendas || []; comprasGlobal = dados.compras || [];
             logsGlobal = dados.logs || [];
-            
+
             if (usuarioCargo !== 'Admin') {
                 vendasGlobal = vendasGlobal.filter(v => String(v.socio).toLowerCase().trim() === usuarioLogado.toLowerCase().trim());
             }
@@ -199,81 +199,87 @@ async function sincronizarDadosUnico() {
             estoqueAgrupado = {};
             estoqueGlobal.forEach(e => {
                 let n = padronizarTexto(e.nome);
+
+                // MÁGICA AQUI: Puxa o Gênero do Dicionário para usar no Estoque
+                let rotuloBase = rotulosGlobal.find(r => r.codigo === e.codigo);
+                let generoEncontrado = rotuloBase && rotuloBase.genero ? String(rotuloBase.genero).trim() : 'Unissex';
+                if (generoEncontrado === '') generoEncontrado = 'Unissex';
+
                 if (!estoqueAgrupado[n]) {
-                    estoqueAgrupado[n] = { nome: e.nome, tipo: e.tipo, codigo: e.codigo, preco: e.preco, custo: e.custo, foto: e.foto, totalQtd: 0, locais: {} };
+                    estoqueAgrupado[n] = { nome: e.nome, tipo: e.tipo, codigo: e.codigo, preco: e.preco, custo: e.custo, foto: e.foto, totalQtd: 0, locais: {}, genero: generoEncontrado };
                 }
                 let lExib = e.local ? e.local.trim() : 'Sede';
                 let q = parseFloat(e.qtd) || 0;
-                
-                if(!estoqueAgrupado[n].locais[lExib]) estoqueAgrupado[n].locais[lExib] = 0;
+
+                if (!estoqueAgrupado[n].locais[lExib]) estoqueAgrupado[n].locais[lExib] = 0;
                 estoqueAgrupado[n].locais[lExib] += q;
                 estoqueAgrupado[n].totalQtd += q;
             });
 
-            atualizarDatalistsDinamicos(); renderizarRotulos(); renderizarOpcoesPrecificacao(); renderizarEstoque(); renderizarGastos(); renderizarVendas(); renderizarDashboard(); renderizarEncomendas(); renderizarCompras(); 
-            if(document.getElementById('tab-logs').classList.contains('active')) renderizarLogs();
-            dadosCarregados = true; 
-        } else { mostrarAlerta("Erro de Sincronização", dados.erro, "error"); } 
-    } catch(e) { mostrarAlerta("Falha de Conexão", "Erro ao carregar dados.", "error"); } finally { ocultarLoading(); } 
+            atualizarDatalistsDinamicos(); renderizarRotulos(); renderizarOpcoesPrecificacao(); renderizarEstoque(); renderizarGastos(); renderizarVendas(); renderizarDashboard(); renderizarEncomendas(); renderizarCompras();
+            if (document.getElementById('tab-logs').classList.contains('active')) renderizarLogs();
+            dadosCarregados = true;
+        } else { mostrarAlerta("Erro de Sincronização", dados.erro, "error"); }
+    } catch (e) { mostrarAlerta("Falha de Conexão", "Erro ao carregar dados.", "error"); } finally { ocultarLoading(); }
 }
 
 function toggleSenha(inputId, btnElement) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } else { input.type = "password"; btnElement.innerText = "🙈"; } }
 
-function iniciarSessaoLocal(usuario, cargo) { 
-    localStorage.setItem('novera_last_user', usuario); 
-    localStorage.setItem('novera_user_cargo', cargo || 'Vendedor'); 
-    localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); 
-    usuarioLogado = usuario; 
+function iniciarSessaoLocal(usuario, cargo) {
+    localStorage.setItem('novera_last_user', usuario);
+    localStorage.setItem('novera_user_cargo', cargo || 'Vendedor');
+    localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000));
+    usuarioLogado = usuario;
     usuarioCargo = cargo || 'Vendedor';
-    document.getElementById('login-screen').style.display = 'none'; 
-    document.getElementById('main-app').style.display = 'block'; 
-    document.getElementById('cfg-user').value = usuario; 
-    aplicarPermissoes(); 
-    if (!dadosCarregados) sincronizarDadosUnico(); 
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+    document.getElementById('cfg-user').value = usuario;
+    aplicarPermissoes();
+    if (!dadosCarregados) sincronizarDadosUnico();
 }
 
-function verificarLogin() { 
-    const expires = localStorage.getItem('novera_session_expires'); 
-    const lastUser = localStorage.getItem('novera_last_user') || ''; 
+function verificarLogin() {
+    const expires = localStorage.getItem('novera_session_expires');
+    const lastUser = localStorage.getItem('novera_last_user') || '';
     const lastCargo = localStorage.getItem('novera_user_cargo') || 'Vendedor';
-    if (expires && Date.now() < parseInt(expires)) { 
-        iniciarSessaoLocal(lastUser, lastCargo); 
-    } else { 
-        document.getElementById('login-screen').style.display = 'block'; document.getElementById('main-app').style.display = 'none'; document.getElementById('login-user').value = lastUser; document.getElementById('login-pass').value = ''; 
-    } 
+    if (expires && Date.now() < parseInt(expires)) {
+        iniciarSessaoLocal(lastUser, lastCargo);
+    } else {
+        document.getElementById('login-screen').style.display = 'block'; document.getElementById('main-app').style.display = 'none'; document.getElementById('login-user').value = lastUser; document.getElementById('login-pass').value = '';
+    }
 }
 
 
-async function fazerLogin() { 
-    const user = document.getElementById('login-user').value.trim(); 
-    const pass = document.getElementById('login-pass').value.trim(); 
-    
-    if (!user || !pass) return mostrarAlerta("Atenção", "Preencha usuário e senha.", "warning"); 
-    
-    const btn = document.getElementById('btn-login'); 
-    btn.disabled = true; 
-    btn.innerText = "⏳ ENTRANDO..."; 
-    
-    try { 
-        const res = await fetch(API_NOVERA + "/login", { 
-            method: "POST", 
+async function fazerLogin() {
+    const user = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value.trim();
+
+    if (!user || !pass) return mostrarAlerta("Atenção", "Preencha usuário e senha.", "warning");
+
+    const btn = document.getElementById('btn-login');
+    btn.disabled = true;
+    btn.innerText = "⏳ ENTRANDO...";
+
+    try {
+        const res = await fetch(API_NOVERA + "/login", {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ usuario: user, senha: pass }) 
-        }); 
-        
-        const json = await res.json(); 
-        
-        if (json.sucesso) { 
-            iniciarSessaoLocal(json.usuario, json.cargo); 
-        } else { 
-            mostrarAlerta("Acesso Negado", json.erro, "error"); 
-        } 
-    } catch(e) { 
-        mostrarAlerta("Erro", "Falha na conexão com o servidor Node.", "error"); 
-    } finally { 
-        btn.disabled = false; 
-        btn.innerText = "Entrar"; 
-    } 
+            body: JSON.stringify({ usuario: user, senha: pass })
+        });
+
+        const json = await res.json();
+
+        if (json.sucesso) {
+            iniciarSessaoLocal(json.usuario, json.cargo);
+        } else {
+            mostrarAlerta("Acesso Negado", json.erro, "error");
+        }
+    } catch (e) {
+        mostrarAlerta("Erro", "Falha na conexão com o servidor Node.", "error");
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Entrar";
+    }
 }
 
 
@@ -284,10 +290,10 @@ function renderizarLogs() {
     let html = "";
     logsGlobal.forEach(log => {
         let corBadge = "#966178";
-        if(log.acao.includes('EXCLUIR') || log.acao.includes('EXCLUIU')) corBadge = "#A05252";
-        if(log.acao.includes('CRIAR') || log.acao.includes('NOVA') || log.acao.includes('SALVAR') || log.acao.includes('FABRICOU') || log.acao.includes('COMPRA')) corBadge = "#2e7d32";
-        if(log.acao.includes('EDITAR') || log.acao.includes('ATUALIZAR') || log.acao.includes('AJUSTOU')) corBadge = "#0369a1";
-        if(log.acao.includes('ENTROU')) corBadge = "#166534"; // Cor diferenciada para Login
+        if (log.acao.includes('EXCLUIR') || log.acao.includes('EXCLUIU')) corBadge = "#A05252";
+        if (log.acao.includes('CRIAR') || log.acao.includes('NOVA') || log.acao.includes('SALVAR') || log.acao.includes('FABRICOU') || log.acao.includes('COMPRA')) corBadge = "#2e7d32";
+        if (log.acao.includes('EDITAR') || log.acao.includes('ATUALIZAR') || log.acao.includes('AJUSTOU')) corBadge = "#0369a1";
+        if (log.acao.includes('ENTROU')) corBadge = "#166534"; // Cor diferenciada para Login
 
         html += `<div class="rotulo-card" style="align-items:center; margin-bottom:8px;">
             <div style="flex:1;">
@@ -303,351 +309,483 @@ function renderizarLogs() {
     container.innerHTML = html;
 }
 
-function renderizarRotulos() { const lista = document.getElementById("lista-rotulos-cadastrados"); const resumo = document.getElementById("resumo-essencias"); if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; if(resumo) resumo.innerHTML = ""; return; } let htmlLista = ""; let countMasc = 0, countFem = 0, countInf = 0, countUni = 0; rotulosGlobal.sort((a,b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { let gen = String(r.genero || "").toLowerCase().trim(); let corFundo = "#f3f4f6", corTexto = "#4b5563"; let txtGen = r.genero || "Unissex"; if (gen === "masculino") { corFundo = "#e0f2fe"; corTexto = "#0369a1"; countMasc++; } else if (gen === "feminino") { corFundo = "#fce7f3"; corTexto = "#be185d"; countFem++; } else if (gen === "infantil") { corFundo = "#dcfce7"; corTexto = "#166534"; countInf++; } else { countUni++; txtGen = "Unissex"; } let badgeGenero = `<span style="background:${corFundo}; color:${corTexto}; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:5px; text-transform:uppercase; font-weight:800; vertical-align: middle;">${txtGen}</span>`; htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} ${badgeGenero} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Tabela Rotulo Novera', ${r.linha}, 'Rótulo: ${r.codigo}')">🗑️</button></div></div></div>`; }); lista.innerHTML = htmlLista; if (resumo) { resumo.innerHTML = `<div class="dash-card highlight" style="grid-column: span 2; padding: 15px; margin-bottom: 0; text-align:center;"><h3 style="color:#e8dde1; font-size:0.75rem;">Total no Dicionário</h3><p class="valor" style="font-size: 2rem;">${rotulosGlobal.length}</p></div><div class="dash-card" style="padding: 12px; background:#fff0f6; border: 1px solid #fce7f3; transform:none; cursor:default;"><h3 style="color:#be185d; font-size:0.65rem;">Femininas</h3><p class="valor" style="font-size: 1.4rem; color:#be185d;">${countFem}</p></div><div class="dash-card" style="padding: 12px; background:#f0f9ff; border: 1px solid #e0f2fe; transform:none; cursor:default;"><h3 style="color:#0369a1; font-size:0.65rem;">Masculinas</h3><p class="valor" style="font-size: 1.4rem; color:#0369a1;">${countMasc}</p></div><div class="dash-card" style="padding: 12px; background:#f9fafb; border: 1px solid #e5e7eb; transform:none; cursor:default;"><h3 style="color:#4b5563; font-size:0.65rem;">Unissex</h3><p class="valor" style="font-size: 1.4rem; color:#4b5563;">${countUni}</p></div><div class="dash-card" style="padding: 12px; background:#f0fdf4; border: 1px solid #dcfce7; transform:none; cursor:default;"><h3 style="color:#166534; font-size:0.65rem;">Infantis</h3><p class="valor" style="font-size: 1.4rem; color:#166534;">${countInf}</p></div>`; } }
-function renderizarOpcoesPrecificacao() { const select = document.getElementById("n-produto"); let htmlSelect = '<option value="">Selecione a Essência Base...</option>'; rotulosGlobal.sort((a,b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { let genTxt = r.genero ? ` (${r.genero})` : ''; htmlSelect += `<option value="${r.codigo}|${r.essencia}">${r.codigo} - ${r.essencia}${genTxt}</option>`; }); select.innerHTML = htmlSelect; }
-function salvarRotulo() { const essencia = padronizarTexto(document.getElementById('r-essencia').value); const codForn = padronizarTexto(document.getElementById('r-codigo-forn').value); const marca = padronizarTexto(document.getElementById('r-marca').value); const genero = document.getElementById('r-genero') ? document.getElementById('r-genero').value : ""; if (!essencia) return mostrarAlerta("Atenção", "Preencha a Essência.", "warning"); mostrarLoading("Salvando..."); const msgLog = `✨ Criou a essência: ${essencia} (Gênero: ${genero || 'Indefinido'})`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, genero: genero, log_detalhe: msgLog }) }).then(r=>r.json()).then(resultado => { if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; if(document.getElementById('r-codigo-forn')) document.getElementById('r-codigo-forn').value = ""; if(document.getElementById('r-marca')) document.getElementById('r-marca').value = ""; if(document.getElementById('r-genero')) document.getElementById('r-genero').value = ""; sincronizarDadosUnico(); } else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); } }).catch(e => mostrarAlerta("Erro", "Falha.", "error")).finally(() => ocultarLoading()); }
-function abrirModalEditarRotulo(linha) { const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return; document.getElementById('edit-r-linha').value = r.linha; document.getElementById('edit-r-essencia').value = r.essencia; document.getElementById('edit-r-codigo-forn').value = r.codigo_forn; document.getElementById('edit-r-marca').value = r.marca; if(document.getElementById('edit-r-genero')) document.getElementById('edit-r-genero').value = r.genero || ""; document.getElementById('modal-editar-rotulo').style.display = 'flex'; }
-function salvarEdicaoRotulo() { mostrarLoading("Atualizando..."); const ess = padronizarTexto(document.getElementById('edit-r-essencia').value); const gen = document.getElementById('edit-r-genero') ? document.getElementById('edit-r-genero').value : ""; const msgLog = `✏️ Editou a essência: ${ess}. Gênero atual: ${gen || 'Indefinido'}`; const py = { usuario: usuarioLogado, acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: ess, codigo_forn: padronizarTexto(document.getElementById('edit-r-codigo-forn').value), marca: padronizarTexto(document.getElementById('edit-r-marca').value), genero: gen, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(py) }).then(r=>r.json()).then(json => { if(json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); } }).catch(e => mostrarAlerta("Erro", "Falha de conexão.", "error")).finally(() => ocultarLoading()); }
+function renderizarRotulos() { const lista = document.getElementById("lista-rotulos-cadastrados"); const resumo = document.getElementById("resumo-essencias"); if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; if (resumo) resumo.innerHTML = ""; return; } let htmlLista = ""; let countMasc = 0, countFem = 0, countInf = 0, countUni = 0; rotulosGlobal.sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { let gen = String(r.genero || "").toLowerCase().trim(); let corFundo = "#f3f4f6", corTexto = "#4b5563"; let txtGen = r.genero || "Unissex"; if (gen === "masculino") { corFundo = "#e0f2fe"; corTexto = "#0369a1"; countMasc++; } else if (gen === "feminino") { corFundo = "#fce7f3"; corTexto = "#be185d"; countFem++; } else if (gen === "infantil") { corFundo = "#dcfce7"; corTexto = "#166534"; countInf++; } else { countUni++; txtGen = "Unissex"; } let badgeGenero = `<span style="background:${corFundo}; color:${corTexto}; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:5px; text-transform:uppercase; font-weight:800; vertical-align: middle;">${txtGen}</span>`; htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} ${badgeGenero} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Tabela Rotulo Novera', ${r.linha}, 'Rótulo: ${r.codigo}')">🗑️</button></div></div></div>`; }); lista.innerHTML = htmlLista; if (resumo) { resumo.innerHTML = `<div class="dash-card highlight" style="grid-column: span 2; padding: 15px; margin-bottom: 0; text-align:center;"><h3 style="color:#e8dde1; font-size:0.75rem;">Total no Dicionário</h3><p class="valor" style="font-size: 2rem;">${rotulosGlobal.length}</p></div><div class="dash-card" style="padding: 12px; background:#fff0f6; border: 1px solid #fce7f3; transform:none; cursor:default;"><h3 style="color:#be185d; font-size:0.65rem;">Femininas</h3><p class="valor" style="font-size: 1.4rem; color:#be185d;">${countFem}</p></div><div class="dash-card" style="padding: 12px; background:#f0f9ff; border: 1px solid #e0f2fe; transform:none; cursor:default;"><h3 style="color:#0369a1; font-size:0.65rem;">Masculinas</h3><p class="valor" style="font-size: 1.4rem; color:#0369a1;">${countMasc}</p></div><div class="dash-card" style="padding: 12px; background:#f9fafb; border: 1px solid #e5e7eb; transform:none; cursor:default;"><h3 style="color:#4b5563; font-size:0.65rem;">Unissex</h3><p class="valor" style="font-size: 1.4rem; color:#4b5563;">${countUni}</p></div><div class="dash-card" style="padding: 12px; background:#f0fdf4; border: 1px solid #dcfce7; transform:none; cursor:default;"><h3 style="color:#166534; font-size:0.65rem;">Infantis</h3><p class="valor" style="font-size: 1.4rem; color:#166534;">${countInf}</p></div>`; } }
+function renderizarOpcoesPrecificacao() { const select = document.getElementById("n-produto"); let htmlSelect = '<option value="">Selecione a Essência Base...</option>'; rotulosGlobal.sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { let genTxt = r.genero ? ` (${r.genero})` : ''; htmlSelect += `<option value="${r.codigo}|${r.essencia}">${r.codigo} - ${r.essencia}${genTxt}</option>`; }); select.innerHTML = htmlSelect; }
+function salvarRotulo() { const essencia = padronizarTexto(document.getElementById('r-essencia').value); const codForn = padronizarTexto(document.getElementById('r-codigo-forn').value); const marca = padronizarTexto(document.getElementById('r-marca').value); const genero = document.getElementById('r-genero') ? document.getElementById('r-genero').value : ""; if (!essencia) return mostrarAlerta("Atenção", "Preencha a Essência.", "warning"); mostrarLoading("Salvando..."); const msgLog = `✨ Criou a essência: ${essencia} (Gênero: ${genero || 'Indefinido'})`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, genero: genero, log_detalhe: msgLog }) }).then(r => r.json()).then(resultado => { if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; if (document.getElementById('r-codigo-forn')) document.getElementById('r-codigo-forn').value = ""; if (document.getElementById('r-marca')) document.getElementById('r-marca').value = ""; if (document.getElementById('r-genero')) document.getElementById('r-genero').value = ""; sincronizarDadosUnico(); } else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); } }).catch(e => mostrarAlerta("Erro", "Falha.", "error")).finally(() => ocultarLoading()); }
+function abrirModalEditarRotulo(linha) { const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return; document.getElementById('edit-r-linha').value = r.linha; document.getElementById('edit-r-essencia').value = r.essencia; document.getElementById('edit-r-codigo-forn').value = r.codigo_forn; document.getElementById('edit-r-marca').value = r.marca; if (document.getElementById('edit-r-genero')) document.getElementById('edit-r-genero').value = r.genero || ""; document.getElementById('modal-editar-rotulo').style.display = 'flex'; }
+function salvarEdicaoRotulo() { mostrarLoading("Atualizando..."); const ess = padronizarTexto(document.getElementById('edit-r-essencia').value); const gen = document.getElementById('edit-r-genero') ? document.getElementById('edit-r-genero').value : ""; const msgLog = `✏️ Editou a essência: ${ess}. Gênero atual: ${gen || 'Indefinido'}`; const py = { usuario: usuarioLogado, acao: "atualizar_rotulo", linha: document.getElementById('edit-r-linha').value, essencia: ess, codigo_forn: padronizarTexto(document.getElementById('edit-r-codigo-forn').value), marca: padronizarTexto(document.getElementById('edit-r-marca').value), genero: gen, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(py) }).then(r => r.json()).then(json => { if (json.sucesso) { document.getElementById('modal-editar-rotulo').style.display = 'none'; mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); } }).catch(e => mostrarAlerta("Erro", "Falha de conexão.", "error")).finally(() => ocultarLoading()); }
 
 let custoTotalGlobal = 0;
 function calcularNovera() { const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0; const qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0; const cBase1L = parseFloat(document.getElementById('n-custo-base').value) || 0; const qBase = parseFloat(document.getElementById('n-qtd-base').value) || 0; const mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1; const cInsumos = parseFloat(document.getElementById('n-insumos').value) || 0; const valorMlBase = cBase1L / 1000; const qtdMlProducao = qBase + qFrag; const qtdFrascos = qtdMlProducao / mlVenda; const custoLiquidoUni = qtdFrascos > 0 ? (cFrag + (valorMlBase * qBase)) / qtdFrascos : 0; const custoTotalUni = custoLiquidoUni + cInsumos; custoTotalGlobal = custoTotalUni; document.getElementById('r-frascos').innerText = Math.floor(qtdFrascos) + " un"; document.getElementById('r-custo-total').innerText = fmt(custoTotalUni); document.getElementById('p-rendimento').value = Math.floor(qtdFrascos); autoSugerirPrecoFabrica(); }
-function autoSugerirPrecoFabrica() { if(!document.getElementById('p-preco-venda').value) { document.getElementById('p-preco-venda').value = fmt(custoTotalGlobal * 3); } }
-async function salvarProducaoEstoque() { const essBaseVal = document.getElementById('n-produto').value; const tipoFinal = padronizarTexto(document.getElementById('n-tipo-final').value); const volume = document.getElementById('n-ml-venda').value; const qtdRendimento = document.getElementById('p-rendimento').value; const precoVendaStr = document.getElementById('p-preco-venda').value; const pLocal = document.getElementById('p-local') ? padronizarTexto(document.getElementById('p-local').value) : "Sede"; if(!essBaseVal || !tipoFinal || !qtdRendimento || !precoVendaStr) return mostrarAlerta("Atenção", "Preencha a Essência Base, Tipo, Rendimento e Preço.", "warning"); const partes = essBaseVal.split('|'); const codNovera = partes[0]; const essBase = partes[1]; const nomeProdutoFinal = `${tipoFinal} ${essBase} ${volume}ml`; const precoVenda = parseDinheiro(precoVendaStr); mostrarLoading("Enviando..."); const msgLog = `🏭 Fabricou ${qtdRendimento}x [${nomeProdutoFinal}]. Enviado para: ${pLocal}.`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_producao_estoque", nome_produto: nomeProdutoFinal, tipo: tipoFinal, qtd: qtdRendimento, custo: fmtPlanilha(custoTotalGlobal), preco: fmtPlanilha(precoVenda), codigo: codNovera, local: pLocal, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Produzido!", `Lote enviado para ${pLocal}.`, "success"); document.getElementById('p-rendimento').value = "1"; document.getElementById('p-preco-venda').value = ""; sincronizarDadosUnico(); }); }
+function autoSugerirPrecoFabrica() { if (!document.getElementById('p-preco-venda').value) { document.getElementById('p-preco-venda').value = fmt(custoTotalGlobal * 3); } }
+async function salvarProducaoEstoque() { const essBaseVal = document.getElementById('n-produto').value; const tipoFinal = padronizarTexto(document.getElementById('n-tipo-final').value); const volume = document.getElementById('n-ml-venda').value; const qtdRendimento = document.getElementById('p-rendimento').value; const precoVendaStr = document.getElementById('p-preco-venda').value; const pLocal = document.getElementById('p-local') ? padronizarTexto(document.getElementById('p-local').value) : "Sede"; if (!essBaseVal || !tipoFinal || !qtdRendimento || !precoVendaStr) return mostrarAlerta("Atenção", "Preencha a Essência Base, Tipo, Rendimento e Preço.", "warning"); const partes = essBaseVal.split('|'); const codNovera = partes[0]; const essBase = partes[1]; const nomeProdutoFinal = `${tipoFinal} ${essBase} ${volume}ml`; const precoVenda = parseDinheiro(precoVendaStr); mostrarLoading("Enviando..."); const msgLog = `🏭 Fabricou ${qtdRendimento}x [${nomeProdutoFinal}]. Enviado para: ${pLocal}.`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_producao_estoque", nome_produto: nomeProdutoFinal, tipo: tipoFinal, qtd: qtdRendimento, custo: fmtPlanilha(custoTotalGlobal), preco: fmtPlanilha(precoVenda), codigo: codNovera, local: pLocal, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Produzido!", `Lote enviado para ${pLocal}.`, "success"); document.getElementById('p-rendimento').value = "1"; document.getElementById('p-preco-venda').value = ""; sincronizarDadosUnico(); }); }
 
-function renderizarEstoque() { const tBusca = document.getElementById('busca-estoque').value.toLowerCase().trim(); const dFiltroLocal = document.getElementById('f-e-local'); const localSelecionado = dFiltroLocal ? dFiltroLocal.value.trim() : ""; let arrEstoque = Object.values(estoqueAgrupado); arrEstoque = arrEstoque.filter(e => { if (!tBusca) return true; return (e.nome + " " + e.tipo + " " + (e.codigo || "")).toLowerCase().includes(tBusca); }); if (localSelecionado) { arrEstoque = arrEstoque.filter(e => e.locais[localSelecionado] !== undefined && e.locais[localSelecionado] > 0); } arrEstoque.sort((a, b) => { let qA = localSelecionado ? (a.locais[localSelecionado] || 0) : a.totalQtd; let qB = localSelecionado ? (b.locais[localSelecionado] || 0) : b.totalQtd; if (qA > 0 && qB <= 0) return -1; if (qA <= 0 && qB > 0) return 1; return String(b.codigo||"").localeCompare(String(a.codigo||"")); }); const lista = document.getElementById('lista-estoque-cards'); if(arrEstoque.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999;'>Estoque vazio.</p>"; document.getElementById('est-total-itens').innerText = "0"; document.getElementById('est-valor-total').innerText = "R$ 0,00"; return; } let html = "", somaItens = 0, somaValor = 0; arrEstoque.forEach(e => { const qtdExibicao = localSelecionado ? (e.locais[localSelecionado] || 0) : e.totalQtd; const precoNum = parseDinheiro(e.preco); somaItens += qtdExibicao; somaValor += (qtdExibicao * precoNum); let corQtd = qtdExibicao <= 0 ? "#991b1b" : (qtdExibicao < 5 ? "#ef4444" : "var(--brand-dark)"); let avisoQtd = qtdExibicao <= 0 ? `<span class="badge-status b-atrasado" style="margin-left:5px;">ESGOTADO</span>` : (qtdExibicao < 5 ? `<span class="badge-status b-hoje" style="margin-left:5px;">Baixo</span>` : ""); let opacidade = qtdExibicao <= 0 ? "opacity: 0.65; filter: grayscale(50%);" : ""; let fotoUrls = e.foto ? e.foto.split(',') : []; let urlPri = fotoUrls[0] || 'logo.png'; let codigoBadge = e.codigo ? `<span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${e.codigo}</span>` : ''; let locaisHtml = `<div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:5px;">`; for(let loc in e.locais) { if(e.locais[loc] > 0) { locaisHtml += `<span style="background:#f3f4f6; color:#4b5563; padding:3px 8px; border-radius:6px; font-size:0.65rem; font-weight:700; border:1px solid #e5e7eb;">📍 ${loc}: <b style="color:var(--primary-dark);">${e.locais[loc]}</b></span>`; } } locaisHtml += `</div>`; if (qtdExibicao <= 0) locaisHtml = ""; const nomeEncode = encodeURIComponent(e.nome); html += `<div class="rotulo-card" style="align-items:flex-start; ${opacidade}"><img src="${urlPri}" onerror="this.src='logo.png';" class="list-img" onclick="abrirModalImagem(this.src)"><div class="rotulo-info" style="flex:1;"><h4>${codigoBadge}${e.nome} ${avisoQtd}</h4><p style="color:var(--primary); font-weight:700; margin-bottom:2px;">Venda: ${safeFmt(e.preco)}</p><p style="font-size:0.7rem; color:#888; margin-bottom:0;">Custo Fábrica: ${safeFmt(e.custo)}</p>${locaisHtml}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val" style="color:${corQtd};">${qtdExibicao} un</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarEstoque('${nomeEncode}')" title="Editar Distribução">✏️</button></div></div></div>`; }); lista.innerHTML = html; document.getElementById('est-total-itens').innerText = somaItens; document.getElementById('est-valor-total').innerText = fmt(somaValor); }
-function abrirModalEditarEstoque(nomeEncoded) { const nomeDecoded = decodeURIComponent(nomeEncoded); const e = estoqueAgrupado[padronizarTexto(nomeDecoded)]; if (!e) return; document.getElementById('edit-e-nome').value = e.nome; document.getElementById('edit-e-tipo').value = e.tipo; document.getElementById('edit-e-custo').value = safeFmt(e.custo); document.getElementById('edit-e-preco').value = safeFmt(e.preco); document.getElementById('edit-e-codigo').value = e.codigo || ''; let fotos = e.foto ? e.foto.split(',') : []; document.getElementById('edit-e-img-preview').src = fotos[0] || 'logo.png'; document.getElementById('img-original-preview').src = fotos[0] || 'logo.png'; document.getElementById('edit-e-foto-antiga').value = e.foto || ''; document.getElementById('edit-e-foto-nova').value = ''; document.getElementById('ai-preview-box').style.display = 'none'; const container = document.getElementById('edit-e-locais-container'); container.innerHTML = ''; for(let loc in e.locais) { adicionarLinhaLocal(loc, e.locais[loc]); } if(Object.keys(e.locais).length === 0) adicionarLinhaLocal('Sede', 0); document.getElementById('modal-editar-estoque').style.display = 'flex'; }
+function renderizarEstoque() { 
+    const tBusca = document.getElementById('busca-estoque').value.toLowerCase().trim(); 
+    const dFiltroLocal = document.getElementById('f-e-local'); 
+    const localSelecionado = dFiltroLocal ? dFiltroLocal.value.trim() : ""; 
+    const dFiltroGenero = document.getElementById('f-e-genero');
+    const generoSelecionado = dFiltroGenero ? dFiltroGenero.value : "";
+
+    let arrEstoque = Object.values(estoqueAgrupado); 
+    arrEstoque = arrEstoque.filter(e => { 
+        let passBusca = !tBusca || (e.nome + " " + e.tipo + " " + (e.codigo || "")).toLowerCase().includes(tBusca);
+        let passLocal = !localSelecionado || (e.locais[localSelecionado] !== undefined && e.locais[localSelecionado] > 0);
+        let genE = e.genero ? String(e.genero).toLowerCase() : 'unissex';
+        let passGenero = !generoSelecionado || genE === String(generoSelecionado).toLowerCase() || (generoSelecionado === 'Unissex' && genE === '');
+        
+        return passBusca && passLocal && passGenero;
+    }); 
+    
+    arrEstoque.sort((a, b) => { 
+        let qA = localSelecionado ? (a.locais[localSelecionado] || 0) : a.totalQtd; 
+        let qB = localSelecionado ? (b.locais[localSelecionado] || 0) : b.totalQtd; 
+        if (qA > 0 && qB <= 0) return -1; 
+        if (qA <= 0 && qB > 0) return 1; 
+        return String(b.codigo||"").localeCompare(String(a.codigo||"")); 
+    }); 
+
+    const lista = document.getElementById('lista-estoque-cards'); 
+    if(arrEstoque.length === 0) { 
+        lista.innerHTML = "<p style='text-align:center; color:#999;'>Estoque vazio.</p>"; 
+        document.getElementById('est-total-itens').innerText = "0"; 
+        document.getElementById('est-valor-total').innerText = "R$ 0,00"; 
+        return; 
+    } 
+    let html = "", somaItens = 0, somaValor = 0; 
+    arrEstoque.forEach(e => { 
+        const qtdExibicao = localSelecionado ? (e.locais[localSelecionado] || 0) : e.totalQtd; 
+        const precoNum = parseDinheiro(e.preco); 
+        somaItens += qtdExibicao; 
+        somaValor += (qtdExibicao * precoNum); 
+        let corQtd = qtdExibicao <= 0 ? "#991b1b" : (qtdExibicao < 5 ? "#ef4444" : "var(--brand-dark)"); 
+        let avisoQtd = qtdExibicao <= 0 ? `<span class="badge-status b-atrasado" style="margin-left:5px;">ESGOTADO</span>` : (qtdExibicao < 5 ? `<span class="badge-status b-hoje" style="margin-left:5px;">Baixo</span>` : ""); 
+        let opacidade = qtdExibicao <= 0 ? "opacity: 0.65; filter: grayscale(50%);" : ""; 
+        let fotoUrls = e.foto ? e.foto.split(',') : []; 
+        let urlPri = fotoUrls[0] || 'logo.png'; 
+        let codigoBadge = e.codigo ? `<span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${e.codigo}</span>` : ''; 
+        
+        // Criando a Badge de Gênero para o card
+        let corFundoGen = "#f3f4f6", corTextoGen = "#4b5563";
+        let gLow = String(e.genero).toLowerCase();
+        if(gLow === "masculino") { corFundoGen = "#e0f2fe"; corTextoGen = "#0369a1"; }
+        else if(gLow === "feminino") { corFundoGen = "#fce7f3"; corTextoGen = "#be185d"; }
+        else if(gLow === "infantil") { corFundoGen = "#dcfce7"; corTextoGen = "#166534"; }
+        let badgeGenero = e.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:800; text-transform:uppercase; margin-left:5px;">${e.genero}</span>` : '';
+
+        let locaisHtml = `<div style="margin-top:8px; display:flex; flex-wrap:wrap; gap:5px;">`; 
+        for(let loc in e.locais) { 
+            if(e.locais[loc] > 0) { 
+                locaisHtml += `<span style="background:#f3f4f6; color:#4b5563; padding:3px 8px; border-radius:6px; font-size:0.65rem; font-weight:700; border:1px solid #e5e7eb;">📍 ${loc}: <b style="color:var(--primary-dark);">${e.locais[loc]}</b></span>`; 
+            } 
+        } 
+        locaisHtml += `</div>`; 
+        if (qtdExibicao <= 0) locaisHtml = ""; 
+        
+        const nomeEncode = encodeURIComponent(e.nome); 
+        html += `<div class="rotulo-card" style="align-items:flex-start; ${opacidade}"><img src="${urlPri}" onerror="this.src='logo.png';" class="list-img" onclick="abrirModalImagem(this.src)"><div class="rotulo-info" style="flex:1;"><h4>${codigoBadge}${e.nome} ${badgeGenero} ${avisoQtd}</h4><p style="color:var(--primary); font-weight:700; margin-bottom:2px;">Venda: ${safeFmt(e.preco)}</p><p style="font-size:0.7rem; color:#888; margin-bottom:0;">Custo Fábrica: ${safeFmt(e.custo)}</p>${locaisHtml}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val" style="color:${corQtd};">${qtdExibicao} un</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarEstoque('${nomeEncode}')" title="Editar Distribução">✏️</button></div></div></div>`; 
+    }); 
+    lista.innerHTML = html; document.getElementById('est-total-itens').innerText = somaItens; document.getElementById('est-valor-total').innerText = fmt(somaValor); 
+}
+
+
+
+function abrirModalEditarEstoque(nomeEncoded) { const nomeDecoded = decodeURIComponent(nomeEncoded); const e = estoqueAgrupado[padronizarTexto(nomeDecoded)]; if (!e) return; document.getElementById('edit-e-nome').value = e.nome; document.getElementById('edit-e-tipo').value = e.tipo; document.getElementById('edit-e-custo').value = safeFmt(e.custo); document.getElementById('edit-e-preco').value = safeFmt(e.preco); document.getElementById('edit-e-codigo').value = e.codigo || ''; let fotos = e.foto ? e.foto.split(',') : []; document.getElementById('edit-e-img-preview').src = fotos[0] || 'logo.png'; document.getElementById('img-original-preview').src = fotos[0] || 'logo.png'; document.getElementById('edit-e-foto-antiga').value = e.foto || ''; document.getElementById('edit-e-foto-nova').value = ''; document.getElementById('ai-preview-box').style.display = 'none'; const container = document.getElementById('edit-e-locais-container'); container.innerHTML = ''; for (let loc in e.locais) { adicionarLinhaLocal(loc, e.locais[loc]); } if (Object.keys(e.locais).length === 0) adicionarLinhaLocal('Sede', 0); document.getElementById('modal-editar-estoque').style.display = 'flex'; }
 function adicionarLinhaLocal(loc = '', qtd = 0) { const div = document.createElement('div'); div.className = 'row edit-local-row'; div.style.marginBottom = '5px'; div.innerHTML = `<div class="col"><input type="text" class="edit-l-nome" value="${loc}" list="lista-locais-estoque" placeholder="Ex: Sede, Casa..."></div><div class="col" style="flex:0.4"><input type="number" class="edit-l-qtd" value="${qtd}" min="0"></div><button class="btn-acao" style="margin-top:2px; height: 46px; background:#fff0f6; border-color:#fce7f3; color:#be185d;" onclick="this.parentElement.remove()" title="Remover Local">🗑️</button>`; document.getElementById('edit-e-locais-container').appendChild(div); }
-async function salvarEdicaoEstoque() { const fileInput = document.getElementById('edit-e-foto-nova'); let fotoFinal = document.getElementById('edit-e-foto-antiga').value; const escolha = document.getElementById('escolha-foto-ia').value; if (escolha === 'ia') { mostrarLoading("Enviando IA..."); try { const imgSrc = document.getElementById('ai-img-result').src; const response = await fetch(imgSrc); const blob = await response.blob(); const file = new File([blob], "produto_ia.jpg", { type: "image/jpeg" }); if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(file); } catch(e) { ocultarLoading(); return mostrarAlerta("Erro", "Falha ao salvar foto da IA.", "error"); } } else if (fileInput.files.length > 0 && escolha === 'original') { mostrarLoading("Enviando Imagem..."); try { const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8); if(!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(blob); } catch (err) { ocultarLoading(); return mostrarAlerta("Erro", err.message, "error"); } } const nome = document.getElementById('edit-e-nome').value; const tipo = document.getElementById('edit-e-tipo').value; const c = parseDinheiro(document.getElementById('edit-e-custo').value); const p = parseDinheiro(document.getElementById('edit-e-preco').value); const cod = document.getElementById('edit-e-codigo').value; const rows = document.querySelectorAll('.edit-local-row'); const distribuicao = []; rows.forEach(r => { let loc = r.querySelector('.edit-l-nome').value.trim(); let q = parseFloat(r.querySelector('.edit-l-qtd').value) || 0; if(loc) distribuicao.push({ local: loc, qtd: q }); }); const oldE = estoqueAgrupado[padronizarTexto(nome)]; const oldTotal = oldE ? oldE.totalQtd : 0; const newTotal = distribuicao.reduce((sum, d) => sum + d.qtd, 0); const descLocais = distribuicao.length > 0 ? distribuicao.map(d => `${d.qtd} no(a) ${d.local}`).join(' e ') : "Estoque Zerado"; const msgLog = `📦 Ajuste [${nome}]: Tinha ${oldTotal} un -> Ficou com ${newTotal} un. (${descLocais})`; document.getElementById('modal-editar-estoque').style.display = 'none'; mostrarLoading("Atualizando Servidor..."); try { const py = { usuario: usuarioLogado, acao: "atualizar_estoque_multilocal", nome: nome, tipo: tipo, custo: fmtPlanilha(c), preco: fmtPlanilha(p), foto: fotoFinal, codigo: cod, distribuicao: distribuicao, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(py) }).then(() => { mostrarAlerta("Atualizado!", "Estoque Multi-Local ajustado.", "success"); sincronizarDadosUnico(); }); } catch(e) {} }
+async function salvarEdicaoEstoque() { const fileInput = document.getElementById('edit-e-foto-nova'); let fotoFinal = document.getElementById('edit-e-foto-antiga').value; const escolha = document.getElementById('escolha-foto-ia').value; if (escolha === 'ia') { mostrarLoading("Enviando IA..."); try { const imgSrc = document.getElementById('ai-img-result').src; const response = await fetch(imgSrc); const blob = await response.blob(); const file = new File([blob], "produto_ia.jpg", { type: "image/jpeg" }); if (!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(file); } catch (e) { ocultarLoading(); return mostrarAlerta("Erro", "Falha ao salvar foto da IA.", "error"); } } else if (fileInput.files.length > 0 && escolha === 'original') { mostrarLoading("Enviando Imagem..."); try { const blob = await comprimirImagem(fileInput.files[0], 800, 800, 0.8); if (!KEY_IMGBB && !TOKEN_ONIONSYS) throw new Error("Chaves ausentes."); fotoFinal = await uploadDuplo(blob); } catch (err) { ocultarLoading(); return mostrarAlerta("Erro", err.message, "error"); } } const nome = document.getElementById('edit-e-nome').value; const tipo = document.getElementById('edit-e-tipo').value; const c = parseDinheiro(document.getElementById('edit-e-custo').value); const p = parseDinheiro(document.getElementById('edit-e-preco').value); const cod = document.getElementById('edit-e-codigo').value; const rows = document.querySelectorAll('.edit-local-row'); const distribuicao = []; rows.forEach(r => { let loc = r.querySelector('.edit-l-nome').value.trim(); let q = parseFloat(r.querySelector('.edit-l-qtd').value) || 0; if (loc) distribuicao.push({ local: loc, qtd: q }); }); const oldE = estoqueAgrupado[padronizarTexto(nome)]; const oldTotal = oldE ? oldE.totalQtd : 0; const newTotal = distribuicao.reduce((sum, d) => sum + d.qtd, 0); const descLocais = distribuicao.length > 0 ? distribuicao.map(d => `${d.qtd} no(a) ${d.local}`).join(' e ') : "Estoque Zerado"; const msgLog = `📦 Ajuste [${nome}]: Tinha ${oldTotal} un -> Ficou com ${newTotal} un. (${descLocais})`; document.getElementById('modal-editar-estoque').style.display = 'none'; mostrarLoading("Atualizando Servidor..."); try { const py = { usuario: usuarioLogado, acao: "atualizar_estoque_multilocal", nome: nome, tipo: tipo, custo: fmtPlanilha(c), preco: fmtPlanilha(p), foto: fotoFinal, codigo: cod, distribuicao: distribuicao, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(py) }).then(() => { mostrarAlerta("Atualizado!", "Estoque Multi-Local ajustado.", "success"); sincronizarDadosUnico(); }); } catch (e) { } }
 
-function abrirModalCatalogo() { const tipos = new Set(estoqueGlobal.map(e => padronizarTexto(e.tipo)).filter(t => t)); let html = `<label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom:10px; cursor:pointer;"><input type="checkbox" id="cat-todas" onchange="toggleTodasCategorias(this)" checked style="width:16px; height:16px; flex-shrink:0;"> <strong>Selecionar Todas</strong></label><div style="border-top:1px dashed #E8DDE1; margin-bottom:10px;"></div>`; [...tipos].forEach(t => { let nomeBonito = t.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); html += `<label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:8px; cursor:pointer;"><input type="checkbox" class="chk-cat-tipo" value="${t}" checked onchange="verificarCategorias()" style="width:16px; height:16px; flex-shrink:0;"> ${nomeBonito}</label>`; }); document.getElementById('cat-checkbox-container').innerHTML = html; document.getElementById('modal-gerar-catalogo').style.display = 'flex'; }
+function abrirModalCatalogo() { const tipos = new Set(estoqueGlobal.map(e => padronizarTexto(e.tipo)).filter(t => t)); let html = `<label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom:10px; cursor:pointer;"><input type="checkbox" id="cat-todas" onchange="toggleTodasCategorias(this)" checked style="width:16px; height:16px; flex-shrink:0;"> <strong>Selecionar Todas</strong></label><div style="border-top:1px dashed #E8DDE1; margin-bottom:10px;"></div>`;[...tipos].forEach(t => { let nomeBonito = t.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '); html += `<label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:8px; cursor:pointer;"><input type="checkbox" class="chk-cat-tipo" value="${t}" checked onchange="verificarCategorias()" style="width:16px; height:16px; flex-shrink:0;"> ${nomeBonito}</label>`; }); document.getElementById('cat-checkbox-container').innerHTML = html; document.getElementById('modal-gerar-catalogo').style.display = 'flex'; }
 function toggleTodasCategorias(source) { const checkboxes = document.querySelectorAll('.chk-cat-tipo'); checkboxes.forEach(cb => cb.checked = source.checked); }
 function verificarCategorias() { const checkboxes = document.querySelectorAll('.chk-cat-tipo'); const todas = document.getElementById('cat-todas'); const marcadas = document.querySelectorAll('.chk-cat-tipo:checked').length; todas.checked = (marcadas === checkboxes.length); }
-async function gerarCatalogoPDFFrontend() { const checkboxes = document.querySelectorAll('.chk-cat-tipo:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos uma categoria.", "warning"); const tiposSelecionados = Array.from(checkboxes).map(cb => String(cb.value).toLowerCase().trim()); const apenasEstoque = document.getElementById('cat-filtro-estoque').checked; const exibirQtd = document.getElementById('cat-filtro-exibir-qtd').checked; document.getElementById('modal-gerar-catalogo').style.display = 'none'; mostrarLoading("Gerando..."); let itensFiltrados = Object.values(estoqueAgrupado).filter(e => { let tipoStr = String(e.tipo).toLowerCase().trim(); if (tiposSelecionados.indexOf(tipoStr) === -1) return false; if (apenasEstoque && e.totalQtd <= 0) return false; return true; }); if (itensFiltrados.length === 0) { ocultarLoading(); return mostrarAlerta("Aviso", "Nenhum produto.", "warning"); } let html = `<div id="catalogo-export" style="padding: 30px; font-family: 'Montserrat', sans-serif; color: #2C2A2B; background: #fff;"><div style="text-align: center; border-bottom: 2px solid #E8DDE1; padding-bottom: 20px; margin-bottom: 30px;"><h1 style="color: #966178; font-family: 'Playfair Display', serif; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 3px;">Novera Scent</h1><h2 style="font-size: 16px; font-weight: 500; margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px;">Catálogo de Produtos</h2></div><div style="display: flex; flex-direction: column; gap: 15px;">`; itensFiltrados.forEach(e => { let nomeSemTipo = e.nome.replace(new RegExp('^' + e.tipo + '\\s*', 'i'), '').trim().replace(/^[- ]+/, ""); let nomeCompleto = e.codigo ? `${e.codigo} - Inspiração: ${nomeSemTipo}` : `Inspiração: ${nomeSemTipo}`; let fotoUrls = e.foto ? e.foto.split(',') : []; let urlImg = fotoUrls[0] ? fotoUrls[0] : ''; let imgTag = urlImg ? `<img src="${urlImg}" crossorigin="anonymous" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #E8DDE1; flex-shrink: 0;">` : `<div style="width: 80px; height: 80px; background: #fdf5f7; border-radius: 8px; border: 1px solid #E8DDE1; display:flex; align-items:center; justify-content:center; color:#966178; font-weight:bold; font-size:20px; flex-shrink: 0;">NS</div>`; let qtdHtml = exibirQtd ? (e.totalQtd > 0 ? `<div style="font-size: 10px; color: #2e7d32; font-weight: 800; margin-top: 5px;">📦 Estoque: ${e.totalQtd} un</div>` : `<div style="font-size: 10px; color: #991b1b; font-weight: 800; margin-top: 5px;">🚫 ESGOTADO</div>`) : ""; html += `<div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #E8DDE1; border-radius: 12px; padding: 15px; page-break-inside: avoid;"><div style="display: flex; gap: 15px; align-items: center; overflow: hidden;">${imgTag}<div style="min-width: 0;"><p style="margin: 0 0 5px 0; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nomeCompleto}</p><span style="background: #fdf5f7; color: #966178; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${e.tipo}</span>${qtdHtml}</div></div><div style="font-weight: 800; font-size: 18px; color: #966178; flex-shrink: 0; padding-left: 10px;">${safeFmt(e.preco)}</div></div>`; }); html += `</div><div style="text-align: center; margin-top: 30px; font-size: 10px; color: #888; border-top: 1px solid #E8DDE1; padding-top: 15px;">Atualizado em ${new Date().toLocaleDateString('pt-BR')}</div></div>`; let tempDiv = document.createElement('div'); tempDiv.innerHTML = html; tempDiv.style.position = 'absolute'; tempDiv.style.left = '-9999px'; document.body.appendChild(tempDiv); try { let opt = { margin: 10, filename: `Catalogo_Novera_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }; await html2pdf().set(opt).from(tempDiv.firstChild).save(); mostrarAlerta("Sucesso", "Catálogo gerado!", "success"); } catch(err) { mostrarAlerta("Erro", "Falha PDF.", "error"); } finally { document.body.removeChild(tempDiv); ocultarLoading(); } }
 
-function renderizarCompras() { const fila = document.getElementById('lista-compras-cards'); const tBusca = document.getElementById('busca-compras').value.toLowerCase().trim(); let pends = comprasGlobal.filter(c => c.status !== 'Comprado'); if (tBusca) { pends = pends.filter(c => (c.item + " " + c.categoria).toLowerCase().includes(tBusca)); } pends.sort((a,b) => new Date(a.dataPrevista) - new Date(b.dataPrevista)); if (comprasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma compra planejada.</p>"; return; } if (pends.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo comprado ou não encontrado!</p>"; return; } const hojeIso = new Date().toISOString().split('T')[0]; let html = ""; pends.forEach(c => { 
-    let classBadge = "b-futuro"; let textoBadge = "No prazo"; 
-    if (c.dataPrevista < hojeIso) { classBadge = "b-atrasado"; textoBadge = "Atrasado"; } else if (c.dataPrevista === hojeIso) { classBadge = "b-hoje"; textoBadge = "Hoje"; } 
+
+async function gerarCatalogoPDFFrontend() { 
+    const checkboxes = document.querySelectorAll('.chk-cat-tipo:checked'); 
+    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos uma categoria.", "warning"); 
+    const tiposSelecionados = Array.from(checkboxes).map(cb => String(cb.value).toLowerCase().trim()); 
     
-    // Calcula o valor total dessa compra planejada para exibição
-    const valorTotalCompra = parseDinheiro(c.valor_previsto) * (parseInt(c.qtd) || 1);
+    // Filtro de Gêneros Novos
+    const checkboxesGen = document.querySelectorAll('.chk-cat-genero:checked');
+    if (checkboxesGen.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um gênero.", "warning");
+    const generosSelecionados = Array.from(checkboxesGen).map(cb => String(cb.value).toLowerCase().trim());
+
+    const apenasEstoque = document.getElementById('cat-filtro-estoque').checked; 
+    const exibirQtd = document.getElementById('cat-filtro-exibir-qtd').checked; 
     
-    html += `<div class="rotulo-card" style="gap: 12px; align-items: center;"><input type="checkbox" class="chk-item-compra-lote" value="${c.linha}" style="width:22px; height:22px; accent-color:var(--primary-dark); cursor:pointer; margin:0; flex-shrink:0;"><div class="rotulo-info" style="flex:1; min-width:0;"><h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.item} <span class="badge-status ${classBadge}" style="margin-left:5px;">${textoBadge}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Previsto: ${c.dataDisplay}</p><p><b>${c.qtd}x</b> • Categoria: ${c.categoria}</p><p style="font-size:0.7rem; color:#888; font-weight:700; margin-top:3px;">Unitário: ${safeFmt(c.valor_previsto)} | <span style="color:#A05252;">Total: ${fmt(valorTotalCompra)}</span></p></div><div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;"><button class="btn-salvar" style="margin-top:0; padding:8px 12px; font-size:0.75rem; background:#2e7d32;" onclick="abrirModalCompra(${c.linha})" title="Efetuar Compra Individual">✔️ Lançar</button><div style="display:flex; gap:4px;"><button class="btn-acao" onclick="abrirModalEditarCompra(${c.linha})" title="Editar Planejamento">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Compras', ${c.linha}, '${c.item}')" title="Excluir">🗑️</button></div></div></div>`; 
-}); fila.innerHTML = html; }
-function salvarCompra() { const data = document.getElementById('c-data').value; const cat = padronizarTexto(document.getElementById('c-categoria').value); const item = padronizarTexto(document.getElementById('c-item').value); const qtd = document.getElementById('c-qtd').value; const val = document.getElementById('c-valor').value; if(!data || !item) return mostrarAlerta("Atenção", "Preencha a Data e o Item.", "warning"); mostrarLoading("Salvando..."); const msgLog = `📝 Planejou comprar ${qtd}x [${item}]`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_compra", data: data, categoria: cat, item: item, qtd: qtd, valor: fmtPlanilha(parseDinheiro(val)), log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Adicionado", "Item na lista de compras.", "success"); document.getElementById('c-item').value = ""; document.getElementById('c-valor').value = ""; sincronizarDadosUnico(); }); }
-function abrirModalCompra(linha) { const c = comprasGlobal.find(x => x.linha === linha); if(!c) return; document.getElementById('mc-linha').value = c.linha; document.getElementById('mc-qtd').value = c.qtd; document.getElementById('mc-item-nome').innerText = c.item; document.getElementById('mc-valor-unit').value = safeFmt(c.valor_previsto); calcularTotalCompraModal(); document.getElementById('modal-comprar-item').style.display = 'flex'; }
-function calcularTotalCompraModal() { const q = parseFloat(document.getElementById('mc-qtd').value)||1; const vu = parseDinheiro(document.getElementById('mc-valor-unit').value); document.getElementById('mc-total').value = fmt(q * vu); }
+    document.getElementById('modal-gerar-catalogo').style.display = 'none'; 
+    mostrarLoading("Gerando..."); 
+    
+    let itensFiltrados = Object.values(estoqueAgrupado).filter(e => { 
+        let tipoStr = String(e.tipo).toLowerCase().trim(); 
+        if (tiposSelecionados.indexOf(tipoStr) === -1) return false; 
+        
+        let genE = String(e.genero || "Unissex").toLowerCase().trim();
+        if (generosSelecionados.indexOf(genE) === -1) return false;
+
+        if (apenasEstoque && e.totalQtd <= 0) return false; 
+        return true; 
+    }); 
+    
+    if (itensFiltrados.length === 0) { 
+        ocultarLoading(); 
+        return mostrarAlerta("Aviso", "Nenhum produto atende a esses filtros.", "warning"); 
+    } 
+    
+    let html = `<div id="catalogo-export" style="padding: 30px; font-family: 'Montserrat', sans-serif; color: #2C2A2B; background: #fff;"><div style="text-align: center; border-bottom: 2px solid #E8DDE1; padding-bottom: 20px; margin-bottom: 30px;"><h1 style="color: #966178; font-family: 'Playfair Display', serif; margin: 0; font-size: 28px; text-transform: uppercase; letter-spacing: 3px;">Novera Scent</h1><h2 style="font-size: 16px; font-weight: 500; margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px;">Catálogo de Produtos</h2></div><div style="display: flex; flex-direction: column; gap: 15px;">`; 
+    itensFiltrados.forEach(e => { 
+        let nomeSemTipo = e.nome.replace(new RegExp('^' + e.tipo + '\\s*', 'i'), '').trim().replace(/^[- ]+/, ""); 
+        let nomeCompleto = e.codigo ? `${e.codigo} - Inspiração: ${nomeSemTipo}` : `Inspiração: ${nomeSemTipo}`; 
+        let fotoUrls = e.foto ? e.foto.split(',') : []; 
+        let urlImg = fotoUrls[0] ? fotoUrls[0] : ''; 
+        let imgTag = urlImg ? `<img src="${urlImg}" crossorigin="anonymous" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #E8DDE1; flex-shrink: 0;">` : `<div style="width: 80px; height: 80px; background: #fdf5f7; border-radius: 8px; border: 1px solid #E8DDE1; display:flex; align-items:center; justify-content:center; color:#966178; font-weight:bold; font-size:20px; flex-shrink: 0;">NS</div>`; 
+        let qtdHtml = exibirQtd ? (e.totalQtd > 0 ? `<div style="font-size: 10px; color: #2e7d32; font-weight: 800; margin-top: 5px;">📦 Estoque: ${e.totalQtd} un</div>` : `<div style="font-size: 10px; color: #991b1b; font-weight: 800; margin-top: 5px;">🚫 ESGOTADO</div>`) : ""; 
+        html += `<div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #E8DDE1; border-radius: 12px; padding: 15px; page-break-inside: avoid;"><div style="display: flex; gap: 15px; align-items: center; overflow: hidden;">${imgTag}<div style="min-width: 0;"><p style="margin: 0 0 5px 0; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${nomeCompleto}</p><span style="background: #fdf5f7; color: #966178; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${e.tipo}</span>${qtdHtml}</div></div><div style="font-weight: 800; font-size: 18px; color: #966178; flex-shrink: 0; padding-left: 10px;">${safeFmt(e.preco)}</div></div>`; 
+    }); 
+    html += `</div><div style="text-align: center; margin-top: 30px; font-size: 10px; color: #888; border-top: 1px solid #E8DDE1; padding-top: 15px;">Atualizado em ${new Date().toLocaleDateString('pt-BR')}</div></div>`; 
+    let tempDiv = document.createElement('div'); 
+    tempDiv.innerHTML = html; 
+    tempDiv.style.position = 'absolute'; 
+    tempDiv.style.left = '-9999px'; 
+    document.body.appendChild(tempDiv); 
+    try { 
+        let opt = { margin: 10, filename: `Catalogo_Novera_${new Date().getTime()}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }; 
+        await html2pdf().set(opt).from(tempDiv.firstChild).save(); 
+        mostrarAlerta("Sucesso", "Catálogo gerado!", "success"); 
+    } catch(err) { 
+        mostrarAlerta("Erro", "Falha PDF.", "error"); 
+    } finally { 
+        document.body.removeChild(tempDiv); 
+        ocultarLoading(); 
+    } 
+}
+
+
+function renderizarCompras() {
+    const fila = document.getElementById('lista-compras-cards'); const tBusca = document.getElementById('busca-compras').value.toLowerCase().trim(); let pends = comprasGlobal.filter(c => c.status !== 'Comprado'); if (tBusca) { pends = pends.filter(c => (c.item + " " + c.categoria).toLowerCase().includes(tBusca)); } pends.sort((a, b) => new Date(a.dataPrevista) - new Date(b.dataPrevista)); if (comprasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma compra planejada.</p>"; return; } if (pends.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo comprado ou não encontrado!</p>"; return; } const hojeIso = new Date().toISOString().split('T')[0]; let html = ""; pends.forEach(c => {
+        let classBadge = "b-futuro"; let textoBadge = "No prazo";
+        if (c.dataPrevista < hojeIso) { classBadge = "b-atrasado"; textoBadge = "Atrasado"; } else if (c.dataPrevista === hojeIso) { classBadge = "b-hoje"; textoBadge = "Hoje"; }
+
+        // Calcula o valor total dessa compra planejada para exibição
+        const valorTotalCompra = parseDinheiro(c.valor_previsto) * (parseInt(c.qtd) || 1);
+
+        html += `<div class="rotulo-card" style="gap: 12px; align-items: center;"><input type="checkbox" class="chk-item-compra-lote" value="${c.linha}" style="width:22px; height:22px; accent-color:var(--primary-dark); cursor:pointer; margin:0; flex-shrink:0;"><div class="rotulo-info" style="flex:1; min-width:0;"><h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.item} <span class="badge-status ${classBadge}" style="margin-left:5px;">${textoBadge}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Previsto: ${c.dataDisplay}</p><p><b>${c.qtd}x</b> • Categoria: ${c.categoria}</p><p style="font-size:0.7rem; color:#888; font-weight:700; margin-top:3px;">Unitário: ${safeFmt(c.valor_previsto)} | <span style="color:#A05252;">Total: ${fmt(valorTotalCompra)}</span></p></div><div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;"><button class="btn-salvar" style="margin-top:0; padding:8px 12px; font-size:0.75rem; background:#2e7d32;" onclick="abrirModalCompra(${c.linha})" title="Efetuar Compra Individual">✔️ Lançar</button><div style="display:flex; gap:4px;"><button class="btn-acao" onclick="abrirModalEditarCompra(${c.linha})" title="Editar Planejamento">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Compras', ${c.linha}, '${c.item}')" title="Excluir">🗑️</button></div></div></div>`;
+    }); fila.innerHTML = html;
+}
+function salvarCompra() { const data = document.getElementById('c-data').value; const cat = padronizarTexto(document.getElementById('c-categoria').value); const item = padronizarTexto(document.getElementById('c-item').value); const qtd = document.getElementById('c-qtd').value; const val = document.getElementById('c-valor').value; if (!data || !item) return mostrarAlerta("Atenção", "Preencha a Data e o Item.", "warning"); mostrarLoading("Salvando..."); const msgLog = `📝 Planejou comprar ${qtd}x [${item}]`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_compra", data: data, categoria: cat, item: item, qtd: qtd, valor: fmtPlanilha(parseDinheiro(val)), log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Adicionado", "Item na lista de compras.", "success"); document.getElementById('c-item').value = ""; document.getElementById('c-valor').value = ""; sincronizarDadosUnico(); }); }
+function abrirModalCompra(linha) { const c = comprasGlobal.find(x => x.linha === linha); if (!c) return; document.getElementById('mc-linha').value = c.linha; document.getElementById('mc-qtd').value = c.qtd; document.getElementById('mc-item-nome').innerText = c.item; document.getElementById('mc-valor-unit').value = safeFmt(c.valor_previsto); calcularTotalCompraModal(); document.getElementById('modal-comprar-item').style.display = 'flex'; }
+function calcularTotalCompraModal() { const q = parseFloat(document.getElementById('mc-qtd').value) || 1; const vu = parseDinheiro(document.getElementById('mc-valor-unit').value); document.getElementById('mc-total').value = fmt(q * vu); }
 function confirmarCompraModal() { const linha = document.getElementById('mc-linha').value; const c = comprasGlobal.find(x => x.linha == linha); const local = padronizarTexto(document.getElementById('mc-local').value); const socio = padronizarTexto(document.getElementById('mc-socio').value); const valorUnit = document.getElementById('mc-valor-unit').value; const total = document.getElementById('mc-total').value; document.getElementById('modal-comprar-item').style.display = 'none'; mostrarLoading("Lançando Despesa..."); const msgLog = `🛒 Efetuou compra de [${c.item}]. Gasto total: ${total} lançado nas despesas.`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "marcar_comprado", linha: linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(parseDinheiro(valorUnit)), total: fmtPlanilha(parseDinheiro(total)), log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Pronto!", "Baixa dada e Gasto registrado.", "success"); sincronizarDadosUnico(); }); }
 function abrirModalEditarCompra(linha) { const c = comprasGlobal.find(x => x.linha === linha); if (!c) return; document.getElementById('edit-c-linha').value = c.linha; document.getElementById('edit-c-item').value = c.item; document.getElementById('edit-c-qtd').value = c.qtd; document.getElementById('edit-c-valor').value = safeFmt(c.valor_previsto); document.getElementById('edit-c-data').value = c.dataPrevista; document.getElementById('edit-c-categoria').value = c.categoria; document.getElementById('modal-editar-compra').style.display = 'flex'; }
 function salvarEdicaoCompra() { const linha = document.getElementById('edit-c-linha').value; const item = padronizarTexto(document.getElementById('edit-c-item').value); const qtd = document.getElementById('edit-c-qtd').value; const valor = parseDinheiro(document.getElementById('edit-c-valor').value); const data = document.getElementById('edit-c-data').value; const cat = padronizarTexto(document.getElementById('edit-c-categoria').value); document.getElementById('modal-editar-compra').style.display = 'none'; mostrarLoading("Atualizando..."); const msgLog = `✏️ Atualizou planejamento de compra: ${qtd}x [${item}]`; const py = { usuario: usuarioLogado, acao: "excluir_registro", aba: "Compras", linha: linha }; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(py) }).then(() => { fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_compra", data: data, categoria: cat, item: item, qtd: qtd, valor: fmtPlanilha(valor), log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Atualizado!", "Planejamento alterado.", "success"); sincronizarDadosUnico(); }); }); }
 function abrirModalCompraLote() { const marcados = document.querySelectorAll('.chk-item-compra-lote:checked'); if (marcados.length === 0) return mostrarAlerta("Aviso", "Selecione ao menos um item da fila para lançar.", "warning"); document.getElementById('modal-comprar-lote').style.display = 'flex'; }
-async function confirmarCompraLoteModal() { const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked'); const local = padronizarTexto(document.getElementById('mcl-local').value); const socio = padronizarTexto(document.getElementById('mcl-socio').value); if(!local || !socio) return mostrarAlerta("Atenção", "Informe o Fornecedor e o Sócio.", "warning"); document.getElementById('modal-comprar-lote').style.display = 'none'; mostrarLoading("Lançando Lote..."); let itensStr = []; for (let chk of checkboxes) { let c = comprasGlobal.find(x => x.linha == chk.value); if(c) { itensStr.push(c.item); let totalGasto = (parseFloat(c.qtd) || 1) * parseFloat(c.valor_previsto); await fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "marcar_comprado", linha: c.linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(c.valor_previsto), total: fmtPlanilha(totalGasto), log_detalhe: `🛒 Compra em lote: ${c.item}` }) }); } } mostrarAlerta("Lote Enviado!", "Os itens foram processados.", "success"); sincronizarDadosUnico(); }
+async function confirmarCompraLoteModal() { const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked'); const local = padronizarTexto(document.getElementById('mcl-local').value); const socio = padronizarTexto(document.getElementById('mcl-socio').value); if (!local || !socio) return mostrarAlerta("Atenção", "Informe o Fornecedor e o Sócio.", "warning"); document.getElementById('modal-comprar-lote').style.display = 'none'; mostrarLoading("Lançando Lote..."); let itensStr = []; for (let chk of checkboxes) { let c = comprasGlobal.find(x => x.linha == chk.value); if (c) { itensStr.push(c.item); let totalGasto = (parseFloat(c.qtd) || 1) * parseFloat(c.valor_previsto); await fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "marcar_comprado", linha: c.linha, item: c.item, qtd: c.qtd, local: local, socio: socio, valor_unitario: fmtPlanilha(c.valor_previsto), total: fmtPlanilha(totalGasto), log_detalhe: `🛒 Compra em lote: ${c.item}` }) }); } } mostrarAlerta("Lote Enviado!", "Os itens foram processados.", "success"); sincronizarDadosUnico(); }
 function excluirComprasEmLote() { const checkboxes = document.querySelectorAll('.chk-item-compra-lote:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Marque os itens.", "warning"); abrirConfirmacao("Excluir Selecionados?", `Deseja apagar ${checkboxes.length} itens marcados?`, "🗑️", "#A05252", "#803f3f", "🗑️ Confirmar", async () => { mostrarLoading("Apagando..."); for (let chk of checkboxes) { await fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "excluir_registro", aba: "Compras", linha: chk.value, log_detalhe: `🗑️ Excluiu compra em lote.` }) }); } mostrarAlerta("Removidos!", "Itens apagados.", "success"); sincronizarDadosUnico(); }); }
 
 function calcularTotalGasto() { const qtd = parseFloat(document.getElementById('g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('g-valor').value); document.getElementById('g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
 function calcularEditGasto() { const qtd = parseFloat(document.getElementById('edit-g-qtd').value) || 1; const valUnit = parseDinheiro(document.getElementById('edit-g-valor').value); document.getElementById('edit-g-total').value = valUnit > 0 ? fmt(qtd * valUnit) : "R$ 0,00"; }
 
 // VERSÃO ATUALIZADA - SALVAR GASTO
-function salvarGasto() { 
-    const data = document.getElementById('g-data').value, 
-          local = padronizarTexto(document.getElementById('g-local').value), 
-          socio = padronizarTexto(document.getElementById('g-socio').value), 
-          item = padronizarTexto(document.getElementById('g-item').value), 
-          qtd = document.getElementById('g-qtd').value, 
-          valor = parseDinheiro(document.getElementById('g-valor').value), 
-          total = parseDinheiro(document.getElementById('g-total').value); 
-          
-    if(!data || !item || valor === 0) return mostrarAlerta("Atenção", "Preencha a Data, Item e Valor.", "warning"); 
-    
-    mostrarLoading("Salvando..."); 
-    const msgLog = `💸 Lançou despesa: [${item}] valor de ${fmtPlanilha(total)}`; 
-    
-    fetch(API_NOVERA, { 
-        method: "POST", 
+function salvarGasto() {
+    const data = document.getElementById('g-data').value,
+        local = padronizarTexto(document.getElementById('g-local').value),
+        socio = padronizarTexto(document.getElementById('g-socio').value),
+        item = padronizarTexto(document.getElementById('g-item').value),
+        qtd = document.getElementById('g-qtd').value,
+        valor = parseDinheiro(document.getElementById('g-valor').value),
+        total = parseDinheiro(document.getElementById('g-total').value);
+
+    if (!data || !item || valor === 0) return mostrarAlerta("Atenção", "Preencha a Data, Item e Valor.", "warning");
+
+    mostrarLoading("Salvando...");
+    const msgLog = `💸 Lançou despesa: [${item}] valor de ${fmtPlanilha(total)}`;
+
+    fetch(API_NOVERA, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            usuario: usuarioLogado, 
-            acao: "salvar_gasto", 
-            data: data, 
-            local: local, 
-            socio: socio, 
-            item: item, 
-            qtd: qtd, 
-            valor: fmtPlanilha(valor), 
-            total: fmtPlanilha(total), 
-            log_detalhe: msgLog 
-        }) 
+        body: JSON.stringify({
+            usuario: usuarioLogado,
+            acao: "salvar_gasto",
+            data: data,
+            local: local,
+            socio: socio,
+            item: item,
+            qtd: qtd,
+            valor: fmtPlanilha(valor),
+            total: fmtPlanilha(total),
+            log_detalhe: msgLog
+        })
     })
-    .then(r => r.json())
-    .then(resultado => { 
-        if(resultado.sucesso) {
-            mostrarAlerta("Sucesso", "Despesa lançada.", "success"); 
-            document.getElementById('g-item').value = ""; 
-            document.getElementById('g-valor').value = ""; 
-            document.getElementById('g-total').value = ""; 
-            sincronizarDadosUnico(); 
-        } else {
-             mostrarAlerta("Erro", resultado.erro || "Falha ao salvar no banco.", "error"); 
-        }
-    })
-    .catch(e => mostrarAlerta("Erro", "Falha na conexão.", "error"))
-    .finally(() => ocultarLoading());
+        .then(r => r.json())
+        .then(resultado => {
+            if (resultado.sucesso) {
+                mostrarAlerta("Sucesso", "Despesa lançada.", "success");
+                document.getElementById('g-item').value = "";
+                document.getElementById('g-valor').value = "";
+                document.getElementById('g-total').value = "";
+                sincronizarDadosUnico();
+            } else {
+                mostrarAlerta("Erro", resultado.erro || "Falha ao salvar no banco.", "error");
+            }
+        })
+        .catch(e => mostrarAlerta("Erro", "Falha na conexão.", "error"))
+        .finally(() => ocultarLoading());
 }
 
-function renderizarGastos() { const fSocio = document.getElementById('f-socio').value.toLowerCase(); const fIni = document.getElementById('f-data-ini').value; const fFim = document.getElementById('f-data-fim').value; const tBusca = document.getElementById('busca-gastos').value.toLowerCase().trim(); let filtrados = gastosGlobal.filter(g => { let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio); let passData = true; if(fIni && g.dataIso < fIni) passData = false; if(fFim && g.dataIso > fFim) passData = false; let passBusca = true; if (tBusca) { const txtAll = (g.item + " " + g.local + " " + g.socio).toLowerCase(); if (!txtAll.includes(tBusca)) passBusca = false; } return passSocio && passData && passBusca; }); filtrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso)); let somaTotal = 0, html = ""; if (filtrados.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else { filtrados.forEach(g => { somaTotal += parseDinheiro(g.total); html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4><p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p><p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Gastos', ${g.linha}, 'Despesa: ${g.item}')">🗑️</button></div></div></div>`; }); } document.getElementById('lista-gastos-cadastrados').innerHTML = html; document.getElementById('g-total-dashboard').innerText = fmt(somaTotal); }
+function renderizarGastos() { const fSocio = document.getElementById('f-socio').value.toLowerCase(); const fIni = document.getElementById('f-data-ini').value; const fFim = document.getElementById('f-data-fim').value; const tBusca = document.getElementById('busca-gastos').value.toLowerCase().trim(); let filtrados = gastosGlobal.filter(g => { let passSocio = fSocio === "" || String(g.socio).toLowerCase().includes(fSocio); let passData = true; if (fIni && g.dataIso < fIni) passData = false; if (fFim && g.dataIso > fFim) passData = false; let passBusca = true; if (tBusca) { const txtAll = (g.item + " " + g.local + " " + g.socio).toLowerCase(); if (!txtAll.includes(tBusca)) passBusca = false; } return passSocio && passData && passBusca; }); filtrados.sort((a, b) => new Date(b.dataIso) - new Date(a.dataIso)); let somaTotal = 0, html = ""; if (filtrados.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else { filtrados.forEach(g => { somaTotal += parseDinheiro(g.total); html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${g.item} <span style="font-size:0.7rem; color:var(--primary); font-weight:800;">${g.dataDisplay}</span></h4><p>${g.local} • Sócio: <b>${g.socio || '-'}</b></p><p style="font-size: 0.7rem; color:#888;">Qtd: ${g.qtd}x ${safeFmt(g.valor)}</p></div><div style="display:flex; gap:12px; align-items:center;"><div class="custo-val" style="color:#A05252;">${safeFmt(g.total)}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarGasto(${g.linha})">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Gastos', ${g.linha}, 'Despesa: ${g.item}')">🗑️</button></div></div></div>`; }); } document.getElementById('lista-gastos-cadastrados').innerHTML = html; document.getElementById('g-total-dashboard').innerText = fmt(somaTotal); }
 function abrirModalEditarGasto(linha) { const g = gastosGlobal.find(x => x.linha === linha); if (!g) return; document.getElementById('edit-g-linha').value = g.linha; document.getElementById('edit-g-data').value = g.dataIso; document.getElementById('edit-g-socio').value = g.socio; document.getElementById('edit-g-local').value = g.local; document.getElementById('edit-g-item').value = g.item; document.getElementById('edit-g-qtd').value = g.qtd; document.getElementById('edit-g-valor').value = safeFmt(g.valor); document.getElementById('edit-g-total').value = safeFmt(g.total); document.getElementById('modal-editar-gasto').style.display = 'flex'; }
 function salvarEdicaoGasto() { const linha = document.getElementById('edit-g-linha').value; const gOrig = gastosGlobal.find(x => x.linha == linha); const vTotal = parseDinheiro(document.getElementById('edit-g-total').value); const py = { usuario: usuarioLogado, acao: "atualizar_gasto", linha: linha, data: document.getElementById('edit-g-data').value, local: padronizarTexto(document.getElementById('edit-g-local').value), socio: padronizarTexto(document.getElementById('edit-g-socio').value), item: padronizarTexto(document.getElementById('edit-g-item').value), qtd: document.getElementById('edit-g-qtd').value, valor: parseDinheiro(document.getElementById('edit-g-valor').value), total: vTotal, log_detalhe: `✏️ Editou despesa [${gOrig ? gOrig.item : 'Item'}]: ${gOrig ? safeFmt(gOrig.total) : ''} -> ${fmtPlanilha(vTotal)}` }; document.getElementById('modal-editar-gasto').style.display = 'none'; mostrarLoading("Salvando..."); py.valor = fmtPlanilha(py.valor); py.total = fmtPlanilha(py.total); fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(py) }).then(() => { mostrarAlerta("Atualizado!", "Edição salva.", "success"); sincronizarDadosUnico(); }); }
 
-function renderizarEncomendas() { const fila = document.getElementById('lista-encomendas-cards'); const tBusca = document.getElementById('busca-encomendas').value.toLowerCase().trim(); let pendentes = encomendasGlobal.filter(e => e.status !== 'Entregue'); if (tBusca) { pendentes = pendentes.filter(e => (e.cliente + " " + e.item).toLowerCase().includes(tBusca)); } pendentes.sort((a,b) => new Date(b.dataPedido) - new Date(a.dataPedido)); if (encomendasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma encomenda ativa.</p>"; return; } if (pendentes.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo Entregue ou Não Encontrado!</p>"; return; } let html = ""; pendentes.forEach(e => { let classBadge = e.status === 'Pendente' ? 'b-atrasado' : 'b-ok'; let btnVender = e.status === 'Produzido' ? `<button class="btn-salvar" style="margin-top:5px; padding:10px; background:#2C2A2B; font-size:0.8rem; width:100%;" onclick="puxarVendaDeEncomenda(${e.linha})">🚀 Vender (PDV)</button>` : ''; let toggleStatus = e.status === 'Pendente' ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#c8e6c9;" onclick="mudarStatusEncomenda(${e.linha}, 'Produzido')" title="Marcar Produzido">✔️</button>` : `<button class="btn-acao" style="background:#fee2e2; color:#991b1b; border-color:#fecaca;" onclick="mudarStatusEncomenda(${e.linha}, 'Pendente')" title="Desfazer">↩️</button>`; html += `<div class="rotulo-card" style="flex-direction:column; align-items:stretch;"><div style="display:flex; justify-content:space-between; align-items:flex-start;"><div class="rotulo-info"><h4>${e.cliente} <span class="badge-status ${classBadge}" style="margin-left:5px;">${e.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Pedido: ${e.dataDisplay}</p><p><b>${e.qtd}x</b> ${e.item}</p><p style="font-size:0.7rem; color:#888; font-style:italic;">Obs: ${e.obs}</p></div><div style="display:flex; gap:5px;">${toggleStatus}<button class="btn-acao" onclick="prepararExclusaoRegistro('Encomendas', ${e.linha}, 'Pedido de ${e.cliente}')">🗑️</button></div></div>${btnVender}</div>`; }); fila.innerHTML = html; }
-function salvarEncomenda() { const data = document.getElementById('e-data').value, cli = padronizarTexto(document.getElementById('e-cliente').value), item = padronizarTexto(document.getElementById('e-item').value), qtd = document.getElementById('e-qtd').value, obs = document.getElementById('e-obs').value; if(!data || !cli || !item) return mostrarAlerta("Atenção", "Preencha Data, Cliente e Item.", "warning"); mostrarLoading("Salvando..."); const msgLog = `📦 Nova encomenda de ${cli}: ${qtd}x [${item}]`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_encomenda", data: data, cliente: cli, item: item, qtd: qtd, status: 'Pendente', obs: obs, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Registrado", "Encomenda salva.", "success"); document.getElementById('e-item').value = ""; document.getElementById('e-obs').value = ""; sincronizarDadosUnico(); }); }
-function mudarStatusEncomenda(linha, novoStatus) { let e = encomendasGlobal.find(x => x.linha == linha); if(!e) return; mostrarLoading("Atualizando..."); const msgLog = `🔄 Pedido de ${e.cliente} marcado como ${novoStatus}`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_encomenda_status", linha: linha, status: novoStatus, log_detalhe: msgLog }) }).then(()=>sincronizarDadosUnico()); }
-function puxarVendaDeEncomenda(linha) { const e = encomendasGlobal.find(x => x.linha == linha); if(!e) return; toggleVendasTab('registro'); document.getElementById('v-cliente').value = e.cliente; document.getElementById('v-qtd').value = e.qtd; document.getElementById('v-observacao').value = "REF ENCOMENDA: " + e.item; const dropdownProd = document.getElementById('v-produto'); let options = Array.from(dropdownProd.options); let achou = options.find(opt => opt.value.toLowerCase() === e.item.toLowerCase()); if(achou) { dropdownProd.value = achou.value; autoPreencherValorVenda(); } mostrarAlerta("Preenchido!", "Preenchemos o PDV para você.", "success"); }
+function renderizarEncomendas() { const fila = document.getElementById('lista-encomendas-cards'); const tBusca = document.getElementById('busca-encomendas').value.toLowerCase().trim(); let pendentes = encomendasGlobal.filter(e => e.status !== 'Entregue'); if (tBusca) { pendentes = pendentes.filter(e => (e.cliente + " " + e.item).toLowerCase().includes(tBusca)); } pendentes.sort((a, b) => new Date(b.dataPedido) - new Date(a.dataPedido)); if (encomendasGlobal.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma encomenda ativa.</p>"; return; } if (pendentes.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Tudo Entregue ou Não Encontrado!</p>"; return; } let html = ""; pendentes.forEach(e => { let classBadge = e.status === 'Pendente' ? 'b-atrasado' : 'b-ok'; let btnVender = e.status === 'Produzido' ? `<button class="btn-salvar" style="margin-top:5px; padding:10px; background:#2C2A2B; font-size:0.8rem; width:100%;" onclick="puxarVendaDeEncomenda(${e.linha})">🚀 Vender (PDV)</button>` : ''; let toggleStatus = e.status === 'Pendente' ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#c8e6c9;" onclick="mudarStatusEncomenda(${e.linha}, 'Produzido')" title="Marcar Produzido">✔️</button>` : `<button class="btn-acao" style="background:#fee2e2; color:#991b1b; border-color:#fecaca;" onclick="mudarStatusEncomenda(${e.linha}, 'Pendente')" title="Desfazer">↩️</button>`; html += `<div class="rotulo-card" style="flex-direction:column; align-items:stretch;"><div style="display:flex; justify-content:space-between; align-items:flex-start;"><div class="rotulo-info"><h4>${e.cliente} <span class="badge-status ${classBadge}" style="margin-left:5px;">${e.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Pedido: ${e.dataDisplay}</p><p><b>${e.qtd}x</b> ${e.item}</p><p style="font-size:0.7rem; color:#888; font-style:italic;">Obs: ${e.obs}</p></div><div style="display:flex; gap:5px;">${toggleStatus}<button class="btn-acao" onclick="prepararExclusaoRegistro('Encomendas', ${e.linha}, 'Pedido de ${e.cliente}')">🗑️</button></div></div>${btnVender}</div>`; }); fila.innerHTML = html; }
+function salvarEncomenda() { const data = document.getElementById('e-data').value, cli = padronizarTexto(document.getElementById('e-cliente').value), item = padronizarTexto(document.getElementById('e-item').value), qtd = document.getElementById('e-qtd').value, obs = document.getElementById('e-obs').value; if (!data || !cli || !item) return mostrarAlerta("Atenção", "Preencha Data, Cliente e Item.", "warning"); mostrarLoading("Salvando..."); const msgLog = `📦 Nova encomenda de ${cli}: ${qtd}x [${item}]`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_encomenda", data: data, cliente: cli, item: item, qtd: qtd, status: 'Pendente', obs: obs, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Registrado", "Encomenda salva.", "success"); document.getElementById('e-item').value = ""; document.getElementById('e-obs').value = ""; sincronizarDadosUnico(); }); }
+function mudarStatusEncomenda(linha, novoStatus) { let e = encomendasGlobal.find(x => x.linha == linha); if (!e) return; mostrarLoading("Atualizando..."); const msgLog = `🔄 Pedido de ${e.cliente} marcado como ${novoStatus}`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_encomenda_status", linha: linha, status: novoStatus, log_detalhe: msgLog }) }).then(() => sincronizarDadosUnico()); }
+function puxarVendaDeEncomenda(linha) { const e = encomendasGlobal.find(x => x.linha == linha); if (!e) return; toggleVendasTab('registro'); document.getElementById('v-cliente').value = e.cliente; document.getElementById('v-qtd').value = e.qtd; document.getElementById('v-observacao').value = "REF ENCOMENDA: " + e.item; const dropdownProd = document.getElementById('v-produto'); let options = Array.from(dropdownProd.options); let achou = options.find(opt => opt.value.toLowerCase() === e.item.toLowerCase()); if (achou) { dropdownProd.value = achou.value; autoPreencherValorVenda(); } mostrarAlerta("Preenchido!", "Preenchemos o PDV para você.", "success"); }
 
-function autoPreencherValorVenda() { const selecao = document.getElementById('v-produto').value; const nomePadronizado = padronizarTexto(selecao); const prodAgrupado = estoqueAgrupado[nomePadronizado]; const imgPrev = document.getElementById('v-produto-img-preview'); const comboLocal = document.getElementById('v-local-estoque'); if(comboLocal) comboLocal.innerHTML = ''; if(prodAgrupado && prodAgrupado.totalQtd > 0) { const qtd = parseInt(document.getElementById('v-qtd').value) || 1; const valorUnitario = parseDinheiro(prodAgrupado.preco); document.getElementById('v-valor').value = fmt(valorUnitario * qtd); let fotos = prodAgrupado.foto ? prodAgrupado.foto.split(',') : []; imgPrev.src = fotos[0] || 'logo.png'; imgPrev.style.display = 'block'; if(comboLocal) { let count = 0; for(let loc in prodAgrupado.locais) { if (prodAgrupado.locais[loc] > 0) { comboLocal.innerHTML += `<option value="${loc}">${loc} (Disp: ${prodAgrupado.locais[loc]})</option>`; count++; } } if (count === 0) comboLocal.innerHTML = `<option value="">Sem estoque</option>`; } } else { document.getElementById('v-valor').value = ""; imgPrev.style.display = 'none'; if(comboLocal) comboLocal.innerHTML = `<option value="">Selecione o Produto Primeiro...</option>`; } }
-function autoPreencherEdicaoVenda() { const selecao = document.getElementById('edit-v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao); if(produtoEstoque) { const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); } }
+function autoPreencherValorVenda() { const selecao = document.getElementById('v-produto').value; const nomePadronizado = padronizarTexto(selecao); const prodAgrupado = estoqueAgrupado[nomePadronizado]; const imgPrev = document.getElementById('v-produto-img-preview'); const comboLocal = document.getElementById('v-local-estoque'); if (comboLocal) comboLocal.innerHTML = ''; if (prodAgrupado && prodAgrupado.totalQtd > 0) { const qtd = parseInt(document.getElementById('v-qtd').value) || 1; const valorUnitario = parseDinheiro(prodAgrupado.preco); document.getElementById('v-valor').value = fmt(valorUnitario * qtd); let fotos = prodAgrupado.foto ? prodAgrupado.foto.split(',') : []; imgPrev.src = fotos[0] || 'logo.png'; imgPrev.style.display = 'block'; if (comboLocal) { let count = 0; for (let loc in prodAgrupado.locais) { if (prodAgrupado.locais[loc] > 0) { comboLocal.innerHTML += `<option value="${loc}">${loc} (Disp: ${prodAgrupado.locais[loc]})</option>`; count++; } } if (count === 0) comboLocal.innerHTML = `<option value="">Sem estoque</option>`; } } else { document.getElementById('v-valor').value = ""; imgPrev.style.display = 'none'; if (comboLocal) comboLocal.innerHTML = `<option value="">Selecione o Produto Primeiro...</option>`; } }
+function autoPreencherEdicaoVenda() { const selecao = document.getElementById('edit-v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao); if (produtoEstoque) { const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); } }
 
 // VERSÃO ATUALIZADA - SALVAR VENDA
-function salvarVenda() { 
-    const data = document.getElementById('v-data').value, 
-          cliente = padronizarTexto(document.getElementById('v-cliente').value), 
-          produto = document.getElementById('v-produto').value; 
-          
-    const socio = (usuarioCargo === 'Admin') ? padronizarTexto(document.getElementById('v-socio').value) : padronizarTexto(usuarioLogado); 
-    const elLocal = document.getElementById('v-local-estoque'); 
-    const localRetirada = elLocal ? elLocal.value : ""; 
-    const qtd = parseInt(document.getElementById('v-qtd').value) || 1, 
-          valorStr = document.getElementById('v-valor').value, 
-          status = document.getElementById('v-status').value, 
-          observacao = document.getElementById('v-observacao').value; 
-          
-    const valVenda = parseDinheiro(valorStr); 
-    
-    if(!data || !cliente || !produto || valVenda < 0 || !localRetirada) return mostrarAlerta("Atenção", "Preencha todos os campos e o Local do Estoque.", "warning"); 
-    
-    const prodAgrupado = estoqueAgrupado[padronizarTexto(produto)]; 
-    const cUnd = prodAgrupado ? parseDinheiro(prodAgrupado.custo) : 0; 
-    const cTot = cUnd * qtd; 
-    const lucro = valVenda - cTot; 
-    const mkp = cTot > 0 ? (lucro / cTot) : 1; 
-    const dPg = status === "Pago" ? data : ""; 
-    
-    mostrarLoading("Registrando..."); 
-    const msgLog = `🛒 Venda: ${qtd}x [${produto}] para ${cliente}. Local: ${localRetirada} (${status})`; 
-    
-    const envio = { 
-        usuario: usuarioLogado, 
-        acao: "salvar_venda", 
-        data: data, 
-        cliente: cliente, 
-        produto: produto, 
-        socio: socio, 
-        qtd: qtd, 
-        valor_venda: fmtPlanilha(valVenda), 
-        status: status, 
-        custo_und: fmtPlanilha(cUnd), 
-        custo_total: fmtPlanilha(cTot), 
-        lucro: fmtPlanilha(lucro), 
-        markup: (mkp * 100).toFixed(2) + "%", 
-        data_pg: dPg, 
-        observacao: observacao, 
-        local_estoque: localRetirada, 
-        log_detalhe: msgLog 
-    }; 
-    
-    fetch(API_NOVERA, { 
-        method: "POST", 
+function salvarVenda() {
+    const data = document.getElementById('v-data').value,
+        cliente = padronizarTexto(document.getElementById('v-cliente').value),
+        produto = document.getElementById('v-produto').value;
+
+    const socio = (usuarioCargo === 'Admin') ? padronizarTexto(document.getElementById('v-socio').value) : padronizarTexto(usuarioLogado);
+    const elLocal = document.getElementById('v-local-estoque');
+    const localRetirada = elLocal ? elLocal.value : "";
+    const qtd = parseInt(document.getElementById('v-qtd').value) || 1,
+        valorStr = document.getElementById('v-valor').value,
+        status = document.getElementById('v-status').value,
+        observacao = document.getElementById('v-observacao').value;
+
+    const valVenda = parseDinheiro(valorStr);
+
+    if (!data || !cliente || !produto || valVenda < 0 || !localRetirada) return mostrarAlerta("Atenção", "Preencha todos os campos e o Local do Estoque.", "warning");
+
+    const prodAgrupado = estoqueAgrupado[padronizarTexto(produto)];
+    const cUnd = prodAgrupado ? parseDinheiro(prodAgrupado.custo) : 0;
+    const cTot = cUnd * qtd;
+    const lucro = valVenda - cTot;
+    const mkp = cTot > 0 ? (lucro / cTot) : 1;
+    const dPg = status === "Pago" ? data : "";
+
+    mostrarLoading("Registrando...");
+    const msgLog = `🛒 Venda: ${qtd}x [${produto}] para ${cliente}. Local: ${localRetirada} (${status})`;
+
+    const envio = {
+        usuario: usuarioLogado,
+        acao: "salvar_venda",
+        data: data,
+        cliente: cliente,
+        produto: produto,
+        socio: socio,
+        qtd: qtd,
+        valor_venda: fmtPlanilha(valVenda),
+        status: status,
+        custo_und: fmtPlanilha(cUnd),
+        custo_total: fmtPlanilha(cTot),
+        lucro: fmtPlanilha(lucro),
+        markup: (mkp * 100).toFixed(2) + "%",
+        data_pg: dPg,
+        observacao: observacao,
+        local_estoque: localRetirada,
+        log_detalhe: msgLog
+    };
+
+    fetch(API_NOVERA, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(envio) 
+        body: JSON.stringify(envio)
     })
-    .then(r => r.json())
-    .then(resultado => { 
-        if(resultado.sucesso){
-            mostrarAlerta("Sucesso", "Venda lançada.", "success"); 
-            document.getElementById('v-cliente').value = ""; 
-            document.getElementById('v-valor').value = ""; 
-            document.getElementById('v-observacao').value = ""; 
-            document.getElementById('v-produto-img-preview').style.display = 'none'; 
-            if(elLocal) elLocal.innerHTML = '<option value="">Selecione o Produto Primeiro...</option>'; 
-            sincronizarDadosUnico(); 
-        } else {
-            mostrarAlerta("Erro", resultado.erro || "Falha ao salvar no banco.", "error"); 
-        }
-    })
-    .catch(e => mostrarAlerta("Erro", "Falha na conexão.", "error"))
-    .finally(() => ocultarLoading()); 
+        .then(r => r.json())
+        .then(resultado => {
+            if (resultado.sucesso) {
+                mostrarAlerta("Sucesso", "Venda lançada.", "success");
+                document.getElementById('v-cliente').value = "";
+                document.getElementById('v-valor').value = "";
+                document.getElementById('v-observacao').value = "";
+                document.getElementById('v-produto-img-preview').style.display = 'none';
+                if (elLocal) elLocal.innerHTML = '<option value="">Selecione o Produto Primeiro...</option>';
+                sincronizarDadosUnico();
+            } else {
+                mostrarAlerta("Erro", resultado.erro || "Falha ao salvar no banco.", "error");
+            }
+        })
+        .catch(e => mostrarAlerta("Erro", "Falha na conexão.", "error"))
+        .finally(() => ocultarLoading());
 }
 
-function renderizarVendas() { const dlist = [...new Set(vendasGlobal.map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('lista-clientes').innerHTML = dlist.map(c => `<option value="${c}">`).join(''); const dlistPagos = [...new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + dlistPagos.map(c => `<option value="${c}">${c}</option>`).join(''); const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()))].sort((a,b)=>a.localeCompare(b)); document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); let htmlVendas = '<option value="">Selecione do Estoque...</option>'; Object.values(estoqueAgrupado).sort((a,b)=>String(b.codigo||"").localeCompare(String(a.codigo||""))).forEach(e => { if (e.totalQtd > 0) { let exibeCodigo = e.codigo ? e.codigo + ' - ' : ''; htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Total: ${e.totalQtd})</option>`; } }); const fvClienteSelect = document.getElementById('f-v-cliente'); const fvClienteAtual = fvClienteSelect.value; fvClienteSelect.innerHTML = '<option value="">Todos</option>' + dlist.map(c => `<option value="${c}">${c}</option>`).join(''); fvClienteSelect.value = fvClienteAtual; document.getElementById("v-produto").innerHTML = htmlVendas; document.getElementById("edit-v-produto").innerHTML = htmlVendas; filtrarVendas(); }
-function filtrarVendas() { 
+function renderizarVendas() { const dlist = [...new Set(vendasGlobal.map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('lista-clientes').innerHTML = dlist.map(c => `<option value="${c}">`).join(''); const dlistPagos = [...new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + dlistPagos.map(c => `<option value="${c}">${c}</option>`).join(''); const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); let htmlVendas = '<option value="">Selecione do Estoque...</option>'; Object.values(estoqueAgrupado).sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(e => { if (e.totalQtd > 0) { let exibeCodigo = e.codigo ? e.codigo + ' - ' : ''; htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Total: ${e.totalQtd})</option>`; } }); const fvClienteSelect = document.getElementById('f-v-cliente'); const fvClienteAtual = fvClienteSelect.value; fvClienteSelect.innerHTML = '<option value="">Todos</option>' + dlist.map(c => `<option value="${c}">${c}</option>`).join(''); fvClienteSelect.value = fvClienteAtual; document.getElementById("v-produto").innerHTML = htmlVendas; document.getElementById("edit-v-produto").innerHTML = htmlVendas; filtrarVendas(); }
+function filtrarVendas() {
     const isAdmin = (usuarioCargo === 'Admin');
-    const fTipoData = document.getElementById('f-v-tipo-data') ? document.getElementById('f-v-tipo-data').value : 'venda'; const fDia = document.getElementById('f-v-dia').value, fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value, fSocio = document.getElementById('f-v-socio').value.toLowerCase(), fCliente = document.getElementById('f-v-cliente').value.toLowerCase(); 
-    let filtradas = vendasGlobal.filter(v => { let pD = true, pM = true, pS = true, pSo = true, pC = true; let dataAlvoIso = ""; if (fTipoData === 'venda') { dataAlvoIso = v.dataVendaIso; } else { if (v.dataPgtoDisplay) { const parts = v.dataPgtoDisplay.split('/'); if (parts.length === 3) dataAlvoIso = `${parts[2]}-${parts[1]}-${parts[0]}`; } } if(fDia) { if (dataAlvoIso !== fDia) pD = false; } if(fMes) { const mesAlvo = dataAlvoIso ? dataAlvoIso.split('-')[1] : null; if(mesAlvo && mesAlvo !== fMes) pM = false; } if(fStatus && v.status !== fStatus) pS = false; if(fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; if(fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; return pD && pM && pS && pSo && pC; }); 
-    filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = ""; 
-    if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else { 
-        filtradas.forEach(v => { 
-            const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0; const isP = v.status === 'Pago'; if(isP) tRec += val; else tDev += val; 
-            const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`; 
-            const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : ""; 
-            const nomeHtml = formatarNomeProdutoHtml(v.produto, 'venda'); 
-            
+    const fTipoData = document.getElementById('f-v-tipo-data') ? document.getElementById('f-v-tipo-data').value : 'venda'; const fDia = document.getElementById('f-v-dia').value, fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value, fSocio = document.getElementById('f-v-socio').value.toLowerCase(), fCliente = document.getElementById('f-v-cliente').value.toLowerCase();
+    let filtradas = vendasGlobal.filter(v => { let pD = true, pM = true, pS = true, pSo = true, pC = true; let dataAlvoIso = ""; if (fTipoData === 'venda') { dataAlvoIso = v.dataVendaIso; } else { if (v.dataPgtoDisplay) { const parts = v.dataPgtoDisplay.split('/'); if (parts.length === 3) dataAlvoIso = `${parts[2]}-${parts[1]}-${parts[0]}`; } } if (fDia) { if (dataAlvoIso !== fDia) pD = false; } if (fMes) { const mesAlvo = dataAlvoIso ? dataAlvoIso.split('-')[1] : null; if (mesAlvo && mesAlvo !== fMes) pM = false; } if (fStatus && v.status !== fStatus) pS = false; if (fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; if (fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; return pD && pM && pS && pSo && pC; });
+    filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
+    if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else {
+        filtradas.forEach(v => {
+            const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0; const isP = v.status === 'Pago'; if (isP) tRec += val; else tDev += val;
+            const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`;
+            const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : "";
+            const nomeHtml = formatarNomeProdutoHtml(v.produto, 'venda');
+
             // Adicionado a DATA DE PAGAMENTO nos Cards
             const txtPago = isP ? `<p style="font-size:0.7rem; color:#2e7d32; font-weight:800; margin-top:3px;">✔️ Pago em: ${v.dataPgtoDisplay || 'Data não registrada'}</p>` : '';
             const txtLucro = isAdmin ? `<p style="font-size:0.7rem; color:#b45309; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>` : '';
             const btnApagar = isAdmin ? `<button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button>` : '';
-            
-            html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p>${txtPago}${txtLucro}${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>${btnApagar}</div></div></div>`; 
-        }); 
-    } 
-    document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev); 
-    if (document.getElementById('dash-v-lucro')) document.getElementById('dash-v-lucro').innerText = isAdmin ? fmt(tLuc) : "---"; 
-    document.getElementById('dash-v-itens').innerText = tItens; 
+
+            html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p>${txtPago}${txtLucro}${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>${btnApagar}</div></div></div>`;
+        });
+    }
+    document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev);
+    if (document.getElementById('dash-v-lucro')) document.getElementById('dash-v-lucro').innerText = isAdmin ? fmt(tLuc) : "---";
+    document.getElementById('dash-v-itens').innerText = tItens;
 }
 
-async function montarRecibo() { 
-    const clienteReal = document.getElementById('recibo-cliente').value, clienteNomeExibicao = document.getElementById('recibo-nome-exibicao').value.trim() || clienteReal, checkboxes = document.querySelectorAll('.chk-item-recibo:checked'); 
-    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Deixe pelo menos um pedido marcado para o recibo.", "warning"); 
-    mostrarLoading("Gerando Recibo..."); document.getElementById('rec-cli-nome').innerText = clienteNomeExibicao; document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); let htmlItens = "", somaTotal = 0; 
-    checkboxes.forEach(chk => { const pedido = vendasGlobal.find(v => v.linha == chk.value); if(pedido) { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = pedido.status === 'Pago' ? `Pago: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente'; const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'recibo'); htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; } }); 
-    document.getElementById('rec-itens-lista').innerHTML = htmlItens; document.getElementById('rec-total').innerText = fmt(somaTotal); 
-    try { 
+async function montarRecibo() {
+    const clienteReal = document.getElementById('recibo-cliente').value, clienteNomeExibicao = document.getElementById('recibo-nome-exibicao').value.trim() || clienteReal, checkboxes = document.querySelectorAll('.chk-item-recibo:checked');
+    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Deixe pelo menos um pedido marcado para o recibo.", "warning");
+    mostrarLoading("Gerando Recibo..."); document.getElementById('rec-cli-nome').innerText = clienteNomeExibicao; document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); let htmlItens = "", somaTotal = 0;
+    checkboxes.forEach(chk => { const pedido = vendasGlobal.find(v => v.linha == chk.value); if (pedido) { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso, txtPago = pedido.status === 'Pago' ? `Pago: ${pedido.dataPgtoDisplay || '?'}` : 'Pendente'; const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'recibo'); htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; } });
+    document.getElementById('rec-itens-lista').innerHTML = htmlItens; document.getElementById('rec-total').innerText = fmt(somaTotal);
+    try {
         const template = document.getElementById('recibo-template'); template.style.display = 'block'; template.style.position = 'fixed'; template.style.top = '0'; template.style.left = '0'; template.style.zIndex = '-9999';
-        await new Promise(r => setTimeout(r, 200)); 
-        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; 
-        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Recibo Pronto!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${clienteNomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; 
-    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } 
+        await new Promise(r => setTimeout(r, 200));
+        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none';
+        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Recibo Pronto!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${clienteNomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex';
+    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); }
 }
 
-async function gerarReciboUnico(linha) { 
-    const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome no Recibo"); if (nomeExibicao === null) return; 
-    mostrarLoading("Gerando Recibo..."); document.getElementById('rec-cli-nome').innerText = nomeExibicao; document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR'); 
-    const valor = parseDinheiro(pedido.valor_venda); const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso; const txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'recibo'); const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; document.getElementById('rec-itens-lista').innerHTML = htmlItem; document.getElementById('rec-total').innerText = fmt(valor); 
-    try { 
+async function gerarReciboUnico(linha) {
+    const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome no Recibo"); if (nomeExibicao === null) return;
+    mostrarLoading("Gerando Recibo..."); document.getElementById('rec-cli-nome').innerText = nomeExibicao; document.getElementById('rec-data-emissao').innerText = new Date().toLocaleDateString('pt-BR');
+    const valor = parseDinheiro(pedido.valor_venda); const dataCompra = pedido.dataVendaDisplay || pedido.dataVendaIso; const txtPago = `Pago em: ${pedido.dataPgtoDisplay || '?'}`; const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'recibo'); const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #f3d8e2; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${dataCompra} | ${txtPago}</span></div><div style="font-weight: 700; color: #966178;">${fmt(valor)}</div></div>`; document.getElementById('rec-itens-lista').innerHTML = htmlItem; document.getElementById('rec-total').innerText = fmt(valor);
+    try {
         const template = document.getElementById('recibo-template'); template.style.display = 'block'; template.style.position = 'fixed'; template.style.top = '0'; template.style.left = '0'; template.style.zIndex = '-9999';
-        await new Promise(r => setTimeout(r, 200)); 
-        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; 
-        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Recibo Pronto!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; 
-    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } 
+        await new Promise(r => setTimeout(r, 200));
+        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none';
+        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Recibo Pronto!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Recibo_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex';
+    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); }
 }
 
 function prepararRecibo() { const cliente = document.getElementById('recibo-cliente').value, divNome = document.getElementById('div-recibo-nome'), inputNome = document.getElementById('recibo-nome-exibicao'), container = document.getElementById('recibo-pedidos-lista'), btn = document.getElementById('btn-gerar-recibo'); if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pago'); pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); if (pedidos.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido PAGO encontrado.</p>'; } else { let html = ''; pedidos.forEach(p => { const dataCompra = p.dataVendaDisplay || p.dataVendaIso, statusTexto = `<span style="color:#2e7d32;">Pago: ${p.dataPgtoDisplay || '?'}</span>`; const nomeHtml = formatarNomeProdutoHtml(p.produto, 'recibo'); html += `<label class="checkbox-recibo"><input type="checkbox" class="chk-item-recibo" value="${p.linha}" checked><div class="chk-info"><span class="chk-title">${p.qtd}x ${nomeHtml}</span><span class="chk-desc">Data: ${dataCompra} | ${statusTexto}</span></div><div class="chk-val">${safeFmt(p.valor_venda)}</div></label>`; }); container.innerHTML = html; } container.style.display = 'block'; btn.style.display = 'block'; }
-function prepararCobranca() { const cliente = document.getElementById('cobranca-cliente').value; const divNome = document.getElementById('div-cobranca-nome'); const inputNome = document.getElementById('cobranca-nome-exibicao'); const container = document.getElementById('cobranca-pedidos-lista'); const divBotoes = document.getElementById('div-cobranca-botoes'); if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; if(divBotoes) divBotoes.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; let pends = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pendente'); pends.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); if (pends.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhuma pendência encontrada para este cliente.</p>'; } else { let html = ''; pends.forEach(p => { const dataCompra = p.dataVendaDisplay || p.dataVendaIso; const nomeHtml = formatarNomeProdutoHtml(p.produto, 'cobranca'); html += `<label class="checkbox-recibo" style="border-color:#ffeeba; background:#fff9e6;"><input type="checkbox" class="chk-item-cobranca" value="${p.linha}" checked><div class="chk-info"><span class="chk-title" style="color:#b45309;">${p.qtd}x ${nomeHtml}</span><span class="chk-desc">Data: ${dataCompra}</span></div><div class="chk-val" style="color:#b45309;">${safeFmt(p.valor_venda)}</div></label>`; }); container.innerHTML = html; } container.style.display = 'block'; if(divBotoes) divBotoes.style.display = 'flex'; }
-function copiarPendenciasWhats() { const cliReal = document.getElementById('cobranca-cliente').value; if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning"); let txt = `Olá ${cliDisplay}, tudo bem com você? Passando aqui pela Novera Scent ✨\n\nEsse é um resuminho dos seus pedidos em aberto com a gente:\n\n`; let tot = 0; checkboxes.forEach(chk => { const p = vendasGlobal.find(v => v.linha == chk.value); if(p) { const val = parseDinheiro(p.valor_venda); const nomeTxt = formatarNomeProdutoTexto(p.produto); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${nomeTxt} | 💰 ${fmt(val)}\n`; tot += val; } }); txt += `\n*Total em aberto: ${fmt(tot)}*\n\nQualquer dúvida, é só chamar!`; navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success")); }
+function prepararCobranca() { const cliente = document.getElementById('cobranca-cliente').value; const divNome = document.getElementById('div-cobranca-nome'); const inputNome = document.getElementById('cobranca-nome-exibicao'); const container = document.getElementById('cobranca-pedidos-lista'); const divBotoes = document.getElementById('div-cobranca-botoes'); if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; if (divBotoes) divBotoes.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; let pends = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pendente'); pends.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); if (pends.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhuma pendência encontrada para este cliente.</p>'; } else { let html = ''; pends.forEach(p => { const dataCompra = p.dataVendaDisplay || p.dataVendaIso; const nomeHtml = formatarNomeProdutoHtml(p.produto, 'cobranca'); html += `<label class="checkbox-recibo" style="border-color:#ffeeba; background:#fff9e6;"><input type="checkbox" class="chk-item-cobranca" value="${p.linha}" checked><div class="chk-info"><span class="chk-title" style="color:#b45309;">${p.qtd}x ${nomeHtml}</span><span class="chk-desc">Data: ${dataCompra}</span></div><div class="chk-val" style="color:#b45309;">${safeFmt(p.valor_venda)}</div></label>`; }); container.innerHTML = html; } container.style.display = 'block'; if (divBotoes) divBotoes.style.display = 'flex'; }
+function copiarPendenciasWhats() { const cliReal = document.getElementById('cobranca-cliente').value; if (!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning"); let txt = `Olá ${cliDisplay}, tudo bem com você? Passando aqui pela Novera Scent ✨\n\nEsse é um resuminho dos seus pedidos em aberto com a gente:\n\n`; let tot = 0; checkboxes.forEach(chk => { const p = vendasGlobal.find(v => v.linha == chk.value); if (p) { const val = parseDinheiro(p.valor_venda); const nomeTxt = formatarNomeProdutoTexto(p.produto); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${nomeTxt} | 💰 ${fmt(val)}\n`; tot += val; } }); txt += `\n*Total em aberto: ${fmt(tot)}*\n\nQualquer dúvida, é só chamar!`; navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success")); }
 
-async function montarCobranca() { 
-    const cliReal = document.getElementById('cobranca-cliente').value; if(!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente devedor.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning"); 
-    mostrarLoading("Gerando Imagem..."); document.getElementById('cob-cli-nome').innerText = cliDisplay; let htmlItens = "", somaTotal = 0; checkboxes.forEach(chk => { const pedido = vendasGlobal.find(v => v.linha == chk.value); if(pedido) { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'cobranca'); htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; } }); 
-    document.getElementById('cob-itens-lista').innerHTML = htmlItens; document.getElementById('cob-total').innerText = fmt(somaTotal); 
-    try { 
+async function montarCobranca() {
+    const cliReal = document.getElementById('cobranca-cliente').value; if (!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente devedor.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning");
+    mostrarLoading("Gerando Imagem..."); document.getElementById('cob-cli-nome').innerText = cliDisplay; let htmlItens = "", somaTotal = 0; checkboxes.forEach(chk => { const pedido = vendasGlobal.find(v => v.linha == chk.value); if (pedido) { const valor = parseDinheiro(pedido.valor_venda); somaTotal += valor; const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'cobranca'); htmlItens += `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; } });
+    document.getElementById('cob-itens-lista').innerHTML = htmlItens; document.getElementById('cob-total').innerText = fmt(somaTotal);
+    try {
         const template = document.getElementById('cobranca-template'); template.style.display = 'block'; template.style.position = 'fixed'; template.style.top = '0'; template.style.left = '0'; template.style.zIndex = '-9999';
-        await new Promise(r => setTimeout(r, 200)); 
-        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; 
-        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${cliDisplay.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; 
-    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); } 
+        await new Promise(r => setTimeout(r, 200));
+        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none';
+        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Imagem de Cobrança Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${cliDisplay.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex';
+    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar a imagem.", "error"); } finally { ocultarLoading(); }
 }
 
-async function gerarCobrancaUnica(linha) { 
-    const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome na Cobrança"); if (nomeExibicao === null) return; 
-    mostrarLoading("Gerando Imagem..."); document.getElementById('cob-cli-nome').innerText = nomeExibicao; const valor = parseDinheiro(pedido.valor_venda); const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'cobranca'); const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`; 
-    document.getElementById('cob-itens-lista').innerHTML = htmlItem; document.getElementById('cob-total').innerText = fmt(valor); 
-    try { 
+async function gerarCobrancaUnica(linha) {
+    const pedido = vendasGlobal.find(v => v.linha == linha); if (!pedido) return; let nomeExibicao = await pedirNomeDocumento(pedido.cliente, "Nome na Cobrança"); if (nomeExibicao === null) return;
+    mostrarLoading("Gerando Imagem..."); document.getElementById('cob-cli-nome').innerText = nomeExibicao; const valor = parseDinheiro(pedido.valor_venda); const nomeHtml = formatarNomeProdutoHtml(pedido.produto, 'cobranca'); const htmlItem = `<div style="display:flex; justify-content: space-between; border-bottom: 1px solid #ffeeba; padding: 8px 0;"><div style="flex: 1;"><strong style="color: #2C2A2B; line-height:1.4;">${pedido.qtd}x ${nomeHtml}</strong><br><span style="font-size: 0.7rem; color: #888;">Data: ${pedido.dataVendaDisplay || pedido.dataVendaIso}</span></div><div style="font-weight: 700; color: #b45309;">${fmt(valor)}</div></div>`;
+    document.getElementById('cob-itens-lista').innerHTML = htmlItem; document.getElementById('cob-total').innerText = fmt(valor);
+    try {
         const template = document.getElementById('cobranca-template'); template.style.display = 'block'; template.style.position = 'fixed'; template.style.top = '0'; template.style.left = '0'; template.style.zIndex = '-9999';
-        await new Promise(r => setTimeout(r, 200)); 
-        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none'; 
-        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Imagem Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex'; 
-    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar.", "error"); } finally { ocultarLoading(); } 
+        await new Promise(r => setTimeout(r, 200));
+        const canvas = await html2canvas(template, { scale: 2, backgroundColor: "#ffffff", useCORS: true }); const base64image = canvas.toDataURL("image/png"); template.style.display = 'none';
+        document.getElementById('recibo-img-container').innerHTML = `<img src="${base64image}" style="width: 100%; height: auto; display: block; border-radius:8px; border:1px solid #E8DDE1;">`; document.getElementById('preview-title').innerText = "Imagem Pronta!"; document.getElementById('btn-baixar-img').onclick = () => { const link = document.createElement('a'); link.download = `Cobranca_Novera_${nomeExibicao.replace(/\s+/g, '_')}.png`; link.href = base64image; link.click(); }; document.getElementById('modal-recibo-preview').style.display = 'flex';
+    } catch (error) { mostrarAlerta("Erro", "Falha ao gerar.", "error"); } finally { ocultarLoading(); }
 }
 
-function darBaixaVendaLote() { 
-    const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); 
-    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione o pedido para dar baixa.", "warning"); 
-    
-    let linhas = []; 
+function darBaixaVendaLote() {
+    const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked');
+    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione o pedido para dar baixa.", "warning");
+
+    let linhas = [];
     let totalLote = 0;
     let cliNome = "";
-    
+
     checkboxes.forEach(chk => {
         linhas.push(chk.value);
         const v = vendasGlobal.find(x => x.linha == chk.value);
-        if(v) { 
-            totalLote += parseDinheiro(v.valor_venda); 
-            cliNome = v.cliente; 
+        if (v) {
+            totalLote += parseDinheiro(v.valor_venda);
+            cliNome = v.cliente;
         }
-    }); 
-    
-    abrirConfirmacao("Confirmar Pagamento?", `Marcar ${linhas.length} venda(s) de ${cliNome} como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Confirmar", () => { 
-        mostrarLoading("Salvando..."); 
-        const msgLog = `💰 Recebeu pagamento em lote de ${cliNome} - Total: ${fmt(totalLote)}`; 
-        fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: linhas, status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa em lote concluída.", "success"); sincronizarDadosUnico(); }); 
-    }); 
+    });
+
+    abrirConfirmacao("Confirmar Pagamento?", `Marcar ${linhas.length} venda(s) de ${cliNome} como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Confirmar", () => {
+        mostrarLoading("Salvando...");
+        const msgLog = `💰 Recebeu pagamento em lote de ${cliNome} - Total: ${fmt(totalLote)}`;
+        fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: linhas, status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa em lote concluída.", "success"); sincronizarDadosUnico(); });
+    });
 }
 
-function darBaixaVenda(linha) { 
+function darBaixaVenda(linha) {
     const v = vendasGlobal.find(x => x.linha == linha);
     if (!v) return;
-    
-    abrirConfirmacao("Confirmar Pagamento?", `Marcar a venda de ${v.cliente} como RECEBIDA hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Receber", () => { 
-        mostrarLoading("Salvando..."); 
-        const msgLog = `💲 Recebeu pagamento de ${v.cliente} no valor de ${safeFmt(v.valor_venda)}`; 
-        fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: [linha], status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa ok.", "success"); sincronizarDadosUnico(); }); 
-    }); 
+
+    abrirConfirmacao("Confirmar Pagamento?", `Marcar a venda de ${v.cliente} como RECEBIDA hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Receber", () => {
+        mostrarLoading("Salvando...");
+        const msgLog = `💲 Recebeu pagamento de ${v.cliente} no valor de ${safeFmt(v.valor_venda)}`;
+        fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: [linha], status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa ok.", "success"); sincronizarDadosUnico(); });
+    });
 }
 
 function prepararExclusaoRegistro(aba, linha, desc) { abrirConfirmacao("Confirmar Exclusão?", `Apagar "${desc}" de ${aba}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", () => { mostrarLoading("Apagando..."); const msgLog = `🗑️ Apagou o registro: [${desc}] da aba ${aba}`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "excluir_registro", aba: aba, linha: linha, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Excluído", "Registro apagado.", "success"); sincronizarDadosUnico(); }); }); }
 function abrirModalEditarVenda(linha) { const v = vendasGlobal.find(x => x.linha === linha); if (!v) return; document.getElementById('edit-v-linha').value = v.linha; document.getElementById('edit-v-data').value = v.dataVendaIso; document.getElementById('edit-v-cliente').value = v.cliente; document.getElementById('edit-v-produto').value = v.produto; document.getElementById('edit-v-socio').value = v.socio; document.getElementById('edit-v-qtd').value = v.qtd; document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); document.getElementById('edit-v-status').value = v.status; document.getElementById('edit-v-observacao').value = v.observacao || ""; document.getElementById('modal-editar-venda').style.display = 'flex'; }
 function salvarEdicaoVenda() { const l = document.getElementById('edit-v-linha').value; const vOrig = vendasGlobal.find(x => x.linha == l); const py = { data: document.getElementById('edit-v-data').value, cliente: padronizarTexto(document.getElementById('edit-v-cliente').value), produto: padronizarTexto(document.getElementById('edit-v-produto').value), socio: padronizarTexto(document.getElementById('edit-v-socio').value), qtd: parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr: document.getElementById('edit-v-valor').value, status: document.getElementById('edit-v-status').value, observacao: document.getElementById('edit-v-observacao').value }; const valVenda = parseDinheiro(py.valorStr); const opt = document.getElementById('edit-v-produto').options[document.getElementById('edit-v-produto').selectedIndex]; let cUnd = opt && opt.hasAttribute('data-custo') ? parseFloat(opt.getAttribute('data-custo')) : parseDinheiro(vOrig.custo_und); const cTot = cUnd * py.qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1; const dPg = py.status === "Pago" ? (vOrig.dataPgtoDisplay || new Date().toLocaleDateString('pt-BR')) : ""; document.getElementById('modal-editar-venda').style.display = 'none'; mostrarLoading("Salvando..."); const msgLog = `✏️ Editou venda de ${py.cliente} [${py.produto}]. Status: ${vOrig ? vOrig.status : ''} -> ${py.status}`; const envio = { usuario: usuarioLogado, acao: "atualizar_venda", linha: l, data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: dPg, observacao: py.observacao, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(envio) }).then(() => { mostrarAlerta("Atualizado!", "Venda editada.", "success"); sincronizarDadosUnico(); }); }
 
-function renderizarDashboard() { const dMes = document.getElementById('d-filtro-mes'); const dAno = document.getElementById('d-filtro-ano'); if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); } const fM = dMes.value; const fA = dAno.value; let pfx = fA && fM ? `${fA}-${fM}` : fA; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); const gDash = gastosGlobal.filter(g => pfx ? (g.dataIso && g.dataIso.startsWith(pfx)) : true); let tRec = 0, tPend = 0, tGas = 0, tLucroTotal = 0, mProd = {}, mCli = {}, mSoc = {}; vDash.forEach(v => { const val = parseDinheiro(v.valor_venda); const luc = parseDinheiro(v.lucro); const q = parseInt(v.qtd) || 1; if (v.status === 'Pago') tRec += val; else tPend += val; tLucroTotal += luc; if(v.produto) mProd[v.produto] = (mProd[v.produto] || 0) + q; if(v.cliente) mCli[v.cliente] = (mCli[v.cliente] || 0) + val; if(v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; }); gDash.forEach(g => tGas += parseDinheiro(g.total)); const lReal = tRec - tGas; let estItens = 0, estValor = 0; estoqueGlobal.forEach(e => { let q = parseFloat(e.qtd) || 0; if (q > 0) { estItens += q; estValor += (q * parseDinheiro(e.preco)); } }); const patrimonio = lReal + tPend + estValor; document.getElementById('d-patrimonio').innerText = fmt(patrimonio); document.getElementById('d-lucro-real').innerText = fmt(lReal); document.getElementById('card-lucro-real').classList.toggle('negativo', lReal < 0); document.getElementById('d-receitas').innerText = fmt(tRec); document.getElementById('d-gastos').innerText = fmt(tGas); document.getElementById('d-receber').innerText = fmt(tPend); document.getElementById('d-lucro-projetado').innerText = fmt(tLucroTotal); document.getElementById('d-estoque-itens').innerText = estItens; document.getElementById('d-estoque-valor').innerText = fmt(estValor); let arrProd = Object.keys(mProd).map(k => ({nome: k, qtd: mProd[k]})).sort((a,b) => b.qtd - a.qtd).slice(0, 3); let arrCli = Object.keys(mCli).map(k => ({nome: k, val: mCli[k]})).sort((a,b) => b.val - a.val).slice(0, 3); document.getElementById('d-ranking-produtos').innerHTML = arrProd.length ? arrProd.map((p, i) => `<li class="ranking-item"><span class="ranking-pos">#${i+1}</span><span class="ranking-name">${p.nome}</span><span class="ranking-val">${p.qtd} un</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; document.getElementById('d-ranking-clientes').innerHTML = arrCli.length ? arrCli.map((c, i) => `<li class="ranking-item"><span class="ranking-pos">#${i+1}</span><span class="ranking-name">${c.nome}</span><span class="ranking-val">${fmt(c.val)}</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; let hSoc = ""; for(let s in mSoc) { hSoc += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mSoc[s])}</strong></div>`; } document.getElementById('d-socios-lucro').innerHTML = hSoc || "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros.</p>"; if (typeof Chart !== 'undefined') { const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d'); const ctxSt = document.getElementById('chartStatusVendas').getContext('2d'); if(chartRGBase) chartRGBase.destroy(); chartRGBase = new Chart(ctxRG, { type: 'bar', data: { labels: ['Caixa', 'Gastos'], datasets: [{ label: 'Valor', data: [tRec, tGas], backgroundColor: ['#2e7d32', '#c62828'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }); if(chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } }); } }
+function renderizarDashboard() { const dMes = document.getElementById('d-filtro-mes'); const dAno = document.getElementById('d-filtro-ano'); if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); } const fM = dMes.value; const fA = dAno.value; let pfx = fA && fM ? `${fA}-${fM}` : fA; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); const gDash = gastosGlobal.filter(g => pfx ? (g.dataIso && g.dataIso.startsWith(pfx)) : true); let tRec = 0, tPend = 0, tGas = 0, tLucroTotal = 0, mProd = {}, mCli = {}, mSoc = {}; vDash.forEach(v => { const val = parseDinheiro(v.valor_venda); const luc = parseDinheiro(v.lucro); const q = parseInt(v.qtd) || 1; if (v.status === 'Pago') tRec += val; else tPend += val; tLucroTotal += luc; if (v.produto) mProd[v.produto] = (mProd[v.produto] || 0) + q; if (v.cliente) mCli[v.cliente] = (mCli[v.cliente] || 0) + val; if (v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; }); gDash.forEach(g => tGas += parseDinheiro(g.total)); const lReal = tRec - tGas; let estItens = 0, estValor = 0; estoqueGlobal.forEach(e => { let q = parseFloat(e.qtd) || 0; if (q > 0) { estItens += q; estValor += (q * parseDinheiro(e.preco)); } }); const patrimonio = lReal + tPend + estValor; document.getElementById('d-patrimonio').innerText = fmt(patrimonio); document.getElementById('d-lucro-real').innerText = fmt(lReal); document.getElementById('card-lucro-real').classList.toggle('negativo', lReal < 0); document.getElementById('d-receitas').innerText = fmt(tRec); document.getElementById('d-gastos').innerText = fmt(tGas); document.getElementById('d-receber').innerText = fmt(tPend); document.getElementById('d-lucro-projetado').innerText = fmt(tLucroTotal); document.getElementById('d-estoque-itens').innerText = estItens; document.getElementById('d-estoque-valor').innerText = fmt(estValor); let arrProd = Object.keys(mProd).map(k => ({ nome: k, qtd: mProd[k] })).sort((a, b) => b.qtd - a.qtd).slice(0, 3); let arrCli = Object.keys(mCli).map(k => ({ nome: k, val: mCli[k] })).sort((a, b) => b.val - a.val).slice(0, 3); document.getElementById('d-ranking-produtos').innerHTML = arrProd.length ? arrProd.map((p, i) => `<li class="ranking-item"><span class="ranking-pos">#${i + 1}</span><span class="ranking-name">${p.nome}</span><span class="ranking-val">${p.qtd} un</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; document.getElementById('d-ranking-clientes').innerHTML = arrCli.length ? arrCli.map((c, i) => `<li class="ranking-item"><span class="ranking-pos">#${i + 1}</span><span class="ranking-name">${c.nome}</span><span class="ranking-val">${fmt(c.val)}</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; let hSoc = ""; for (let s in mSoc) { hSoc += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mSoc[s])}</strong></div>`; } document.getElementById('d-socios-lucro').innerHTML = hSoc || "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros.</p>"; if (typeof Chart !== 'undefined') { const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d'); const ctxSt = document.getElementById('chartStatusVendas').getContext('2d'); if (chartRGBase) chartRGBase.destroy(); chartRGBase = new Chart(ctxRG, { type: 'bar', data: { labels: ['Caixa', 'Gastos'], datasets: [{ label: 'Valor', data: [tRec, tGas], backgroundColor: ['#2e7d32', '#c62828'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }); if (chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } }); } }
 function abrirModalRelatorios() { document.getElementById('modal-relatorios').style.display = 'flex'; }
-function exportarExcel() { const dMes = document.getElementById('d-filtro-mes').value; const dAno = document.getElementById('d-filtro-ano').value; let pfx = dAno && dMes ? `${dAno}-${dMes}` : dAno; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); if(vDash.length === 0) return mostrarAlerta("Aviso", "Nenhuma venda neste período.", "warning"); let csvContent = "data:text/csv;charset=utf-8,Data,Cliente,Produto,Socio,Quantidade,Valor,Status,Custo Und,Custo Total,Lucro,Markup,Data Pagamento,Observacao\n"; vDash.forEach(v => { let obsLimpa = v.observacao ? v.observacao.replace(/\n/g, ' ').replace(/"/g, '""') : ''; let row = [v.dataVendaDisplay, `"${v.cliente}"`, `"${v.produto}"`, v.socio, v.qtd, `"${v.valor_venda}"`, v.status, `"${v.custo_und}"`, `"${v.custo_total}"`, `"${v.lucro}"`, `"${v.markup}"`, v.dataPgtoDisplay || "", `"${obsLimpa}"`]; csvContent += row.join(",") + "\n"; }); const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `Vendas_Novera_${pfx || 'Tudo'}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
-function copiarFechamento() { const dMesSel = document.getElementById('d-filtro-mes'); const dMesText = dMesSel.options[dMesSel.selectedIndex].text; const dAno = document.getElementById('d-filtro-ano').value || 'Todo o Período'; let lReal = document.getElementById('d-lucro-real').innerText; let entradas = document.getElementById('d-receitas').innerText; let saidas = document.getElementById('d-gastos').innerText; let aReceber = document.getElementById('d-receber').innerText; let patrimonio = document.getElementById('d-patrimonio').innerText; let txt = `📊 *FECHAMENTO NOVERA SCENT* 📊\n🗓️ Período: ${dMesText} ${dAno}\n\n👑 *Patrimônio Total:* ${patrimonio}\n\n📈 *Entradas (Pagas):* ${entradas}\n📉 *Saídas (Gastos):* ${saidas}\n⏳ *A Receber (Fiado):* ${aReceber}\n💰 *Caixa Líquido:* ${lReal}\n\n🤝 *Divisão de Lucros Projetada:*\n`; const fM = document.getElementById('d-filtro-mes').value; const fA = document.getElementById('d-filtro-ano').value; let pfx = fA && fM ? `${fA}-${fM}` : fA; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); let mSoc = {}; vDash.forEach(v => { const luc = parseDinheiro(v.lucro); if(v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; }); let sociosText = ""; for(let s in mSoc) { sociosText += `▪️ ${s}: ${fmt(mSoc[s])}\n`; } txt += sociosText || "Nenhum lucro.\n"; txt += `\n✨ _Bora pra cima!_ 🚀`; navigator.clipboard.writeText(txt).then(() => { mostrarAlerta("Copiado!", "Resumo do fechamento copiado.", "success"); }).catch(err => { mostrarAlerta("Erro", "Falha ao copiar texto.", "error"); }); }
+function exportarExcel() { const dMes = document.getElementById('d-filtro-mes').value; const dAno = document.getElementById('d-filtro-ano').value; let pfx = dAno && dMes ? `${dAno}-${dMes}` : dAno; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); if (vDash.length === 0) return mostrarAlerta("Aviso", "Nenhuma venda neste período.", "warning"); let csvContent = "data:text/csv;charset=utf-8,Data,Cliente,Produto,Socio,Quantidade,Valor,Status,Custo Und,Custo Total,Lucro,Markup,Data Pagamento,Observacao\n"; vDash.forEach(v => { let obsLimpa = v.observacao ? v.observacao.replace(/\n/g, ' ').replace(/"/g, '""') : ''; let row = [v.dataVendaDisplay, `"${v.cliente}"`, `"${v.produto}"`, v.socio, v.qtd, `"${v.valor_venda}"`, v.status, `"${v.custo_und}"`, `"${v.custo_total}"`, `"${v.lucro}"`, `"${v.markup}"`, v.dataPgtoDisplay || "", `"${obsLimpa}"`]; csvContent += row.join(",") + "\n"; }); const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", `Vendas_Novera_${pfx || 'Tudo'}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+function copiarFechamento() { const dMesSel = document.getElementById('d-filtro-mes'); const dMesText = dMesSel.options[dMesSel.selectedIndex].text; const dAno = document.getElementById('d-filtro-ano').value || 'Todo o Período'; let lReal = document.getElementById('d-lucro-real').innerText; let entradas = document.getElementById('d-receitas').innerText; let saidas = document.getElementById('d-gastos').innerText; let aReceber = document.getElementById('d-receber').innerText; let patrimonio = document.getElementById('d-patrimonio').innerText; let txt = `📊 *FECHAMENTO NOVERA SCENT* 📊\n🗓️ Período: ${dMesText} ${dAno}\n\n👑 *Patrimônio Total:* ${patrimonio}\n\n📈 *Entradas (Pagas):* ${entradas}\n📉 *Saídas (Gastos):* ${saidas}\n⏳ *A Receber (Fiado):* ${aReceber}\n💰 *Caixa Líquido:* ${lReal}\n\n🤝 *Divisão de Lucros Projetada:*\n`; const fM = document.getElementById('d-filtro-mes').value; const fA = document.getElementById('d-filtro-ano').value; let pfx = fA && fM ? `${fA}-${fM}` : fA; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); let mSoc = {}; vDash.forEach(v => { const luc = parseDinheiro(v.lucro); if (v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; }); let sociosText = ""; for (let s in mSoc) { sociosText += `▪️ ${s}: ${fmt(mSoc[s])}\n`; } txt += sociosText || "Nenhum lucro.\n"; txt += `\n✨ _Bora pra cima!_ 🚀`; navigator.clipboard.writeText(txt).then(() => { mostrarAlerta("Copiado!", "Resumo do fechamento copiado.", "success"); }).catch(err => { mostrarAlerta("Erro", "Falha ao copiar texto.", "error"); }); }
 
-function fazerLogout() { 
-    localStorage.removeItem('novera_session_expires'); 
-    localStorage.removeItem('novera_user_cargo'); 
-    dadosCarregados = false; 
-    window.location.reload(); 
+function fazerLogout() {
+    localStorage.removeItem('novera_session_expires');
+    localStorage.removeItem('novera_user_cargo');
+    dadosCarregados = false;
+    window.location.reload();
 }
 
-function salvarConfiguracoesChaves() { 
-    const keyGemini = document.getElementById('cfg-ai-key').value.trim(); 
-    const keyImgBB = document.getElementById('cfg-imgbb-key').value.trim(); 
-    const keyOnionSys = document.getElementById('cfg-onionsys-key').value.trim(); 
-    if(keyGemini) localStorage.setItem('novera_ai_key', keyGemini); 
-    if(keyImgBB) { localStorage.setItem('novera_imgbb_key', keyImgBB); KEY_IMGBB = keyImgBB; } 
-    if(keyOnionSys) { localStorage.setItem('novera_onionsys_key', keyOnionSys); TOKEN_ONIONSYS = keyOnionSys; } 
-    mostrarAlerta("Salvo!", "Suas chaves foram gravadas.", "success"); 
+function salvarConfiguracoesChaves() {
+    const keyGemini = document.getElementById('cfg-ai-key').value.trim();
+    const keyImgBB = document.getElementById('cfg-imgbb-key').value.trim();
+    const keyOnionSys = document.getElementById('cfg-onionsys-key').value.trim();
+    if (keyGemini) localStorage.setItem('novera_ai_key', keyGemini);
+    if (keyImgBB) { localStorage.setItem('novera_imgbb_key', keyImgBB); KEY_IMGBB = keyImgBB; }
+    if (keyOnionSys) { localStorage.setItem('novera_onionsys_key', keyOnionSys); TOKEN_ONIONSYS = keyOnionSys; }
+    mostrarAlerta("Salvo!", "Suas chaves foram gravadas.", "success");
 }
 
-async function alterarSenha() { 
-    const atual = document.getElementById('cfg-senha-atual').value; 
-    const nova = document.getElementById('cfg-nova-senha').value; 
-    if(!atual || !nova) return mostrarAlerta("Atenção", "Preencha as senhas.", "warning"); 
-    
-    mostrarLoading("Atualizando Senha..."); 
-    try { 
-        const res = await fetch(API_NOVERA, { 
-            method: "POST", 
+async function alterarSenha() {
+    const atual = document.getElementById('cfg-senha-atual').value;
+    const nova = document.getElementById('cfg-nova-senha').value;
+    if (!atual || !nova) return mostrarAlerta("Atenção", "Preencha as senhas.", "warning");
+
+    mostrarLoading("Atualizando Senha...");
+    try {
+        const res = await fetch(API_NOVERA, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova }) 
-        }); 
-        const json = await res.json(); 
-        if(json.sucesso) { 
-            mostrarAlerta("Sucesso", "Senha alterada!", "success"); 
-            document.getElementById('cfg-senha-atual').value = ""; 
-            document.getElementById('cfg-nova-senha').value = ""; 
-        } else { 
-            mostrarAlerta("Erro", json.erro, "error"); 
-        } 
-    } catch(e) { 
-        mostrarAlerta("Erro", "Falha na conexão.", "error"); 
-    } finally { 
-        ocultarLoading(); 
-    } 
+            body: JSON.stringify({ acao: "alterar_senha", usuario: usuarioLogado, senha_atual: atual, nova_senha: nova })
+        });
+        const json = await res.json();
+        if (json.sucesso) {
+            mostrarAlerta("Sucesso", "Senha alterada!", "success");
+            document.getElementById('cfg-senha-atual').value = "";
+            document.getElementById('cfg-nova-senha').value = "";
+        } else {
+            mostrarAlerta("Erro", json.erro, "error");
+        }
+    } catch (e) {
+        mostrarAlerta("Erro", "Falha na conexão.", "error");
+    } finally {
+        ocultarLoading();
+    }
 }
 
-window.onload = () => { 
+window.onload = () => {
     const selectAno = document.getElementById('d-filtro-ano'); selectAno.innerHTML = '<option value="">Todos</option>'; const anoAtual = new Date().getFullYear(); for (let i = 2024; i <= anoAtual + 1; i++) { selectAno.innerHTML += `<option value="${i}">${i}</option>`; }
-    calcularNovera(); verificarLogin(); 
-    document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || ''; document.getElementById('cfg-imgbb-key').value = localStorage.getItem('novera_imgbb_key') || ''; document.getElementById('cfg-onionsys-key').value = localStorage.getItem('novera_onionsys_key') || ''; 
+    calcularNovera(); verificarLogin();
+    document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || ''; document.getElementById('cfg-imgbb-key').value = localStorage.getItem('novera_imgbb_key') || ''; document.getElementById('cfg-onionsys-key').value = localStorage.getItem('novera_onionsys_key') || '';
 };
 
 
@@ -656,17 +794,17 @@ window.onload = () => {
 // ==========================================
 function abrirModalEtiquetaAmostras() {
     if (rotulosGlobal.length === 0) return mostrarAlerta("Aviso", "Nenhuma essência cadastrada.", "warning");
-    
+
     let html = `<label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom:10px; cursor:pointer;"><input type="checkbox" onchange="toggleTodasEtiquetas(this)" style="width:16px; height:16px; flex-shrink:0;"> <strong>Selecionar Todas</strong></label><div style="border-top:1px dashed #E8DDE1; margin-bottom:10px;"></div>`;
-    
+
     // Organiza por código (ex: N001, N002)
-    let rotulosOrdenados = [...rotulosGlobal].sort((a,b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
-    
+    let rotulosOrdenados = [...rotulosGlobal].sort((a, b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
+
     rotulosOrdenados.forEach(r => {
         let gen = r.genero ? ` (${r.genero})` : '';
         html += `<label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:8px; cursor:pointer;"><input type="checkbox" class="chk-etq-rotulo" value="${r.linha}" style="width:16px; height:16px; flex-shrink:0;"> <b>${r.codigo}</b> - ${r.essencia}${gen}</label>`;
     });
-    
+
     document.getElementById('etiqueta-checkbox-container').innerHTML = html;
     document.getElementById('modal-gerar-etiqueta').style.display = 'flex';
 }
@@ -678,22 +816,22 @@ function toggleTodasEtiquetas(source) {
 async function gerarEtiquetaPDF() {
     const checkboxes = document.querySelectorAll('.chk-etq-rotulo:checked');
     if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos uma fragrância.", "warning");
-    
+
     document.getElementById('modal-gerar-etiqueta').style.display = 'none';
     mostrarLoading("Gerando Etiqueta...");
 
     let listFem = "", listMasc = "";
-    
+
     checkboxes.forEach(chk => {
         const r = rotulosGlobal.find(x => x.linha == chk.value);
-        if(r) {
+        if (r) {
             let gen = String(r.genero || "").toLowerCase().trim();
             // Ajustei a fonte para 9px e reduzi a margem para caber bem na caixa
             let linhaHtml = `<div style="display: flex; gap: 5px; font-size: 9px; margin-bottom: 2px;">
                 <span style="font-weight: 800; color: #2C2A2B;">${r.codigo}</span>
                 <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.essencia}</span>
             </div>`;
-            
+
             if (gen === 'feminino') {
                 listFem += linhaHtml;
             } else {
@@ -739,31 +877,31 @@ async function gerarEtiquetaPDF() {
         // Damos 300ms de respiro para garantir que a imagem do logo carregou
         await new Promise(r => setTimeout(r, 300));
 
-        let opt = { 
-            margin: 0, 
-            filename: `Etiqueta_Caixa_Amostras_${new Date().getTime()}.pdf`, 
-            image: { type: 'jpeg', quality: 1.0 }, 
+        let opt = {
+            margin: 0,
+            filename: `Etiqueta_Caixa_Amostras_${new Date().getTime()}.pdf`,
+            image: { type: 'jpeg', quality: 1.0 },
             // scrollY: 0 zera a rolagem do "fotógrafo", resolvendo o buraco no topo
-            html2canvas: { scale: 4, useCORS: true, scrollY: 0, windowY: 0 }, 
+            html2canvas: { scale: 4, useCORS: true, scrollY: 0, windowY: 0 },
             jsPDF: { unit: 'mm', format: [110, 85], orientation: 'landscape' },
             // Evita que o PDF crie uma segunda página de jeito nenhum
             pagebreak: { mode: ['avoid-all'] }
-        }; 
-        
-        await html2pdf().set(opt).from(tempDiv.firstElementChild).save(); 
-        mostrarAlerta("Sucesso", "Etiqueta gerada lindamente!", "success"); 
-    } catch(err) { 
+        };
+
+        await html2pdf().set(opt).from(tempDiv.firstElementChild).save();
+        mostrarAlerta("Sucesso", "Etiqueta gerada lindamente!", "success");
+    } catch (err) {
         console.error(err);
-        mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error"); 
-    } finally { 
+        mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
+    } finally {
         document.body.removeChild(tempDiv);
-        ocultarLoading(); 
+        ocultarLoading();
     }
 }
 
-function abrirModalImagem(src) { if(!src || src.includes('placeholder')) return; document.getElementById('img-zoom-src').src = src; document.getElementById('modal-zoom-imagem').style.display = 'flex'; }
+function abrirModalImagem(src) { if (!src || src.includes('placeholder')) return; document.getElementById('img-zoom-src').src = src; document.getElementById('modal-zoom-imagem').style.display = 'flex'; }
 function fecharModalImagem() { document.getElementById('modal-zoom-imagem').style.display = 'none'; document.getElementById('img-zoom-src').src = ""; }
 function pedirNomeDocumento(nomeOriginal, titulo) { return new Promise((resolve) => { document.getElementById('modal-doc-titulo').innerText = titulo; const input = document.getElementById('modal-doc-nome-input'); input.value = nomeOriginal; document.getElementById('modal-nome-documento').style.display = 'flex'; setTimeout(() => input.focus(), 100); const btnConfirmar = document.getElementById('btn-modal-doc-confirmar'); const btnCancelar = document.getElementById('btn-modal-doc-cancelar'); const removerListeners = () => { btnConfirmar.removeEventListener('click', onConfirmar); btnCancelar.removeEventListener('click', onCancelar); window.cancelarNomeDoc = null; }; const onConfirmar = () => { document.getElementById('modal-nome-documento').style.display = 'none'; removerListeners(); resolve(input.value.trim() === "" ? nomeOriginal : input.value.trim()); }; const onCancelar = () => { document.getElementById('modal-nome-documento').style.display = 'none'; removerListeners(); resolve(null); }; window.cancelarNomeDoc = onCancelar; btnConfirmar.addEventListener('click', onConfirmar); btnCancelar.addEventListener('click', onCancelar); }); }
 const fileToBase64 = f => new Promise((r, j) => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => r(rd.result.split(',')[1]); rd.onerror = e => j(e); });
 function comprimirImagem(f, mW, mH, q) { return new Promise((r, j) => { if (!f.type.match(/image.*/)) return j(new Error(`Formato inválido.`)); const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = e => { const i = new Image(); i.src = e.target.result; i.onload = () => { let w = i.width, h = i.height; if (w > h) { if (w > mW) { h = Math.round(h * mW / w); w = mW; } } else { if (h > mH) { w = Math.round(w * mH / h); h = mH; } } const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const cx = cv.getContext('2d'); cx.drawImage(i, 0, 0, w, h); cv.toBlob(b => b ? r(new File([b], "img.jpg", { type: 'image/jpeg' })) : j(new Error("Erro na Compressão")), 'image/jpeg', q); }; }; }); }
-async function uploadDuplo(fileBlob) { let urlOnion = "", urlImgBB = ""; try { const fd = new FormData(); fd.append("imagem", fileBlob); const res = await fetch("https://api.onionsys.com.br/api/novera/registrar/catalogo", { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}` }, body: fd }); const text = await res.text(); if (res.ok) { const data = JSON.parse(text); urlOnion = (data.arquivos && data.arquivos.length > 0) ? data.arquivos[0].url : (data.url || data.link || (data.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${data.filename}` : "")); } } catch (e) {} try { const fd2 = new FormData(); fd2.append("image", fileBlob); const res2 = await fetch(`https://api.imgbb.com/1/upload?key=${KEY_IMGBB}`, { method: "POST", body: fd2 }); const data2 = await res2.json(); if (data2.success) urlImgBB = data2.data.url; } catch (e) {} if (!urlOnion && !urlImgBB) throw new Error("Falha no upload."); return [urlOnion, urlImgBB].filter(u => u).join(','); }
+async function uploadDuplo(fileBlob) { let urlOnion = "", urlImgBB = ""; try { const fd = new FormData(); fd.append("imagem", fileBlob); const res = await fetch("https://api.onionsys.com.br/api/novera/registrar/catalogo", { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}` }, body: fd }); const text = await res.text(); if (res.ok) { const data = JSON.parse(text); urlOnion = (data.arquivos && data.arquivos.length > 0) ? data.arquivos[0].url : (data.url || data.link || (data.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${data.filename}` : "")); } } catch (e) { } try { const fd2 = new FormData(); fd2.append("image", fileBlob); const res2 = await fetch(`https://api.imgbb.com/1/upload?key=${KEY_IMGBB}`, { method: "POST", body: fd2 }); const data2 = await res2.json(); if (data2.success) urlImgBB = data2.data.url; } catch (e) { } if (!urlOnion && !urlImgBB) throw new Error("Falha no upload."); return [urlOnion, urlImgBB].filter(u => u).join(','); }
