@@ -688,8 +688,8 @@ async function gerarEtiquetaPDF() {
         const r = rotulosGlobal.find(x => x.linha == chk.value);
         if(r) {
             let gen = String(r.genero || "").toLowerCase().trim();
-            // Fonte um pouco menor para caber mais itens (10px)
-            let linhaHtml = `<div style="display: flex; gap: 5px; font-size: 10px; margin-bottom: 3px;">
+            // Ajustei a fonte para 9px e reduzi a margem para caber bem na caixa
+            let linhaHtml = `<div style="display: flex; gap: 5px; font-size: 9px; margin-bottom: 2px;">
                 <span style="font-weight: 800; color: #2C2A2B;">${r.codigo}</span>
                 <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.essencia}</span>
             </div>`;
@@ -697,56 +697,61 @@ async function gerarEtiquetaPDF() {
             if (gen === 'feminino') {
                 listFem += linhaHtml;
             } else {
-                // Junta Masculino e Unissex na mesma coluna
                 listMasc += linhaHtml;
             }
         }
     });
 
-    // Constrói o HTML da etiqueta
+    // Constrói o HTML da etiqueta, agora com o Logo e overflow oculto
     let htmlEtiqueta = `
-    <div style="width: 110mm; height: 85mm; background: #fff; padding: 5mm; box-sizing: border-box; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
-        <h3 style="text-align: center; font-size: 14px; margin: 0 0 10px; color: #966178; text-transform: uppercase; font-family: 'Playfair Display', serif; letter-spacing: 1px;">Novera Scent - Amostras</h3>
-        <div style="display: flex; gap: 4mm; height: calc(100% - 25px);">
-            <div style="flex: 1;">
-                <div style="font-weight: 900; border-bottom: 1px solid #f3d8e2; padding-bottom: 3px; margin-bottom: 5px; color: #be185d; font-size: 11px;">FEMININO</div>
+    <div style="width: 110mm; height: 85mm; max-height: 85mm; background: #fff; padding: 5mm; box-sizing: border-box; font-family: 'Montserrat', sans-serif; color: #2C2A2B; overflow: hidden;">
+        
+        <div style="text-align: center; margin-bottom: 8px;">
+            <img src="logo.png" style="height: 25px; margin-bottom: 3px; object-fit: contain;">
+            <h3 style="font-size: 11px; margin: 0; color: #966178; text-transform: uppercase; font-family: 'Playfair Display', serif; letter-spacing: 1px;">Novera Scent - Amostras</h3>
+        </div>
+
+        <div style="display: flex; gap: 4mm; height: calc(100% - 40px);">
+            <div style="flex: 1; overflow: hidden;">
+                <div style="font-weight: 900; border-bottom: 1px solid #f3d8e2; padding-bottom: 2px; margin-bottom: 4px; color: #be185d; font-size: 10px;">FEMININO</div>
                 <div style="display: flex; flex-direction: column;">
-                    ${listFem || "<i style='color:#ccc; font-size: 10px;'>Nenhum selecionado</i>"}
+                    ${listFem || "<i style='color:#ccc; font-size: 9px;'>Nenhum selecionado</i>"}
                 </div>
             </div>
-            <div style="flex: 1;">
-                <div style="font-weight: 900; border-bottom: 1px solid #e0f2fe; padding-bottom: 3px; margin-bottom: 5px; color: #0369a1; font-size: 11px;">MASCULINO</div>
+            <div style="flex: 1; overflow: hidden;">
+                <div style="font-weight: 900; border-bottom: 1px solid #e0f2fe; padding-bottom: 2px; margin-bottom: 4px; color: #0369a1; font-size: 10px;">MASCULINO / OUTROS</div>
                 <div style="display: flex; flex-direction: column;">
-                    ${listMasc || "<i style='color:#ccc; font-size: 10px;'>Nenhum selecionado</i>"}
+                    ${listMasc || "<i style='color:#ccc; font-size: 9px;'>Nenhum selecionado</i>"}
                 </div>
             </div>
         </div>
     </div>`;
 
-    // Cria um container invisível mas renderizável atrás do aplicativo
+    // Posicionamento absoluto no topo da tela para evitar o bug do scroll
     let tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlEtiqueta;
-    tempDiv.style.position = 'fixed';
+    tempDiv.style.position = 'absolute';
     tempDiv.style.top = '0';
-    tempDiv.style.left = '0';
-    tempDiv.style.zIndex = '-9999';
+    tempDiv.style.left = '-9999px';
     document.body.appendChild(tempDiv);
 
     try {
-        // Um pequeno respiro para o navegador desenhar a tela
-        await new Promise(r => setTimeout(r, 200));
+        // Damos 300ms de respiro para garantir que a imagem do logo carregou
+        await new Promise(r => setTimeout(r, 300));
 
         let opt = { 
             margin: 0, 
-            filename: `Etiqueta_Caixa_${new Date().getTime()}.pdf`, 
+            filename: `Etiqueta_Caixa_Amostras_${new Date().getTime()}.pdf`, 
             image: { type: 'jpeg', quality: 1.0 }, 
-            html2canvas: { scale: 4, useCORS: true }, 
-            jsPDF: { unit: 'mm', format: [110, 85], orientation: 'landscape' } 
+            // scrollY: 0 zera a rolagem do "fotógrafo", resolvendo o buraco no topo
+            html2canvas: { scale: 4, useCORS: true, scrollY: 0, windowY: 0 }, 
+            jsPDF: { unit: 'mm', format: [110, 85], orientation: 'landscape' },
+            // Evita que o PDF crie uma segunda página de jeito nenhum
+            pagebreak: { mode: ['avoid-all'] }
         }; 
         
-        // A MÁGICA AQUI: usamos .firstElementChild em vez de .firstChild para ele ignorar o espaço em branco!
         await html2pdf().set(opt).from(tempDiv.firstElementChild).save(); 
-        mostrarAlerta("Sucesso", "Etiqueta gerada com as medidas da caixa!", "success"); 
+        mostrarAlerta("Sucesso", "Etiqueta gerada lindamente!", "success"); 
     } catch(err) { 
         console.error(err);
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error"); 
