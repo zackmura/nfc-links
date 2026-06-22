@@ -703,7 +703,7 @@ async function gerarEtiquetaPDF() {
         }
     });
 
-    // Constrói o HTML da etiqueta direto no JavaScript (Padrão Catálogo)
+    // Constrói o HTML da etiqueta
     let htmlEtiqueta = `
     <div style="width: 110mm; height: 85mm; background: #fff; padding: 5mm; box-sizing: border-box; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
         <h3 style="text-align: center; font-size: 14px; margin: 0 0 10px; color: #966178; text-transform: uppercase; font-family: 'Playfair Display', serif; letter-spacing: 1px;">Novera Scent - Amostras</h3>
@@ -723,14 +723,19 @@ async function gerarEtiquetaPDF() {
         </div>
     </div>`;
 
-    // Cria um container invisível fora da tela
+    // Cria um container invisível mas renderizável atrás do aplicativo
     let tempDiv = document.createElement('div');
     tempDiv.innerHTML = htmlEtiqueta;
-    tempDiv.style.position = 'absolute';
-    tempDiv.style.left = '-9999px';
+    tempDiv.style.position = 'fixed';
+    tempDiv.style.top = '0';
+    tempDiv.style.left = '0';
+    tempDiv.style.zIndex = '-9999';
     document.body.appendChild(tempDiv);
 
     try {
+        // Um pequeno respiro para o navegador desenhar a tela
+        await new Promise(r => setTimeout(r, 200));
+
         let opt = { 
             margin: 0, 
             filename: `Etiqueta_Caixa_${new Date().getTime()}.pdf`, 
@@ -738,14 +743,14 @@ async function gerarEtiquetaPDF() {
             html2canvas: { scale: 4, useCORS: true }, 
             jsPDF: { unit: 'mm', format: [110, 85], orientation: 'landscape' } 
         }; 
-        // Pega o primeiro elemento (a nossa div de 110x85mm) e gera
-        await html2pdf().set(opt).from(tempDiv.firstChild).save(); 
+        
+        // A MÁGICA AQUI: usamos .firstElementChild em vez de .firstChild para ele ignorar o espaço em branco!
+        await html2pdf().set(opt).from(tempDiv.firstElementChild).save(); 
         mostrarAlerta("Sucesso", "Etiqueta gerada com as medidas da caixa!", "success"); 
     } catch(err) { 
         console.error(err);
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error"); 
     } finally { 
-        // Limpa a bagunça apagando a div temporária
         document.body.removeChild(tempDiv);
         ocultarLoading(); 
     }
