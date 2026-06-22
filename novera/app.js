@@ -688,7 +688,8 @@ async function gerarEtiquetaPDF() {
         const r = rotulosGlobal.find(x => x.linha == chk.value);
         if(r) {
             let gen = String(r.genero || "").toLowerCase().trim();
-            let linhaHtml = `<div style="display: flex; gap: 5px;">
+            // Fonte um pouco menor para caber mais itens (10px)
+            let linhaHtml = `<div style="display: flex; gap: 5px; font-size: 10px; margin-bottom: 3px;">
                 <span style="font-weight: 800; color: #2C2A2B;">${r.codigo}</span>
                 <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.essencia}</span>
             </div>`;
@@ -696,27 +697,40 @@ async function gerarEtiquetaPDF() {
             if (gen === 'feminino') {
                 listFem += linhaHtml;
             } else {
+                // Junta Masculino e Unissex na mesma coluna
                 listMasc += linhaHtml;
             }
         }
     });
 
-    document.getElementById('etq-fem-list').innerHTML = listFem || "<i style='color:#ccc;'>Nenhum selecionado</i>";
-    document.getElementById('etq-masc-list').innerHTML = listMasc || "<i style='color:#ccc;'>Nenhum selecionado</i>";
+    // Constrói o HTML da etiqueta direto no JavaScript (Padrão Catálogo)
+    let htmlEtiqueta = `
+    <div style="width: 110mm; height: 85mm; background: #fff; padding: 5mm; box-sizing: border-box; font-family: 'Montserrat', sans-serif; color: #2C2A2B;">
+        <h3 style="text-align: center; font-size: 14px; margin: 0 0 10px; color: #966178; text-transform: uppercase; font-family: 'Playfair Display', serif; letter-spacing: 1px;">Novera Scent - Amostras</h3>
+        <div style="display: flex; gap: 4mm; height: calc(100% - 25px);">
+            <div style="flex: 1;">
+                <div style="font-weight: 900; border-bottom: 1px solid #f3d8e2; padding-bottom: 3px; margin-bottom: 5px; color: #be185d; font-size: 11px;">FEMININO</div>
+                <div style="display: flex; flex-direction: column;">
+                    ${listFem || "<i style='color:#ccc; font-size: 10px;'>Nenhum selecionado</i>"}
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <div style="font-weight: 900; border-bottom: 1px solid #e0f2fe; padding-bottom: 3px; margin-bottom: 5px; color: #0369a1; font-size: 11px;">MASCULINO</div>
+                <div style="display: flex; flex-direction: column;">
+                    ${listMasc || "<i style='color:#ccc; font-size: 10px;'>Nenhum selecionado</i>"}
+                </div>
+            </div>
+        </div>
+    </div>`;
 
-    const template = document.getElementById('etiqueta-template');
-    
-    // O SEGREDO DA CORREÇÃO ESTÁ AQUI:
-    template.style.display = 'block';
-    template.style.position = 'fixed'; // Mantém no viewport
-    template.style.top = '0';
-    template.style.left = '0';
-    template.style.zIndex = '-9999'; // Esconde atrás de tudo
-    
+    // Cria um container invisível fora da tela
+    let tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlEtiqueta;
+    tempDiv.style.position = 'absolute';
+    tempDiv.style.left = '-9999px';
+    document.body.appendChild(tempDiv);
+
     try {
-        // Dá 200 milissegundos de "respiro" pro navegador desenhar as letras
-        await new Promise(r => setTimeout(r, 200));
-
         let opt = { 
             margin: 0, 
             filename: `Etiqueta_Caixa_${new Date().getTime()}.pdf`, 
@@ -724,16 +738,18 @@ async function gerarEtiquetaPDF() {
             html2canvas: { scale: 4, useCORS: true }, 
             jsPDF: { unit: 'mm', format: [110, 85], orientation: 'landscape' } 
         }; 
-        await html2pdf().set(opt).from(template).save(); 
+        // Pega o primeiro elemento (a nossa div de 110x85mm) e gera
+        await html2pdf().set(opt).from(tempDiv.firstChild).save(); 
         mostrarAlerta("Sucesso", "Etiqueta gerada com as medidas da caixa!", "success"); 
     } catch(err) { 
+        console.error(err);
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error"); 
     } finally { 
-        template.style.display = 'none';
+        // Limpa a bagunça apagando a div temporária
+        document.body.removeChild(tempDiv);
         ocultarLoading(); 
     }
 }
-
 
 function abrirModalImagem(src) { if(!src || src.includes('placeholder')) return; document.getElementById('img-zoom-src').src = src; document.getElementById('modal-zoom-imagem').style.display = 'flex'; }
 function fecharModalImagem() { document.getElementById('modal-zoom-imagem').style.display = 'none'; document.getElementById('img-zoom-src').src = ""; }
