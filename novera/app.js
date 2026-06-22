@@ -688,13 +688,11 @@ async function gerarEtiquetaPDF() {
         const r = rotulosGlobal.find(x => x.linha == chk.value);
         if(r) {
             let gen = String(r.genero || "").toLowerCase().trim();
-            // Formata a linha: "N001 Scandal"
             let linhaHtml = `<div style="display: flex; gap: 5px;">
                 <span style="font-weight: 800; color: #2C2A2B;">${r.codigo}</span>
                 <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.essencia}</span>
             </div>`;
             
-            // Joga Feminino para um lado, e o resto (Masculino/Unissex) pro outro
             if (gen === 'feminino') {
                 listFem += linhaHtml;
             } else {
@@ -707,12 +705,18 @@ async function gerarEtiquetaPDF() {
     document.getElementById('etq-masc-list').innerHTML = listMasc || "<i style='color:#ccc;'>Nenhum selecionado</i>";
 
     const template = document.getElementById('etiqueta-template');
+    
+    // O SEGREDO DA CORREÇÃO ESTÁ AQUI:
     template.style.display = 'block';
-    template.style.position = 'absolute';
-    template.style.left = '-9999px';
+    template.style.position = 'fixed'; // Mantém no viewport
+    template.style.top = '0';
+    template.style.left = '0';
+    template.style.zIndex = '-9999'; // Esconde atrás de tudo
     
     try {
-        // Configuração travada em exatos 110mm x 85mm
+        // Dá 200 milissegundos de "respiro" pro navegador desenhar as letras
+        await new Promise(r => setTimeout(r, 200));
+
         let opt = { 
             margin: 0, 
             filename: `Etiqueta_Caixa_${new Date().getTime()}.pdf`, 
@@ -729,7 +733,6 @@ async function gerarEtiquetaPDF() {
         ocultarLoading(); 
     }
 }
-
 
 
 function abrirModalImagem(src) { if(!src || src.includes('placeholder')) return; document.getElementById('img-zoom-src').src = src; document.getElementById('modal-zoom-imagem').style.display = 'flex'; }
