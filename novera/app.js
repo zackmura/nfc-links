@@ -650,6 +650,88 @@ window.onload = () => {
     document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || ''; document.getElementById('cfg-imgbb-key').value = localStorage.getItem('novera_imgbb_key') || ''; document.getElementById('cfg-onionsys-key').value = localStorage.getItem('novera_onionsys_key') || ''; 
 };
 
+
+// ==========================================
+// MÓDULO: ETIQUETA DE AMOSTRAS (11x8.5cm)
+// ==========================================
+function abrirModalEtiquetaAmostras() {
+    if (rotulosGlobal.length === 0) return mostrarAlerta("Aviso", "Nenhuma essência cadastrada.", "warning");
+    
+    let html = `<label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; margin-bottom:10px; cursor:pointer;"><input type="checkbox" onchange="toggleTodasEtiquetas(this)" style="width:16px; height:16px; flex-shrink:0;"> <strong>Selecionar Todas</strong></label><div style="border-top:1px dashed #E8DDE1; margin-bottom:10px;"></div>`;
+    
+    // Organiza por código (ex: N001, N002)
+    let rotulosOrdenados = [...rotulosGlobal].sort((a,b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
+    
+    rotulosOrdenados.forEach(r => {
+        let gen = r.genero ? ` (${r.genero})` : '';
+        html += `<label style="display:flex; align-items:center; gap:8px; font-size:0.8rem; margin-bottom:8px; cursor:pointer;"><input type="checkbox" class="chk-etq-rotulo" value="${r.linha}" style="width:16px; height:16px; flex-shrink:0;"> <b>${r.codigo}</b> - ${r.essencia}${gen}</label>`;
+    });
+    
+    document.getElementById('etiqueta-checkbox-container').innerHTML = html;
+    document.getElementById('modal-gerar-etiqueta').style.display = 'flex';
+}
+
+function toggleTodasEtiquetas(source) {
+    document.querySelectorAll('.chk-etq-rotulo').forEach(cb => cb.checked = source.checked);
+}
+
+async function gerarEtiquetaPDF() {
+    const checkboxes = document.querySelectorAll('.chk-etq-rotulo:checked');
+    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos uma fragrância.", "warning");
+    
+    document.getElementById('modal-gerar-etiqueta').style.display = 'none';
+    mostrarLoading("Gerando Etiqueta...");
+
+    let listFem = "", listMasc = "";
+    
+    checkboxes.forEach(chk => {
+        const r = rotulosGlobal.find(x => x.linha == chk.value);
+        if(r) {
+            let gen = String(r.genero || "").toLowerCase().trim();
+            // Formata a linha: "N001 Scandal"
+            let linhaHtml = `<div style="display: flex; gap: 5px;">
+                <span style="font-weight: 800; color: #2C2A2B;">${r.codigo}</span>
+                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.essencia}</span>
+            </div>`;
+            
+            // Joga Feminino para um lado, e o resto (Masculino/Unissex) pro outro
+            if (gen === 'feminino') {
+                listFem += linhaHtml;
+            } else {
+                listMasc += linhaHtml;
+            }
+        }
+    });
+
+    document.getElementById('etq-fem-list').innerHTML = listFem || "<i style='color:#ccc;'>Nenhum selecionado</i>";
+    document.getElementById('etq-masc-list').innerHTML = listMasc || "<i style='color:#ccc;'>Nenhum selecionado</i>";
+
+    const template = document.getElementById('etiqueta-template');
+    template.style.display = 'block';
+    template.style.position = 'absolute';
+    template.style.left = '-9999px';
+    
+    try {
+        // Configuração travada em exatos 110mm x 85mm
+        let opt = { 
+            margin: 0, 
+            filename: `Etiqueta_Caixa_${new Date().getTime()}.pdf`, 
+            image: { type: 'jpeg', quality: 1.0 }, 
+            html2canvas: { scale: 4, useCORS: true }, 
+            jsPDF: { unit: 'mm', format: [110, 85], orientation: 'landscape' } 
+        }; 
+        await html2pdf().set(opt).from(template).save(); 
+        mostrarAlerta("Sucesso", "Etiqueta gerada com as medidas da caixa!", "success"); 
+    } catch(err) { 
+        mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error"); 
+    } finally { 
+        template.style.display = 'none';
+        ocultarLoading(); 
+    }
+}
+
+
+
 function abrirModalImagem(src) { if(!src || src.includes('placeholder')) return; document.getElementById('img-zoom-src').src = src; document.getElementById('modal-zoom-imagem').style.display = 'flex'; }
 function fecharModalImagem() { document.getElementById('modal-zoom-imagem').style.display = 'none'; document.getElementById('img-zoom-src').src = ""; }
 function pedirNomeDocumento(nomeOriginal, titulo) { return new Promise((resolve) => { document.getElementById('modal-doc-titulo').innerText = titulo; const input = document.getElementById('modal-doc-nome-input'); input.value = nomeOriginal; document.getElementById('modal-nome-documento').style.display = 'flex'; setTimeout(() => input.focus(), 100); const btnConfirmar = document.getElementById('btn-modal-doc-confirmar'); const btnCancelar = document.getElementById('btn-modal-doc-cancelar'); const removerListeners = () => { btnConfirmar.removeEventListener('click', onConfirmar); btnCancelar.removeEventListener('click', onCancelar); window.cancelarNomeDoc = null; }; const onConfirmar = () => { document.getElementById('modal-nome-documento').style.display = 'none'; removerListeners(); resolve(input.value.trim() === "" ? nomeOriginal : input.value.trim()); }; const onCancelar = () => { document.getElementById('modal-nome-documento').style.display = 'none'; removerListeners(); resolve(null); }; window.cancelarNomeDoc = onCancelar; btnConfirmar.addEventListener('click', onConfirmar); btnCancelar.addEventListener('click', onCancelar); }); }
