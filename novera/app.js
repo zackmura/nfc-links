@@ -286,14 +286,53 @@ async function fazerLogin() {
 function renderizarLogs() {
     const container = document.getElementById('lista-logs');
     if (!container) return;
-    if (logsGlobal.length === 0) { container.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum registro encontrado.</p>"; return; }
+    if (logsGlobal.length === 0) { 
+        container.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum registro encontrado.</p>"; 
+        return; 
+    }
+
+    // Puxa os elementos de filtro da tela
+    const selUser = document.getElementById('f-log-usuario');
+    const selAcao = document.getElementById('f-log-acao');
+    const inputBusca = document.getElementById('busca-logs');
+
+    // Popula o Dropdown de Usuários dinamicamente (se estiver vazio)
+    if (selUser && selUser.options.length <= 1) {
+        const usuariosUnicos = [...new Set(logsGlobal.map(l => l.usuario))].filter(Boolean).sort();
+        usuariosUnicos.forEach(u => selUser.innerHTML += `<option value="${u}">${u}</option>`);
+    }
+
+    // Popula o Dropdown de Ações dinamicamente (se estiver vazio)
+    if (selAcao && selAcao.options.length <= 1) {
+        const acoesUnicas = [...new Set(logsGlobal.map(l => l.acao))].filter(Boolean).sort();
+        acoesUnicas.forEach(a => selAcao.innerHTML += `<option value="${a}">${a}</option>`);
+    }
+
+    // Pega os valores atuais dos filtros
+    const tBusca = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
+    const fUser = selUser ? selUser.value : "";
+    const fAcao = selAcao ? selAcao.value : "";
+
+    // Aplica os filtros na lista de logs
+    let filtrados = logsGlobal.filter(log => {
+        let passBusca = !tBusca || (log.detalhe + " " + log.acao + " " + log.usuario).toLowerCase().includes(tBusca);
+        let passUser = !fUser || log.usuario === fUser;
+        let passAcao = !fAcao || log.acao === fAcao;
+        return passBusca && passUser && passAcao;
+    });
+
+    if (filtrados.length === 0) {
+        container.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhum log corresponde aos filtros aplicados.</p>";
+        return;
+    }
+
     let html = "";
-    logsGlobal.forEach(log => {
+    filtrados.forEach(log => {
         let corBadge = "#966178";
         if (log.acao.includes('EXCLUIR') || log.acao.includes('EXCLUIU')) corBadge = "#A05252";
         if (log.acao.includes('CRIAR') || log.acao.includes('NOVA') || log.acao.includes('SALVAR') || log.acao.includes('FABRICOU') || log.acao.includes('COMPRA')) corBadge = "#2e7d32";
         if (log.acao.includes('EDITAR') || log.acao.includes('ATUALIZAR') || log.acao.includes('AJUSTOU')) corBadge = "#0369a1";
-        if (log.acao.includes('ENTROU')) corBadge = "#166534"; // Cor diferenciada para Login
+        if (log.acao.includes('ENTROU')) corBadge = "#166534"; 
 
         html += `<div class="rotulo-card" style="align-items:center; margin-bottom:8px;">
             <div style="flex:1;">
@@ -306,6 +345,7 @@ function renderizarLogs() {
             </div>
         </div>`;
     });
+    
     container.innerHTML = html;
 }
 
