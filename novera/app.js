@@ -541,7 +541,44 @@ function mudarStatusEncomenda(linha, novoStatus) { let e = encomendasGlobal.find
 function puxarVendaDeEncomenda(linha) { const e = encomendasGlobal.find(x => x.linha == linha); if (!e) return; toggleVendasTab('registro'); document.getElementById('v-cliente').value = e.cliente; document.getElementById('v-qtd').value = e.qtd; document.getElementById('v-observacao').value = "REF ENCOMENDA: " + e.item; const dropdownProd = document.getElementById('v-produto'); let options = Array.from(dropdownProd.options); let achou = options.find(opt => opt.value.toLowerCase() === e.item.toLowerCase()); if (achou) { dropdownProd.value = achou.value; autoPreencherValorVenda(); } mostrarAlerta("Preenchido!", "Preenchemos o PDV para você.", "success"); }
 
 function autoPreencherValorVenda() { const selecao = document.getElementById('v-produto').value; const nomePadronizado = padronizarTexto(selecao); const prodAgrupado = estoqueAgrupado[nomePadronizado]; const imgPrev = document.getElementById('v-produto-img-preview'); const comboLocal = document.getElementById('v-local-estoque'); if (comboLocal) comboLocal.innerHTML = ''; if (prodAgrupado && prodAgrupado.totalQtd > 0) { const qtd = parseInt(document.getElementById('v-qtd').value) || 1; const valorUnitario = parseDinheiro(prodAgrupado.preco); document.getElementById('v-valor').value = fmt(valorUnitario * qtd); let fotos = prodAgrupado.foto ? prodAgrupado.foto.split(',') : []; imgPrev.src = fotos[0] || 'logo.png'; imgPrev.style.display = 'block'; if (comboLocal) { let count = 0; for (let loc in prodAgrupado.locais) { if (prodAgrupado.locais[loc] > 0) { comboLocal.innerHTML += `<option value="${loc}">${loc} (Disp: ${prodAgrupado.locais[loc]})</option>`; count++; } } if (count === 0) comboLocal.innerHTML = `<option value="">Sem estoque</option>`; } } else { document.getElementById('v-valor').value = ""; imgPrev.style.display = 'none'; if (comboLocal) comboLocal.innerHTML = `<option value="">Selecione o Produto Primeiro...</option>`; } }
-function autoPreencherEdicaoVenda() { const selecao = document.getElementById('edit-v-produto').value, produtoEstoque = estoqueGlobal.find(e => e.nome === selecao); if (produtoEstoque) { const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(produtoEstoque.preco); document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); } }
+
+function onStatusVendaChange(isEdit = false) {
+    const prefix = isEdit ? 'edit-v-' : 'v-';
+    const status = document.getElementById(prefix + 'status').value;
+    if (status === 'Presente') {
+        document.getElementById(prefix + 'valor').value = "R$ 0,00";
+    } else {
+        if(isEdit) autoPreencherEdicaoVenda();
+        else autoPreencherValorVenda();
+    }
+}
+
+function autoPreencherEdicaoVenda() { 
+    const selecao = document.getElementById('edit-v-produto').value;
+    const nomePadronizado = padronizarTexto(selecao);
+    const prodAgrupado = estoqueAgrupado[nomePadronizado];
+    const comboLocal = document.getElementById('edit-v-local');
+
+    if(prodAgrupado) { 
+        const qtd = parseInt(document.getElementById('edit-v-qtd').value) || 1, valorUnitario = parseDinheiro(prodAgrupado.preco); 
+        
+        if(document.getElementById('edit-v-status').value !== 'Presente') {
+            document.getElementById('edit-v-valor').value = fmt(valorUnitario * qtd); 
+        }
+
+        if(comboLocal) {
+            comboLocal.innerHTML = '';
+            let count = 0;
+            for(let loc in prodAgrupado.locais) {
+                if(prodAgrupado.locais[loc] > 0) {
+                    comboLocal.innerHTML += `<option value="${loc}">${loc} (Disp: ${prodAgrupado.locais[loc]})</option>`;
+                    count++;
+                }
+            }
+            if (count === 0) comboLocal.innerHTML = `<option value="">Sem estoque</option>`;
+        }
+    } 
+}
 
 // VERSÃO ATUALIZADA - SALVAR VENDA
 function salvarVenda() {
@@ -615,24 +652,37 @@ function salvarVenda() {
 }
 
 function renderizarVendas() { const dlist = [...new Set(vendasGlobal.map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('lista-clientes').innerHTML = dlist.map(c => `<option value="${c}">`).join(''); const dlistPagos = [...new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + dlistPagos.map(c => `<option value="${c}">${c}</option>`).join(''); const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); let htmlVendas = '<option value="">Selecione do Estoque...</option>'; Object.values(estoqueAgrupado).sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(e => { if (e.totalQtd > 0) { let exibeCodigo = e.codigo ? e.codigo + ' - ' : ''; htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Total: ${e.totalQtd})</option>`; } }); const fvClienteSelect = document.getElementById('f-v-cliente'); const fvClienteAtual = fvClienteSelect.value; fvClienteSelect.innerHTML = '<option value="">Todos</option>' + dlist.map(c => `<option value="${c}">${c}</option>`).join(''); fvClienteSelect.value = fvClienteAtual; document.getElementById("v-produto").innerHTML = htmlVendas; document.getElementById("edit-v-produto").innerHTML = htmlVendas; filtrarVendas(); }
+
 function filtrarVendas() {
     const isAdmin = (usuarioCargo === 'Admin');
     const fTipoData = document.getElementById('f-v-tipo-data') ? document.getElementById('f-v-tipo-data').value : 'venda'; const fDia = document.getElementById('f-v-dia').value, fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value, fSocio = document.getElementById('f-v-socio').value.toLowerCase(), fCliente = document.getElementById('f-v-cliente').value.toLowerCase();
     let filtradas = vendasGlobal.filter(v => { let pD = true, pM = true, pS = true, pSo = true, pC = true; let dataAlvoIso = ""; if (fTipoData === 'venda') { dataAlvoIso = v.dataVendaIso; } else { if (v.dataPgtoDisplay) { const parts = v.dataPgtoDisplay.split('/'); if (parts.length === 3) dataAlvoIso = `${parts[2]}-${parts[1]}-${parts[0]}`; } } if (fDia) { if (dataAlvoIso !== fDia) pD = false; } if (fMes) { const mesAlvo = dataAlvoIso ? dataAlvoIso.split('-')[1] : null; if (mesAlvo && mesAlvo !== fMes) pM = false; } if (fStatus && v.status !== fStatus) pS = false; if (fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; if (fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; return pD && pM && pS && pSo && pC; });
     filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
+    
     if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else {
         filtradas.forEach(v => {
-            const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0; const isP = v.status === 'Pago'; if (isP) tRec += val; else tDev += val;
-            const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`;
-            const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : "";
-            const nomeHtml = formatarNomeProdutoHtml(v.produto, 'venda');
+            const val = parseDinheiro(v.valor_venda); tVend += val; tLuc += parseDinheiro(v.lucro); tItens += parseInt(v.qtd) || 0; 
+            
+            const isP = v.status === 'Pago'; 
+            const isPresente = v.status === 'Presente';
+            
+            if(isP) tRec += val; else if(!isPresente) tDev += val; 
+            
+            const btnAcaoExtra = isP ? `<button class="btn-acao" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;" onclick="gerarReciboUnico(${v.linha})" title="Gerar Recibo Rápido">🧾</button>` : `<button class="btn-acao" style="background:#ffedd5; color:#b45309; border-color:#fde047;" onclick="gerarCobrancaUnica(${v.linha})" title="Gerar Cobrança Rápida">🔔</button>`; 
+            const textoObservacao = v.observacao ? `<p style="font-size:0.7rem; color:#888; font-style:italic; margin-top:3px; line-height: 1.3;">Obs: ${v.observacao}</p>` : ""; 
+            const nomeHtml = formatarNomeProdutoHtml(v.produto, 'venda'); 
+            
+            const txtStatus = isP ? `<p style="font-size:0.7rem; color:#2e7d32; font-weight:800; margin-top:3px;">✔️ Pago em: ${v.dataPgtoDisplay || 'Data não registrada'}</p>` : (isPresente ? `<p style="font-size:0.7rem; color:#7c3aed; font-weight:800; margin-top:3px;">🎁 Bonificação / Presente</p>` : '');
+            
+            const txtLucro = isAdmin ? (!isPresente ? `<p style="font-size:0.7rem; color:#b45309; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>` : `<p style="font-size:0.7rem; color:#888; font-weight:700; margin-top:3px;">Custo Absorvido: ${safeFmt(v.custo_total)}</p>`) : '';
+            
+            const txtLocal = `<p style="font-size:0.7rem; color:#666; margin-top:2px;">📍 Local: <b>${v.local_estoque}</b></p>`;
 
-            // Adicionado a DATA DE PAGAMENTO nos Cards
-            const txtPago = isP ? `<p style="font-size:0.7rem; color:#2e7d32; font-weight:800; margin-top:3px;">✔️ Pago em: ${v.dataPgtoDisplay || 'Data não registrada'}</p>` : '';
-            const txtLucro = isAdmin ? `<p style="font-size:0.7rem; color:#b45309; font-weight:700; margin-top:3px;">Lucro: ${safeFmt(v.lucro)} (Markup: ${v.markup})</p>` : '';
             const btnApagar = isAdmin ? `<button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button>` : '';
+            
+            let badgeClass = isP ? 'status-pago' : (isPresente ? 'status-presente' : 'status-pendente');
 
-            html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${isP ? 'status-pago' : 'status-pendente'}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p>${txtPago}${txtLucro}${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${!isP ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>${btnApagar}</div></div></div>`;
+            html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${badgeClass}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p>${txtLocal}${txtStatus}${txtLucro}${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${(!isP && !isPresente) ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>${btnApagar}</div></div></div>`; 
         });
     }
     document.getElementById('lista-vendas-cadastradas').innerHTML = html; document.getElementById('dash-v-total').innerText = fmt(tVend); document.getElementById('dash-v-receita').innerText = fmt(tRec); document.getElementById('dash-v-receber').innerText = fmt(tDev);
@@ -730,8 +780,63 @@ function darBaixaVenda(linha) {
 }
 
 function prepararExclusaoRegistro(aba, linha, desc) { abrirConfirmacao("Confirmar Exclusão?", `Apagar "${desc}" de ${aba}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", () => { mostrarLoading("Apagando..."); const msgLog = `🗑️ Apagou o registro: [${desc}] da aba ${aba}`; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "excluir_registro", aba: aba, linha: linha, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Excluído", "Registro apagado.", "success"); sincronizarDadosUnico(); }); }); }
-function abrirModalEditarVenda(linha) { const v = vendasGlobal.find(x => x.linha === linha); if (!v) return; document.getElementById('edit-v-linha').value = v.linha; document.getElementById('edit-v-data').value = v.dataVendaIso; document.getElementById('edit-v-cliente').value = v.cliente; document.getElementById('edit-v-produto').value = v.produto; document.getElementById('edit-v-socio').value = v.socio; document.getElementById('edit-v-qtd').value = v.qtd; document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); document.getElementById('edit-v-status').value = v.status; document.getElementById('edit-v-observacao').value = v.observacao || ""; document.getElementById('modal-editar-venda').style.display = 'flex'; }
-function salvarEdicaoVenda() { const l = document.getElementById('edit-v-linha').value; const vOrig = vendasGlobal.find(x => x.linha == l); const py = { data: document.getElementById('edit-v-data').value, cliente: padronizarTexto(document.getElementById('edit-v-cliente').value), produto: padronizarTexto(document.getElementById('edit-v-produto').value), socio: padronizarTexto(document.getElementById('edit-v-socio').value), qtd: parseInt(document.getElementById('edit-v-qtd').value) || 1, valorStr: document.getElementById('edit-v-valor').value, status: document.getElementById('edit-v-status').value, observacao: document.getElementById('edit-v-observacao').value }; const valVenda = parseDinheiro(py.valorStr); const opt = document.getElementById('edit-v-produto').options[document.getElementById('edit-v-produto').selectedIndex]; let cUnd = opt && opt.hasAttribute('data-custo') ? parseFloat(opt.getAttribute('data-custo')) : parseDinheiro(vOrig.custo_und); const cTot = cUnd * py.qtd; const lucro = valVenda - cTot; const mkp = cTot > 0 ? (lucro / cTot) : 1; const dPg = py.status === "Pago" ? (vOrig.dataPgtoDisplay || new Date().toLocaleDateString('pt-BR')) : ""; document.getElementById('modal-editar-venda').style.display = 'none'; mostrarLoading("Salvando..."); const msgLog = `✏️ Editou venda de ${py.cliente} [${py.produto}]. Status: ${vOrig ? vOrig.status : ''} -> ${py.status}`; const envio = { usuario: usuarioLogado, acao: "atualizar_venda", linha: l, data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: fmtPlanilha(valVenda), status: py.status, custo_und: fmtPlanilha(cUnd), custo_total: fmtPlanilha(cTot), lucro: fmtPlanilha(lucro), markup: (mkp * 100).toFixed(2) + "%", data_pg: dPg, observacao: py.observacao, log_detalhe: msgLog }; fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(envio) }).then(() => { mostrarAlerta("Atualizado!", "Venda editada.", "success"); sincronizarDadosUnico(); }); }
+
+function abrirModalEditarVenda(linha) { 
+    const v = vendasGlobal.find(x => x.linha === linha); if (!v) return; 
+    document.getElementById('edit-v-linha').value = v.linha; 
+    document.getElementById('edit-v-data').value = v.dataVendaIso; 
+    document.getElementById('edit-v-cliente').value = v.cliente; 
+    document.getElementById('edit-v-produto').value = v.produto; 
+    
+    // Alimenta o Select de Locais na edição
+    const prodAgrupado = estoqueAgrupado[padronizarTexto(v.produto)];
+    const comboLocal = document.getElementById('edit-v-local');
+    if (comboLocal) {
+        comboLocal.innerHTML = '';
+        if (prodAgrupado) {
+            for (let loc in prodAgrupado.locais) {
+                comboLocal.innerHTML += `<option value="${loc}">${loc} (Disp: ${prodAgrupado.locais[loc]})</option>`;
+            }
+        }
+        // Se o local antigo não estiver mais lá, força ele aparecer
+        if (!comboLocal.querySelector(`option[value="${v.local_estoque}"]`)) {
+            comboLocal.innerHTML += `<option value="${v.local_estoque}">${v.local_estoque} (Antigo)</option>`;
+        }
+        comboLocal.value = v.local_estoque;
+    }
+
+    document.getElementById('edit-v-socio').value = v.socio; 
+    document.getElementById('edit-v-qtd').value = v.qtd; 
+    document.getElementById('edit-v-valor').value = safeFmt(v.valor_venda); 
+    document.getElementById('edit-v-status').value = v.status; 
+    document.getElementById('edit-v-observacao').value = v.observacao || ""; 
+    document.getElementById('modal-editar-venda').style.display = 'flex'; 
+}
+
+function salvarEdicaoVenda() { 
+    const l = document.getElementById('edit-v-linha').value; 
+    const vOrig = vendasGlobal.find(x => x.linha == l); 
+    const elLocal = document.getElementById('edit-v-local');
+    const py = { 
+        data: document.getElementById('edit-v-data').value, 
+        cliente: padronizarTexto(document.getElementById('edit-v-cliente').value), 
+        produto: padronizarTexto(document.getElementById('edit-v-produto').value), 
+        socio: padronizarTexto(document.getElementById('edit-v-socio').value), 
+        qtd: parseInt(document.getElementById('edit-v-qtd').value) || 1, 
+        valorStr: document.getElementById('edit-v-valor').value, 
+        status: document.getElementById('edit-v-status').value, 
+        observacao: document.getElementById('edit-v-observacao').value,
+        local_estoque: elLocal ? elLocal.value : 'Sede'
+    }; 
+    
+    document.getElementById('modal-editar-venda').style.display = 'none'; 
+    mostrarLoading("Salvando..."); 
+    
+    const msgLog = `✏️ Editou saída de ${py.cliente} [${py.produto}]. Local Retirada: ${py.local_estoque}. Status atual: ${py.status}`; 
+    const envio = { usuario: usuarioLogado, acao: "atualizar_venda", linha: l, data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: py.valorStr, status: py.status, custo_und: "0", custo_total: "0", lucro: "0", markup: "0", data_pg: "", observacao: py.observacao, local_estoque: py.local_estoque, log_detalhe: msgLog }; 
+    
+    fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(envio) }).then(() => { mostrarAlerta("Atualizado!", "Venda editada e estoque corrigido.", "success"); sincronizarDadosUnico(); }); 
+}
 
 function renderizarDashboard() { const dMes = document.getElementById('d-filtro-mes'); const dAno = document.getElementById('d-filtro-ano'); if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); } const fM = dMes.value; const fA = dAno.value; let pfx = fA && fM ? `${fA}-${fM}` : fA; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); const gDash = gastosGlobal.filter(g => pfx ? (g.dataIso && g.dataIso.startsWith(pfx)) : true); let tRec = 0, tPend = 0, tGas = 0, tLucroTotal = 0, mProd = {}, mCli = {}, mSoc = {}; vDash.forEach(v => { const val = parseDinheiro(v.valor_venda); const luc = parseDinheiro(v.lucro); const q = parseInt(v.qtd) || 1; if (v.status === 'Pago') tRec += val; else tPend += val; tLucroTotal += luc; if (v.produto) mProd[v.produto] = (mProd[v.produto] || 0) + q; if (v.cliente) mCli[v.cliente] = (mCli[v.cliente] || 0) + val; if (v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; }); gDash.forEach(g => tGas += parseDinheiro(g.total)); const lReal = tRec - tGas; let estItens = 0, estValor = 0; estoqueGlobal.forEach(e => { let q = parseFloat(e.qtd) || 0; if (q > 0) { estItens += q; estValor += (q * parseDinheiro(e.preco)); } }); const patrimonio = lReal + tPend + estValor; document.getElementById('d-patrimonio').innerText = fmt(patrimonio); document.getElementById('d-lucro-real').innerText = fmt(lReal); document.getElementById('card-lucro-real').classList.toggle('negativo', lReal < 0); document.getElementById('d-receitas').innerText = fmt(tRec); document.getElementById('d-gastos').innerText = fmt(tGas); document.getElementById('d-receber').innerText = fmt(tPend); document.getElementById('d-lucro-projetado').innerText = fmt(tLucroTotal); document.getElementById('d-estoque-itens').innerText = estItens; document.getElementById('d-estoque-valor').innerText = fmt(estValor); let arrProd = Object.keys(mProd).map(k => ({ nome: k, qtd: mProd[k] })).sort((a, b) => b.qtd - a.qtd).slice(0, 3); let arrCli = Object.keys(mCli).map(k => ({ nome: k, val: mCli[k] })).sort((a, b) => b.val - a.val).slice(0, 3); document.getElementById('d-ranking-produtos').innerHTML = arrProd.length ? arrProd.map((p, i) => `<li class="ranking-item"><span class="ranking-pos">#${i + 1}</span><span class="ranking-name">${p.nome}</span><span class="ranking-val">${p.qtd} un</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; document.getElementById('d-ranking-clientes').innerHTML = arrCli.length ? arrCli.map((c, i) => `<li class="ranking-item"><span class="ranking-pos">#${i + 1}</span><span class="ranking-name">${c.nome}</span><span class="ranking-val">${fmt(c.val)}</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; let hSoc = ""; for (let s in mSoc) { hSoc += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mSoc[s])}</strong></div>`; } document.getElementById('d-socios-lucro').innerHTML = hSoc || "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros.</p>"; if (typeof Chart !== 'undefined') { const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d'); const ctxSt = document.getElementById('chartStatusVendas').getContext('2d'); if (chartRGBase) chartRGBase.destroy(); chartRGBase = new Chart(ctxRG, { type: 'bar', data: { labels: ['Caixa', 'Gastos'], datasets: [{ label: 'Valor', data: [tRec, tGas], backgroundColor: ['#2e7d32', '#c62828'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }); if (chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } }); } }
 function abrirModalRelatorios() { document.getElementById('modal-relatorios').style.display = 'flex'; }
