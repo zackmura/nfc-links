@@ -219,7 +219,16 @@ async function sincronizarDadosUnico() {
             atualizarDatalistsDinamicos(); renderizarRotulos(); renderizarOpcoesPrecificacao(); renderizarEstoque(); renderizarGastos(); renderizarVendas(); renderizarDashboard(); renderizarEncomendas(); renderizarCompras();
             if (document.getElementById('tab-logs').classList.contains('active')) renderizarLogs();
             dadosCarregados = true;
-        } else { mostrarAlerta("Erro de Sincronização", dados.erro, "error"); }
+            
+            if (document.getElementById('tab-logs').classList.contains('active')) renderizarLogs();
+            
+            if (!dadosCarregados) {
+                dadosCarregados = true;
+                verificarNovidades(); // <--- CHAMA AS NOVIDADES AQUI!
+            }
+        } else { mostrarAlerta("Erro de Sincronização", dados.erro, "error"); } 
+       
+
     } catch (e) { mostrarAlerta("Falha de Conexão", "Erro ao carregar dados.", "error"); } finally { ocultarLoading(); }
 }
 
@@ -291,34 +300,40 @@ function renderizarLogs() {
         return; 
     }
 
-    // Puxa os elementos de filtro da tela
     const selUser = document.getElementById('f-log-usuario');
     const selAcao = document.getElementById('f-log-acao');
     const inputBusca = document.getElementById('busca-logs');
+    const inputData = document.getElementById('f-log-data');
 
-    // Popula o Dropdown de Usuários dinamicamente (se estiver vazio)
     if (selUser && selUser.options.length <= 1) {
         const usuariosUnicos = [...new Set(logsGlobal.map(l => l.usuario))].filter(Boolean).sort();
         usuariosUnicos.forEach(u => selUser.innerHTML += `<option value="${u}">${u}</option>`);
     }
 
-    // Popula o Dropdown de Ações dinamicamente (se estiver vazio)
     if (selAcao && selAcao.options.length <= 1) {
         const acoesUnicas = [...new Set(logsGlobal.map(l => l.acao))].filter(Boolean).sort();
         acoesUnicas.forEach(a => selAcao.innerHTML += `<option value="${a}">${a}</option>`);
     }
 
-    // Pega os valores atuais dos filtros
     const tBusca = inputBusca ? inputBusca.value.toLowerCase().trim() : "";
     const fUser = selUser ? selUser.value : "";
     const fAcao = selAcao ? selAcao.value : "";
+    const fData = inputData ? inputData.value : ""; 
 
-    // Aplica os filtros na lista de logs
+    // O input do navegador vem como "YYYY-MM-DD", mas nosso log está "DD/MM/YYYY"
+    let fDataBR = "";
+    if (fData) {
+        const p = fData.split('-');
+        fDataBR = `${p[2]}/${p[1]}/${p[0]}`; 
+    }
+
     let filtrados = logsGlobal.filter(log => {
         let passBusca = !tBusca || (log.detalhe + " " + log.acao + " " + log.usuario).toLowerCase().includes(tBusca);
         let passUser = !fUser || log.usuario === fUser;
         let passAcao = !fAcao || log.acao === fAcao;
-        return passBusca && passUser && passAcao;
+        let passData = !fDataBR || (log.dataHora && log.dataHora.startsWith(fDataBR));
+
+        return passBusca && passUser && passAcao && passData;
     });
 
     if (filtrados.length === 0) {
@@ -1041,6 +1056,28 @@ async function gerarEtiquetaPDF() {
     } finally {
         document.body.removeChild(tempDiv);
         ocultarLoading();
+    }
+}
+
+// ==========================================
+// MÓDULO: NOVIDADES DO SISTEMA
+// ==========================================
+const VERSAO_ATUAL_SISTEMA = "7.8.2";
+
+function abrirModalNovidades() {
+    document.getElementById('modal-novidades').style.display = 'flex';
+}
+
+function fecharModalNovidades() {
+    localStorage.setItem('novera_versao_vista', VERSAO_ATUAL_SISTEMA);
+    document.getElementById('modal-novidades').style.display = 'none';
+}
+
+function verificarNovidades() {
+    const versaoVista = localStorage.getItem('novera_versao_vista');
+    if (versaoVista !== VERSAO_ATUAL_SISTEMA) {
+        // Abre as novidades logo depois que carregar a tela principal
+        setTimeout(abrirModalNovidades, 800); 
     }
 }
 
