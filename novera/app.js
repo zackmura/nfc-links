@@ -1,3 +1,6 @@
+
+const VERSAO_ATUAL_SISTEMA = "7.8.2"; // Mude isso a cada nova atualização!
+
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -234,19 +237,22 @@ async function sincronizarDadosUnico() {
 
 function toggleSenha(inputId, btnElement) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } else { input.type = "password"; btnElement.innerText = "🙈"; } }
 
-function iniciarSessaoLocal(usuario, cargo) {
-    localStorage.setItem('novera_last_user', usuario);
-    localStorage.setItem('novera_user_cargo', cargo || 'Vendedor');
-    localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000));
-    usuarioLogado = usuario;
+function iniciarSessaoLocal(usuario, cargo) { 
+    localStorage.setItem('novera_last_user', usuario); 
+    localStorage.setItem('novera_user_cargo', cargo || 'Vendedor'); 
+    localStorage.setItem('novera_session_expires', Date.now() + (12 * 60 * 60 * 1000)); 
+    usuarioLogado = usuario; 
     usuarioCargo = cargo || 'Vendedor';
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    document.getElementById('cfg-user').value = usuario;
-    aplicarPermissoes();
-    if (!dadosCarregados) sincronizarDadosUnico();
-}
+    document.getElementById('login-screen').style.display = 'none'; 
+    document.getElementById('main-app').style.display = 'block'; 
+    document.getElementById('cfg-user').value = usuario; 
+    aplicarPermissoes(); 
+    
+    // O GATILHO ESTÁ AQUI AGORA:
+    verificarNovidades(); 
 
+    if (!dadosCarregados) sincronizarDadosUnico(); 
+}
 function verificarLogin() {
     const expires = localStorage.getItem('novera_session_expires');
     const lastUser = localStorage.getItem('novera_last_user') || '';
@@ -942,12 +948,12 @@ async function alterarSenha() {
     }
 }
 
-window.onload = () => {
+window.onload = () => { 
+    aplicarVersao(); // Escreve a versão no app inteiro
     const selectAno = document.getElementById('d-filtro-ano'); selectAno.innerHTML = '<option value="">Todos</option>'; const anoAtual = new Date().getFullYear(); for (let i = 2024; i <= anoAtual + 1; i++) { selectAno.innerHTML += `<option value="${i}">${i}</option>`; }
-    calcularNovera(); verificarLogin();
-    document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || ''; document.getElementById('cfg-imgbb-key').value = localStorage.getItem('novera_imgbb_key') || ''; document.getElementById('cfg-onionsys-key').value = localStorage.getItem('novera_onionsys_key') || '';
+    calcularNovera(); verificarLogin(); 
+    document.getElementById('cfg-ai-key').value = localStorage.getItem('novera_ai_key') || ''; document.getElementById('cfg-imgbb-key').value = localStorage.getItem('novera_imgbb_key') || ''; document.getElementById('cfg-onionsys-key').value = localStorage.getItem('novera_onionsys_key') || ''; 
 };
-
 
 // ==========================================
 // MÓDULO: ETIQUETA DE AMOSTRAS (11x8.5cm)
@@ -1076,9 +1082,17 @@ function fecharModalNovidades() {
 function verificarNovidades() {
     const versaoVista = localStorage.getItem('novera_versao_vista');
     if (versaoVista !== VERSAO_ATUAL_SISTEMA) {
-        // Abre as novidades logo depois que carregar a tela principal
-        setTimeout(abrirModalNovidades, 800); 
+        // Aguarda 1 segundo e abre o modal sozinho
+        setTimeout(abrirModalNovidades, 1000); 
     }
+}
+
+function aplicarVersao() {
+    // Atualiza os cantos da tela
+    document.querySelectorAll('.app-version').forEach(el => el.innerText = "v" + VERSAO_ATUAL_SISTEMA);
+    // Atualiza o texto do Modal
+    const txtModal = document.getElementById('texto-versao-modal');
+    if (txtModal) txtModal.innerText = "Atualização - Versão " + VERSAO_ATUAL_SISTEMA;
 }
 
 function abrirModalImagem(src) { if (!src || src.includes('placeholder')) return; document.getElementById('img-zoom-src').src = src; document.getElementById('modal-zoom-imagem').style.display = 'flex'; }
