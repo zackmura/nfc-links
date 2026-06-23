@@ -156,3 +156,4 @@ input[readonly] { background: #E8DDE1; color: #7a4a5e; border-color: transparent
 .b-hoje { background: #fef08a; color: #b45309; border: 1px solid #fde047; }
 .b-futuro { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
 .b-ok { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.status-presente { background: #f3e8ff; color: #7c3aed; border: 1px solid #ddd6fe; }
