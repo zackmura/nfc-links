@@ -858,6 +858,7 @@ function salvarEdicaoVenda() {
     const l = document.getElementById('edit-v-linha').value; 
     const vOrig = vendasGlobal.find(x => x.linha == l); 
     const elLocal = document.getElementById('edit-v-local');
+    
     const py = { 
         data: document.getElementById('edit-v-data').value, 
         cliente: padronizarTexto(document.getElementById('edit-v-cliente').value), 
@@ -870,13 +871,81 @@ function salvarEdicaoVenda() {
         local_estoque: elLocal ? elLocal.value : 'Sede'
     }; 
     
+    // === AQUI A MÁGICA FOI CORRIGIDA (Cálculos Reais) ===
+    const valVenda = parseDinheiro(py.valorStr);
+    const prodAgrupado = estoqueAgrupado[py.produto];
+    
+    // Busca o custo atualizado no estoque, ou usa o custo antigo se não achar
+    let cUnd = prodAgrupado ? parseDinheiro(prodAgrupado.custo) : (vOrig ? parseDinheiro(vOrig.custo_und) : 0);
+    let cTot = cUnd * py.qtd;
+    let lucro = valVenda - cTot;
+    let mkp = cTot > 0 ? (lucro / cTot) * 100 : 100;
+
+    // Se for presente, zera o lucro e markup
+    if (py.status === 'Presente') {
+        lucro = 0; mkp = 0;
+    }
+
+    const dPg = py.status === "Pago" ? (vOrig && vOrig.dataPgtoDisplay ? vOrig.dataPgtoDisplay : new Date().toLocaleDateString('pt-BR')) : "";
+
     document.getElementById('modal-editar-venda').style.display = 'none'; 
     mostrarLoading("Salvando..."); 
     
     const msgLog = `✏️ Editou saída de ${py.cliente} [${py.produto}]. Local Retirada: ${py.local_estoque}. Status atual: ${py.status}`; 
-    const envio = { usuario: usuarioLogado, acao: "atualizar_venda", linha: l, data: py.data, cliente: py.cliente, produto: py.produto, socio: py.socio, qtd: py.qtd, valor_venda: py.valorStr, status: py.status, custo_und: "0", custo_total: "0", lucro: "0", markup: "0", data_pg: "", observacao: py.observacao, local_estoque: py.local_estoque, log_detalhe: msgLog }; 
+    const envio = { 
+        usuario: usuarioLogado, 
+        acao: "atualizar_venda", 
+        linha: l, 
+        data: py.data, 
+        cliente: py.cliente, 
+        produto: py.produto, 
+        socio: py.socio, 
+        qtd: py.qtd, 
+        valor_venda: fmtPlanilha(valVenda), 
+        status: py.status, 
+        custo_und: fmtPlanilha(cUnd), 
+        custo_total: fmtPlanilha(cTot), 
+        lucro: fmtPlanilha(lucro), 
+        markup: mkp.toFixed(2) + "%", 
+        data_pg: dPg, 
+        observacao: py.observacao, 
+        local_estoque: py.local_estoque, 
+        log_detalhe: msgLog 
+    }; 
     
-    fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(envio) }).then(() => { mostrarAlerta("Atualizado!", "Venda editada e estoque corrigido.", "success"); sincronizarDadosUnico(); }); 
+    fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(envio) })
+        .then(r => r.json())
+        .then(res => { 
+            if(res.sucesso) {
+                mostrarAlerta("Atualizado!", "Venda editada e estoque corrigido.", "success"); 
+            } else {
+                mostrarAlerta("Erro", res.erro || "Falha.", "error"); 
+            }
+            sincronizarDadosUnico(); 
+        }).catch(e => {
+            mostrarAlerta("Erro", "Falha de conexão.", "error");
+            sincronizarDadosUnico();
+        }); 
+}
+
+function prepararExclusaoRegistro(aba, linha, desc) { 
+    abrirConfirmacao("Confirmar Exclusão?", `Apagar "${desc}" de ${aba}?`, "🗑️", "#A05252", "#803f3f", "🗑️ Apagar", () => { 
+        mostrarLoading("Apagando..."); 
+        const msgLog = `🗑️ Apagou o registro: [${desc}] da aba ${aba}`; 
+        fetch(API_NOVERA, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ usuario: usuarioLogado, acao: "excluir_registro", aba: aba, linha: linha, log_detalhe: msgLog }) })
+        .then(r => r.json())
+        .then(res => { 
+            if(res.sucesso) {
+                mostrarAlerta("Excluído", "Registro apagado.", "success"); 
+            } else {
+                mostrarAlerta("Erro", res.erro || "Falha ao apagar.", "error");
+            }
+            sincronizarDadosUnico(); 
+        }).catch(e => {
+            mostrarAlerta("Erro", "Falha na conexão", "error");
+            sincronizarDadosUnico();
+        }); 
+    }); 
 }
 
 function renderizarDashboard() { const dMes = document.getElementById('d-filtro-mes'); const dAno = document.getElementById('d-filtro-ano'); if (!dMes.value && !dAno.value) { const h = new Date(); dMes.value = String(h.getMonth() + 1).padStart(2, '0'); dAno.value = String(h.getFullYear()); } const fM = dMes.value; const fA = dAno.value; let pfx = fA && fM ? `${fA}-${fM}` : fA; const vDash = vendasGlobal.filter(v => pfx ? (v.dataVendaIso && v.dataVendaIso.startsWith(pfx)) : true); const gDash = gastosGlobal.filter(g => pfx ? (g.dataIso && g.dataIso.startsWith(pfx)) : true); let tRec = 0, tPend = 0, tGas = 0, tLucroTotal = 0, mProd = {}, mCli = {}, mSoc = {}; vDash.forEach(v => { const val = parseDinheiro(v.valor_venda); const luc = parseDinheiro(v.lucro); const q = parseInt(v.qtd) || 1; if (v.status === 'Pago') tRec += val; else tPend += val; tLucroTotal += luc; if (v.produto) mProd[v.produto] = (mProd[v.produto] || 0) + q; if (v.cliente) mCli[v.cliente] = (mCli[v.cliente] || 0) + val; if (v.socio) mSoc[v.socio] = (mSoc[v.socio] || 0) + luc; }); gDash.forEach(g => tGas += parseDinheiro(g.total)); const lReal = tRec - tGas; let estItens = 0, estValor = 0; estoqueGlobal.forEach(e => { let q = parseFloat(e.qtd) || 0; if (q > 0) { estItens += q; estValor += (q * parseDinheiro(e.preco)); } }); const patrimonio = lReal + tPend + estValor; document.getElementById('d-patrimonio').innerText = fmt(patrimonio); document.getElementById('d-lucro-real').innerText = fmt(lReal); document.getElementById('card-lucro-real').classList.toggle('negativo', lReal < 0); document.getElementById('d-receitas').innerText = fmt(tRec); document.getElementById('d-gastos').innerText = fmt(tGas); document.getElementById('d-receber').innerText = fmt(tPend); document.getElementById('d-lucro-projetado').innerText = fmt(tLucroTotal); document.getElementById('d-estoque-itens').innerText = estItens; document.getElementById('d-estoque-valor').innerText = fmt(estValor); let arrProd = Object.keys(mProd).map(k => ({ nome: k, qtd: mProd[k] })).sort((a, b) => b.qtd - a.qtd).slice(0, 3); let arrCli = Object.keys(mCli).map(k => ({ nome: k, val: mCli[k] })).sort((a, b) => b.val - a.val).slice(0, 3); document.getElementById('d-ranking-produtos').innerHTML = arrProd.length ? arrProd.map((p, i) => `<li class="ranking-item"><span class="ranking-pos">#${i + 1}</span><span class="ranking-name">${p.nome}</span><span class="ranking-val">${p.qtd} un</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; document.getElementById('d-ranking-clientes').innerHTML = arrCli.length ? arrCli.map((c, i) => `<li class="ranking-item"><span class="ranking-pos">#${i + 1}</span><span class="ranking-name">${c.nome}</span><span class="ranking-val">${fmt(c.val)}</span></li>`).join('') : "<li style='color:#999;'>Sem dados</li>"; let hSoc = ""; for (let s in mSoc) { hSoc += `<div class="dash-socios-linha"><span>${s}</span> <strong style="color:var(--primary-dark);">${fmt(mSoc[s])}</strong></div>`; } document.getElementById('d-socios-lucro').innerHTML = hSoc || "<p style='font-size:0.8rem; color:#999; text-align:center;'>Sem lucros.</p>"; if (typeof Chart !== 'undefined') { const ctxRG = document.getElementById('chartReceitasGastos').getContext('2d'); const ctxSt = document.getElementById('chartStatusVendas').getContext('2d'); if (chartRGBase) chartRGBase.destroy(); chartRGBase = new Chart(ctxRG, { type: 'bar', data: { labels: ['Caixa', 'Gastos'], datasets: [{ label: 'Valor', data: [tRec, tGas], backgroundColor: ['#2e7d32', '#c62828'], borderRadius: 8 }] }, options: { responsive: true, plugins: { legend: { display: false } } } }); if (chartStatusBase) chartStatusBase.destroy(); chartStatusBase = new Chart(ctxSt, { type: 'doughnut', data: { labels: ['Pago', 'Fiado'], datasets: [{ data: [tRec, tPend], backgroundColor: ['#2e7d32', '#f59e0b'], borderWidth: 0 }] }, options: { responsive: true } }); } }
