@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Raio-X | Novera</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background: #121212; color: #fff; margin: 0; padding: 20px; }
+        .header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #333; }
+        .header h1 { font-size: 1.5rem; margin: 0; color: #fce7f3; font-weight: 900; letter-spacing: 1px; }
+        .header p { color: #999; font-size: 0.85rem; margin: 5px 0 0; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .card { background: #1e1e1e; border: 1px solid #333; border-radius: 16px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; }
+        .card img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; background: #2a2a2a; }
+        .info { flex: 1; }
+        .info h3 { margin: 0 0 5px; font-size: 0.95rem; color: #fff; }
+        .info span.codigo { background: #966178; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; margin-right: 5px; }
+        .info p { margin: 0; color: #aaa; font-size: 0.75rem; }
+        .qtd-box { background: #2e7d32; color: #fff; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; }
+        
+        .loading { text-align: center; color: #888; font-size: 0.9rem; margin-top: 50px; animation: pisca 1s infinite alternate; }
+        @keyframes pisca { from { opacity: 0.4; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📦 CAIXA NOVERA</h1>
+        <p id="nome-caixa">Carregando...</p>
+    </div>
+
+    <div id="conteudo-caixa">
+        <div class="loading">Buscando informações no cofre...</div>
+    </div>
+
+    <script>
+        const API_NOVERA_NFC = "https://bdfernando.alwaysdata.net/api/nfc";
+        
+        // Pega os comandos da URL. Ex: ?caixa=feminino ou ?tipo=home spray
+        const urlParams = new URLSearchParams(window.location.search);
+        const filtroCaixa = urlParams.get('caixa') ? urlParams.get('caixa').toLowerCase() : null;
+        const filtroTipo = urlParams.get('tipo') ? urlParams.get('tipo').toLowerCase() : null;
+
+        // Atualiza o título da tela
+        if (filtroCaixa) document.getElementById('nome-caixa').innerText = `Gênero: ${filtroCaixa}`;
+        else if (filtroTipo) document.getElementById('nome-caixa').innerText = `Tipo: ${filtroTipo}`;
+        else document.getElementById('nome-caixa').innerText = "Visão Geral (Sede)";
+
+        async function carregarRaioX() {
+            try {
+                const res = await fetch(API_NOVERA_NFC);
+                const dados = await res.json();
+                
+                if (dados.sucesso) {
+                    let produtos = dados.estoque;
+
+                    // A MÁGICA DO FILTRO ACONTECE AQUI
+                    if (filtroCaixa) {
+                        produtos = produtos.filter(p => p.genero === filtroCaixa);
+                    }
+                    if (filtroTipo) {
+                        produtos = produtos.filter(p => p.tipo.includes(filtroTipo));
+                    }
+
+                    // Ordena por código alfabeticamente
+                    produtos.sort((a,b) => String(b.codigo).localeCompare(String(a.codigo)));
+
+                    const container = document.getElementById('conteudo-caixa');
+                    
+                    if (produtos.length === 0) {
+                        container.innerHTML = `<div style="text-align:center; margin-top:40px; color:#666;">Caixa Vazia ou Produtos Esgotados.</div>`;
+                        return;
+                    }
+
+                    let html = "";
+                    let totalItens = 0;
+
+                    produtos.forEach(p => {
+                        totalItens += p.qtd;
+                        let fotos = p.foto ? p.foto.split(',') : [];
+                        let urlImg = fotos[0] || 'logo.png';
+                        
+                        html += `
+                        <div class="card">
+                            <img src="${urlImg}" onerror="this.src='logo.png'">
+                            <div class="info">
+                                <h3><span class="codigo">${p.codigo || '-'}</span> ${p.nome}</h3>
+                                <p style="text-transform: uppercase;">${p.tipo}</p>
+                            </div>
+                            <div class="qtd-box">${p.qtd}</div>
+                        </div>`;
+                    });
+
+                    // Adiciona o total no final da página
+                    html += `<div style="text-align:center; margin-top:25px; color:#888; font-size:0.8rem;">TOTAL DE ITENS AQUI: <b style="color:#fce7f3; font-size:1rem;">${totalItens} un</b></div>`;
+                    
+                    container.innerHTML = html;
+                }
+            } catch(e) {
+                document.getElementById('conteudo-caixa').innerHTML = `<div style="color:#ef4444; text-align:center;">Erro ao conectar. Tente novamente.</div>`;
+            }
+        }
+
+        carregarRaioX();
+    </script>
+</body>
+</html>
