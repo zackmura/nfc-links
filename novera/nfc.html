@@ -33,6 +33,11 @@
         
         .qtd-box { background: #fdf5f7; color: #966178; border: 2px solid #f3d8e2; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2rem; flex-shrink: 0; }
         
+        /* Título do Grupo/Separador */
+        .group-header { margin: 25px 0 12px; border-bottom: 2px solid #E8DDE1; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .group-header h2 { margin: 0; color: #7a4a5e; font-size: 1.1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;}
+        .group-subtotal { background: #fdf5f7; color: #966178; padding: 3px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 900; border: 1px solid #f3d8e2; }
+
         .loading { text-align: center; color: #888; font-size: 0.9rem; margin-top: 50px; animation: pisca 1s infinite alternate; font-weight: 600;}
         @keyframes pisca { from { opacity: 0.4; } to { opacity: 1; } }
     </style>
@@ -46,7 +51,7 @@
         
         <div id="total-container" style="display: none;">
             <div class="total-badge">
-                <span>Total Físico</span>
+                <span>Total Físico Geral</span>
                 <strong id="total-itens-header">0</strong>
             </div>
         </div>
@@ -61,14 +66,18 @@
         
         const urlParams = new URLSearchParams(window.location.search);
         const filtroGenero = urlParams.get('genero') ? urlParams.get('genero').toLowerCase() : null;
-        // Agora o filtroTipo aceita várias palavras separadas por vírgula!
         const filtroTipo = urlParams.get('tipo') ? urlParams.get('tipo').toLowerCase() : null;
 
+        // Formata os títulos para ficar elegante na tela
         let titulos = [];
-        if(filtroTipo) titulos.push(filtroTipo.toUpperCase());
+        if(filtroTipo) {
+            // Se tiver virgula (creme,home), troca por uma bolinha bonita (Creme • Home)
+            let tiposFormatados = filtroTipo.split(',').map(t => t.trim().toUpperCase()).join(' • ');
+            titulos.push(tiposFormatados);
+        }
         if(filtroGenero) titulos.push(filtroGenero.toUpperCase());
         
-        document.getElementById('nome-caixa').innerText = titulos.length > 0 ? titulos.join(" - ") : "VISÃO GERAL (SEDE)";
+        document.getElementById('nome-caixa').innerText = titulos.length > 0 ? titulos.join(" | ") : "VISÃO GERAL (SEDE)";
 
         async function carregarRaioX() {
             try {
@@ -83,15 +92,12 @@
                     }
                     
                     if (filtroTipo) {
-                        // Divide a URL pela vírgula (ex: creme,home) e procura se o produto tem algum desses
                         const tiposPermitidos = filtroTipo.split(',').map(t => t.trim());
                         produtos = produtos.filter(p => {
                             const pTipo = String(p.tipo).toLowerCase();
                             return tiposPermitidos.some(tPermitido => pTipo.includes(tPermitido));
                         });
                     }
-
-                    produtos.sort((a,b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
 
                     const container = document.getElementById('conteudo-caixa');
                     
@@ -102,43 +108,79 @@
                         return;
                     }
 
-                    let html = "";
-                    let totalItens = 0;
+                    // A MÁGICA: AGRUPAR POR TIPO
+                    let grupos = {};
+                    let totalItensGeral = 0;
 
                     produtos.forEach(p => {
-                        totalItens += p.qtd;
-                        let fotos = p.foto ? p.foto.split(',') : [];
-                        let urlImg = fotos[0] || '';
+                        totalItensGeral += p.qtd;
                         
-                        let imgTag = urlImg ? `<img src="${urlImg}" onerror="this.outerHTML='<div class=\\'img-fallback\\'>NS</div>'">` : `<div class="img-fallback">NS</div>`;
+                        // Normaliza o nome do tipo (ex: "home spray" vira "HOME SPRAY")
+                        let tipoNome = p.tipo ? String(p.tipo).trim().toUpperCase() : "OUTROS";
                         
-                        // ===== LÓGICA DAS CORES E ÍCONES POR GÊNERO =====
-                        let corFundoGen = "#f3f4f6", corTextoGen = "#4b5563", iconeGen = "🌿";
-                        let gLow = String(p.genero).toLowerCase();
-                        
-                        if(gLow === "masculino") { 
-                            corFundoGen = "#e0f2fe"; corTextoGen = "#0369a1"; iconeGen = "👔"; 
-                        } else if(gLow === "feminino") { 
-                            corFundoGen = "#fce7f3"; corTextoGen = "#be185d"; iconeGen = "🌸"; 
-                        } else if(gLow === "infantil") { 
-                            corFundoGen = "#dcfce7"; corTextoGen = "#166534"; iconeGen = "🧸"; 
+                        if (!grupos[tipoNome]) {
+                            grupos[tipoNome] = {
+                                subtotal: 0,
+                                itens: []
+                            };
                         }
                         
-                        let badgeGenero = p.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:3px 8px; border-radius:6px; font-size:0.6rem; font-weight:800; text-transform:uppercase; display:inline-block; margin-top:4px;">${iconeGen} ${p.genero}</span>` : '';
-
-                        html += `
-                        <div class="card">
-                            ${imgTag}
-                            <div class="info">
-                                <h3><span class="codigo">${p.codigo || '-'}</span> ${p.nome}</h3>
-                                <p>${p.tipo}</p>
-                                ${badgeGenero}
-                            </div>
-                            <div class="qtd-box">${p.qtd}</div>
-                        </div>`;
+                        grupos[tipoNome].subtotal += p.qtd;
+                        grupos[tipoNome].itens.push(p);
                     });
 
-                    document.getElementById('total-itens-header').innerText = totalItens;
+                    // Pega as chaves dos grupos (os nomes dos tipos) e ordena em ordem alfabética
+                    let tiposOrdenados = Object.keys(grupos).sort();
+                    
+                    let html = "";
+
+                    // Monta a tela Grupo por Grupo
+                    tiposOrdenados.forEach(tipo => {
+                        let grupoAtual = grupos[tipo];
+                        
+                        // Ordena os itens dentro do grupo pelo código (N001, N002...)
+                        grupoAtual.itens.sort((a,b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
+
+                        // Cria o Cabeçalho Divisor da Categoria
+                        html += `
+                        <div class="group-header">
+                            <h2>${tipo}</h2>
+                            <div class="group-subtotal">${grupoAtual.subtotal} un</div>
+                        </div>`;
+
+                        // Lista os itens dessa categoria
+                        grupoAtual.itens.forEach(p => {
+                            let fotos = p.foto ? p.foto.split(',') : [];
+                            let urlImg = fotos[0] || '';
+                            
+                            let imgTag = urlImg ? `<img src="${urlImg}" onerror="this.outerHTML='<div class=\\'img-fallback\\'>NS</div>'">` : `<div class="img-fallback">NS</div>`;
+                            
+                            let corFundoGen = "#f3f4f6", corTextoGen = "#4b5563", iconeGen = "🌿";
+                            let gLow = String(p.genero).toLowerCase();
+                            
+                            if(gLow === "masculino") { 
+                                corFundoGen = "#e0f2fe"; corTextoGen = "#0369a1"; iconeGen = "👔"; 
+                            } else if(gLow === "feminino") { 
+                                corFundoGen = "#fce7f3"; corTextoGen = "#be185d"; iconeGen = "🌸"; 
+                            } else if(gLow === "infantil") { 
+                                corFundoGen = "#dcfce7"; corTextoGen = "#166534"; iconeGen = "🧸"; 
+                            }
+                            
+                            let badgeGenero = p.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:3px 8px; border-radius:6px; font-size:0.6rem; font-weight:800; text-transform:uppercase; display:inline-block; margin-top:0px;">${iconeGen} ${p.genero}</span>` : '';
+
+                            html += `
+                            <div class="card">
+                                ${imgTag}
+                                <div class="info">
+                                    <h3><span class="codigo">${p.codigo || '-'}</span> ${p.nome}</h3>
+                                    ${badgeGenero}
+                                </div>
+                                <div class="qtd-box">${p.qtd}</div>
+                            </div>`;
+                        });
+                    });
+
+                    document.getElementById('total-itens-header').innerText = totalItensGeral;
                     document.getElementById('total-container').style.display = 'block';
                     container.innerHTML = html;
                 }
