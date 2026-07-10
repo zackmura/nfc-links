@@ -68,10 +68,8 @@
         const filtroGenero = urlParams.get('genero') ? urlParams.get('genero').toLowerCase() : null;
         const filtroTipo = urlParams.get('tipo') ? urlParams.get('tipo').toLowerCase() : null;
 
-        // Formata os títulos para ficar elegante na tela
         let titulos = [];
         if(filtroTipo) {
-            // Se tiver virgula (creme,home), troca por uma bolinha bonita (Creme • Home)
             let tiposFormatados = filtroTipo.split(',').map(t => t.trim().toUpperCase()).join(' • ');
             titulos.push(tiposFormatados);
         }
@@ -108,14 +106,12 @@
                         return;
                     }
 
-                    // A MÁGICA: AGRUPAR POR TIPO
                     let grupos = {};
                     let totalItensGeral = 0;
 
                     produtos.forEach(p => {
                         totalItensGeral += p.qtd;
                         
-                        // Normaliza o nome do tipo (ex: "home spray" vira "HOME SPRAY")
                         let tipoNome = p.tipo ? String(p.tipo).trim().toUpperCase() : "OUTROS";
                         
                         if (!grupos[tipoNome]) {
@@ -129,26 +125,37 @@
                         grupos[tipoNome].itens.push(p);
                     });
 
-                    // Pega as chaves dos grupos (os nomes dos tipos) e ordena em ordem alfabética
                     let tiposOrdenados = Object.keys(grupos).sort();
-                    
                     let html = "";
 
-                    // Monta a tela Grupo por Grupo
                     tiposOrdenados.forEach(tipo => {
                         let grupoAtual = grupos[tipo];
                         
-                        // Ordena os itens dentro do grupo pelo código (N001, N002...)
-                        grupoAtual.itens.sort((a,b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
+                        // ======== A MÁGICA DA ORDENAÇÃO ACONTECE AQUI ========
+                        grupoAtual.itens.sort((a,b) => {
+                            let genA = String(a.genero || "").toLowerCase();
+                            let genB = String(b.genero || "").toLowerCase();
+                            
+                            // Pesos para garantir a ordem exata dos blocos visuais
+                            const ordemGen = { "feminino": 1, "masculino": 2, "unissex": 3, "infantil": 4 };
+                            let pesoA = ordemGen[genA] || 99;
+                            let pesoB = ordemGen[genB] || 99;
+                            
+                            // Se forem gêneros diferentes, agrupa pela cor/gênero
+                            if (pesoA !== pesoB) {
+                                return pesoA - pesoB;
+                            }
+                            
+                            // Se for do mesmo gênero (mesma cor), desempata organizando pelo código numérico
+                            return String(a.codigo || "").localeCompare(String(b.codigo || ""));
+                        });
 
-                        // Cria o Cabeçalho Divisor da Categoria
                         html += `
                         <div class="group-header">
                             <h2>${tipo}</h2>
                             <div class="group-subtotal">${grupoAtual.subtotal} un</div>
                         </div>`;
 
-                        // Lista os itens dessa categoria
                         grupoAtual.itens.forEach(p => {
                             let fotos = p.foto ? p.foto.split(',') : [];
                             let urlImg = fotos[0] || '';
@@ -166,7 +173,7 @@
                                 corFundoGen = "#dcfce7"; corTextoGen = "#166534"; iconeGen = "🧸"; 
                             }
                             
-                            let badgeGenero = p.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:3px 8px; border-radius:6px; font-size:0.6rem; font-weight:800; text-transform:uppercase; display:inline-block; margin-top:0px;">${iconeGen} ${p.genero}</span>` : '';
+                            let badgeGenero = p.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:3px 8px; border-radius:6px; font-size:0.6rem; font-weight:800; text-transform:uppercase; display:inline-block; margin-top:4px;">${iconeGen} ${p.genero}</span>` : '';
 
                             html += `
                             <div class="card">
