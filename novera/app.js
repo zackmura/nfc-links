@@ -1179,18 +1179,27 @@ function fecharLeitorCamera() {
 }
 
 function onScanSuccess(codigoLido, decodedResult) {
-    // Quando lê com sucesso, para a câmera
     fecharLeitorCamera();
     
-    // Limpa espaços que possam vir no QR Code (ex: " N001 ")
-    const codigoLimpo = codigoLido.trim().toUpperCase(); 
+    let codigoLidoLimpo = codigoLido.trim();
+    let codigoPesquisa = codigoLidoLimpo;
+
+    // A MÁGICA: Se o código lido for a URL gigante, ele "corta" e pega só o N001 do final
+    if (codigoLidoLimpo.includes('venda=')) {
+        try {
+            const url = new URL(codigoLidoLimpo);
+            codigoPesquisa = url.searchParams.get('venda');
+        } catch(e) {
+            codigoPesquisa = codigoLidoLimpo.split('venda=')[1].split('&')[0];
+        }
+    }
+
+    const codigoLimpo = (codigoPesquisa || '').toUpperCase(); 
     
     const selectProd = document.getElementById('v-produto');
     let encontrou = false;
     
-    // Procura na lista de produtos o código que a câmera leu
     for (let i = 0; i < selectProd.options.length; i++) {
-        // As opções no HTML estão assim: "N001 - Perfume Angel (Total: 5)"
         if (selectProd.options[i].text.includes(codigoLimpo + ' -') || selectProd.options[i].text.startsWith(codigoLimpo)) {
             selectProd.selectedIndex = i;
             encontrou = true;
@@ -1199,9 +1208,9 @@ function onScanSuccess(codigoLido, decodedResult) {
     }
     
     if (encontrou) {
-        autoPreencherValorVenda(); // Dispara o gatilho de puxar preço, foto e local
+        autoPreencherValorVenda(); 
         mostrarAlerta("Bip! 🎯", `Produto ${codigoLimpo} identificado!`, "success");
-        if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]); // Tremidinha dupla no celular
+        if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]);
     } else {
         mostrarAlerta("Não encontrado", `O código ${codigoLimpo} não foi achado no estoque físico.`, "warning");
     }
@@ -1302,10 +1311,15 @@ async function gerarPdfQrCodes() {
     
     if (toPrint.length === 0) return mostrarAlerta("Aviso", "Coloque a quantidade em pelo menos um produto para imprimir.", "warning");
     
+    // Captura as configurações definidas pelo usuário
+    const pW = parseFloat(document.getElementById('qr-papel-w').value) || 150;
+    const pH = parseFloat(document.getElementById('qr-papel-h').value) || 90;
+    const qrSize = parseFloat(document.getElementById('qr-tamanho').value) || 16;
+    const margem = parseFloat(document.getElementById('qr-margem').value) || 5;
+
     document.getElementById('modal-gerar-qrcode').style.display = 'none';
     mostrarLoading("Desenhando Etiquetas...");
     
-    // Div invisível temporária para gerar a imagem dos QRs
     const tempGen = document.createElement('div');
     tempGen.style.display = 'none';
     document.body.appendChild(tempGen);
@@ -1324,36 +1338,46 @@ async function gerarPdfQrCodes() {
             correctLevel : QRCode.CorrectLevel.H
         });
         
-        // Espera a biblioteca desenhar no canvas
         await new Promise(r => setTimeout(r, 50)); 
         const canvas = tempGen.querySelector('canvas');
         const dataUrl = canvas.toDataURL("image/jpeg");
         
-        // Padrão de 1 Etiqueta (Tamanho para caber em 20mm)
+        // CORREÇÃO VISUAL: Usando 'float: left' para não bugar o gerador de PDF
         const htmlAdesivo = `
-        <div style="width: 17mm; height: 21mm; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; background: #fff;">
-            <img src="${dataUrl}" style="width: 16mm; height: 16mm; object-fit: contain;">
-            <span style="font-size: 6px; font-family: monospace; font-weight: bold; margin-top: 1px; color: #000;">${item.codigo}</span>
+        <div style="width: ${qrSize + 2}mm; height: ${qrSize + 6}mm; float: left; text-align: center; margin: 1mm; box-sizing: border-box; overflow: hidden; background: #fff;">
+            <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; object-fit: contain; display: block; margin: 0 auto;">
+            <div style="font-size: 7px; font-family: monospace; font-weight: bold; margin-top: 1px; color: #000;">${item.codigo}</div>
         </div>`;
         
-        // Clona a etiqueta pela quantidade solicitada
         for (let i = 0; i < item.qtd; i++) {
             todasAsEtiquetasHtml.push(htmlAdesivo);
         }
     }
     
-    document.body.removeChild(tempGen); // Apaga a div temporária
+    document.body.removeChild(tempGen);
     
-    // Paginação Matemática para a folha 15x9 cm (150x90 mm)
-    // Cabem 7 colunas e 4 linhas perfeitas por página = 28 QRs por folha.
+    // MATEMÁTICA DA PÁGINA (Calcula quantos QRs cabem na folha)
+    const areaUtilW = pW - (margem * 2);
+    const areaUtilH = pH - (margem * 2);
+    const espacoUmQrw = qrSize + 4; // QR + bordas laterais
+    const espacoUmQrh = qrSize + 8; // QR + texto + bordas verticais
+    
+    const colunas = Math.floor(areaUtilW / espacoUmQrw);
+    const linhas = Math.floor(areaUtilH / espacoUmQrh);
+    const qrsPorPagina = colunas * linhas;
+    
+    if (qrsPorPagina <= 0) {
+        ocultarLoading();
+        return mostrarAlerta("Erro!", "O tamanho do papel é pequeno demais para esse tamanho de QR Code.", "error");
+    }
+
     let htmlPdfFinal = '';
-    const QRS_POR_PAGINA = 28;
-    
-    for (let i = 0; i < todasAsEtiquetasHtml.length; i += QRS_POR_PAGINA) {
-        const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + QRS_POR_PAGINA);
+    for (let i = 0; i < todasAsEtiquetasHtml.length; i += qrsPorPagina) {
+        const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + qrsPorPagina);
         htmlPdfFinal += `
-        <div style="width: 150mm; height: 90mm; padding: 5mm; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 2mm; align-content: flex-start; justify-content: flex-start; background: white; overflow: hidden; page-break-after: always;">
+        <div style="width: ${pW}mm; height: ${pH}mm; padding: ${margem}mm; box-sizing: border-box; background: white; page-break-after: always; position: relative; overflow: hidden;">
             ${pedacoDaPagina.join('')}
+            <div style="clear: both;"></div>
         </div>`;
     }
     
@@ -1371,11 +1395,12 @@ async function gerarPdfQrCodes() {
             filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
             html2canvas: { scale: 4, useCORS: true, logging: false },
-            jsPDF: { unit: 'mm', format: [150, 90], orientation: 'landscape' }
+            // A orientação da folha se ajusta sozinha caso você coloque um papel deitado ou em pé
+            jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' }
         };
         
-        await html2pdf().set(opt).from(divWrapper.firstElementChild).save();
-        mostrarAlerta("Sucesso!", "Seu PDF com as etiquetas está pronto. Basta abrir e mandar para a EPSON!", "success");
+        await html2pdf().set(opt).from(divWrapper).save();
+        mostrarAlerta("Perfeito!", `PDF com ${todasAsEtiquetasHtml.length} etiquetas pronto.`, "success");
     } catch(e) {
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
     } finally {
@@ -1383,4 +1408,3 @@ async function gerarPdfQrCodes() {
         ocultarLoading();
     }
 }
-
