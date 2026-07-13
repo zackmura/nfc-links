@@ -1137,3 +1137,73 @@ function pedirNomeDocumento(nomeOriginal, titulo) { return new Promise((resolve)
 const fileToBase64 = f => new Promise((r, j) => { const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = () => r(rd.result.split(',')[1]); rd.onerror = e => j(e); });
 function comprimirImagem(f, mW, mH, q) { return new Promise((r, j) => { if (!f.type.match(/image.*/)) return j(new Error(`Formato inválido.`)); const rd = new FileReader(); rd.readAsDataURL(f); rd.onload = e => { const i = new Image(); i.src = e.target.result; i.onload = () => { let w = i.width, h = i.height; if (w > h) { if (w > mW) { h = Math.round(h * mW / w); w = mW; } } else { if (h > mH) { w = Math.round(w * mH / h); h = mH; } } const cv = document.createElement('canvas'); cv.width = w; cv.height = h; const cx = cv.getContext('2d'); cx.drawImage(i, 0, 0, w, h); cv.toBlob(b => b ? r(new File([b], "img.jpg", { type: 'image/jpeg' })) : j(new Error("Erro na Compressão")), 'image/jpeg', q); }; }; }); }
 async function uploadDuplo(fileBlob) { let urlOnion = "", urlImgBB = ""; try { const fd = new FormData(); fd.append("imagem", fileBlob); const res = await fetch("https://api.onionsys.com.br/api/novera/registrar/catalogo", { method: "POST", headers: { "Authorization": `Bearer ${TOKEN_ONIONSYS}` }, body: fd }); const text = await res.text(); if (res.ok) { const data = JSON.parse(text); urlOnion = (data.arquivos && data.arquivos.length > 0) ? data.arquivos[0].url : (data.url || data.link || (data.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${data.filename}` : "")); } } catch (e) { } try { const fd2 = new FormData(); fd2.append("image", fileBlob); const res2 = await fetch(`https://api.imgbb.com/1/upload?key=${KEY_IMGBB}`, { method: "POST", body: fd2 }); const data2 = await res2.json(); if (data2.success) urlImgBB = data2.data.url; } catch (e) { } if (!urlOnion && !urlImgBB) throw new Error("Falha no upload."); return [urlOnion, urlImgBB].filter(u => u).join(','); }
+
+
+
+// ==========================================
+// MÓDULO: LEITOR DE QR CODE / CÓDIGO DE BARRAS
+// ==========================================
+let leitorQRScanner = null;
+
+function abrirLeitorCamera() {
+    document.getElementById('modal-camera').style.display = 'flex';
+    
+    // Se for a primeira vez que abre, cria o motor da câmera
+    if (!leitorQRScanner) {
+        leitorQRScanner = new Html5Qrcode("reader");
+    }
+    
+    // Configura para ler rápido e focar na câmera traseira (environment)
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    
+    leitorQRScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+    .catch(err => {
+        mostrarAlerta("Erro na Câmera", "Dê permissão para acessar a câmera no seu navegador.", "error");
+        fecharLeitorCamera();
+    });
+}
+
+function fecharLeitorCamera() {
+    if (leitorQRScanner && leitorQRScanner.isScanning) {
+        leitorQRScanner.stop().then(() => {
+            document.getElementById('modal-camera').style.display = 'none';
+        }).catch(err => {
+            document.getElementById('modal-camera').style.display = 'none';
+        });
+    } else {
+        document.getElementById('modal-camera').style.display = 'none';
+    }
+}
+
+function onScanSuccess(codigoLido, decodedResult) {
+    // Quando lê com sucesso, para a câmera
+    fecharLeitorCamera();
+    
+    // Limpa espaços que possam vir no QR Code (ex: " N001 ")
+    const codigoLimpo = codigoLido.trim().toUpperCase(); 
+    
+    const selectProd = document.getElementById('v-produto');
+    let encontrou = false;
+    
+    // Procura na lista de produtos o código que a câmera leu
+    for (let i = 0; i < selectProd.options.length; i++) {
+        // As opções no HTML estão assim: "N001 - Perfume Angel (Total: 5)"
+        if (selectProd.options[i].text.includes(codigoLimpo + ' -') || selectProd.options[i].text.startsWith(codigoLimpo)) {
+            selectProd.selectedIndex = i;
+            encontrou = true;
+            break;
+        }
+    }
+    
+    if (encontrou) {
+        autoPreencherValorVenda(); // Dispara o gatilho de puxar preço, foto e local
+        mostrarAlerta("Bip! 🎯", `Produto ${codigoLimpo} identificado!`, "success");
+        if ("vibrate" in navigator) navigator.vibrate([100, 50, 100]); // Tremidinha dupla no celular
+    } else {
+        mostrarAlerta("Não encontrado", `O código ${codigoLimpo} não foi achado no estoque físico.`, "warning");
+    }
+}
+
+function onScanFailure(error) {
+    // Ele fica rodando 10 vezes por segundo, então se falhar o frame, ignora e tenta o próximo.
+}
