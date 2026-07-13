@@ -246,9 +246,10 @@ async function sincronizarDadosUnico() {
             if (!dadosCarregados) {
                 dadosCarregados = true;
                 verificarNovidades();
+                verificarComandosURL(); // <--- ADICIONE ESTA LINHA AQUI!
             }
         } else { mostrarAlerta("Erro de Sincronização", dados.erro, "error"); }
-    } catch (e) { mostrarAlerta("Falha de Conexão", "Erro ao carregar dados.", "error"); } finally { ocultarLoading(); }
+    } catch (e) { mostrarAlerta("Falha de Conexão", "Erro ao carregar dados.", "error"); } finally { ocultarLoading(); }   
 }
 
 function toggleSenha(inputId, btnElement) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; btnElement.innerText = "👁️"; } else { input.type = "password"; btnElement.innerText = "🙈"; } }
@@ -1209,3 +1210,45 @@ function onScanSuccess(codigoLido, decodedResult) {
 function onScanFailure(error) {
     // Ele fica rodando 10 vezes por segundo, então se falhar o frame, ignora e tenta o próximo.
 }
+
+// ==========================================
+// MÓDULO: DEEP LINKING (Leitura Direta da Câmera do Celular)
+// ==========================================
+function verificarComandosURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const produtoScan = urlParams.get('venda');
+
+    if (produtoScan) {
+        const codigoLimpo = produtoScan.trim().toUpperCase();
+        
+        // 1. Força a ir para a tela de Vendas
+        switchTab('vendas');
+        toggleVendasTab('registro');
+        
+        // 2. Preenche a data de hoje automaticamente
+        document.getElementById('v-data').valueAsDate = new Date();
+        
+        // 3. Procura o produto na lista
+        const selectProd = document.getElementById('v-produto');
+        let encontrou = false;
+        
+        for (let i = 0; i < selectProd.options.length; i++) {
+            if (selectProd.options[i].text.includes(codigoLimpo + ' -') || selectProd.options[i].text.startsWith(codigoLimpo)) {
+                selectProd.selectedIndex = i;
+                encontrou = true;
+                break;
+            }
+        }
+        
+        if (encontrou) {
+            autoPreencherValorVenda();
+            mostrarAlerta("Pronto! 🎯", `Produto ${codigoLimpo} carregado e pronto para venda.`, "success");
+            
+            // 4. Limpa a barra de endereços para não repetir se você recarregar a página
+            window.history.replaceState(null, null, window.location.pathname);
+        } else {
+            mostrarAlerta("Não encontrado", `O código ${codigoLimpo} não foi achado no estoque físico.`, "warning");
+        }
+    }
+}
+
