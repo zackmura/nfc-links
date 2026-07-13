@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.6";
+const VERSAO_ATUAL_SISTEMA = "7.8.7";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -1320,9 +1320,10 @@ async function gerarPdfQrCodes() {
     document.getElementById('modal-gerar-qrcode').style.display = 'none';
     mostrarLoading("Desenhando Etiquetas...");
     
-    // Vamos gerar os Base64 dos QR Codes PRIMEIRO
+    // Coloca a div temporária beeeem longe da tela, mas não invisível, pro QRCode conseguir desenhar
     const tempQR = document.createElement('div');
-    tempQR.style.display = 'none';
+    tempQR.style.position = 'absolute';
+    tempQR.style.left = '-9999px';
     document.body.appendChild(tempQR);
     
     const baseUrl = "https://diario.vivainteligente.net/novera/index.html?venda=";
@@ -1339,16 +1340,16 @@ async function gerarPdfQrCodes() {
             correctLevel : QRCode.CorrectLevel.H
         });
         
-        // Aguarda 100ms para garantir que o QR Code foi desenhado
-        await new Promise(r => setTimeout(r, 100));
+        // Aguarda 60ms para a biblioteca desenhar a imagem Base64
+        await new Promise(r => setTimeout(r, 60));
         const canvas = tempQR.querySelector('canvas');
         const dataUrl = canvas.toDataURL("image/jpeg");
         
-        // O SEGREDO DO VISUAL: inline-block é perfeito para PDFs (Não buga como o float)
+        // O SEGREDO DO VISUAL: inline-block com fundo forçado branco (#ffffff)
         const htmlAdesivo = `
-        <div style="width: ${qrSize + 2}mm; height: ${qrSize + 6}mm; display: inline-block; vertical-align: top; text-align: center; margin: 1mm; box-sizing: border-box; overflow: hidden; background: #fff;">
+        <div style="width: ${qrSize + 2}mm; height: ${qrSize + 6}mm; display: inline-block; vertical-align: top; text-align: center; margin: 1mm; box-sizing: border-box; overflow: hidden; background: #ffffff;">
             <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; object-fit: contain; display: block; margin: 0 auto;">
-            <div style="font-size: 7px; font-family: monospace; font-weight: bold; margin-top: 1px; color: #000; text-align: center;">${item.codigo}</div>
+            <div style="font-size: 8px; font-family: Arial, sans-serif; font-weight: bold; margin-top: 1px; color: #000000; text-align: center;">${item.codigo}</div>
         </div>`;
         
         for (let i = 0; i < item.qtd; i++) {
@@ -1356,7 +1357,7 @@ async function gerarPdfQrCodes() {
         }
     }
     
-    document.body.removeChild(tempQR);
+    document.body.removeChild(tempQR); // Limpa o lixo da tela
     
     // MATEMÁTICA DA PÁGINA
     const areaUtilW = pW - (margem * 2);
@@ -1368,41 +1369,42 @@ async function gerarPdfQrCodes() {
     const linhas = Math.max(1, Math.floor(areaUtilH / espacoUmQrh));
     const qrsPorPagina = colunas * linhas;
     
-    let htmlPdfFinal = '';
+    // CONSTRÓI A STRING HTML DIRETO NA MEMÓRIA (Ignora a tela do usuário)
+    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm;">`;
+    
     for (let i = 0; i < todasAsEtiquetasHtml.length; i += qrsPorPagina) {
         const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + qrsPorPagina);
         htmlPdfFinal += `
-        <div style="width: ${pW}mm; height: ${pH}mm; padding: ${margem}mm; box-sizing: border-box; background: white; page-break-after: always; display: block; overflow: hidden;">
+        <div style="width: ${pW}mm; height: ${pH}mm; padding: ${margem}mm; box-sizing: border-box; background: #ffffff; overflow: hidden;">
             ${pedacoDaPagina.join('')}
         </div>`;
+        
+        // Adiciona a quebra de página nativa do gerador de PDF
+        if (i + qrsPorPagina < todasAsEtiquetasHtml.length) {
+            htmlPdfFinal += '<div class="html2pdf__page-break"></div>';
+        }
     }
-    
-    const divWrapper = document.createElement('div');
-    divWrapper.innerHTML = htmlPdfFinal;
-    // SOLUÇÃO DA TELA BRANCA: Posição fixa no topo burla o bug de rolagem (scroll)
-    divWrapper.style.position = 'fixed';
-    divWrapper.style.top = '0';
-    divWrapper.style.left = '0';
-    divWrapper.style.zIndex = '-9999';
-    document.body.appendChild(divWrapper);
+    htmlPdfFinal += '</div>';
     
     try {
-        await new Promise(r => setTimeout(r, 500));
+        // Pausa de 300ms para a tela não congelar antes de salvar
+        await new Promise(r => setTimeout(r, 300));
+        
         let opt = {
             margin: 0,
             filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            // FORÇA O SCROLL Y A SER ZERO para a câmera bater a foto do lugar certo
-            html2canvas: { scale: 3, useCORS: true, scrollY: 0, windowY: 0 },
+            // Scale 2 evita que 215 produtos estourem a memória de vídeo, mas mantém a leitura do QR nítida
+            html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
             jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' }
         };
         
-        await html2pdf().set(opt).from(divWrapper).save();
-        mostrarAlerta("Perfeito!", "As etiquetas foram geradas e baixadas.", "success");
+        // Passa o texto do HTML diretamente, sem anexar nada no navegador visível!
+        await html2pdf().set(opt).from(htmlPdfFinal).save();
+        mostrarAlerta("Perfeito!", "As etiquetas foram geradas com sucesso.", "success");
     } catch(e) {
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
     } finally {
-        document.body.removeChild(divWrapper);
         ocultarLoading();
     }
 }
