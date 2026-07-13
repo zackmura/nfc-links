@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.7";
+const VERSAO_ATUAL_SISTEMA = "7.8.8";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -1320,7 +1320,6 @@ async function gerarPdfQrCodes() {
     document.getElementById('modal-gerar-qrcode').style.display = 'none';
     mostrarLoading("Desenhando Etiquetas...");
     
-    // Coloca a div temporária beeeem longe da tela, mas não invisível, pro QRCode conseguir desenhar
     const tempQR = document.createElement('div');
     tempQR.style.position = 'absolute';
     tempQR.style.left = '-9999px';
@@ -1340,16 +1339,17 @@ async function gerarPdfQrCodes() {
             correctLevel : QRCode.CorrectLevel.H
         });
         
-        // Aguarda 60ms para a biblioteca desenhar a imagem Base64
         await new Promise(r => setTimeout(r, 60));
         const canvas = tempQR.querySelector('canvas');
         const dataUrl = canvas.toDataURL("image/jpeg");
         
-        // O SEGREDO DO VISUAL: inline-block com fundo forçado branco (#ffffff)
+        const espacoBoxW = qrSize + 4; 
+        const espacoBoxH = qrSize + 8; 
+
         const htmlAdesivo = `
-        <div style="width: ${qrSize + 2}mm; height: ${qrSize + 6}mm; display: inline-block; vertical-align: top; text-align: center; margin: 1mm; box-sizing: border-box; overflow: hidden; background: #ffffff;">
-            <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; object-fit: contain; display: block; margin: 0 auto;">
-            <div style="font-size: 8px; font-family: Arial, sans-serif; font-weight: bold; margin-top: 1px; color: #000000; text-align: center;">${item.codigo}</div>
+        <div style="width: ${espacoBoxW}mm; height: ${espacoBoxH}mm; float: left; text-align: center; box-sizing: border-box; background: #ffffff;">
+            <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; display: block; margin: 0 auto;">
+            <div style="font-size: 8px; font-family: Arial, sans-serif; font-weight: bold; margin-top: 1px; color: #000000; text-align: center; line-height: 1;">${item.codigo}</div>
         </div>`;
         
         for (let i = 0; i < item.qtd; i++) {
@@ -1357,54 +1357,65 @@ async function gerarPdfQrCodes() {
         }
     }
     
-    document.body.removeChild(tempQR); // Limpa o lixo da tela
+    document.body.removeChild(tempQR);
     
-    // MATEMÁTICA DA PÁGINA
     const areaUtilW = pW - (margem * 2);
     const areaUtilH = pH - (margem * 2);
-    const espacoUmQrw = qrSize + 4; // qrSize + margens do container
-    const espacoUmQrh = qrSize + 8; // qrSize + texto + margens do container
+    const espacoUmQrw = qrSize + 4; 
+    const espacoUmQrh = qrSize + 8; 
     
     const colunas = Math.max(1, Math.floor(areaUtilW / espacoUmQrw));
     const linhas = Math.max(1, Math.floor(areaUtilH / espacoUmQrh));
     const qrsPorPagina = colunas * linhas;
     
-    // CONSTRÓI A STRING HTML DIRETO NA MEMÓRIA (Ignora a tela do usuário)
-    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm;">`;
-    
+    let htmlPdfFinal = '';
     for (let i = 0; i < todasAsEtiquetasHtml.length; i += qrsPorPagina) {
         const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + qrsPorPagina);
         htmlPdfFinal += `
         <div style="width: ${pW}mm; height: ${pH}mm; padding: ${margem}mm; box-sizing: border-box; background: #ffffff; overflow: hidden;">
             ${pedacoDaPagina.join('')}
+            <div style="clear: both;"></div>
         </div>`;
         
-        // Adiciona a quebra de página nativa do gerador de PDF
+        // Remove a folha extra em branco: só adiciona quebra de página se não for a última
         if (i + qrsPorPagina < todasAsEtiquetasHtml.length) {
             htmlPdfFinal += '<div class="html2pdf__page-break"></div>';
         }
     }
-    htmlPdfFinal += '</div>';
+    
+    const divWrapper = document.createElement('div');
+    divWrapper.innerHTML = htmlPdfFinal;
+    divWrapper.style.position = 'absolute';
+    divWrapper.style.top = '0';
+    divWrapper.style.left = '0';
+    divWrapper.style.zIndex = '-9999';
+    divWrapper.style.background = '#ffffff';
+    document.body.appendChild(divWrapper);
+    
+    // O PULO DO GATO: Zera o Scroll do PC/Celular para a foto não sair cortada
+    const oldScrollY = window.scrollY;
+    window.scrollTo(0, 0);
     
     try {
-        // Pausa de 300ms para a tela não congelar antes de salvar
-        await new Promise(r => setTimeout(r, 300));
+        await new Promise(r => setTimeout(r, 500));
         
         let opt = {
             margin: 0,
             filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            // Scale 2 evita que 215 produtos estourem a memória de vídeo, mas mantém a leitura do QR nítida
-            html2canvas: { scale: 2, backgroundColor: '#ffffff', useCORS: true },
+            // scrollY: 0 aqui dentro força o sistema a ignorar a rolagem também
+            html2canvas: { scale: 3, useCORS: true, scrollY: 0 },
             jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' }
         };
         
-        // Passa o texto do HTML diretamente, sem anexar nada no navegador visível!
-        await html2pdf().set(opt).from(htmlPdfFinal).save();
+        await html2pdf().set(opt).from(divWrapper).save();
         mostrarAlerta("Perfeito!", "As etiquetas foram geradas com sucesso.", "success");
     } catch(e) {
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
     } finally {
+        // Devolve o usuário para onde estava
+        window.scrollTo(0, oldScrollY);
+        document.body.removeChild(divWrapper);
         ocultarLoading();
     }
 }
