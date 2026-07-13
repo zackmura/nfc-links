@@ -1,4 +1,4 @@
-const CACHE_NAME = 'novera-erp-v7.8.4';
+const CACHE_NAME = 'novera-erp-v7.8.5';
 const urlsToCache = [
  const urlsToCache = [
   './',
@@ -12,7 +12,8 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js',
   'https://unpkg.com/html5-qrcode',
-  'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap'
+  'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
 ];
 
 self.addEventListener('install', event => {
