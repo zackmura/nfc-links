@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.3";
+const VERSAO_ATUAL_SISTEMA = "7.8.4";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -1148,19 +1148,21 @@ let leitorQRScanner = null;
 function abrirLeitorCamera() {
     document.getElementById('modal-camera').style.display = 'flex';
     
-    // Se for a primeira vez que abre, cria o motor da câmera
-    if (!leitorQRScanner) {
-        leitorQRScanner = new Html5Qrcode("reader");
-    }
-    
-    // Configura para ler rápido e focar na câmera traseira (environment)
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-    
-    leitorQRScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-    .catch(err => {
-        mostrarAlerta("Erro na Câmera", "Dê permissão para acessar a câmera no seu navegador.", "error");
-        fecharLeitorCamera();
-    });
+    // Dá 300ms para o navegador "desenhar" a janela antes de ligar a lente
+    setTimeout(() => {
+        if (!leitorQRScanner) {
+            leitorQRScanner = new Html5Qrcode("reader");
+        }
+        
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        
+        leitorQRScanner.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+        .catch(err => {
+            console.error(err);
+            mostrarAlerta("Erro na Câmera", "Dê permissão para acessar a câmera no seu navegador.", "error");
+            fecharLeitorCamera();
+        });
+    }, 300);
 }
 
 function fecharLeitorCamera() {
