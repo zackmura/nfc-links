@@ -1252,3 +1252,135 @@ function verificarComandosURL() {
     }
 }
 
+// ==========================================
+// MÓDULO: GERADOR DE QR CODES PARA IMPRESSORA
+// ==========================================
+function abrirModalQrCode() {
+    const container = document.getElementById('lista-qr-produtos');
+    let html = '';
+    
+    // Pega as essências que têm código da Novera e põe em ordem alfabética
+    let rotulosOrdenados = [...rotulosGlobal].sort((a, b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
+    
+    rotulosOrdenados.forEach(r => {
+        if(!r.codigo) return;
+        html += `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #E8DDE1; padding: 8px 0;">
+            <span style="font-size: 0.8rem; color: #2C2A2B; font-weight: 700;">${r.codigo} - ${r.essencia}</span>
+            <input type="number" class="input-qtd-qr" data-codigo="${r.codigo}" min="0" value="0" style="width: 60px; padding: 5px; border-radius: 6px; border: 1px solid var(--primary); text-align: center; font-weight: 900; color: var(--primary-dark);">
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+    document.getElementById('modal-gerar-qrcode').style.display = 'flex';
+}
+
+function preencherQtdQrComEstoque() {
+    const inputs = document.querySelectorAll('.input-qtd-qr');
+    inputs.forEach(input => {
+        const cod = input.getAttribute('data-codigo');
+        let total = 0;
+        for(let key in estoqueAgrupado) {
+            if(estoqueAgrupado[key].codigo === cod) {
+                total += estoqueAgrupado[key].totalQtd;
+            }
+        }
+        input.value = total > 0 ? total : 0;
+    });
+    mostrarAlerta("Preenchido!", "Quantidades atualizadas com o estoque real.", "success");
+}
+
+async function gerarPdfQrCodes() {
+    const inputs = document.querySelectorAll('.input-qtd-qr');
+    let toPrint = [];
+    
+    inputs.forEach(inp => {
+        const q = parseInt(inp.value) || 0;
+        if (q > 0) {
+            toPrint.push({ codigo: inp.getAttribute('data-codigo'), qtd: q });
+        }
+    });
+    
+    if (toPrint.length === 0) return mostrarAlerta("Aviso", "Coloque a quantidade em pelo menos um produto para imprimir.", "warning");
+    
+    document.getElementById('modal-gerar-qrcode').style.display = 'none';
+    mostrarLoading("Desenhando Etiquetas...");
+    
+    // Div invisível temporária para gerar a imagem dos QRs
+    const tempGen = document.createElement('div');
+    tempGen.style.display = 'none';
+    document.body.appendChild(tempGen);
+    
+    const baseUrl = "https://diario.vivainteligente.net/novera/index.html?venda=";
+    let todasAsEtiquetasHtml = [];
+    
+    for (let item of toPrint) {
+        tempGen.innerHTML = ''; 
+        new QRCode(tempGen, {
+            text: baseUrl + item.codigo,
+            width: 128,
+            height: 128,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+        
+        // Espera a biblioteca desenhar no canvas
+        await new Promise(r => setTimeout(r, 50)); 
+        const canvas = tempGen.querySelector('canvas');
+        const dataUrl = canvas.toDataURL("image/jpeg");
+        
+        // Padrão de 1 Etiqueta (Tamanho para caber em 20mm)
+        const htmlAdesivo = `
+        <div style="width: 17mm; height: 21mm; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; overflow: hidden; background: #fff;">
+            <img src="${dataUrl}" style="width: 16mm; height: 16mm; object-fit: contain;">
+            <span style="font-size: 6px; font-family: monospace; font-weight: bold; margin-top: 1px; color: #000;">${item.codigo}</span>
+        </div>`;
+        
+        // Clona a etiqueta pela quantidade solicitada
+        for (let i = 0; i < item.qtd; i++) {
+            todasAsEtiquetasHtml.push(htmlAdesivo);
+        }
+    }
+    
+    document.body.removeChild(tempGen); // Apaga a div temporária
+    
+    // Paginação Matemática para a folha 15x9 cm (150x90 mm)
+    // Cabem 7 colunas e 4 linhas perfeitas por página = 28 QRs por folha.
+    let htmlPdfFinal = '';
+    const QRS_POR_PAGINA = 28;
+    
+    for (let i = 0; i < todasAsEtiquetasHtml.length; i += QRS_POR_PAGINA) {
+        const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + QRS_POR_PAGINA);
+        htmlPdfFinal += `
+        <div style="width: 150mm; height: 90mm; padding: 5mm; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 2mm; align-content: flex-start; justify-content: flex-start; background: white; overflow: hidden; page-break-after: always;">
+            ${pedacoDaPagina.join('')}
+        </div>`;
+    }
+    
+    const divWrapper = document.createElement('div');
+    divWrapper.innerHTML = htmlPdfFinal;
+    divWrapper.style.position = 'absolute';
+    divWrapper.style.top = '0';
+    divWrapper.style.left = '-9999px';
+    document.body.appendChild(divWrapper);
+    
+    try {
+        await new Promise(r => setTimeout(r, 500));
+        let opt = {
+            margin: 0,
+            filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { scale: 4, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: [150, 90], orientation: 'landscape' }
+        };
+        
+        await html2pdf().set(opt).from(divWrapper.firstElementChild).save();
+        mostrarAlerta("Sucesso!", "Seu PDF com as etiquetas está pronto. Basta abrir e mandar para a EPSON!", "success");
+    } catch(e) {
+        mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
+    } finally {
+        document.body.removeChild(divWrapper);
+        ocultarLoading();
+    }
+}
+
