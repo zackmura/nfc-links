@@ -16,6 +16,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -111,8 +113,9 @@
 
         <div id="tab-estoque" class="tab-content">
             <div class="section-title" style="margin-top: 0;">📦 Produtos Prontos na Prateleira</div>
-            <div class="row" style="margin-bottom: 15px;">
+           <div class="row" style="margin-bottom: 15px;">
                 <div class="col"><button class="btn-salvar" style="margin-top:0; background: var(--primary-dark);" onclick="abrirModalCatalogo()">📄 Gerar Catálogo em PDF</button></div>
+                <div class="col"><button class="btn-salvar" style="margin-top:0; background: #2C2A2B; color: #fff; border-color: #2C2A2B; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onclick="abrirModalQrCode()">🖨️ Imprimir QR Codes</button></div>
             </div>
             
             <div class="filtro-box" style="padding: 10px 15px; display: flex; flex-direction: column; gap: 10px;">
@@ -669,6 +672,20 @@
         <button class="btn-modal-cancel" style="width: 100%; margin-top: 15px;" onclick="fecharLeitorCamera()">Cancelar</button>
     </div>
 </div>
+
+<div id="modal-gerar-qrcode" class="modal-overlay-alert" style="z-index: 10001;">
+    <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 30px 20px;">
+        <button onclick="document.getElementById('modal-gerar-qrcode').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 5px; color: var(--brand-dark);">🖨️ Etiquetas Inteligentes</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Formato: 15x9 cm. Cada QR Code terá 1.6cm para caber na base do seu produto de 2cm.</p>
+        
+        <button class="btn-acao" style="width:100%; margin-bottom: 15px; border: 1px dashed var(--primary-dark); color: var(--primary-dark); font-weight: bold; background: #fdf5f7; border-radius: 8px; height: 40px;" onclick="preencherQtdQrComEstoque()">+ Puxar Quantidades Reais do Estoque</button>
+        
+        <div id="lista-qr-produtos" style="max-height: 250px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 15px;"></div>
+        
+        <button class="btn-salvar" style="margin-top: 5px; background: #2C2A2B; box-shadow: 0 4px 10px rgba(0,0,0, 0.3);" onclick="gerarPdfQrCodes()">⬇️ Gerar PDF para Impressão</button>
+    </div>
+</div>    
 
 <div id="modal-novidades" class="modal-overlay-alert" style="z-index: 10006;">
     <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 30px 20px; text-align: left; background: #fff; border-radius: 20px;">
