@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.12";
+const VERSAO_ATUAL_SISTEMA = "7.8.13";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -1264,11 +1264,65 @@ function verificarComandosURL() {
 // ==========================================
 // MÓDULO: GERADOR DE QR CODES PARA IMPRESSORA
 // ==========================================
+
+const predefinicoesQR = {
+    epson_150_90: { w: 150, h: 90, qr: 16, gap: 3, mx: 5, my: 5 },
+    pimaco_100_50: { w: 100, h: 50, qr: 15, gap: 2, mx: 4, my: 4 },
+    a4_padrao: { w: 210, h: 297, qr: 22, gap: 5, mx: 10, my: 10 }
+};
+
+function aplicarPresetQR() {
+    const val = document.getElementById('qr-preset').value;
+    if(val !== 'custom' && predefinicoesQR[val]) {
+        const p = predefinicoesQR[val];
+        document.getElementById('qr-papel-w').value = p.w;
+        document.getElementById('qr-papel-h').value = p.h;
+        document.getElementById('qr-tamanho').value = p.qr;
+        document.getElementById('qr-gap').value = p.gap;
+        document.getElementById('qr-margem-x').value = p.mx;
+        document.getElementById('qr-margem-y').value = p.my;
+        salvarConfigQR();
+    }
+}
+
+function marcarPresetCustom() {
+    document.getElementById('qr-preset').value = 'custom';
+    salvarConfigQR();
+}
+
+function salvarConfigQR() {
+    const config = {
+        w: document.getElementById('qr-papel-w').value,
+        h: document.getElementById('qr-papel-h').value,
+        qr: document.getElementById('qr-tamanho').value,
+        gap: document.getElementById('qr-gap').value,
+        mx: document.getElementById('qr-margem-x').value,
+        my: document.getElementById('qr-margem-y').value,
+        preset: document.getElementById('qr-preset').value
+    };
+    localStorage.setItem('novera_qr_config', JSON.stringify(config));
+}
+
+function carregarConfigQR() {
+    const saved = localStorage.getItem('novera_qr_config');
+    if (saved) {
+        const config = JSON.parse(saved);
+        document.getElementById('qr-papel-w').value = config.w || 150;
+        document.getElementById('qr-papel-h').value = config.h || 90;
+        document.getElementById('qr-tamanho').value = config.qr || 16;
+        document.getElementById('qr-gap').value = config.gap || 3;
+        document.getElementById('qr-margem-x').value = config.mx || 5;
+        document.getElementById('qr-margem-y').value = config.my || 5;
+        document.getElementById('qr-preset').value = config.preset || 'custom';
+    }
+}
+
 function abrirModalQrCode() {
+    carregarConfigQR(); // Puxa a última configuração salva!
+    
     const container = document.getElementById('lista-qr-produtos');
     let html = '';
     
-    // Pega as essências que têm código da Novera e põe em ordem alfabética
     let rotulosOrdenados = [...rotulosGlobal].sort((a, b) => String(a.codigo || "").localeCompare(String(b.codigo || "")));
     
     rotulosOrdenados.forEach(r => {
@@ -1304,23 +1358,23 @@ async function gerarPdfQrCodes() {
     
     inputs.forEach(inp => {
         const q = parseInt(inp.value) || 0;
-        if (q > 0) {
-            toPrint.push({ codigo: inp.getAttribute('data-codigo'), qtd: q });
-        }
+        if (q > 0) toPrint.push({ codigo: inp.getAttribute('data-codigo'), qtd: q });
     });
     
-    if (toPrint.length === 0) return mostrarAlerta("Aviso", "Coloque a quantidade em pelo menos um produto para imprimir.", "warning");
+    if (toPrint.length === 0) return mostrarAlerta("Aviso", "Coloque a quantidade em pelo menos um produto.", "warning");
     
-    // Captura as configurações definidas pelo usuário
+    // Captura as configurações e salva
+    salvarConfigQR();
     const pW = parseFloat(document.getElementById('qr-papel-w').value) || 150;
     const pH = parseFloat(document.getElementById('qr-papel-h').value) || 90;
     const qrSize = parseFloat(document.getElementById('qr-tamanho').value) || 16;
-    const margem = parseFloat(document.getElementById('qr-margem').value) || 5;
+    const gap = parseFloat(document.getElementById('qr-gap').value) || 3;
+    const mx = parseFloat(document.getElementById('qr-margem-x').value) || 5;
+    const my = parseFloat(document.getElementById('qr-margem-y').value) || 5;
 
     document.getElementById('modal-gerar-qrcode').style.display = 'none';
-    mostrarLoading("Desenhando Etiquetas...");
+    mostrarLoading("Desenhando QRs...");
     
-    // Criando a área invisível EXATAMENTE igual ao Catálogo
     const tempQR = document.createElement('div');
     tempQR.style.position = 'absolute';
     tempQR.style.left = '-9999px';
@@ -1329,14 +1383,16 @@ async function gerarPdfQrCodes() {
     const baseUrl = "https://diario.vivainteligente.net/novera/index.html?venda=";
     let todasAsEtiquetasHtml = [];
     
+    // Calcula o tamanho da "caixinha" de cada QR Code
+    const qrBoxW = qrSize;
+    const qrBoxH = qrSize + 5; // Imagem + 5mm livres para o texto
+    
     for (let item of toPrint) {
         tempQR.innerHTML = '';
         new QRCode(tempQR, {
             text: baseUrl + item.codigo,
-            width: 128,
-            height: 128,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
+            width: 128, height: 128,
+            colorDark : "#000000", colorLight : "#ffffff",
             correctLevel : QRCode.CorrectLevel.H
         });
         
@@ -1344,79 +1400,70 @@ async function gerarPdfQrCodes() {
         const canvas = tempQR.querySelector('canvas');
         const dataUrl = canvas.toDataURL("image/jpeg");
         
-        const espacoBoxW = qrSize + 4;
-        const espacoBoxH = qrSize + 8;
-
-        // O layout que gerou suas QRs perfeitas na primeira foto (Float Left)
         const htmlAdesivo = `
-        <div style="width: ${espacoBoxW}mm; height: ${espacoBoxH}mm; float: left; text-align: center; box-sizing: border-box; background: #ffffff;">
-            <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; display: block; margin: 0 auto; object-fit: contain;">
-            <div style="font-size: 8px; font-family: Arial, sans-serif; font-weight: bold; margin-top: 1px; color: #000000; text-align: center; line-height: 1;">${item.codigo}</div>
+        <div style="width: ${qrBoxW}mm; height: ${qrBoxH}mm; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; box-sizing: border-box; background: #fff; overflow: hidden;">
+            <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; display: block; object-fit: contain;">
+            <div style="font-size: 8px; font-family: Arial, sans-serif; font-weight: bold; color: #000; text-align: center; margin-top: 1mm; line-height: 1; white-space: nowrap;">${item.codigo}</div>
         </div>`;
         
-        for (let i = 0; i < item.qtd; i++) {
-            todasAsEtiquetasHtml.push(htmlAdesivo);
-        }
+        for (let i = 0; i < item.qtd; i++) todasAsEtiquetasHtml.push(htmlAdesivo);
     }
-    
     document.body.removeChild(tempQR);
     
-    // MATEMÁTICA DA PÁGINA EPSON
-    const areaUtilW = pW - (margem * 2);
-    const areaUtilH = pH - (margem * 2);
-    const espacoUmQrw = qrSize + 4;
-    const espacoUmQrh = qrSize + 8;
+    // A MÁGICA MATEMÁTICA INVENCÍVEL
+    const areaUtilW = pW - (mx * 2);
+    const areaUtilH = pH - (my * 2);
     
-    const colunas = Math.max(1, Math.floor(areaUtilW / espacoUmQrw));
-    const linhas = Math.max(1, Math.floor(areaUtilH / espacoUmQrh));
+    // Quantos cabem? (Espaço do Item + Gap)
+    const colunas = Math.max(1, Math.floor((areaUtilW + gap) / (qrBoxW + gap)));
+    const linhas = Math.max(1, Math.floor((areaUtilH + gap) / (qrBoxH + gap)));
     const qrsPorPagina = colunas * linhas;
     
-    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm;">`;
+    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm; color: #000;">`;
     
     for (let i = 0; i < todasAsEtiquetasHtml.length; i += qrsPorPagina) {
         const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + qrsPorPagina);
         
-        // MÁGICA AQUI: Removi o "height" fixo! O gerador corta certinho sem adicionar folha branca extra!
+        // Flexbox faz o envelopamento com alinhamento perfeito no centro!
         htmlPdfFinal += `
-        <div style="width: ${pW}mm; padding: ${margem}mm; box-sizing: border-box; background: #ffffff;">
+        <div style="width: ${pW}mm; height: ${pH}mm; padding: ${my}mm ${mx}mm; box-sizing: border-box; background: #ffffff; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: ${gap}mm; overflow: hidden;">
             ${pedacoDaPagina.join('')}
-            <div style="clear: both;"></div>
         </div>`;
         
-        // Pula de página (Só se não for a última, garantindo zero páginas em branco!)
+        // Pula a página perfeitamente sem adicionar folha branca extra
         if (i + qrsPorPagina < todasAsEtiquetasHtml.length) {
-            htmlPdfFinal += '<div class="html2pdf__page-break"></div>';
+            htmlPdfFinal += '<div class="html2pdf__page-break" style="height:0; margin:0; border:0; padding:0;"></div>';
         }
     }
-    
     htmlPdfFinal += '</div>';
     
-    // Injetando igual ao catálogo (sem forçar scroll, sem forçar top)
     let divWrapper = document.createElement('div');
     divWrapper.innerHTML = htmlPdfFinal;
     divWrapper.style.position = 'absolute';
     divWrapper.style.left = '-9999px';
     document.body.appendChild(divWrapper);
     
+    const oldScrollY = window.scrollY;
+    const oldScrollX = window.scrollX;
+    window.scrollTo(0, 0);
+
     try {
         await new Promise(r => setTimeout(r, 400));
-        
-        // Parâmetros copiados da aba Catálogo
         let opt = {
-            margin: 0,
+            margin: 0, 
             filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 2, useCORS: true }, // Scale 2 evita gargalo de memória nas 215 fotos
+            html2canvas: { scale: 3, backgroundColor: '#ffffff', useCORS: true, scrollY: 0, windowY: 0 },
             jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' }
         };
         
-        // Puxando usando ".firstChild" igual o catálogo!
-        await html2pdf().set(opt).from(divWrapper.firstChild).save();
-        mostrarAlerta("Perfeito!", "As etiquetas foram geradas com sucesso.", "success");
+        await html2pdf().set(opt).from(divWrapper.firstElementChild).save();
+        mostrarAlerta("Perfeito!", "As etiquetas foram geradas e estão centralizadas.", "success");
     } catch(e) {
         console.error(e);
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
     } finally {
+        window.scrollTo(oldScrollX, oldScrollY);
         document.body.removeChild(divWrapper);
         ocultarLoading();
     }
