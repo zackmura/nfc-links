@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.8";
+const VERSAO_ATUAL_SISTEMA = "7.8.9";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -1318,8 +1318,9 @@ async function gerarPdfQrCodes() {
     const margem = parseFloat(document.getElementById('qr-margem').value) || 5;
 
     document.getElementById('modal-gerar-qrcode').style.display = 'none';
-    mostrarLoading("Desenhando Etiquetas...");
+    mostrarLoading("Desenhando QRs...");
     
+    // Área de rascunho apenas para converter o QR em Imagem
     const tempQR = document.createElement('div');
     tempQR.style.position = 'absolute';
     tempQR.style.left = '-9999px';
@@ -1339,17 +1340,19 @@ async function gerarPdfQrCodes() {
             correctLevel : QRCode.CorrectLevel.H
         });
         
+        // Aguarda gerar a imagem do QR Code
         await new Promise(r => setTimeout(r, 60));
         const canvas = tempQR.querySelector('canvas');
         const dataUrl = canvas.toDataURL("image/jpeg");
         
-        const espacoBoxW = qrSize + 4; 
-        const espacoBoxH = qrSize + 8; 
+        const espacoBoxW = qrSize + 4;
+        const espacoBoxH = qrSize + 8;
 
+        // Visual corrigido para Inline-Block com fontes universais (não quebra no PDF)
         const htmlAdesivo = `
-        <div style="width: ${espacoBoxW}mm; height: ${espacoBoxH}mm; float: left; text-align: center; box-sizing: border-box; background: #ffffff;">
-            <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; display: block; margin: 0 auto;">
-            <div style="font-size: 8px; font-family: Arial, sans-serif; font-weight: bold; margin-top: 1px; color: #000000; text-align: center; line-height: 1;">${item.codigo}</div>
+        <div style="width: ${espacoBoxW}mm; height: ${espacoBoxH}mm; display: inline-block; vertical-align: top; text-align: center; box-sizing: border-box; background: #ffffff; padding-top: 1mm;">
+            <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; display: block; margin: 0 auto; object-fit: contain;">
+            <div style="font-size: 8px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; color: #000000; line-height: 1; margin-top: 1.5mm;">${item.codigo}</div>
         </div>`;
         
         for (let i = 0; i < item.qtd; i++) {
@@ -1359,63 +1362,54 @@ async function gerarPdfQrCodes() {
     
     document.body.removeChild(tempQR);
     
+    // MATEMÁTICA DA PÁGINA EPSON
     const areaUtilW = pW - (margem * 2);
     const areaUtilH = pH - (margem * 2);
-    const espacoUmQrw = qrSize + 4; 
-    const espacoUmQrh = qrSize + 8; 
+    const espacoUmQrw = qrSize + 4;
+    const espacoUmQrh = qrSize + 8;
     
     const colunas = Math.max(1, Math.floor(areaUtilW / espacoUmQrw));
     const linhas = Math.max(1, Math.floor(areaUtilH / espacoUmQrh));
     const qrsPorPagina = colunas * linhas;
     
-    let htmlPdfFinal = '';
+    // Montagem direta na memória: Sem travar na tela!
+    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm; text-align: left;">`;
+    
     for (let i = 0; i < todasAsEtiquetasHtml.length; i += qrsPorPagina) {
         const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + qrsPorPagina);
+        
         htmlPdfFinal += `
-        <div style="width: ${pW}mm; height: ${pH}mm; padding: ${margem}mm; box-sizing: border-box; background: #ffffff; overflow: hidden;">
+        <div style="width: ${pW}mm; height: ${pH}mm; padding: ${margem}mm; box-sizing: border-box; background: #ffffff; overflow: hidden; position: relative;">
             ${pedacoDaPagina.join('')}
-            <div style="clear: both;"></div>
         </div>`;
         
-        // Remove a folha extra em branco: só adiciona quebra de página se não for a última
+        // Quebra de página apenas se não for a última página (Mata aquela folha branca extra!)
         if (i + qrsPorPagina < todasAsEtiquetasHtml.length) {
             htmlPdfFinal += '<div class="html2pdf__page-break"></div>';
         }
     }
     
-    const divWrapper = document.createElement('div');
-    divWrapper.innerHTML = htmlPdfFinal;
-    divWrapper.style.position = 'absolute';
-    divWrapper.style.top = '0';
-    divWrapper.style.left = '0';
-    divWrapper.style.zIndex = '-9999';
-    divWrapper.style.background = '#ffffff';
-    document.body.appendChild(divWrapper);
-    
-    // O PULO DO GATO: Zera o Scroll do PC/Celular para a foto não sair cortada
-    const oldScrollY = window.scrollY;
-    window.scrollTo(0, 0);
+    htmlPdfFinal += '</div>';
     
     try {
-        await new Promise(r => setTimeout(r, 500));
+        mostrarLoading("Gerando Arquivo Final...");
+        await new Promise(r => setTimeout(r, 400));
         
         let opt = {
             margin: 0,
-            filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
+            filename: `Novera_Etiquetas_${new Date().getTime()}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            // scrollY: 0 aqui dentro força o sistema a ignorar a rolagem também
-            html2canvas: { scale: 3, useCORS: true, scrollY: 0 },
-            jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' }
+            html2canvas: { scale: 3, backgroundColor: '#ffffff', useCORS: true },
+            jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' },
+            pagebreak: { mode: ['css', 'legacy'] }
         };
         
-        await html2pdf().set(opt).from(divWrapper).save();
+        // O pulo do gato: Entrega o código HTML puro direto pro PDF, sem encostar na tela!
+        await html2pdf().set(opt).from(htmlPdfFinal).save();
         mostrarAlerta("Perfeito!", "As etiquetas foram geradas com sucesso.", "success");
     } catch(e) {
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
     } finally {
-        // Devolve o usuário para onde estava
-        window.scrollTo(0, oldScrollY);
-        document.body.removeChild(divWrapper);
         ocultarLoading();
     }
 }
