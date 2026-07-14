@@ -677,23 +677,35 @@
     <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 30px 20px;">
         <button onclick="document.getElementById('modal-gerar-qrcode').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
         <h3 class="modal-title-alert" style="margin-bottom: 5px; color: var(--brand-dark);">🖨️ Etiquetas Inteligentes</h3>
-        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Defina o tamanho do seu papel. O sistema calculará sozinho quantos cabem por folha!</p>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Configure as medidas reais da sua folha para o sistema calcular o corte perfeito.</p>
         
         <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:8px; padding:10px; margin-bottom:15px; text-align: left;">
-            <h4 style="margin:0 0 10px 0; color:var(--primary-dark); font-size:0.8rem;">⚙️ Medidas em Milímetros (mm)</h4>
+            <div class="input-group" style="margin-bottom: 10px;">
+                <label style="color:var(--primary-dark);">Salvos / Predefinições</label>
+                <select id="qr-preset" onchange="aplicarPresetQR()" style="background: #fff;">
+                    <option value="custom">⚙️ Personalizado</option>
+                    <option value="epson_150_90">🖨️ Rolo Epson (150x90mm)</option>
+                    <option value="pimaco_100_50">🏷️ Etiqueta Média (100x50mm)</option>
+                    <option value="a4_padrao">📄 Folha A4 (210x297mm)</option>
+                </select>
+            </div>
             <div class="row" style="margin-bottom: 8px;">
-                <div class="col"><label>Largura Folha</label><input type="number" id="qr-papel-w" value="150"></div>
-                <div class="col"><label>Altura Folha</label><input type="number" id="qr-papel-h" value="90"></div>
+                <div class="col"><label>Largura Folha (mm)</label><input type="number" id="qr-papel-w" value="150" oninput="marcarPresetCustom()"></div>
+                <div class="col"><label>Altura Folha (mm)</label><input type="number" id="qr-papel-h" value="90" oninput="marcarPresetCustom()"></div>
+            </div>
+            <div class="row" style="margin-bottom: 8px;">
+                <div class="col"><label>Tamanho QR (mm)</label><input type="number" id="qr-tamanho" value="16" oninput="marcarPresetCustom()"></div>
+                <div class="col"><label>Espaço/Gap (mm)</label><input type="number" id="qr-gap" value="3" oninput="marcarPresetCustom()"></div>
             </div>
             <div class="row" style="margin-bottom: 0;">
-                <div class="col"><label>Tamanho do QR</label><input type="number" id="qr-tamanho" value="16"></div>
-                <div class="col"><label>Margem Bordas</label><input type="number" id="qr-margem" value="5"></div>
+                <div class="col"><label>Margem Lateral</label><input type="number" id="qr-margem-x" value="5" oninput="marcarPresetCustom()"></div>
+                <div class="col"><label>Margem Topo/Base</label><input type="number" id="qr-margem-y" value="5" oninput="marcarPresetCustom()"></div>
             </div>
         </div>
 
-        <button class="btn-acao" style="width:100%; margin-bottom: 15px; border: 1px dashed var(--primary-dark); color: var(--primary-dark); font-weight: bold; background: #fdf5f7; border-radius: 8px; height: 40px;" onclick="preencherQtdQrComEstoque()">+ Puxar Quantidades Reais do Estoque</button>
+        <button class="btn-acao" style="width:100%; margin-bottom: 15px; border: 1px dashed var(--primary-dark); color: var(--primary-dark); font-weight: bold; background: #fdf5f7; border-radius: 8px; height: 40px;" onclick="preencherQtdQrComEstoque()">+ Puxar Qtd. do Estoque Real</button>
         
-        <div id="lista-qr-produtos" style="max-height: 200px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 15px;"></div>
+        <div id="lista-qr-produtos" style="max-height: 180px; overflow-y: auto; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-bottom: 15px;"></div>
         
         <button class="btn-salvar" style="margin-top: 5px; background: #2C2A2B; box-shadow: 0 4px 10px rgba(0,0,0, 0.3);" onclick="gerarPdfQrCodes()">⬇️ Gerar PDF para Impressão</button>
     </div>
