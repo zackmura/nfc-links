@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.13";
+const VERSAO_ATUAL_SISTEMA = "7.8.14";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -1373,7 +1373,7 @@ async function gerarPdfQrCodes() {
     const my = parseFloat(document.getElementById('qr-margem-y').value) || 5;
 
     document.getElementById('modal-gerar-qrcode').style.display = 'none';
-    mostrarLoading("Desenhando QRs...");
+    mostrarLoading("Calculando Matemática das Etiquetas...");
     
     const tempQR = document.createElement('div');
     tempQR.style.position = 'absolute';
@@ -1383,9 +1383,8 @@ async function gerarPdfQrCodes() {
     const baseUrl = "https://diario.vivainteligente.net/novera/index.html?venda=";
     let todasAsEtiquetasHtml = [];
     
-    // Calcula o tamanho da "caixinha" de cada QR Code
     const qrBoxW = qrSize;
-    const qrBoxH = qrSize + 5; // Imagem + 5mm livres para o texto
+    const qrBoxH = qrSize + 5; // QR + texto
     
     for (let item of toPrint) {
         tempQR.innerHTML = '';
@@ -1410,61 +1409,84 @@ async function gerarPdfQrCodes() {
     }
     document.body.removeChild(tempQR);
     
-    // A MÁGICA MATEMÁTICA INVENCÍVEL
+    // A MÁGICA MATEMÁTICA
     const areaUtilW = pW - (mx * 2);
     const areaUtilH = pH - (my * 2);
     
-    // Quantos cabem? (Espaço do Item + Gap)
     const colunas = Math.max(1, Math.floor((areaUtilW + gap) / (qrBoxW + gap)));
     const linhas = Math.max(1, Math.floor((areaUtilH + gap) / (qrBoxH + gap)));
     const qrsPorPagina = colunas * linhas;
     
-    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm; color: #000;">`;
+    // O Container Invisível Mestre
+    const masterContainer = document.createElement('div');
+    masterContainer.style.position = 'absolute';
+    masterContainer.style.top = '0';
+    masterContainer.style.left = '-9999px';
+    document.body.appendChild(masterContainer);
+
+    let paginasDOM = [];
     
     for (let i = 0; i < todasAsEtiquetasHtml.length; i += qrsPorPagina) {
         const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + qrsPorPagina);
         
-        // Flexbox faz o envelopamento com alinhamento perfeito no centro!
-        htmlPdfFinal += `
-        <div style="width: ${pW}mm; height: ${pH}mm; padding: ${my}mm ${mx}mm; box-sizing: border-box; background: #ffffff; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: ${gap}mm; overflow: hidden;">
-            ${pedacoDaPagina.join('')}
-        </div>`;
+        // Em vez de fazer uma "tripa gigante", criamos um Bloco HTML real para cada página
+        const paginaDiv = document.createElement('div');
+        paginaDiv.style.width = `${pW}mm`;
+        paginaDiv.style.height = `${pH}mm`;
+        paginaDiv.style.padding = `${my}mm ${mx}mm`;
+        paginaDiv.style.boxSizing = 'border-box';
+        paginaDiv.style.background = '#ffffff';
+        paginaDiv.style.display = 'flex';
+        paginaDiv.style.flexWrap = 'wrap';
+        paginaDiv.style.alignContent = 'center';
+        paginaDiv.style.justifyContent = 'center';
+        paginaDiv.style.gap = `${gap}mm`;
+        paginaDiv.style.overflow = 'hidden';
+        paginaDiv.innerHTML = pedacoDaPagina.join('');
         
-        // Pula a página perfeitamente sem adicionar folha branca extra
-        if (i + qrsPorPagina < todasAsEtiquetasHtml.length) {
-            htmlPdfFinal += '<div class="html2pdf__page-break" style="height:0; margin:0; border:0; padding:0;"></div>';
-        }
+        masterContainer.appendChild(paginaDiv);
+        paginasDOM.push(paginaDiv); // Guardamos cada página separada numa lista!
     }
-    htmlPdfFinal += '</div>';
-    
-    let divWrapper = document.createElement('div');
-    divWrapper.innerHTML = htmlPdfFinal;
-    divWrapper.style.position = 'absolute';
-    divWrapper.style.left = '-9999px';
-    document.body.appendChild(divWrapper);
     
     const oldScrollY = window.scrollY;
     const oldScrollX = window.scrollX;
     window.scrollTo(0, 0);
 
     try {
+        mostrarLoading("Criando PDF Perfeito...");
         await new Promise(r => setTimeout(r, 400));
+        
         let opt = {
             margin: 0, 
-            filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
+            filename: `Novera_Etiquetas_${new Date().getTime()}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
             html2canvas: { scale: 3, backgroundColor: '#ffffff', useCORS: true, scrollY: 0, windowY: 0 },
             jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' }
         };
         
-        await html2pdf().set(opt).from(divWrapper.firstElementChild).save();
-        mostrarAlerta("Perfeito!", "As etiquetas foram geradas e estão centralizadas.", "success");
+        // O CÓDIGO DA VITÓRIA: Processa uma página, adiciona folha, processa a outra. Sem recortes!
+        let worker = html2pdf().set(opt);
+        
+        for (let i = 0; i < paginasDOM.length; i++) {
+            if (i === 0) {
+                // Primeira página
+                worker = worker.from(paginasDOM[i]).toPdf();
+            } else {
+                // Para as próximas, cria folha nova e cola a imagem limpa
+                worker = worker.get('pdf').then(pdf => {
+                    pdf.addPage();
+                }).from(paginasDOM[i]).toContainer().toCanvas().toPdf();
+            }
+        }
+        
+        await worker.save();
+        mostrarAlerta("Vencemos!", "PDF sem quebras e 100% alinhado gerado com sucesso.", "success");
     } catch(e) {
         console.error(e);
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
     } finally {
         window.scrollTo(oldScrollX, oldScrollY);
-        document.body.removeChild(divWrapper);
+        document.body.removeChild(masterContainer);
         ocultarLoading();
     }
 }
