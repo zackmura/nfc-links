@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.11";
+const VERSAO_ATUAL_SISTEMA = "7.8.12";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -1318,9 +1318,9 @@ async function gerarPdfQrCodes() {
     const margem = parseFloat(document.getElementById('qr-margem').value) || 5;
 
     document.getElementById('modal-gerar-qrcode').style.display = 'none';
-    mostrarLoading("Desenhando QRs...");
+    mostrarLoading("Desenhando Etiquetas...");
     
-    // Área de rascunho invisível
+    // Criando a área invisível EXATAMENTE igual ao Catálogo
     const tempQR = document.createElement('div');
     tempQR.style.position = 'absolute';
     tempQR.style.left = '-9999px';
@@ -1340,18 +1340,18 @@ async function gerarPdfQrCodes() {
             correctLevel : QRCode.CorrectLevel.H
         });
         
-        // Aguarda gerar a imagem
-        await new Promise(r => setTimeout(r, 60));
+        await new Promise(r => setTimeout(r, 40));
         const canvas = tempQR.querySelector('canvas');
         const dataUrl = canvas.toDataURL("image/jpeg");
         
         const espacoBoxW = qrSize + 4;
         const espacoBoxH = qrSize + 8;
 
+        // O layout que gerou suas QRs perfeitas na primeira foto (Float Left)
         const htmlAdesivo = `
-        <div style="width: ${espacoBoxW}mm; height: ${espacoBoxH}mm; display: inline-block; vertical-align: top; text-align: center; box-sizing: border-box; background: #ffffff; padding-top: 1mm;">
+        <div style="width: ${espacoBoxW}mm; height: ${espacoBoxH}mm; float: left; text-align: center; box-sizing: border-box; background: #ffffff;">
             <img src="${dataUrl}" style="width: ${qrSize}mm; height: ${qrSize}mm; display: block; margin: 0 auto; object-fit: contain;">
-            <div style="font-size: 8px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; color: #000000; line-height: 1; margin-top: 1.5mm;">${item.codigo}</div>
+            <div style="font-size: 8px; font-family: Arial, sans-serif; font-weight: bold; margin-top: 1px; color: #000000; text-align: center; line-height: 1;">${item.codigo}</div>
         </div>`;
         
         for (let i = 0; i < item.qtd; i++) {
@@ -1371,56 +1371,52 @@ async function gerarPdfQrCodes() {
     const linhas = Math.max(1, Math.floor(areaUtilH / espacoUmQrh));
     const qrsPorPagina = colunas * linhas;
     
-    // MÁGICA 1: font-size: 0 mata espaços fantasmas que geram overflow de milímetros
-    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm; text-align: left; font-size: 0; line-height: 0;">`;
+    let htmlPdfFinal = `<div style="background: #ffffff; width: ${pW}mm;">`;
     
     for (let i = 0; i < todasAsEtiquetasHtml.length; i += qrsPorPagina) {
         const pedacoDaPagina = todasAsEtiquetasHtml.slice(i, i + qrsPorPagina);
         
-        // MÁGICA 2: Tiramos a trava de "height: 90mm" daqui de dentro. 
-        // Ele vai abraçar apenas as etiquetas, e o PDF corta exatamente do tamanho certo.
+        // MÁGICA AQUI: Removi o "height" fixo! O gerador corta certinho sem adicionar folha branca extra!
         htmlPdfFinal += `
         <div style="width: ${pW}mm; padding: ${margem}mm; box-sizing: border-box; background: #ffffff;">
             ${pedacoDaPagina.join('')}
+            <div style="clear: both;"></div>
         </div>`;
         
-        // MÁGICA 3: Quebra de página estrita, SEM margem e SEM tamanho.
+        // Pula de página (Só se não for a última, garantindo zero páginas em branco!)
         if (i + qrsPorPagina < todasAsEtiquetasHtml.length) {
-            htmlPdfFinal += '<div class="html2pdf__page-break" style="height:0; margin:0; border:0; padding:0;"></div>';
+            htmlPdfFinal += '<div class="html2pdf__page-break"></div>';
         }
     }
     
     htmlPdfFinal += '</div>';
     
+    // Injetando igual ao catálogo (sem forçar scroll, sem forçar top)
     let divWrapper = document.createElement('div');
     divWrapper.innerHTML = htmlPdfFinal;
     divWrapper.style.position = 'absolute';
-    divWrapper.style.top = '0';
     divWrapper.style.left = '-9999px';
     document.body.appendChild(divWrapper);
     
-    const oldScrollY = window.scrollY;
-    const oldScrollX = window.scrollX;
-    window.scrollTo(0, 0);
-
     try {
-        mostrarLoading("Gerando Arquivo Final...");
         await new Promise(r => setTimeout(r, 400));
         
+        // Parâmetros copiados da aba Catálogo
         let opt = {
-            margin: 0, // Margem zero aqui garante que o gerador não adicione folgas indesejadas
-            filename: `Novera_Etiquetas_${new Date().getTime()}.pdf`,
+            margin: 0,
+            filename: `Novera_EtiquetasQR_${new Date().getTime()}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 3, backgroundColor: '#ffffff', useCORS: true, scrollY: 0, windowY: 0 },
+            html2canvas: { scale: 2, useCORS: true }, // Scale 2 evita gargalo de memória nas 215 fotos
             jsPDF: { unit: 'mm', format: [pW, pH], orientation: pW > pH ? 'landscape' : 'portrait' }
         };
         
-        await html2pdf().set(opt).from(divWrapper.firstElementChild).save();
+        // Puxando usando ".firstChild" igual o catálogo!
+        await html2pdf().set(opt).from(divWrapper.firstChild).save();
         mostrarAlerta("Perfeito!", "As etiquetas foram geradas com sucesso.", "success");
     } catch(e) {
+        console.error(e);
         mostrarAlerta("Erro", "Falha ao gerar o PDF.", "error");
     } finally {
-        window.scrollTo(oldScrollX, oldScrollY);
         document.body.removeChild(divWrapper);
         ocultarLoading();
     }
