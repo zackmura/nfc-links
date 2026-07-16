@@ -13,7 +13,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Link para o CSS Externo CORRIGIDO (na mesma pasta) -->
+    <!-- Link para o CSS Externo -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,11 +38,6 @@
             <button class="btn-logout" onclick="fazerLogout()">Sair</button>
         </div>
 
-        <button class="mobile-menu-btn" onclick="toggleMenuMobile()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            Navegação do Painel
-        </button>
-
         <div class="tabs-container" id="menu-abas">
             <button id="btn-analytics" class="tab-btn active" onclick="switchTab('analytics', '📈 Analytics')">📈 Analytics</button>
             <button id="btn-anuncios" class="tab-btn" onclick="switchTab('anuncios', '📢 Anúncios')">📢 Anúncios</button>
@@ -57,7 +52,7 @@
             <button id="btn-vendas" class="tab-btn" onclick="switchTab('vendas', '🛒 Vendas')">🛒 Vendas</button>
             <button id="btn-modelos" class="tab-btn" onclick="switchTab('modelos', '📋 Modelos')">📋 Modelos</button>
             <button id="btn-custos" class="tab-btn" onclick="switchTab('custos', '💳 Custos')">💳 Custos</button>
-            <button id="btn-dashboard_erp" class="tab-btn" onclick="switchTab('dashboard_erp', '📊 Dashboard Financeiro')">📊 Dashboard</button>
+            <button id="btn-dashboard_erp" class="tab-btn" onclick="switchTab('dashboard_erp', '📊 Dashboard')">📊 Dashboard</button>
         </div>
 
         <div class="titulo-wrapper"><span id="titulo-modulo-ativo">📈 ANALYTICS</span></div>
@@ -332,6 +327,9 @@
 <div id="custom-delete-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">🗑️</span><h3 class="modal-title-alert" style="color:#ef4444;">Excluir Venda?</h3><p class="modal-text-alert">Tem certeza que deseja apagar o registro dessa venda? Esta ação <b>não pode ser desfeita.</b></p><div style="display:flex; gap:10px; margin-top:15px;"><button class="btn-modal-cancel" onclick="fecharExclusao()">Cancelar</button><button class="btn-modal-confirm" style="background:#ef4444; box-shadow:0 6px 0 #b91c1c;" onclick="executarExclusaoVenda()">🗑️ Apagar</button></div></div></div>
 <div id="custom-edit-venda-modal" class="modal-overlay-alert" style="align-items:flex-start; padding-top:40px;"><div class="modal-box-edit"><button onclick="fecharEditarVenda()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; color:#64748b; cursor:pointer;">×</button><h3 class="section-title" style="margin-top:0; margin-bottom:20px; color:var(--brand-dark);">✏️ Editar Venda</h3><input type="hidden" id="edit-venda-linha"><div class="row" style="text-align:left;"><div class="col"><label>Data</label><input type="date" id="edit-venda-data"></div><div class="col"><label>Status</label><select id="edit-venda-status"><option value="Pago">🟢 Pago</option><option value="Pendente">🟡 Pendente</option></select></div></div><div class="input-group" style="text-align:left;"><label>Cliente</label><input type="text" id="edit-venda-cliente" list="lista-clientes-venda" autocomplete="off"></div><div class="input-group" style="text-align:left;"><label>Produto</label><input type="text" id="edit-venda-produto" list="lista-produtos-venda" autocomplete="off"></div><div class="row" style="text-align:left;"><div class="col"><label>Plataforma</label><input type="text" id="edit-venda-plataforma" list="lista-plataformas-venda" autocomplete="off"></div><div class="col"><label>Qtd</label><input type="number" id="edit-venda-qtd" min="1"></div></div><div class="input-group" style="text-align:left;"><label>Valor Total</label><input type="text" id="edit-venda-valor" class="mask-money"></div><button class="btn-magic btn-global" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom:0;">💾 Salvar Alterações</button></div></div>
 
+<!-- BOTÃO FLUTUANTE (FAB) -->
+<button class="fab-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Voltar ao Topo">➕</button>
+
 <!-- NOVA BARRA INFERIOR PARA MOBILE -->
 <div class="bottom-nav">
     <button id="nav-dashboard_erp" class="bottom-nav-btn active" onclick="switchTab('dashboard_erp', '📊 Dashboard')">
@@ -351,7 +349,7 @@
     </button>
 </div>
 
-<!-- Link para o Script Externo CORRIGIDO (na mesma pasta) -->
+<!-- Link para o Script Externo -->
 <script src="app.js"></script>
 </body>
 </html>
