@@ -46,7 +46,7 @@
             <button id="btn-imas" class="tab-btn" onclick="switchTab('imas', '🧲 Ímãs NFC')">🧲 Ímãs NFC</button>
             <button id="btn-config" class="tab-btn" onclick="switchTab('config', '⚙️ Chaves')">⚙️ Chaves</button>
 
-            <div class="divisor-erp">⬇️ Módulo ERP & Finanças ⬇️</div>
+            <div class="divisor-erp">Módulo ERP & Finanças</div>
 
             <button id="btn-precificar" class="tab-btn" onclick="switchTab('precificar', '➕ Precificar')">➕ Precificar</button>
             <button id="btn-vendas" class="tab-btn" onclick="switchTab('vendas', '🛒 Vendas')">🛒 Vendas</button>
@@ -328,7 +328,7 @@
 <div id="custom-edit-venda-modal" class="modal-overlay-alert" style="align-items:flex-start; padding-top:40px;"><div class="modal-box-edit"><button onclick="fecharEditarVenda()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; color:#64748b; cursor:pointer;">×</button><h3 class="section-title" style="margin-top:0; margin-bottom:20px; color:var(--brand-dark);">✏️ Editar Venda</h3><input type="hidden" id="edit-venda-linha"><div class="row" style="text-align:left;"><div class="col"><label>Data</label><input type="date" id="edit-venda-data"></div><div class="col"><label>Status</label><select id="edit-venda-status"><option value="Pago">🟢 Pago</option><option value="Pendente">🟡 Pendente</option></select></div></div><div class="input-group" style="text-align:left;"><label>Cliente</label><input type="text" id="edit-venda-cliente" list="lista-clientes-venda" autocomplete="off"></div><div class="input-group" style="text-align:left;"><label>Produto</label><input type="text" id="edit-venda-produto" list="lista-produtos-venda" autocomplete="off"></div><div class="row" style="text-align:left;"><div class="col"><label>Plataforma</label><input type="text" id="edit-venda-plataforma" list="lista-plataformas-venda" autocomplete="off"></div><div class="col"><label>Qtd</label><input type="number" id="edit-venda-qtd" min="1"></div></div><div class="input-group" style="text-align:left;"><label>Valor Total</label><input type="text" id="edit-venda-valor" class="mask-money"></div><button class="btn-magic btn-global" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom:0;">💾 Salvar Alterações</button></div></div>
 
 <!-- BOTÃO FLUTUANTE (FAB) -->
-<button class="fab-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Voltar ao Topo">➕</button>
+<button class="fab-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Voltar ao Topo">⬆️</button>
 
 <!-- NOVA BARRA INFERIOR PARA MOBILE -->
 <div class="bottom-nav">
