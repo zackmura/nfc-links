@@ -1,6 +1,6 @@
 const $ = id => document.getElementById(id); 
 
-const VERSAO_APP = "v1.1.0";
+const VERSAO_APP = "v1.2.0";
 
 const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
@@ -29,54 +29,33 @@ document.addEventListener('input', e => {
 window.onload = () => { 
     if($('versao-login')) $('versao-login').innerText = VERSAO_APP;
     if($('versao-header')) $('versao-header').innerText = VERSAO_APP;
-    
     if(localStorage.getItem("admin_auth")==="true") iniciarApp(); 
 };
 
 async function tentarLogin() {
     const usr = $('input-usuario').value.trim();
     const pwd = $('input-senha').value.trim();
+    if (!usr || !pwd) return alert("Preencha usuário e senha!");
 
-    if (!usr || !pwd) {
-        return alert("Preencha usuário e senha!");
-    }
-
-    const btn = $('btn-login');
-    const textoOriginal = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = "⏳ Validando no sistema...";
+    const btn = $('btn-login'); const textoOriginal = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = "⏳ Validando...";
 
     try {
         const payload = { acao: "login", usuario: usr, senha: pwd };
-        const req = await fetch(API_PRECIFICACAO, {
-            method: "POST",
-            body: JSON.stringify(payload)
-        });
+        const req = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
         const res = await req.json();
 
         if (res.sucesso) {
             localStorage.setItem("admin_auth", "true");
             localStorage.setItem("admin_user", res.usuario); 
             iniciarApp();
-        } else {
-            alert(res.erro || "Usuário ou senha incorretos.");
-            $('input-senha').value = ""; 
-        }
-    } catch (e) {
-        alert("Erro ao conectar com o servidor: " + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = textoOriginal;
-    }
+        } else { alert(res.erro || "Usuário ou senha incorretos."); $('input-senha').value = ""; }
+    } catch (e) { alert("Erro ao conectar com o servidor: " + e.message);
+    } finally { btn.disabled = false; btn.innerHTML = textoOriginal; }
 }
 
 function verificarEnter(e){ if(e.key==="Enter") tentarLogin(); }
-
-function fazerLogout(){ 
-    localStorage.removeItem("admin_auth"); 
-    localStorage.removeItem("admin_user");
-    location.reload(); 
-}
+function fazerLogout(){ localStorage.removeItem("admin_auth"); localStorage.removeItem("admin_user"); location.reload(); }
 
 function iniciarApp(){
     $('login-screen').style.display="none"; $('app-core').style.display="block";
@@ -87,11 +66,8 @@ function iniciarApp(){
     if(userLogado && $('nome-usuario-logado')) $('nome-usuario-logado').innerText = userLogado;
     
     const h = new Date(), mStr = String(h.getMonth()+1).padStart(2,'0'), aStr = String(h.getFullYear()), dIso = h.toISOString().split('T')[0];
-    $('filtro-mes').value=mStr; $('filtro-ano').value=aStr;
-    $('d-data').value=dIso; $('venda-data').value=dIso; 
-    $('filtro-d-mes').value=mStr; $('filtro-d-ano').value=aStr;
-    $('filtro-v-mes').value=mStr; $('filtro-v-ano').value=aStr;
-    $('filtro-dash-mes').value=mStr; $('filtro-dash-ano').value=aStr;
+    $('filtro-mes').value=mStr; $('filtro-ano').value=aStr; $('d-data').value=dIso; $('venda-data').value=dIso; 
+    $('filtro-d-mes').value=mStr; $('filtro-d-ano').value=aStr; $('filtro-v-mes').value=mStr; $('filtro-v-ano').value=aStr; $('filtro-dash-mes').value=mStr; $('filtro-dash-ano').value=aStr;
 
     carregarAnalytics(); carregarCatalogoAdmin(); carregarAnunciosAdmin(true); atualizarBadgeUltimo(); carregarInfoBanco(); calcular();
     if("Notification" in window && Notification.permission!=="granted" && Notification.permission!=="denied") $('btn-notifica').style.display="inline-flex";
@@ -105,9 +81,7 @@ function switchTab(tabName, tituloAba = null) {
     
     if($('btn-'+tabName)) $('btn-'+tabName).classList.add('active');
     $('tab-'+tabName).classList.add('active');
-    
     if($('nav-'+tabName)) $('nav-'+tabName).classList.add('active');
-
     if(tituloAba) $('titulo-modulo-ativo').innerText = tituloAba;
 
     const abasERP = ['precificar','vendas','modelos','custos','dashboard_erp'];
@@ -121,259 +95,26 @@ function switchTab(tabName, tituloAba = null) {
 }
 
 function addLog(msg, tipo='info'){ $('terminal').innerHTML+=`<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${msg}</span></div>`; $('terminal').scrollTop=$('terminal').scrollHeight; }
-
 function mostrarAlerta(tit, txt, tipo){ $('modal-titulo-alert').innerText=tit; $('modal-texto-alert').innerText=txt; const ic=$('modal-icone-alert'), b=$('btn-modal-ok'); if(tipo==="success"){ic.innerText="✅";b.style.background="#10b981";b.style.boxShadow="0 6px 0 #059669";}else if(tipo==="warning"){ic.innerText="⚠️";b.style.background="#f59e0b";b.style.boxShadow="0 6px 0 #d97706";}else{ic.innerText="❌";b.style.background="#ef4444";b.style.boxShadow="0 6px 0 #b91c1c";} $('custom-modal').style.display="flex"; if("vibrate" in navigator) navigator.vibrate(50); }
 function fecharAlerta(){ $('custom-modal').style.display="none"; }
 function abrirConfirmacaoPagamento(l){ linhaVendaPagamento=l; $('custom-confirm-modal').style.display="flex"; } function fecharConfirmacao(){ $('custom-confirm-modal').style.display="none"; linhaVendaPagamento=null; }
 function abrirConfirmacaoExclusao(l){ linhaVendaExclusao=l; $('custom-delete-modal').style.display="flex"; } function fecharExclusao(){ $('custom-delete-modal').style.display="none"; linhaVendaExclusao=null; }
 function fecharEditarVenda(){ $('custom-edit-venda-modal').style.display="none"; }
 function abrirModalEditarVenda(l){ const v=arrayVendas.find(x=>x.linha===l); if(!v)return; $('edit-venda-linha').value=v.linha; $('edit-venda-data').value=v.data.includes('/')?`${v.data.split('/')[2].substring(0,4)}-${v.data.split('/')[1].padStart(2,'0')}-${v.data.split('/')[0].padStart(2,'0')}`:""; $('edit-venda-status').value=v.status; $('edit-venda-cliente').value=v.cliente; $('edit-venda-produto').value=v.produto; $('edit-venda-plataforma').value=v.plataforma; $('edit-venda-qtd').value=v.qtd; $('edit-venda-valor').value=formatarDoBanco(v.valor_venda); $('custom-edit-venda-modal').style.display="flex"; }
-
 async function excluirRegistroLocal(aba, l, idBtn, fnFechar, fnRecarregar, apiBase=URL_ANALYTICS_CATALOGO){ const b=$(idBtn); b.disabled=true; b.innerText="⏳ Excluindo..."; try { const r=await fetch(apiBase,{method:"POST",body:JSON.stringify({acao:"excluir_registro",aba:aba,linha:l})}); const res=await r.json(); if(res.sucesso){addLog(`🗑️ Registro excluído.`, "success"); if(fnFechar)fnFechar(); if(fnRecarregar)fnRecarregar();}else throw new Error("Erro exclusão."); }catch(e){ apiBase===API_PRECIFICACAO?mostrarAlerta("Erro","Falha: "+e.message,"error"):alert("Falha: "+e.message); }finally{b.disabled=false;b.innerText="🗑️ Excluir";} }
 
 // ==========================================
 // MÓDULO ÍMAS NFC
 // ==========================================
-async function carregarImas() {
-    $('loading-imas').style.display = 'block';
-    $('lista-imas-admin').innerHTML = '';
-    try {
-        const r = await fetch(API_NFC + "?acao=listar");
-        const res = await r.json();
-        if (res.sucesso) {
-            arrayImas = res.imas.reverse();
-            renderListaImas(arrayImas);
-        } else throw new Error("Erro ao buscar imas.");
-    } catch (e) {
-        addLog(`Erro Ímãs: ${e.message}`, "error");
-    } finally {
-        $('loading-imas').style.display = 'none';
-    }
-}
-
-function renderListaImas(arr) {
-    const lE = $('lista-imas-admin');
-    if (arr.length === 0) { lE.innerHTML = "<p style='text-align:center;color:#999;padding:20px;'>Nenhum ímã cadastrado.</p>"; return; }
-    
-    let h = "";
-    arr.forEach(i => {
-        const statusVisual = i.linkVideoYoutube ? `<span class="tag-ativo">🎬 Vídeo Ativo</span>` : `<span class="tag-pendente">⏳ Teaser</span>`;
-        
-        let dataFormatada = "Sem data alvo";
-        if(i.dataLiberacao) {
-            let d = new Date(i.dataLiberacao);
-            if(!isNaN(d)) dataFormatada = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} às ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-        }
-
-        const fotoUrl = i.foto ? i.foto.split(',')[0].trim() : 'logo.png';
-        const linkNfc = `https://diario.vivainteligente.net/ima-nfc/?id=${i.id}`;
-
-        h += `
-        <div class="list-item">
-            <img src="${fotoUrl}" class="list-img" onerror="this.src='logo.png'">
-            <div class="list-info">
-                <h4 class="list-nome">ID: ${i.id} - ${i.nomes}</h4>
-                <div class="list-detalhes">
-                    🗓️ Liberação: ${dataFormatada}
-                </div>
-                <div style="margin-top:8px;">${statusVisual}</div>
-            </div>
-            <button class="btn-editar" style="margin-right:8px; background:#e0f2fe; border-color:#bae6fd; color:#0369a1;" onclick="copiarLinkNfc('${linkNfc}')" title="Copiar Link">🔗 Link</button>
-            <button class="btn-editar" onclick="abrirModalEditarIma(${i.linha})">✏️</button>
-        </div>`;
-    });
-    lE.innerHTML = h;
-}
-
-function copiarLinkNfc(link) {
-    navigator.clipboard.writeText(link).then(() => {
-        mostrarAlerta("Copiado!", "O link do ímã foi copiado para sua área de transferência!\n\nAgora é só colar no seu aplicativo e gravar na tag NFC.", "success");
-    }).catch(() => {
-        alert("Erro ao copiar o link. Você pode copiar manualmente: " + link);
-    });
-}
-
-function filtrarImas() {
-    const t = $('busca-imas').value.toLowerCase();
-    renderListaImas(arrayImas.filter(i => String(i.id).toLowerCase().includes(t) || i.nomes.toLowerCase().includes(t)));
-}
-
-async function fazerUploadRedundante(fC, ik) {
-    let urlOnion = "";
-    let urlImgBB = "";
-
-    try {
-        const fd = new FormData(); fd.append("imagem", fC);
-        const rp = await fetch(API_ONIONSYS, {method:"POST", headers:{"Authorization":`Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id":"MiniMundo"}, body:fd});
-        const tx = await rp.text();
-        if (rp.ok) {
-            const rs = JSON.parse(tx);
-            urlOnion = (rs.arquivos && rs.arquivos.length > 0) ? rs.arquivos[0].url : (rs.url || rs.link || rs.URL || (rs.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${rs.filename}` : ""));
-            addLog("✅ Imagem salva no servidor Primário.", "success");
-        }
-    } catch (e) {
-        addLog("⚠️ Servidor primário falhou.", "warn");
-    }
-
-    if (ik) {
-        try {
-            const fd2 = new FormData(); fd2.append("image", fC);
-            const r2 = await fetch(`https://api.imgbb.com/1/upload?key=${ik}`, {method:"POST", body:fd2});
-            const d2 = await r2.json();
-            if (d2.success) {
-                urlImgBB = d2.data.url;
-                addLog("✅ Imagem salva no Backup (ImgBB).", "success");
-            }
-        } catch (e) {
-            addLog("⚠️ Servidor de backup falhou.", "warn");
-        }
-    }
-
-    if (!urlOnion && !urlImgBB) throw new Error("Ambos os servidores de imagem falharam. Tente novamente.");
-
-    let urlsFinais = [];
-    if (urlOnion) urlsFinais.push(urlOnion);
-    if (urlImgBB) urlsFinais.push(urlImgBB);
-    
-    return urlsFinais.join(",");
-}
-
-async function cadastrarIma() {
-    const id = $('ima-id').value.trim();
-    const nomes = $('ima-nomes').value.trim();
-    const fFoto = $('ima-foto').files;
-    const fProd = document.createElement('input'); fProd.type = 'file'; 
-    const video = $('ima-video').value.trim();
-    const dataOriginal = $('ima-data').value; 
-    const ik = $('imgbb-key').value.trim();
-
-    const inputProd = document.getElementById("ima-foto-produto"); 
-
-    if(!id || !nomes || fFoto.length === 0 || !inputProd.files[0]) return mostrarAlerta("Atenção", "Preencha ID, Nomes e as DUAS fotos (Cliente e Produto).", "warning");
-
-    const b = $('btn-salvar-ima');
-    b.disabled = true; b.innerText = "⏳ Gerando...";
-
-    try {
-        addLog(`Subindo foto do cliente...`, "info");
-        const urlsCliente = await fazerUploadRedundante(await comprimirImagem(fFoto[0], 600, 600, 0.8), ik);
-        
-        addLog(`Subindo foto do produto físico...`, "info");
-        const urlsProduto = await fazerUploadRedundante(await comprimirImagem(inputProd.files[0], 600, 600, 0.8), ik);
-
-        const p = { 
-            acao: "salvar_ima", id: id, nomes: nomes, foto: urlsCliente, 
-            linkVideoYoutube: video, dataLiberacao: dataOriginal ? dataOriginal + ":00" : "",
-            fotoProduto: urlsProduto 
-        };
-        
-        const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) });
-        const res = await r.json();
-
-        if(res.sucesso) {
-            mostrarAlerta("Sucesso!", "Ímã cadastrado com fotos personalizadas!", "success");
-            carregarImas();
-        }
-    } catch (e) { addLog(`❌ ERRO: ${e.message}`, "error"); }
-    finally { b.disabled = false; b.innerText = "✨ Gerar Ímã"; }
-}
-
-function abrirModalEditarIma(l) {
-    const i = arrayImas.find(x => x.linha === l);
-    if(!i) return;
-    $('edit-ima-linha').value = i.linha;
-    $('edit-ima-nomes').value = i.nomes;
-    $('edit-ima-video').value = i.linkVideoYoutube;
-    
-    $('edit-ima-foto-antiga').value = i.foto;
-    $('edit-ima-img-preview').src = i.foto ? i.foto.split(',')[0].trim() : "logo.png";
-    $('edit-ima-foto').value = "";
-    
-    $('edit-ima-foto-prod-antiga').value = i.fotoProduto || "";
-    if(i.fotoProduto) {
-        $('edit-ima-prod-preview').src = i.fotoProduto.split(',')[0].trim();
-        $('edit-ima-prod-preview').style.display = "block";
-    } else {
-        $('edit-ima-prod-preview').style.display = "none";
-    }
-    $('edit-ima-foto-prod').value = "";
-    
-    if(i.dataLiberacao) {
-        $('edit-ima-data').value = String(i.dataLiberacao).substring(0, 16); 
-    } else {
-        $('edit-ima-data').value = "";
-    }
-
-    $('modal-editar-ima').style.display = 'flex';
-}
-
-async function salvarEdicaoIma() {
-    const b = $('btn-salvar-edicao-ima');
-    b.disabled = true; b.innerText = "⏳ Atualizando...";
-    
-    try {
-        const ik = $('imgbb-key').value.trim();
-        const idAtual = arrayImas.find(x => x.linha == parseInt($('edit-ima-linha').value)).id; 
-        
-        let fotoFinal = $('edit-ima-foto-antiga').value;
-        const novaFoto = $('edit-ima-foto').files;
-        
-        let fotoProdFinal = $('edit-ima-foto-prod-antiga').value;
-        const novaFotoProd = $('edit-ima-foto-prod').files;
-
-        if(novaFoto.length > 0) {
-            addLog(`Atualizando foto do cliente...`, "info");
-            fotoFinal = await fazerUploadRedundante(await comprimirImagem(novaFoto[0], 600, 600, 0.8), ik);
-        }
-        
-        if(novaFotoProd.length > 0) {
-            addLog(`Atualizando foto do produto...`, "info");
-            fotoProdFinal = await fazerUploadRedundante(await comprimirImagem(novaFotoProd[0], 600, 600, 0.8), ik);
-        }
-
-        let dataLiberacaoStr = "";
-        if($('edit-ima-data').value) { dataLiberacaoStr = $('edit-ima-data').value + ":00"; }
-
-        const p = { 
-            acao: "atualizar_ima", 
-            linha: $('edit-ima-linha').value, 
-            id: idAtual, 
-            nomes: $('edit-ima-nomes').value, 
-            foto: fotoFinal, 
-            linkVideoYoutube: $('edit-ima-video').value, 
-            dataLiberacao: dataLiberacaoStr,
-            fotoProduto: fotoProdFinal
-        };
-
-        const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) });
-        const res = await r.json();
-
-        if(res.sucesso) {
-            addLog(`✅ Mágica Atualizada!`, "success");
-            $('modal-editar-ima').style.display = 'none';
-            carregarImas();
-        } else throw new Error("Erro API.");
-
-    } catch (e) {
-        addLog(`❌ Erro Update: ${e.message}`, "error");
-    } finally {
-        b.disabled = false; b.innerText = "💾 Atualizar Mágica";
-    }
-}
-
-function confirmarExclusaoIma() {
-    const l = parseInt($('edit-ima-linha').value);
-    const i = arrayImas.find(x => x.linha === l);
-    if(!i) return;
-
-    $('nome-ima-excluir').innerText = i.nomes;
-    $('modal-confirmar-exclusao-ima').style.display = 'flex';
-    
-    $('btn-executar-exclusao-ima').onclick = function() {
-        $('modal-confirmar-exclusao-ima').style.display = 'none';
-        excluirRegistroLocal("API_Ignora_Isso", l, "btn-excluir-ima-modal", () => $('modal-editar-ima').style.display='none', carregarImas, API_NFC);
-    };
-}
+async function carregarImas() { $('loading-imas').style.display = 'block'; $('lista-imas-admin').innerHTML = ''; try { const r = await fetch(API_NFC + "?acao=listar"); const res = await r.json(); if (res.sucesso) { arrayImas = res.imas.reverse(); renderListaImas(arrayImas); } else throw new Error("Erro ao buscar imas."); } catch (e) { addLog(`Erro Ímãs: ${e.message}`, "error"); } finally { $('loading-imas').style.display = 'none'; } }
+function renderListaImas(arr) { const lE = $('lista-imas-admin'); if (arr.length === 0) { lE.innerHTML = "<p style='text-align:center;color:#999;padding:20px;'>Nenhum ímã cadastrado.</p>"; return; } let h = ""; arr.forEach(i => { const statusVisual = i.linkVideoYoutube ? `<span class="tag-ativo">🎬 Vídeo Ativo</span>` : `<span class="tag-pendente">⏳ Teaser</span>`; let dataFormatada = "Sem data alvo"; if(i.dataLiberacao) { let d = new Date(i.dataLiberacao); if(!isNaN(d)) dataFormatada = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} às ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; } const fotoUrl = i.foto ? i.foto.split(',')[0].trim() : 'logo.png'; const linkNfc = `https://diario.vivainteligente.net/ima-nfc/?id=${i.id}`; h += `<div class="list-item"><img src="${fotoUrl}" class="list-img" onerror="this.src='logo.png'"><div class="list-info"><h4 class="list-nome">ID: ${i.id} - ${i.nomes}</h4><div class="list-detalhes">🗓️ Liberação: ${dataFormatada}</div><div style="margin-top:8px;">${statusVisual}</div></div><button class="btn-editar" style="margin-right:8px; background:#e0f2fe; border-color:#bae6fd; color:#0369a1;" onclick="copiarLinkNfc('${linkNfc}')" title="Copiar Link">🔗 Link</button><button class="btn-editar" onclick="abrirModalEditarIma(${i.linha})">✏️</button></div>`; }); lE.innerHTML = h; }
+function copiarLinkNfc(link) { navigator.clipboard.writeText(link).then(() => { mostrarAlerta("Copiado!", "O link do ímã foi copiado para sua área de transferência!\n\nAgora é só colar no seu aplicativo e gravar na tag NFC.", "success"); }).catch(() => { alert("Erro ao copiar o link. Você pode copiar manualmente: " + link); }); }
+function filtrarImas() { const t = $('busca-imas').value.toLowerCase(); renderListaImas(arrayImas.filter(i => String(i.id).toLowerCase().includes(t) || i.nomes.toLowerCase().includes(t))); }
+async function fazerUploadRedundante(fC, ik) { let urlOnion = ""; let urlImgBB = ""; try { const fd = new FormData(); fd.append("imagem", fC); const rp = await fetch(API_ONIONSYS, {method:"POST", headers:{"Authorization":`Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id":"MiniMundo"}, body:fd}); const tx = await rp.text(); if (rp.ok) { const rs = JSON.parse(tx); urlOnion = (rs.arquivos && rs.arquivos.length > 0) ? rs.arquivos[0].url : (rs.url || rs.link || rs.URL || (rs.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${rs.filename}` : "")); addLog("✅ Imagem salva no servidor Primário.", "success"); } } catch (e) { addLog("⚠️ Servidor primário falhou.", "warn"); } if (ik) { try { const fd2 = new FormData(); fd2.append("image", fC); const r2 = await fetch(`https://api.imgbb.com/1/upload?key=${ik}`, {method:"POST", body:fd2}); const d2 = await r2.json(); if (d2.success) { urlImgBB = d2.data.url; addLog("✅ Imagem salva no Backup (ImgBB).", "success"); } } catch (e) { addLog("⚠️ Servidor de backup falhou.", "warn"); } } if (!urlOnion && !urlImgBB) throw new Error("Ambos os servidores de imagem falharam. Tente novamente."); let urlsFinais = []; if (urlOnion) urlsFinais.push(urlOnion); if (urlImgBB) urlsFinais.push(urlImgBB); return urlsFinais.join(","); }
+async function cadastrarIma() { const id = $('ima-id').value.trim(); const nomes = $('ima-nomes').value.trim(); const fFoto = $('ima-foto').files; const fProd = document.createElement('input'); fProd.type = 'file'; const video = $('ima-video').value.trim(); const dataOriginal = $('ima-data').value; const ik = $('imgbb-key').value.trim(); const inputProd = document.getElementById("ima-foto-produto"); if(!id || !nomes || fFoto.length === 0 || !inputProd.files[0]) return mostrarAlerta("Atenção", "Preencha ID, Nomes e as DUAS fotos (Cliente e Produto).", "warning"); const b = $('btn-salvar-ima'); b.disabled = true; b.innerText = "⏳ Gerando..."; try { addLog(`Subindo foto do cliente...`, "info"); const urlsCliente = await fazerUploadRedundante(await comprimirImagem(fFoto[0], 600, 600, 0.8), ik); addLog(`Subindo foto do produto físico...`, "info"); const urlsProduto = await fazerUploadRedundante(await comprimirImagem(inputProd.files[0], 600, 600, 0.8), ik); const p = { acao: "salvar_ima", id: id, nomes: nomes, foto: urlsCliente, linkVideoYoutube: video, dataLiberacao: dataOriginal ? dataOriginal + ":00" : "", fotoProduto: urlsProduto }; const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) }); const res = await r.json(); if(res.sucesso) { mostrarAlerta("Sucesso!", "Ímã cadastrado com fotos personalizadas!", "success"); carregarImas(); } } catch (e) { addLog(`❌ ERRO: ${e.message}`, "error"); } finally { b.disabled = false; b.innerText = "✨ Gerar Ímã"; } }
+function abrirModalEditarIma(l) { const i = arrayImas.find(x => x.linha === l); if(!i) return; $('edit-ima-linha').value = i.linha; $('edit-ima-nomes').value = i.nomes; $('edit-ima-video').value = i.linkVideoYoutube; $('edit-ima-foto-antiga').value = i.foto; $('edit-ima-img-preview').src = i.foto ? i.foto.split(',')[0].trim() : "logo.png"; $('edit-ima-foto').value = ""; $('edit-ima-foto-prod-antiga').value = i.fotoProduto || ""; if(i.fotoProduto) { $('edit-ima-prod-preview').src = i.fotoProduto.split(',')[0].trim(); $('edit-ima-prod-preview').style.display = "block"; } else { $('edit-ima-prod-preview').style.display = "none"; } $('edit-ima-foto-prod').value = ""; if(i.dataLiberacao) { $('edit-ima-data').value = String(i.dataLiberacao).substring(0, 16); } else { $('edit-ima-data').value = ""; } $('modal-editar-ima').style.display = 'flex'; }
+async function salvarEdicaoIma() { const b = $('btn-salvar-edicao-ima'); b.disabled = true; b.innerText = "⏳ Atualizando..."; try { const ik = $('imgbb-key').value.trim(); const idAtual = arrayImas.find(x => x.linha == parseInt($('edit-ima-linha').value)).id; let fotoFinal = $('edit-ima-foto-antiga').value; const novaFoto = $('edit-ima-foto').files; let fotoProdFinal = $('edit-ima-foto-prod-antiga').value; const novaFotoProd = $('edit-ima-foto-prod').files; if(novaFoto.length > 0) { addLog(`Atualizando foto do cliente...`, "info"); fotoFinal = await fazerUploadRedundante(await comprimirImagem(novaFoto[0], 600, 600, 0.8), ik); } if(novaFotoProd.length > 0) { addLog(`Atualizando foto do produto...`, "info"); fotoProdFinal = await fazerUploadRedundante(await comprimirImagem(novaFotoProd[0], 600, 600, 0.8), ik); } let dataLiberacaoStr = ""; if($('edit-ima-data').value) { dataLiberacaoStr = $('edit-ima-data').value + ":00"; } const p = { acao: "atualizar_ima", linha: $('edit-ima-linha').value, id: idAtual, nomes: $('edit-ima-nomes').value, foto: fotoFinal, linkVideoYoutube: $('edit-ima-video').value, dataLiberacao: dataLiberacaoStr, fotoProduto: fotoProdFinal }; const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) }); const res = await r.json(); if(res.sucesso) { addLog(`✅ Mágica Atualizada!`, "success"); $('modal-editar-ima').style.display = 'none'; carregarImas(); } else throw new Error("Erro API."); } catch (e) { addLog(`❌ Erro Update: ${e.message}`, "error"); } finally { b.disabled = false; b.innerText = "💾 Atualizar Mágica"; } }
+function confirmarExclusaoIma() { const l = parseInt($('edit-ima-linha').value); const i = arrayImas.find(x => x.linha === l); if(!i) return; $('nome-ima-excluir').innerText = i.nomes; $('modal-confirmar-exclusao-ima').style.display = 'flex'; $('btn-executar-exclusao-ima').onclick = function() { $('modal-confirmar-exclusao-ima').style.display = 'none'; excluirRegistroLocal("API_Ignora_Isso", l, "btn-excluir-ima-modal", () => $('modal-editar-ima').style.display='none', carregarImas, API_NFC); }; }
 
 // ADMIN: ANALYTICS
 function limparDatasManuais(){ $('data-inicio').value=""; $('data-fim').value=""; } function limparFiltrosRapidos(){ $('filtro-mes').value="todos"; $('filtro-ano').value="todos"; }
@@ -431,14 +172,20 @@ function filtrarDespesas(){ const mS=$('filtro-d-mes').value, aS=$('filtro-d-ano
 function renderizarListaDespesas(aD){ const lD=$('lista-despesas'); lD.innerHTML=""; let sT=0; if(aD.length===0){lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;font-weight:600;'>Nenhuma despesa.</p>";$('total-despesas-valor').innerText="R$ 0,00";return;} let h=""; aD.forEach(d=>{let nG=limparValorPlanilha(d.valor); sT+=nG; let dH=`<div class="pb-detalhes" style="flex-direction:column;gap:8px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${d.data}</span><span style="color:#64748b;">🏢 ${d.local}</span></div>`; if(d.quantidade&&d.preco_uni&&d.preco_uni!=="R$ 0,00"){dH+=`<div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📦 Qtd: ${d.quantidade}</span><span style="color:#64748b;">💲 ${formatarDoBanco(d.preco_uni)} /un</span></div>`;} dH+=`</div>`; h+=`<div class="produto-banco-card"><div class="pb-info"><h4 class="pb-nome" style="color:#334155;">${d.item}</h4>${dH}</div><div class="pb-custo" style="background:transparent;border:none;color:#ef4444;font-size:1.1rem;padding-right:0;">- ${fmt(nG)}</div></div>`;}); lD.innerHTML=h; $('total-despesas-valor').innerText=fmt(sT); }
 async function salvarDespesa(){ const dC=$('d-data').value, lC=$('d-local').value.trim(), iC=$('d-item').value.trim(), qC=$('d-qtd').value, vU=$('d-valor-uni').value; if(!dC||!iC||!vU||!lC)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-despesa'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const p={acao:"salvar_despesa",item:iC,local:lC,data:dC.split('-').reverse().join('/'),quantidade:qC,preco_uni:fmtPlanilha(limparValorPlanilha(vU)),preco_total:fmtPlanilha(despesaTotalCalculada)}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Lançado!","Registrado.","success");$('d-item').value="";$('d-valor-uni').value="";$('d-qtd').value="1";calcularDespesaTotal();carregarDespesas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💳 Lançar Despesa";} }
 
-// ERP: VENDAS E ZAP (LOTE)
-// Novas funções para o WhatsApp baseadas no histórico do Novera Scent
+
+// ==========================================
+// ERP: VENDAS, RELATÓRIOS E AÇÕES EM LOTE
+// ==========================================
 function formatarTextoZap(texto) { return encodeURIComponent(texto); }
 
 function enviarZapCobranca(linha) {
     const v = arrayVendas.find(x => x.linha === linha);
     if(!v) return;
-    let nome = v.cliente.split(' ')[0];
+    
+    // Captura o nome editado se estivermos no modal, senão usa o padrão
+    let inputEl = document.getElementById(`lote-nome-${linha}`);
+    let nome = inputEl ? inputEl.value.trim() : v.cliente.split(' ')[0];
+    
     let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para lembrar sobre o pagamento do seu pedido:\n\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nAssim que puder, nos envie o comprovante para darmos andamento à produção! Qualquer dúvida, estamos à disposição. 🚀`;
     window.open(`https://api.whatsapp.com/send?text=${formatarTextoZap(texto)}`, '_blank');
 }
@@ -446,8 +193,12 @@ function enviarZapCobranca(linha) {
 function enviarZapRecibo(linha) {
     const v = arrayVendas.find(x => x.linha === linha);
     if(!v) return;
-    let nome = v.cliente.split(' ')[0];
-    let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para confirmar o recebimento do seu pedido!\n\n✅ *Status:* PAGO\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor Pago:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nMuito obrigado pela confiança! Seu pedido está sendo preparado com muito carinho nas nossas impressoras. 🖨️✨`;
+    
+    // Captura o nome editado se estivermos no modal, senão usa o padrão
+    let inputEl = document.getElementById(`lote-nome-${linha}`);
+    let nome = inputEl ? inputEl.value.trim() : v.cliente.split(' ')[0];
+    
+    let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para confirmar o recebimento do seu pagamento!\n\n✅ *Status:* PAGO\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor Pago:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nMuito obrigado pela confiança! Seu pedido está sendo preparado com muito carinho nas nossas impressoras. 🖨️✨`;
     window.open(`https://api.whatsapp.com/send?text=${formatarTextoZap(texto)}`, '_blank');
 }
 
@@ -461,6 +212,10 @@ function carregarLote(tipo) {
     $('btn-lote-pagos').classList.remove('active');
     $('btn-lote-' + (tipo === 'Pendente' ? 'pendentes' : 'pagos')).classList.add('active');
 
+    // Configura o botão mestre de PDF
+    const btnPdf = $('btn-gerar-pdf-lote');
+    btnPdf.onclick = () => gerarPDFLote(tipo);
+
     const lista = $('lista-acoes-lote');
     const filtrados = vendasFiltradasAtuais.filter(v => v.status.toLowerCase() === tipo.toLowerCase());
 
@@ -471,25 +226,119 @@ function carregarLote(tipo) {
 
     let h = "";
     filtrados.forEach(v => {
-        let btnTexto = tipo === 'Pendente' ? '🔔 Cobrar' : '🧾 Recibo';
-        let corBtn = tipo === 'Pendente' ? 'background:#fffbeb; color:#b45309; border-color:#fde68a;' : 'background:#dcfce7; color:#166534; border-color:#a7f3d0;';
+        let btnTexto = tipo === 'Pendente' ? '📱 Cobrar' : '📱 Recibo';
         let onClickFn = tipo === 'Pendente' ? `enviarZapCobranca(${v.linha})` : `enviarZapRecibo(${v.linha})`;
+        let nomeCurto = v.cliente.split(' ')[0];
 
         h += `
-        <div class="list-item" style="padding:12px; margin-bottom:8px;">
-            <div class="list-info">
-                <h4 class="list-nome" style="font-size:0.9rem; margin-bottom:4px;">${v.cliente}</h4>
-                <div class="list-detalhes" style="font-size:0.75rem;">
+        <div class="lote-item">
+            <input type="checkbox" class="lote-check" value="${v.linha}">
+            <div style="flex-grow:1; overflow:hidden;">
+                <input type="text" id="lote-nome-${v.linha}" class="lote-input-nome" value="${nomeCurto}" title="Edite o nome que vai na mensagem/PDF">
+                <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.2;">
                     ${v.produto} (x${v.qtd}) <br> <b style="color:var(--primary);">${fmt(limparValorPlanilha(v.valor_venda))}</b>
                 </div>
             </div>
-            <button class="btn-editar" style="${corBtn} flex-shrink:0; font-weight:900; font-size:0.75rem; padding: 10px 14px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'" onclick="${onClickFn}">${btnTexto}</button>
+            <button class="btn-editar" style="background:#25D366; color:#fff; border:none; padding:10px; font-size:1.2rem; border-radius:10px; box-shadow:0 4px 6px rgba(37,211,102,0.3);" title="Enviar WhatsApp Individual" onclick="${onClickFn}">💬</button>
         </div>`;
     });
     lista.innerHTML = h;
 }
 
-// Funções padrão de venda
+// === NOVO GERADOR DE PDF/IMPRESSÃO ESTILIZADO ===
+function gerarPDFLote(tipo) {
+    const checks = document.querySelectorAll('.lote-check:checked');
+    if (checks.length === 0) return mostrarAlerta("Atenção", "Marque a caixa de seleção de pelo menos um cliente para gerar o PDF.", "warning");
+
+    let html = `
+    <html><head><title>${tipo === 'Pendente' ? 'Cobranças' : 'Recibos'} - Mini Mundo 3D</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #efebe9; margin: 0; padding: 0; }
+        .page { width: 210mm; min-height: 297mm; padding: 20mm; margin: 10mm auto; background: white; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); page-break-after: always; box-sizing: border-box; position: relative; }
+        @media print { body { background: white; } .page { margin: 0; box-shadow: none; padding: 15mm; border-radius: 0; width: 100%; min-height: auto; } }
+        .header { text-align: center; border-bottom: 3px dashed #d97706; padding-bottom: 20px; margin-bottom: 30px; }
+        .header img { width: 120px; margin-bottom: 10px; }
+        .header h1 { color: #4E342E; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;}
+        .header p { color: #8D6E63; margin: 5px 0 0 0; font-size: 14px; font-weight: bold;}
+        .content { color: #292524; line-height: 1.6; font-size: 16px; }
+        .content h2 { color: #d97706; font-size: 20px; margin-bottom: 25px; text-align: center;}
+        .details-box { background: #fafaf9; border: 1px solid #e7e5e4; padding: 20px; border-radius: 12px; margin-bottom: 30px; }
+        .row-item { display: flex; justify-content: space-between; border-bottom: 1px solid #e7e5e4; padding: 10px 0; font-weight: bold;}
+        .row-item:last-child { border-bottom: none; }
+        .total { font-size: 22px; color: #10b981; text-align: right; font-weight: 900; margin-top: 20px;}
+        .cobranca-total { color: #ef4444; }
+        .footer { position: absolute; bottom: 30px; left: 0; width: 100%; text-align: center; color: #78716c; font-size: 12px; }
+    </style>
+    </head><body>
+    `;
+
+    checks.forEach(chk => {
+        const l = parseInt(chk.value);
+        const v = arrayVendas.find(x => x.linha === l);
+        if(!v) return;
+
+        const nomeEditado = document.getElementById(`lote-nome-${l}`).value.trim();
+        const valorFormatado = fmt(limparValorPlanilha(v.valor_venda));
+
+        let titulo = tipo === 'Pendente' ? 'AVISO DE COBRANÇA' : 'RECIBO DE PAGAMENTO';
+        let mensagem = tipo === 'Pendente' 
+            ? `Olá <b>${nomeEditado}</b>, este é um lembrete do seu pedido pendente. Por favor, regularize o pagamento para darmos andamento à produção.`
+            : `Olá <b>${nomeEditado}</b>, confirmamos o recebimento do seu pagamento. Seu pedido já está em nossos registros!`;
+        let corTotal = tipo === 'Pendente' ? 'cobranca-total' : '';
+
+        // Montagem do Design da Página (Usa o logo absoluto para não quebrar na impressão)
+        html += `
+        <div class="page">
+            <div class="header">
+                <img src="${window.location.href.split('index.html')[0]}logo.png" onerror="this.style.display='none'">
+                <h1 style="color:#d97706">MINI MUNDO 3D</h1>
+                <p>Impressão 3D & Criatividade</p>
+            </div>
+            <div class="content">
+                <h2>${titulo}</h2>
+                <p style="text-align:center; margin-bottom:30px;">${mensagem}</p>
+                
+                <div class="details-box">
+                    <div class="row-item">
+                        <span>Cliente:</span> <span>${nomeEditado}</span>
+                    </div>
+                    <div class="row-item">
+                        <span>Data de Referência:</span> <span>${v.data}</span>
+                    </div>
+                    <div class="row-item">
+                        <span>Status:</span> <span>${v.status.toUpperCase()}</span>
+                    </div>
+                    <div class="row-item">
+                        <span>Produto:</span> <span>${v.produto} (x${v.qtd})</span>
+                    </div>
+                </div>
+
+                <div class="total ${corTotal}">
+                    Total: ${valorFormatado}
+                </div>
+            </div>
+            <div class="footer">
+                Obrigado por apoiar o Mini Mundo 3D! 🌍🖨️<br>
+                Documento gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+            </div>
+        </div>
+        `;
+    });
+
+    html += `
+    <script>
+        setTimeout(() => { window.print(); }, 1000);
+    </script>
+    </body></html>`;
+
+    // Abre uma nova janela limpa só com os recibos e chama a função de salvar como PDF/Imprimir
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+}
+
+
 async function carregarOpcoesVenda(){ $('loading-opcoes-venda').style.display="block"; try{ const r=await fetch(API_PRECIFICACAO+"?acao=listar_opcoes_venda"); const res=await r.json(); if(res.sucesso){ $('lista-clientes-venda').innerHTML=res.clientes.map(n=>`<option value="${n}">`).join(''); $('lista-clientes-busca').innerHTML=res.clientes.map(n=>`<option value="${n}">`).join(''); $('lista-produtos-venda').innerHTML=res.produtos.map(n=>`<option value="${n}">`).join(''); $('lista-plataformas-venda').innerHTML=res.plataformas.map(n=>`<option value="${n}">`).join('');} }catch(e){}finally{$('loading-opcoes-venda').style.display="none";} }
 async function salvarVenda(){ const dV=$('venda-data').value, c=$('venda-cliente').value.trim(), p=$('venda-produto').value.trim(), pl=$('venda-plataforma').value.trim(), q=$('venda-qtd').value, vS=$('venda-valor').value, s=$('venda-status').value; if(!dV||!c||!p||!pl||!vS)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-venda'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const py={acao:"salvar_venda",data_venda:dV.split('-').reverse().join('/'),cliente:c,produto:p,plataforma:pl,qtd:q,valor_venda:fmtPlanilha(limparValorPlanilha(vS)),status:s}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(py)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Venda Feita! 🎉","Registrado!","success");$('venda-cliente').value="";$('venda-produto').value="";$('venda-plataforma').value="";$('venda-qtd').value="1";$('venda-valor').value="";$('venda-status').value="Pago";carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="✅ Lançar Venda";} }
 async function salvarEdicaoVenda(){ const l=$('edit-venda-linha').value, dV=$('edit-venda-data').value, s=$('edit-venda-status').value, c=$('edit-venda-cliente').value.trim(), p=$('edit-venda-produto').value.trim(), pl=$('edit-venda-plataforma').value.trim(), q=$('edit-venda-qtd').value, vS=$('edit-venda-valor').value; if(!dV||!c||!p||!pl||!vS)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-edicao-venda'); btn.disabled=true; btn.innerText="⏳ Salvando..."; try{ const py={acao:"atualizar_venda",linha:l,data_venda:dV.split('-').reverse().join('/'),cliente:c,produto:p,plataforma:pl,qtd:q,valor_venda:fmtPlanilha(limparValorPlanilha(vS)),status:s}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(py)}); const res=await r.json(); if(res.sucesso){fecharEditarVenda();mostrarAlerta("Atualizado!","Editada.","success");carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar Alterações";} }
@@ -544,7 +393,7 @@ function filtrarVendas(){
             if(pt.length>=3){let m=String(pt[1]).padStart(2,'0'), a=String(pt[2]).substring(0,4); if(mS!=="todos"&&m!==mS)return false; if(aS!=="todos"&&a!==aS)return false;}else return false;
         } return true; 
     }); 
-    vendasFiltradasAtuais = flt; // Guarda o filtro atual para o modal de lote
+    vendasFiltradasAtuais = flt; 
     renderizarListaVendas(flt); 
 }
 
@@ -564,13 +413,11 @@ function renderizarListaVendas(aV){
         sQ+=nQ; if(isP)sP+=nV;else sPa+=nV; sL+=nL; 
         let cs=isP?"card-pendente":"", em=isP?"🟡":"🟢", lS=v.lucro&&nL>0?`💰 Lucro: ${formatarDoBanco(v.lucro)}`:"";
         
-        // Aqui estão os novos botões ZAP em cada card
         let bB = isP 
             ? `<div style="display:flex; gap:8px; margin-top:12px;">
                  <button class="btn-baixar-pgt" style="flex:2; margin-top:0;" onclick="abrirConfirmacaoPagamento(${v.linha})">💸 Recebi</button>
-                 <button class="btn-baixar-pgt" style="flex:1; margin-top:0; background:#fffbeb; color:#b45309; border-color:#fde68a;" onclick="enviarZapCobranca(${v.linha})">🔔 Cobrar</button>
                </div>` 
-            : `<button class="btn-baixar-pgt" style="margin-top:12px; background:#f0fdf4; color:#166534; border-color:#bbf7d0;" onclick="enviarZapRecibo(${v.linha})">🧾 Enviar Recibo</button>`;
+            : ``;
 
         h+=`<div class="produto-banco-card ${cs}"><div class="card-row-top"><div class="pb-info"><div style="display:flex;justify-content:space-between;align-items:center;"><h4 class="pb-nome" style="margin:0;">${v.cliente}</h4><div><button onclick="abrirModalEditarVenda(${v.linha})" class="btn-editar-venda" style="margin-right:10px;">✏️</button><button onclick="abrirConfirmacaoExclusao(${v.linha})" class="btn-excluir-venda">🗑️</button></div></div><div class="pb-detalhes" style="flex-direction:column;gap:4px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${v.data}</span><span style="color:#64748b;">🏷️ ${v.produto} (x${v.qtd})</span></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;"><span style="color:#64748b;">📱 ${v.plataforma}</span><span style="color:#10b981;font-weight:900;">${lS}</span></div><div style="margin-top:4px;"><span style="font-weight:900;font-size:0.75rem;color:${isP?'#b45309':'#059669'};">${em} ${v.status.toUpperCase()}</span></div></div></div><div class="pb-custo" style="background:transparent;border:none;color:var(--brand-dark);font-size:1.2rem;padding:0;">${fmt(nV)}</div></div>${bB}</div>`;
     }); 
