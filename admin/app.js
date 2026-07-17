@@ -1,5 +1,8 @@
 const $ = id => document.getElementById(id); 
-const SENHA_MESTRA = "minimundo2026$";
+
+// === CONTROLE DE VERSÃO DO SISTEMA ===
+const VERSAO_APP = "v1.0.0";
+
 const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
 const API_NFC = "https://script.google.com/macros/s/AKfycbxaubKWb7f9DiIlR8WLryYv8UClrCIbaSM4biGwgkwxUnDFGHsCsL7JQrLEGEZNwRvtdg/exec";
@@ -24,15 +27,68 @@ document.addEventListener('input', e => {
     if(e.target.id==="d-valor-uni"||e.target.id==="d-qtd") calcularDespesaTotal();
 });
 
-window.onload = () => { if(localStorage.getItem("admin_auth")==="true") iniciarApp(); };
-function tentarLogin(){ const i=$('input-senha').value; if(i===SENHA_MESTRA){localStorage.setItem("admin_auth","true"); iniciarApp();}else{alert("Senha incorreta!");$('input-senha').value="";} }
+window.onload = () => { 
+    // Injeta a versão na tela de login e no painel
+    if($('versao-login')) $('versao-login').innerText = VERSAO_APP;
+    if($('versao-header')) $('versao-header').innerText = VERSAO_APP;
+    
+    if(localStorage.getItem("admin_auth")==="true") iniciarApp(); 
+};
+
+// === NOVA FUNÇÃO DE LOGIN CONECTADA COM A PLANILHA ===
+async function tentarLogin() {
+    const usr = $('input-usuario').value.trim();
+    const pwd = $('input-senha').value.trim();
+
+    if (!usr || !pwd) {
+        return alert("Preencha usuário e senha!");
+    }
+
+    const btn = $('btn-login');
+    const textoOriginal = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = "⏳ Validando no sistema...";
+
+    try {
+        const payload = { acao: "login", usuario: usr, senha: pwd };
+        const req = await fetch(API_PRECIFICACAO, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+        const res = await req.json();
+
+        if (res.sucesso) {
+            localStorage.setItem("admin_auth", "true");
+            localStorage.setItem("admin_user", res.usuario); // Salva o nome do usuário logado
+            iniciarApp();
+        } else {
+            alert(res.erro || "Usuário ou senha incorretos.");
+            $('input-senha').value = ""; // Limpa só a senha em caso de erro
+        }
+    } catch (e) {
+        alert("Erro ao conectar com o servidor: " + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
+    }
+}
+
 function verificarEnter(e){ if(e.key==="Enter") tentarLogin(); }
-function fazerLogout(){ localStorage.removeItem("admin_auth"); location.reload(); }
+
+function fazerLogout(){ 
+    localStorage.removeItem("admin_auth"); 
+    localStorage.removeItem("admin_user");
+    location.reload(); 
+}
 
 function iniciarApp(){
     $('login-screen').style.display="none"; $('app-core').style.display="block";
     if(localStorage.getItem("gemini_api_key")) $('api-key').value=localStorage.getItem("gemini_api_key");
     if(localStorage.getItem("imgbb_api_key")) $('imgbb-key').value=localStorage.getItem("imgbb_api_key");
+    
+    // Mostra o nome do usuário logado no Header se quiser
+    const userLogado = localStorage.getItem("admin_user");
+    if(userLogado && $('nome-usuario-logado')) $('nome-usuario-logado').innerText = userLogado;
     
     const h = new Date(), mStr = String(h.getMonth()+1).padStart(2,'0'), aStr = String(h.getFullYear()), dIso = h.toISOString().split('T')[0];
     $('filtro-mes').value=mStr; $('filtro-ano').value=aStr;
@@ -47,18 +103,13 @@ function iniciarApp(){
 }
 
 function switchTab(tabName, tituloAba = null) {
-    // Limpa abas do PC
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
-    // Limpa abas do Mobile (Bottom Nav)
     document.querySelectorAll('.bottom-nav-btn').forEach(b => b.classList.remove('active'));
-    // Esconde todos os conteudos
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     
-    // Ativa a aba atual
     if($('btn-'+tabName)) $('btn-'+tabName).classList.add('active');
     $('tab-'+tabName).classList.add('active');
     
-    // Ativa o botao do bottom nav se ele existir para essa aba
     if($('nav-'+tabName)) $('nav-'+tabName).classList.add('active');
 
     if(tituloAba) $('titulo-modulo-ativo').innerText = tituloAba;
