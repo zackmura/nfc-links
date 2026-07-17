@@ -18,8 +18,8 @@
         .badge-versao { font-size: 0.65rem; background: var(--primary); color: #fff; padding: 2px 6px; border-radius: 6px; vertical-align: middle; margin-left: 4px; font-weight: 800;}
     </style>
 
-    <!-- Forçando a atualização do CSS (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=1.2.0">
+    <!-- CORRIGIDO PARA CARREGAR DIRETO DA RAIZ SEM PASTAS -->
+    <link rel="stylesheet" href="style.css?v=1.2.1">
 </head>
 <body>
 
@@ -32,7 +32,7 @@
         <input type="password" id="input-senha" class="login-input" placeholder="••••••••" autocomplete="off" onkeyup="verificarEnter(event)">
         <button id="btn-login" class="btn-magic" style="margin-top:0;" onclick="tentarLogin()">🔓 Entrar no Sistema</button>
     </div>
-    <div id="versao-login" class="app-version">v1.2.0</div>
+    <div id="versao-login" class="app-version">v1.2.1</div>
 </div>
 
 <div id="app-core">
@@ -41,8 +41,8 @@
         <div class="brand-header">
             <img src="logo.png" alt="Mini Mundo 3D" onerror="this.src='logo.jpg'; this.onerror=null;">
             <h1>Central de Automação</h1>
-            <p>IA, CRM & ERP <span id="versao-header" class="badge-versao">v1.2.0</span></p>
-            <p style="font-size: 0.75rem; margin-top: 5px; color: var(--primary);">Olá, <b id="nome-usuario-logado">Visitante</b>!</p>
+            <p>IA, CRM & ERP <span id="versao-header" class="badge-versao">v1.2.1</span></p>
+            <p style="font-size: 0.75rem; margin-top: 5px; color: var(--primary);">Olá, <b id="nome-usuario-logado">Fernando</b>!</p>
             <button class="btn-logout" onclick="fazerLogout()">Sair</button>
         </div>
 
@@ -341,6 +341,7 @@
     </button>
 </div>
 
-<script src="js/app.js?v=1.2.0"></script>
+<!-- CORRIGIDO PARA CARREGAR DIRETO DA RAIZ SEM PASTAS -->
+<script src="app.js?v=1.2.1"></script>
 </body>
 </html>
