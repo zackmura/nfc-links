@@ -1,6 +1,6 @@
 const $ = id => document.getElementById(id); 
 
-const VERSAO_APP = "v1.2.2";
+const VERSAO_APP = "v1.2.3";
 
 const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
@@ -103,9 +103,6 @@ function fecharEditarVenda(){ $('custom-edit-venda-modal').style.display="none";
 function abrirModalEditarVenda(l){ const v=arrayVendas.find(x=>x.linha===l); if(!v)return; $('edit-venda-linha').value=v.linha; $('edit-venda-data').value=v.data.includes('/')?`${v.data.split('/')[2].substring(0,4)}-${v.data.split('/')[1].padStart(2,'0')}-${v.data.split('/')[0].padStart(2,'0')}`:""; $('edit-venda-status').value=v.status; $('edit-venda-cliente').value=v.cliente; $('edit-venda-produto').value=v.produto; $('edit-venda-plataforma').value=v.plataforma; $('edit-venda-qtd').value=v.qtd; $('edit-venda-valor').value=formatarDoBanco(v.valor_venda); $('custom-edit-venda-modal').style.display="flex"; }
 async function excluirRegistroLocal(aba, l, idBtn, fnFechar, fnRecarregar, apiBase=URL_ANALYTICS_CATALOGO){ const b=$(idBtn); b.disabled=true; b.innerText="⏳ Excluindo..."; try { const r=await fetch(apiBase,{method:"POST",body:JSON.stringify({acao:"excluir_registro",aba:aba,linha:l})}); const res=await r.json(); if(res.sucesso){addLog(`🗑️ Registro excluído.`, "success"); if(fnFechar)fnFechar(); if(fnRecarregar)fnRecarregar();}else throw new Error("Erro exclusão."); }catch(e){ apiBase===API_PRECIFICACAO?mostrarAlerta("Erro","Falha: "+e.message,"error"):alert("Falha: "+e.message); }finally{b.disabled=false;b.innerText="🗑️ Excluir";} }
 
-// ==========================================
-// MÓDULO ÍMAS NFC
-// ==========================================
 async function carregarImas() { $('loading-imas').style.display = 'block'; $('lista-imas-admin').innerHTML = ''; try { const r = await fetch(API_NFC + "?acao=listar"); const res = await r.json(); if (res.sucesso) { arrayImas = res.imas.reverse(); renderListaImas(arrayImas); } else throw new Error("Erro ao buscar imas."); } catch (e) { addLog(`Erro Ímãs: ${e.message}`, "error"); } finally { $('loading-imas').style.display = 'none'; } }
 function renderListaImas(arr) { const lE = $('lista-imas-admin'); if (arr.length === 0) { lE.innerHTML = "<p style='text-align:center;color:#999;padding:20px;'>Nenhum ímã cadastrado.</p>"; return; } let h = ""; arr.forEach(i => { const statusVisual = i.linkVideoYoutube ? `<span class="tag-ativo">🎬 Vídeo Ativo</span>` : `<span class="tag-pendente">⏳ Teaser</span>`; let dataFormatada = "Sem data alvo"; if(i.dataLiberacao) { let d = new Date(i.dataLiberacao); if(!isNaN(d)) dataFormatada = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} às ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; } const fotoUrl = i.foto ? i.foto.split(',')[0].trim() : 'logo.png'; const linkNfc = `https://diario.vivainteligente.net/ima-nfc/?id=${i.id}`; h += `<div class="list-item"><img src="${fotoUrl}" class="list-img" onerror="this.src='logo.png'"><div class="list-info"><h4 class="list-nome">ID: ${i.id} - ${i.nomes}</h4><div class="list-detalhes">🗓️ Liberação: ${dataFormatada}</div><div style="margin-top:8px;">${statusVisual}</div></div><button class="btn-editar" style="margin-right:8px; background:#e0f2fe; border-color:#bae6fd; color:#0369a1;" onclick="copiarLinkNfc('${linkNfc}')" title="Copiar Link">🔗 Link</button><button class="btn-editar" onclick="abrirModalEditarIma(${i.linha})">✏️</button></div>`; }); lE.innerHTML = h; }
 function copiarLinkNfc(link) { navigator.clipboard.writeText(link).then(() => { mostrarAlerta("Copiado!", "O link do ímã foi copiado para sua área de transferência!\n\nAgora é só colar no seu aplicativo e gravar na tag NFC.", "success"); }).catch(() => { alert("Erro ao copiar o link. Você pode copiar manualmente: " + link); }); }
@@ -116,14 +113,12 @@ function abrirModalEditarIma(l) { const i = arrayImas.find(x => x.linha === l); 
 async function salvarEdicaoIma() { const b = $('btn-salvar-edicao-ima'); b.disabled = true; b.innerText = "⏳ Atualizando..."; try { const ik = $('imgbb-key').value.trim(); const idAtual = arrayImas.find(x => x.linha == parseInt($('edit-ima-linha').value)).id; let fotoFinal = $('edit-ima-foto-antiga').value; const novaFoto = $('edit-ima-foto').files; let fotoProdFinal = $('edit-ima-foto-prod-antiga').value; const novaFotoProd = $('edit-ima-foto-prod').files; if(novaFoto.length > 0) { addLog(`Atualizando foto do cliente...`, "info"); fotoFinal = await fazerUploadRedundante(await comprimirImagem(novaFoto[0], 600, 600, 0.8), ik); } if(novaFotoProd.length > 0) { addLog(`Atualizando foto do produto...`, "info"); fotoProdFinal = await fazerUploadRedundante(await comprimirImagem(novaFotoProd[0], 600, 600, 0.8), ik); } let dataLiberacaoStr = ""; if($('edit-ima-data').value) { dataLiberacaoStr = $('edit-ima-data').value + ":00"; } const p = { acao: "atualizar_ima", linha: $('edit-ima-linha').value, id: idAtual, nomes: $('edit-ima-nomes').value, foto: fotoFinal, linkVideoYoutube: $('edit-ima-video').value, dataLiberacao: dataLiberacaoStr, fotoProduto: fotoProdFinal }; const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) }); const res = await r.json(); if(res.sucesso) { addLog(`✅ Mágica Atualizada!`, "success"); $('modal-editar-ima').style.display = 'none'; carregarImas(); } else throw new Error("Erro API."); } catch (e) { addLog(`❌ Erro Update: ${e.message}`, "error"); } finally { b.disabled = false; b.innerText = "💾 Atualizar Mágica"; } }
 function confirmarExclusaoIma() { const l = parseInt($('edit-ima-linha').value); const i = arrayImas.find(x => x.linha === l); if(!i) return; $('nome-ima-excluir').innerText = i.nomes; $('modal-confirmar-exclusao-ima').style.display = 'flex'; $('btn-executar-exclusao-ima').onclick = function() { $('modal-confirmar-exclusao-ima').style.display = 'none'; excluirRegistroLocal("API_Ignora_Isso", l, "btn-excluir-ima-modal", () => $('modal-editar-ima').style.display='none', carregarImas, API_NFC); }; }
 
-// ADMIN: ANALYTICS
 function limparDatasManuais(){ $('data-inicio').value=""; $('data-fim').value=""; } function limparFiltrosRapidos(){ $('filtro-mes').value="todos"; $('filtro-ano').value="todos"; }
 async function carregarAnalytics(forcar=false){ if(dadosTotaisAcessos.length>0&&!forcar)return; $('loading-analytics').style.display='block'; $('painel-dashboard').style.display='none'; try{ const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=analytics"); const res=await r.json(); if(res.sucesso){dadosTotaisAcessos=res.dados; aplicarFiltros();}else throw new Error(res.erro); }catch(e){$('loading-analytics').style.display='none'; addLog(`❌ Erro Analytics: ${e.message}`,"error");} }
 function aplicarFiltros(){ $('loading-analytics').style.display='none'; const mS=$('filtro-mes').value, aS=$('filtro-ano').value, tS=$('filtro-time').value.toLowerCase(), dI=$('data-inicio').value, dF=$('data-fim').value; const filtrados=dadosTotaisAcessos.filter(i=>{ if(!i.data||!i.time)return false; if(tS!=="todos"){let tr=i.time.toLowerCase(); if(tS==="são paulo"&&(tr==="sao paulo"||tr==="são paulo")){}else if(tr!==tS)return false;} const dT=new Date(i.data); if(dI===""&&dF===""){if(aS!=="todos"&&String(dT.getFullYear())!==aS)return false; if(mS!=="todos"&&String(dT.getMonth()+1).padStart(2,'0')!==mS)return false; return true;} if(dI!==""&&dF!==""){const di=new Date(dI),df=new Date(dF); df.setHours(23,59,59); return dT>=di&&dT<=df;} return true; }); processarDashboard(filtrados); $('painel-dashboard').style.display='block'; }
 function processarDashboard(arr){ $('dash-total').innerText=arr.length; if(arr.length===0){ $('dash-media').innerText=`Média: 0/dia`; $('lista-ranking').innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhum acesso.</p>"; $('nome-campeao').innerText="-"; $('img-campeao').style.display="none"; $('dash-campeao').className="valor"; $('dash-pico').innerText=`Pico: Nenhum`; if(graficoInstancia)graficoInstancia.destroy(); return; } const cT={}, cD={}; arr.forEach(l=>{let t=String(l.time).trim(), d=l.data; if(t)cT[t]=(cT[t]||0)+1; if(d)cD[d]=(cD[d]||0)+1; }); const td=Object.keys(cD).length; $('dash-media').innerText=`Média: ${td>0?(arr.length/td).toFixed(1):0} acessos/dia`; let mD="", mAd=0; for(const d in cD){if(cD[d]>mAd){mAd=cD[d];mD=d;}} let dL=""; if(mD){const a=mD.split('-'); if(a.length===3)dL=`${a[2]}/${a[1]}`;} $('dash-pico').innerText=`Pico: ${mAd} toques (${dL})`; const aR=Object.keys(cT).map(t=>({nome:t,acessos:cT[t]})).sort((a,b)=>b.acessos-a.acessos); const c=aR[0], iC=TIMES_INFO[c.nome.toLowerCase()]||{cor:"var(--brand-dark)",logo:""}; $('nome-campeao').innerText=c.nome; const img=$('img-campeao'); if(iC.logo){img.src=iC.logo;img.style.display="block";}else img.style.display="none"; $('dash-campeao').className="valor "+(iC.classText||""); let hR="", lg=[], dg=[], cg=[]; const maxA=aR[0].acessos; aR.forEach((i)=>{lg.push(i.nome);dg.push(i.acessos);let iT=TIMES_INFO[i.nome.toLowerCase()]||{cor:"var(--primary)",logo:""}; cg.push(iT.cor); let p=Math.round((i.acessos/maxA)*100); hR+=`<div class="ranking-item"><div class="ranking-nome"><img src="${iT.logo}" onerror="this.style.display='none'"><span class="${iT.classText||''}">${i.nome}</span></div><div class="progresso-bg"><div class="progresso-bar" style="width:${p}%; background-color:${iT.cor};"></div></div><div class="ranking-valor" style="color:${iT.cor};">${i.acessos}</div></div>`;}); $('lista-ranking').innerHTML=hR; renderizarGrafico(lg,dg,cg); }
 function renderizarGrafico(l,d,c){ const ctx=$('graficoAcessos').getContext('2d'); if(graficoInstancia)graficoInstancia.destroy(); graficoInstancia=new Chart(ctx,{type:'bar',data:{labels:l,datasets:[{data:d,backgroundColor:c,borderRadius:8,borderWidth:0,barPercentage:0.6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#4E342E',titleFont:{size:14,family:'Inter'},bodyFont:{size:16,weight:'bold',family:'Inter'},padding:12,displayColors:false,callbacks:{label:ctx=>ctx.parsed.y+' toques'}}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,precision:0}},x:{grid:{display:false}}},animation:{duration:800,easing:'easeOutQuart'}}}); }
 
-// ADMIN: ANÚNCIOS
 function ativarNotificacoesBrowser(){ if("Notification" in window){Notification.requestPermission().then(p=>{if(p==="granted"){$('btn-notifica').style.display="none";try{new Notification("Mini Mundo",{body:"Alertas ativados!",icon:"logo.png"});}catch(e){}}});} }
 function dispararAlertaSeHouverNovos(nA){ let pA=nA.filter(a=>a.status==="PENDENTE").length; if(quantidadeAnunciosPendentes===-1){quantidadeAnunciosPendentes=pA;return;} if(pA>quantidadeAnunciosPendentes){let eN=nA[nA.length-1].empresa; addLog(`🔔 ALERTA: Solicitação de ${eN}`,"warn"); try{if("Notification" in window&&Notification.permission==="granted"){new Notification("🚀 Novo Anunciante!",{body:`Empresa ${eN} solicitou anúncio.`,icon:"logo.png"});}}catch(e){} try{if("vibrate" in navigator)navigator.vibrate([200,100,200]);}catch(e){}} quantidadeAnunciosPendentes=pA; }
 async function carregarAnunciosAdmin(s=false){ if(!s){$('loading-anuncios').style.display='block';$('lista-anuncios-admin').innerHTML='';} try{const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=anuncios_admin");const res=await r.json(); if(res.sucesso){anunciosAdminArray=res.anuncios.slice().reverse(); dispararAlertaSeHouverNovos(res.anuncios); if(!s||$('lista-anuncios-admin').innerHTML==="")renderListaAnuncios(anunciosAdminArray);}}catch(e){if(!s)addLog(`Erro anúncios: ${e.message}`,"error");}finally{$('loading-anuncios').style.display='none';} }
@@ -133,7 +128,6 @@ function abrirModalEditarAnuncio(l){ const a=anunciosAdminArray.find(x=>x.linha=
 function confirmarExclusaoAnuncio(){ const l=parseInt($('edit-ad-linha').value); const a=anunciosAdminArray.find(x=>x.linha===l); if(!a)return; if(a.vencimento){const hj=new Date();hj.setHours(0,0,0,0);const p=a.vencimento.split('-');const vc=new Date(p[0],p[1]-1,p[2]);vc.setHours(23,59,59,999);if(vc>=hj){alert("❌ BLOQUEADO: Anúncio vigente.");return;}} if(confirm(`EXCLUIR anúncio da ${a.empresa}?`)) excluirRegistroLocal("Anuncios",l,"btn-excluir-ad",()=>$('modal-editar-anuncio').style.display='none',carregarAnunciosAdmin,URL_ANALYTICS_CATALOGO); }
 async function salvarEdicaoAnuncio(){ const btn=$('btn-salvar-edicao-ad'); btn.disabled=true; btn.innerText="⏳ Salvando..."; try{ const ik=$('imgbb-key').value.trim(); let lL=$('edit-ad-logo-antiga').value, lB=$('edit-ad-foto-antiga').value; const iL=$('edit-ad-logo-nova'); if(iL.files.length>0){addLog("Enviando logo...","info"); lL=await fazerUploadInteligente(await comprimirImagem(iL.files[0],400,400,0.8),ik,true);} const iB=$('edit-ad-banner-novo'); if(iB.files.length>0){addLog("Enviando banner...","info"); lB=await fazerUploadInteligente(await comprimirImagem(iB.files[0],800,800,0.8),ik,true);} const p={acao:"atualizar_anuncio",linha:$('edit-ad-linha').value,status:$('edit-ad-status').value,vencimento:$('edit-ad-vencimento').value,valor_negociado:$('edit-ad-valor').value,descricao:$('edit-ad-desc').value,cupom:$('edit-ad-cupom').value,logo:lL,foto:lB}; const r=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){addLog(`✅ Anúncio OK!`,"success");$('modal-editar-anuncio').style.display='none';carregarAnunciosAdmin();}else throw new Error("Erro planilha."); }catch(e){alert("Erro: "+e.message);addLog(`❌ Erro: ${e.message}`,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar";} }
 
-// ADMIN: CATÁLOGO LOJA E IA
 async function carregarCatalogoAdmin(){ $('loading-catalogo').style.display='block'; $('lista-produtos-admin').innerHTML=''; try{ const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=catalogo_admin"); const res=await r.json(); if(res.sucesso){catalogoAdminArray=res.produtos.slice().reverse();renderListaCatalogo(catalogoAdminArray);} }catch(e){addLog(`Erro catálogo: ${e.message}`,"error");}finally{$('loading-catalogo').style.display='none';} }
 function renderListaCatalogo(aP){ const lE=$('lista-produtos-admin'); if(aP.length===0){lE.innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhum produto.</p>";return;} let h=""; aP.forEach(p=>{const fP=p.foto.split(',')[0].trim()||'logo.png',sB=p.ativo?`<span class="tag-ativo">Ativo</span>`:`<span class="tag-inativo">Inativo</span>`; h+=`<div class="list-item"><img src="${fP}" class="list-img" onerror="this.src='logo.png'"><div class="list-info"><h4 class="list-nome">${p.nome}</h4><div class="list-detalhes"><span style="color:var(--primary);font-weight:800;">${formatarPreco(p.preco)}</span> • ${p.categoria} </div><div style="margin-top:8px;">${sB}</div></div><button class="btn-editar" onclick="abrirModalEditarProduto(${p.linha})">✏️</button></div>`;}); lE.innerHTML=h; }
 function filtrarCatalogo(){ const t=$('busca-catalogo').value.toLowerCase(); renderListaCatalogo(catalogoAdminArray.filter(p=>p.nome.toLowerCase().includes(t)||p.categoria.toLowerCase().includes(t)||String(p.preco).toLowerCase().includes(t))); }
@@ -147,7 +141,6 @@ async function fazerUploadInteligente(fC,ik,iA=false){ try{ const fd=new FormDat
 
 async function cadastrarProdutoIA(){ const ak=$('api-key').value.trim(), ik=$('imgbb-key').value.trim(), n=$('prod-nome').value.trim(), p=$('prod-preco').value.trim(), f=$('prod-fotos').files, b=$('btn-salvar-produto'); if(!ak){switchTab('config');return addLog("❌ ERRO: Coloque a chave da IA (Gemini)!","error");} if(!n||!p||f.length===0)return addLog("⚠️ Preencha Nome, Preço e escolha Foto.","warn"); b.disabled=true; b.innerText="⏳ Analisando..."; try{ addLog(`Cadastrando: ${n}...`,"warn"); const b6=await fileToBase64(f[0]); let ls=[]; for(let i=0;i<f.length;i++){addLog(`⏳ Foto ${i+1}...`,"info"); const urlF=await fazerUploadInteligente(await comprimirImagem(f[i],1000,1000,0.8),ik,false); ls.push(urlF); addLog(`✅ Foto ${i+1} online.`,"success");} addLog(`🤖 IA criando copy...`,"info"); const pr=`Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda EXATAMENTE neste formato (sem asteriscos ou negrito):\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`; const rI=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ak}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr},{inlineData:{mimeType:f[0].type,data:b6}}]}]})}); if(!rI.ok)throw new Error("IA não respondeu."); const dI=await rI.json(); const resIA=dI.candidates[0].content.parts[0].text; let ds="Exclusivo Mini Mundo 3D.", ct="Geral"; let mD=resIA.match(/descri[cç][aã]o:\s*(.*)/i); if(mD)ds=mD[1].replace(/\*/g,'').trim(); let mC=resIA.match(/categoria:\s*(.*)/i); if(mC)ct=mC[1].replace(/\*/g,'').trim(); addLog(`💾 Salvando na Planilha...`,"info"); const rS=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify({acao:"salvar_produto",nome:n,descricao:ds,preco:p,foto:ls.join(","),categoria:ct})}); const resS=await rS.json(); if(resS.sucesso){addLog(`🎉 PRODUTO CADASTRADO!`,"success");$('prod-nome').value="";$('prod-preco').value="";$('prod-fotos').value="";carregarCatalogoAdmin();}else throw new Error("API falhou."); }catch(e){addLog(`❌ ERRO: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="✨ Enviar e Cadastrar";} }
 
-// ADMIN: QUIZ E CHAVES
 function salvarChaves(){ localStorage.setItem("gemini_api_key",$('api-key').value); localStorage.setItem("imgbb_api_key",$('imgbb-key').value); }
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 function atualizarBadgeUltimo(){ const uT=localStorage.getItem("ultimo_time_gerado"), uH=localStorage.getItem("ultimo_horario_gerado"); if(uT&&uH)$('badge-ultimo').innerHTML=`🕒 Último: <b>${uT}</b> (${uH})`; }
@@ -155,7 +148,6 @@ async function carregarInfoBanco(){ const s=$('time'), bT=$('badge-total'); bT.i
 async function processarTimeUnico(tN,tU,q,aK,t,d,mR){ addLog(`>> GERANDO: ${tN.toUpperCase()}`,"warn"); const pr=`Gere ${q} perguntas sobre história do ${tN} (Dificuldade: ${d}). ${t?`Tema OBRIGATÓRIO: "${t}".`:`Varie temas.`}\nREGRAS: Fatos históricos, max 15 palavras/perg, max 4 palavras/opc.\nFormato ESTRITO:\nPergunta: [Texto]\nA) [Opc 1]\nB) [Opc 2]\nC) [Opc 3]\nD) [Opc 4]\nCorreta: [1 a 4]\nAPENAS o texto puro.`; let tx=null; for(let i=1;i<=3;i++){const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${aK}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr}]}]})}); if(r.ok){const ds=await r.json();tx=ds.candidates[0].content.parts[0].text;addLog(`IA respondeu!`,"success");break;} if(r.status===429&&i<3){addLog(`⚠️ Limite IA. Tentando em 5s...`,"warn");await delay(5000);continue;} throw new Error(`IA recusou (${r.status}).`);} const pg=[]; tx.split(/(?:Pergunta|Q):/i).filter(b=>b.trim().length>0).forEach(b=>{const l=b.trim().split('\n').map(x=>x.trim()).filter(x=>x!==''); if(l.length>=5){let c=1,lC=l.find(x=>/Correta/i.test(x));if(lC){let m=lC.match(/\d+/);if(m)c=parseInt(m[0]);} pg.push({pergunta:l[0],opcoes:[l[1].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[2].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[3].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[4].replace(/^[A-D1-4][\)\.-]?\s*/i,'')],correta:c});} }); if(pg.length===0)throw new Error("IA gerou texto inválido."); addLog(`Geradas ${pg.length} perguntas.`,"info"); if(mR)addLog(`⚠️ Reciclagem!`,"error"); const rP=await fetch(tU,{method:"POST",body:JSON.stringify({acao:"salvar_quiz",perguntas:pg,substituir:mR})}); const rS=await rP.json(); if(rS.sucesso){addLog(`✅ SUCESSO!`,"success");localStorage.setItem("ultimo_time_gerado",tN);localStorage.setItem("ultimo_horario_gerado",new Date().toLocaleString('pt-BR'));}else throw new Error(rS.erro); }
 async function iniciarAutomacao(mG){ const aK=$('api-key').value.trim(); if(!aK){switchTab('config');return addLog("ERRO: Chave Gemini!","error");} const q=$('qtd').value,t=$('tema').value.trim(),d=$('dificuldade').value,mR=$('substituir').checked,bU=$('btn-iniciar'),bG=$('btn-global'); bU.disabled=true;bG.disabled=true; try{ if(mG){addLog(`--- LOTE GLOBAL ---`,"warn"); const o=Array.from($('time').options); for(let i=0;i<o.length;i++){try{await processarTimeUnico(o[i].getAttribute("data-nome"),o[i].value,q,aK,t,d,mR);}catch(e){addLog(`❌ ERRO ${o[i].getAttribute("data-nome")}: ${e.message}`,"error");} if(i<o.length-1){addLog("Aguardando 5s...","info");await delay(5000);}} addLog(`--- FINALIZADO ---`,"success");}else{const s=$('time');await processarTimeUnico(s.options[s.selectedIndex].getAttribute("data-nome"),s.value,q,aK,t,d,mR);} atualizarBadgeUltimo();carregarInfoBanco(); }catch(er){addLog(`FALHA: ${er.message}`,"error");}finally{bU.disabled=false;bG.disabled=false;} }
 
-// ERP: CALCULADORA E MODELOS
 function toggleConfig(){ const a=$('area-config'); a.style.display=a.style.display==="block"?"none":"block"; }
 function calcular(){ const vW=parseFloat($('v-watts').value)||0, vK=parseFloat($('v-kwh').value)||0, vM=parseFloat($('v-maq').value)||0, vH=parseFloat($('v-hora').value)||0, f=parseFloat($('v-filamento').value)||0, p=parseFloat($('v-peso').value)||0, tI=parseFloat($('v-tempo-imp').value)||0, tM=parseFloat($('v-tempo-mao').value)||0, ins=parseFloat($('v-insumos').value)||0; const cMat=(f/1000)*p, cEne=(vW/1000)*tI*vK, cDep=tI*vM, cHum=tM*vH, cFa=(cMat+cEne+cDep+cHum)*0.10, cTot=cMat+cEne+cDep+cHum+cFa+ins; custoTotalGlobal=cTot; $('r-material').innerText=fmt(cMat); $('r-energia').innerText=fmt(cEne); $('r-deprec').innerText=fmt(cDep); $('r-humano').innerText=fmt(cHum); $('r-falha').innerText=fmt(cFa); $('r-insumos').innerText=fmt(ins); $('r-total').innerText=fmt(cTot); const psMi=(cTot*2)+cHum, psMa=(cTot*3)+cHum, pdMi=(cTot*4)+cHum, pdMa=(cTot*6)+cHum; $('m-simples-preco').innerText=`${fmt(psMi)} ou ${fmt(psMa)}`; $('m-simples-lucro').innerText=`Lucro: ${fmt(psMi-cTot)} a ${fmt(psMa-cTot)}`; $('m-decor-preco').innerText=`${fmt(pdMi)} ou ${fmt(pdMa)}`; $('m-decor-lucro').innerText=`Lucro: ${fmt(pdMi-cTot)} a ${fmt(pdMa-cTot)}`; }
 async function salvarBancoModelos(){ const m=$('v-modelo').value.trim(); if(!m)return mostrarAlerta("Atenção","Digite o Nome do Modelo.","warning"); const btn=$('btn-salvar-custo'); btn.disabled=true; btn.innerText="⏳ Salvando..."; try{ const p={acao:"salvar_custo",modelo:m,peso:$('v-peso').value,tempo:$('v-tempo-imp').value,insumos:fmtPlanilha(parseFloat($('v-insumos').value)||0),custo_total:fmtPlanilha(custoTotalGlobal)}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Sucesso!","Produto salvo!","success");$('v-modelo').value="";}else if(res.erro==="DUPLICADO"){mostrarAlerta("Duplicado","Já existe no banco.","warning");}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar Modelo no Banco";} }
@@ -163,7 +155,6 @@ async function carregarBancoDeCustos(){ $('loading-banco').style.display="block"
 function renderizarListaBanco(aP){ const lD=$('lista-banco'); lD.innerHTML=""; if(aP.length===0){lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;font-weight:600;'>Nenhum modelo.</p>";return;} let h=""; aP.forEach(p=>{h+=`<div class="produto-banco-card"><div class="pb-info"><h4 class="pb-nome">${p.modelo}</h4><div class="pb-detalhes"><span class="pb-tag">⚖️ ${p.peso||"0"}g</span><span class="pb-tag">⏱️ ${p.tempo||"0"}h</span><span class="pb-tag">📦 ${formatarDoBanco(p.insumos)}</span></div></div><div class="pb-custo">${formatarDoBanco(p.custo_total)}</div></div>`;}); lD.innerHTML=h; }
 function filtrarBanco(){ const t=$('busca-banco').value.toLowerCase(); renderizarListaBanco(arrayBancoCustos.filter(p=>p.modelo.toLowerCase().includes(t))); }
 
-// ERP: DESPESAS
 function calcularDespesaTotal(){ const q=parseFloat($('d-qtd').value.replace(',','.'))||1, vU=limparValorPlanilha($('d-valor-uni').value); despesaTotalCalculada=q*vU; $('d-total-calc').innerText=fmt(despesaTotalCalculada); }
 async function carregarDespesas(){ $('loading-despesas').style.display="block"; $('lista-despesas').innerHTML=""; try{ const r=await fetch(API_PRECIFICACAO+"?acao=listar_despesas"); const res=await r.json(); if(res.sucesso){arrayDespesas=res.despesas;alimentarDatalistE_Filtro(arrayDespesas);filtrarDespesas();}else throw new Error(res.erro); }catch(e){$('loading-despesas').innerHTML="❌ Erro.";}finally{$('loading-despesas').style.display="none";} }
 function alimentarDatalistE_Filtro(aD){ const dI=$('lista-itens-sugestao'), dL=$('lista-locais-sugestao'), fL=$('filtro-d-local'); const iU=[...new Set(aD.map(d=>d.item.trim()))].filter(i=>i), lU=[...new Set(aD.map(d=>d.local.trim()))].filter(i=>i); dI.innerHTML=iU.map(n=>`<option value="${n}">`).join(''); dL.innerHTML=lU.map(n=>`<option value="${n}">`).join(''); fL.innerHTML='<option value="todos">Todos os Locais</option>'+lU.map(n=>`<option value="${n}">${n}</option>`).join(''); }
@@ -171,6 +162,7 @@ function limparFiltrosDespesas(){ $('filtro-d-mes').value="todos"; $('filtro-d-a
 function filtrarDespesas(){ const mS=$('filtro-d-mes').value, aS=$('filtro-d-ano').value, lS=$('filtro-d-local').value.toLowerCase(), tB=$('busca-despesa').value.toLowerCase(); const flt=arrayDespesas.filter(d=>{ if(tB&&!d.item.toLowerCase().includes(tB))return false; if(lS!=="todos"&&d.local.toLowerCase()!==lS)return false; if(mS!=="todos"||aS!=="todos"){let pt=[]; if(d.data.includes('/'))pt=d.data.split('/'); else if(d.data.includes('-')){let p=d.data.split('-');pt=[p[2],p[1],p[0]];} else if(d.data.includes(' ')){let td=new Date(d.data);if(!isNaN(td))pt=[td.getDate(),String(td.getMonth()+1).padStart(2,'0'),td.getFullYear()];} if(pt.length>=3){let m=String(pt[1]).padStart(2,'0'), a=String(pt[2]).substring(0,4); if(mS!=="todos"&&m!==mS)return false; if(aS!=="todos"&&a!==aS)return false;}else return false;} return true; }); renderizarListaDespesas(flt); }
 function renderizarListaDespesas(aD){ const lD=$('lista-despesas'); lD.innerHTML=""; let sT=0; if(aD.length===0){lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;font-weight:600;'>Nenhuma despesa.</p>";$('total-despesas-valor').innerText="R$ 0,00";return;} let h=""; aD.forEach(d=>{let nG=limparValorPlanilha(d.valor); sT+=nG; let dH=`<div class="pb-detalhes" style="flex-direction:column;gap:8px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${d.data}</span><span style="color:#64748b;">🏢 ${d.local}</span></div>`; if(d.quantidade&&d.preco_uni&&d.preco_uni!=="R$ 0,00"){dH+=`<div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📦 Qtd: ${d.quantidade}</span><span style="color:#64748b;">💲 ${formatarDoBanco(d.preco_uni)} /un</span></div>`;} dH+=`</div>`; h+=`<div class="produto-banco-card"><div class="pb-info"><h4 class="pb-nome" style="color:#334155;">${d.item}</h4>${dH}</div><div class="pb-custo" style="background:transparent;border:none;color:#ef4444;font-size:1.1rem;padding-right:0;">- ${fmt(nG)}</div></div>`;}); lD.innerHTML=h; $('total-despesas-valor').innerText=fmt(sT); }
 async function salvarDespesa(){ const dC=$('d-data').value, lC=$('d-local').value.trim(), iC=$('d-item').value.trim(), qC=$('d-qtd').value, vU=$('d-valor-uni').value; if(!dC||!iC||!vU||!lC)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-despesa'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const p={acao:"salvar_despesa",item:iC,local:lC,data:dC.split('-').reverse().join('/'),quantidade:qC,preco_uni:fmtPlanilha(limparValorPlanilha(vU)),preco_total:fmtPlanilha(despesaTotalCalculada)}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Lançado!","Registrado.","success");$('d-item').value="";$('d-valor-uni').value="";$('d-qtd').value="1";calcularDespesaTotal();carregarDespesas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💳 Lançar Despesa";} }
+
 
 // ==========================================
 // ERP: VENDAS, RELATÓRIOS E AÇÕES EM LOTE
@@ -181,8 +173,8 @@ function formatarTextoZap(texto) { return encodeURIComponent(texto); }
 function enviarZapCobranca(linha) {
     const v = arrayVendas.find(x => x.linha === linha);
     if(!v) return;
-    let inputEl = document.getElementById(`lote-nome-${linha}`);
-    let nome = inputEl ? inputEl.value.trim() : v.cliente.split(' ')[0];
+    let inputEl = document.getElementById('lote-nome-personalizado');
+    let nome = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : v.cliente;
     let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para lembrar sobre o pagamento do seu pedido:\n\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nAssim que puder, nos envie o comprovante para darmos andamento à produção! Qualquer dúvida, estamos à disposição. 🚀`;
     window.open(`https://api.whatsapp.com/send?text=${formatarTextoZap(texto)}`, '_blank');
 }
@@ -190,8 +182,8 @@ function enviarZapCobranca(linha) {
 function enviarZapRecibo(linha) {
     const v = arrayVendas.find(x => x.linha === linha);
     if(!v) return;
-    let inputEl = document.getElementById(`lote-nome-${linha}`);
-    let nome = inputEl ? inputEl.value.trim() : v.cliente.split(' ')[0];
+    let inputEl = document.getElementById('lote-nome-personalizado');
+    let nome = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : v.cliente;
     let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para confirmar o recebimento do seu pagamento!\n\n✅ *Status:* PAGO\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor Pago:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nMuito obrigado pela confiança! Seu pedido está sendo preparado com muito carinho nas nossas impressoras. 🖨️✨`;
     window.open(`https://api.whatsapp.com/send?text=${formatarTextoZap(texto)}`, '_blank');
 }
@@ -205,7 +197,7 @@ function solicitarNomeDocumento(linha, tipo) {
     
     $('recibo-linha-atual').value = linha;
     $('recibo-tipo-atual').value = tipo;
-    $('input-nome-recibo').value = v.cliente.split(' ')[0]; // Sugere o primeiro nome
+    $('input-nome-recibo').value = v.cliente; // Traz o nome completo por padrão
     $('modal-nome-recibo').style.display = 'flex';
 }
 
@@ -227,44 +219,76 @@ function executarDocumentoUnico() {
 }
 
 // ----------------------------------------------------
-// AÇÕES EM LOTE (PDF AGRUPADO)
+// AÇÕES EM LOTE (COM SELEÇÃO DE CLIENTE)
 // ----------------------------------------------------
+let loteAtualTipo = 'Pendente';
+
 function abrirModalAcoesLote() {
     $('modal-acoes-lote').style.display = 'flex';
     carregarLote('Pendente'); 
 }
 
 function carregarLote(tipo) {
+    loteAtualTipo = tipo;
     $('btn-lote-pendentes').classList.remove('active');
     $('btn-lote-pagos').classList.remove('active');
     $('btn-lote-' + (tipo === 'Pendente' ? 'pendentes' : 'pagos')).classList.add('active');
 
-    const btnPdf = $('btn-gerar-pdf-lote');
-    btnPdf.onclick = () => gerarPDFLote(tipo);
-
-    const lista = $('lista-acoes-lote');
+    const select = $('lote-select-cliente');
     const filtrados = vendasFiltradasAtuais.filter(v => v.status.toLowerCase() === tipo.toLowerCase());
 
     if(filtrados.length === 0) {
-        lista.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px; font-weight:700;">Nenhuma venda ${tipo.toLowerCase()} no filtro atual.</p>`;
+        select.innerHTML = '<option value="">Nenhuma venda encontrada no filtro</option>';
+        select.disabled = true;
+        $('lista-acoes-lote').innerHTML = '';
+        $('lote-nome-personalizado').value = '';
         return;
     }
 
+    select.disabled = false;
+    
+    // Obter lista única de clientes
+    const clientesSet = new Set(filtrados.map(v => v.cliente.trim()));
+    const clientesArr = [...clientesSet].sort();
+
+    select.innerHTML = '<option value="">-- Escolha um cliente --</option>' + 
+                       clientesArr.map(c => `<option value="${c}">${c}</option>`).join('');
+    
+    $('lista-acoes-lote').innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:10px; font-size:0.8rem;">Selecione um cliente acima para ver os pedidos.</p>';
+    $('lote-nome-personalizado').value = '';
+    
+    $('btn-gerar-pdf-lote').onclick = () => gerarPDFLote(tipo);
+}
+
+function selecionarClienteLote() {
+    const clienteSel = $('lote-select-cliente').value;
+    const lista = $('lista-acoes-lote');
+    
+    if(!clienteSel) {
+        lista.innerHTML = '';
+        $('lote-nome-personalizado').value = '';
+        return;
+    }
+
+    $('lote-nome-personalizado').value = clienteSel; // Preenche com nome completo por padrão
+
+    const filtrados = vendasFiltradasAtuais.filter(v => v.status.toLowerCase() === loteAtualTipo.toLowerCase() && v.cliente.trim() === clienteSel);
+    
     let h = "";
     filtrados.forEach(v => {
-        let onClickFn = tipo === 'Pendente' ? `enviarZapCobranca(${v.linha})` : `enviarZapRecibo(${v.linha})`;
-        let nomeCurto = v.cliente.split(' ')[0];
-
+        let onClickFn = loteAtualTipo === 'Pendente' ? `enviarZapCobranca(${v.linha})` : `enviarZapRecibo(${v.linha})`;
         h += `
         <div class="lote-item">
-            <input type="checkbox" class="lote-check" value="${v.linha}">
+            <input type="checkbox" class="lote-check" value="${v.linha}" checked>
             <div style="flex-grow:1; overflow:hidden;">
-                <input type="text" id="lote-nome-${v.linha}" class="lote-input-nome" value="${nomeCurto}" title="Edite o nome que vai na mensagem/PDF">
-                <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.2;">
-                    ${v.produto} (x${v.qtd}) <br> <b style="color:var(--primary);">${fmt(limparValorPlanilha(v.valor_venda))}</b>
+                <div style="font-size:0.8rem; color:var(--brand-dark); font-weight:800; line-height:1.2; margin-bottom:3px;">
+                    ${v.qtd}x ${v.produto}
+                </div>
+                <div style="font-size:0.7rem; color:var(--text-muted);">
+                    Data: ${v.data} | <b style="color:var(--primary);">${fmt(limparValorPlanilha(v.valor_venda))}</b>
                 </div>
             </div>
-            <button class="btn-editar" style="background:#25D366; color:#fff; border:none; padding:10px; font-size:1.2rem; border-radius:10px; box-shadow:0 4px 6px rgba(37,211,102,0.3);" title="Enviar WhatsApp Individual" onclick="${onClickFn}">💬</button>
+            <button class="btn-editar" style="background:#25D366; color:#fff; border:none; padding:8px; font-size:1rem; border-radius:8px; box-shadow:0 4px 6px rgba(37,211,102,0.3);" title="Enviar WhatsApp Individual" onclick="${onClickFn}">💬</button>
         </div>`;
     });
     lista.innerHTML = h;
@@ -272,18 +296,16 @@ function carregarLote(tipo) {
 
 function gerarPDFLote(tipo) {
     const checks = document.querySelectorAll('.lote-check:checked');
-    if (checks.length === 0) return mostrarAlerta("Atenção", "Marque a caixa de seleção de pelo menos um cliente para gerar o PDF.", "warning");
+    if (checks.length === 0) return mostrarAlerta("Atenção", "Selecione pelo menos um pedido do cliente.", "warning");
 
-    // Agrupa todos os selecionados pelo Nome Editado
+    const nomeEditado = $('lote-nome-personalizado').value.trim() || "Cliente";
     const grupos = {};
+    grupos[nomeEditado] = [];
+
     checks.forEach(chk => {
         const l = parseInt(chk.value);
         const v = arrayVendas.find(x => x.linha === l);
-        if(!v) return;
-
-        const nomeEditado = document.getElementById(`lote-nome-${l}`).value.trim() || "Cliente";
-        if(!grupos[nomeEditado]) grupos[nomeEditado] = [];
-        grupos[nomeEditado].push(v);
+        if(v) grupos[nomeEditado].push(v);
     });
 
     gerarHTMLImpressao(grupos, tipo);
@@ -292,7 +314,7 @@ function gerarPDFLote(tipo) {
 // === O MOTOR DO PDF ESTILIZADO ===
 function gerarHTMLImpressao(grupos, tipo) {
     let titulo = tipo === 'Pendente' ? 'LEMBRETE DE COBRANÇA' : 'RECIBO DE PAGAMENTO';
-    let corDestaque = tipo === 'Pendente' ? '#f59e0b' : '#10b981'; // Laranja p/ Cobrança, Verde p/ Recibo
+    let corDestaque = tipo === 'Pendente' ? '#f59e0b' : '#10b981'; 
     let corTextoDestaque = tipo === 'Pendente' ? '#b45309' : '#059669';
     let iconeTopo = tipo === 'Pendente' ? '🔔' : '🧾';
 
@@ -331,7 +353,7 @@ function gerarHTMLImpressao(grupos, tipo) {
         vendas.forEach(v => {
             let val = limparValorPlanilha(v.valor_venda);
             total += val;
-            let metaExtra = tipo === 'Pago' ? `| Pago em: ${v.data}` : `| Plataforma: ${v.plataforma}`;
+            let metaExtra = tipo === 'Pago' ? `| Pago em: ${v.data}` : ``; // REMOVIDO A PLATAFORMA AQUI
             
             itensHtml += `
             <div class="item-row">
@@ -460,7 +482,6 @@ function renderizarListaVendas(aV){
         sQ+=nQ; if(isP)sP+=nV;else sPa+=nV; sL+=nL; 
         let cs=isP?"card-pendente":"", em=isP?"🟡":"🟢", lS=v.lucro&&nL>0?`💰 Lucro: ${formatarDoBanco(v.lucro)}`:"";
         
-        // NOVOS BOTÕES ESTILO NOVERA
         let bB = isP 
             ? `<div class="acoes-venda-box">
                  <button class="btn-novera btn-n-cobranca" onclick="solicitarNomeDocumento(${v.linha}, 'Pendente')" title="Gerar Lembrete">🔔</button>
@@ -470,31 +491,29 @@ function renderizarListaVendas(aV){
                  <button class="btn-novera btn-n-recibo" onclick="solicitarNomeDocumento(${v.linha}, 'Pago')" title="Gerar Recibo">🧾</button>
                </div>`;
 
-        h+=`<div class="produto-banco-card ${cs}">
+        // LAYOUT DO CARD MAIS COMPACTO AQUI
+        h+=`<div class="produto-banco-card ${cs}" style="padding:12px; margin-bottom:10px;">
                 <div class="card-row-top">
                     <div class="pb-info">
                         <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <h4 class="pb-nome" style="margin:0;">${v.cliente}</h4>
-                            <div style="display:flex; gap:5px;">
-                                <button class="btn-novera btn-n-editar" style="width:30px; height:30px; font-size:0.9rem;" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>
-                                <button class="btn-novera btn-n-apagar" style="width:30px; height:30px; font-size:0.9rem;" onclick="abrirConfirmacaoExclusao(${v.linha})" title="Excluir">🗑️</button>
+                            <h4 class="pb-nome" style="margin:0; font-size:0.9rem;">${v.cliente}</h4>
+                            <div style="display:flex; gap:4px;">
+                                <button class="btn-novera btn-n-editar" style="width:28px; height:28px; font-size:0.8rem;" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>
+                                <button class="btn-novera btn-n-apagar" style="width:28px; height:28px; font-size:0.8rem;" onclick="abrirConfirmacaoExclusao(${v.linha})" title="Excluir">🗑️</button>
                             </div>
                         </div>
-                        <div class="pb-detalhes" style="flex-direction:column;gap:4px;align-items:flex-start;margin-top:5px;">
-                            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <div class="pb-detalhes" style="flex-direction:column;gap:2px;align-items:flex-start;margin-top:4px;">
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;">
                                 <span style="color:#64748b;">📅 ${v.data}</span>
                                 <span style="color:#64748b;">🏷️ ${v.produto} (x${v.qtd})</span>
                             </div>
-                            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;">
-                                <span style="color:#64748b;">📱 ${v.plataforma}</span>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;">
                                 <span style="color:#10b981;font-weight:900;">${lS}</span>
-                            </div>
-                            <div style="margin-top:4px;">
-                                <span style="font-weight:900;font-size:0.75rem;color:${isP?'#b45309':'#059669'};">${em} ${v.status.toUpperCase()}</span>
+                                <span style="font-weight:900;font-size:0.7rem;color:${isP?'#b45309':'#059669'};">${em} ${v.status.toUpperCase()}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="pb-custo" style="background:transparent;border:none;color:var(--brand-dark);font-size:1.2rem;padding:0;">${fmt(nV)}</div>
+                    <div class="pb-custo" style="background:transparent;border:none;color:var(--brand-dark);font-size:1.1rem;padding:0 0 0 5px;">${fmt(nV)}</div>
                 </div>
                 ${bB}
             </div>`;
