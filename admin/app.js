@@ -1,6 +1,6 @@
 const $ = id => document.getElementById(id); 
 
-const VERSAO_APP = "v1.2.3";
+const VERSAO_APP = "v1.2.4";
 
 const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
@@ -163,13 +163,11 @@ function filtrarDespesas(){ const mS=$('filtro-d-mes').value, aS=$('filtro-d-ano
 function renderizarListaDespesas(aD){ const lD=$('lista-despesas'); lD.innerHTML=""; let sT=0; if(aD.length===0){lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;font-weight:600;'>Nenhuma despesa.</p>";$('total-despesas-valor').innerText="R$ 0,00";return;} let h=""; aD.forEach(d=>{let nG=limparValorPlanilha(d.valor); sT+=nG; let dH=`<div class="pb-detalhes" style="flex-direction:column;gap:8px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${d.data}</span><span style="color:#64748b;">🏢 ${d.local}</span></div>`; if(d.quantidade&&d.preco_uni&&d.preco_uni!=="R$ 0,00"){dH+=`<div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📦 Qtd: ${d.quantidade}</span><span style="color:#64748b;">💲 ${formatarDoBanco(d.preco_uni)} /un</span></div>`;} dH+=`</div>`; h+=`<div class="produto-banco-card"><div class="pb-info"><h4 class="pb-nome" style="color:#334155;">${d.item}</h4>${dH}</div><div class="pb-custo" style="background:transparent;border:none;color:#ef4444;font-size:1.1rem;padding-right:0;">- ${fmt(nG)}</div></div>`;}); lD.innerHTML=h; $('total-despesas-valor').innerText=fmt(sT); }
 async function salvarDespesa(){ const dC=$('d-data').value, lC=$('d-local').value.trim(), iC=$('d-item').value.trim(), qC=$('d-qtd').value, vU=$('d-valor-uni').value; if(!dC||!iC||!vU||!lC)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-despesa'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const p={acao:"salvar_despesa",item:iC,local:lC,data:dC.split('-').reverse().join('/'),quantidade:qC,preco_uni:fmtPlanilha(limparValorPlanilha(vU)),preco_total:fmtPlanilha(despesaTotalCalculada)}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Lançado!","Registrado.","success");$('d-item').value="";$('d-valor-uni').value="";$('d-qtd').value="1";calcularDespesaTotal();carregarDespesas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💳 Lançar Despesa";} }
 
-
 // ==========================================
-// ERP: VENDAS, RELATÓRIOS E AÇÕES EM LOTE
+// ERP: VENDAS E ZAP (LOTE)
 // ==========================================
 function formatarTextoZap(texto) { return encodeURIComponent(texto); }
 
-// ZAP SIMPLES DO MODAL DE LOTE
 function enviarZapCobranca(linha) {
     const v = arrayVendas.find(x => x.linha === linha);
     if(!v) return;
@@ -184,20 +182,18 @@ function enviarZapRecibo(linha) {
     if(!v) return;
     let inputEl = document.getElementById('lote-nome-personalizado');
     let nome = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : v.cliente;
-    let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para confirmar o recebimento do seu pagamento!\n\n✅ *Status:* PAGO\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor Pago:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nMuito obrigado pela confiança! Seu pedido está sendo preparado com muito carinho nas nossas impressoras. 🖨️✨`;
+    let dataPgto = v.data_pgt ? v.data_pgt : v.data;
+    let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para confirmar o recebimento do seu pagamento!\n\n✅ *Status:* PAGO\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor Pago:* ${fmt(limparValorPlanilha(v.valor_venda))}\n💳 *Pago em:* ${dataPgto}\n\nMuito obrigado pela confiança! Seu pedido está sendo preparado com muito carinho nas nossas impressoras. 🖨️✨`;
     window.open(`https://api.whatsapp.com/send?text=${formatarTextoZap(texto)}`, '_blank');
 }
 
-// ----------------------------------------------------
-// NOVO FLUXO: ABRIR MODAL DE NOME PARA DOCUMENTO ÚNICO
-// ----------------------------------------------------
 function solicitarNomeDocumento(linha, tipo) {
     const v = arrayVendas.find(x => x.linha === linha);
     if(!v) return;
     
     $('recibo-linha-atual').value = linha;
     $('recibo-tipo-atual').value = tipo;
-    $('input-nome-recibo').value = v.cliente; // Traz o nome completo por padrão
+    $('input-nome-recibo').value = v.cliente;
     $('modal-nome-recibo').style.display = 'flex';
 }
 
@@ -208,13 +204,10 @@ function executarDocumentoUnico() {
     const v = arrayVendas.find(x => x.linha === linha);
     
     if(!v) return;
-    
     $('modal-nome-recibo').style.display = 'none';
 
-    // Cria um grupo "falso" com apenas este item para passar para o gerador
     const grupos = {};
     grupos[nome] = [v];
-    
     gerarHTMLImpressao(grupos, tipo);
 }
 
@@ -235,10 +228,10 @@ function carregarLote(tipo) {
     $('btn-lote-' + (tipo === 'Pendente' ? 'pendentes' : 'pagos')).classList.add('active');
 
     const select = $('lote-select-cliente');
-    const filtrados = vendasFiltradasAtuais.filter(v => v.status.toLowerCase() === tipo.toLowerCase());
+    const filtrados = arrayVendas.filter(v => v.status.toLowerCase() === tipo.toLowerCase());
 
     if(filtrados.length === 0) {
-        select.innerHTML = '<option value="">Nenhuma venda encontrada no filtro</option>';
+        select.innerHTML = '<option value="">Nenhuma venda encontrada</option>';
         select.disabled = true;
         $('lista-acoes-lote').innerHTML = '';
         $('lote-nome-personalizado').value = '';
@@ -270,9 +263,9 @@ function selecionarClienteLote() {
         return;
     }
 
-    $('lote-nome-personalizado').value = clienteSel; // Preenche com nome completo por padrão
+    $('lote-nome-personalizado').value = clienteSel;
 
-    const filtrados = vendasFiltradasAtuais.filter(v => v.status.toLowerCase() === loteAtualTipo.toLowerCase() && v.cliente.trim() === clienteSel);
+    const filtrados = arrayVendas.filter(v => v.status.toLowerCase() === loteAtualTipo.toLowerCase() && v.cliente.trim() === clienteSel);
     
     let h = "";
     filtrados.forEach(v => {
@@ -314,7 +307,7 @@ function gerarPDFLote(tipo) {
 // === O MOTOR DO PDF ESTILIZADO ===
 function gerarHTMLImpressao(grupos, tipo) {
     let titulo = tipo === 'Pendente' ? 'LEMBRETE DE COBRANÇA' : 'RECIBO DE PAGAMENTO';
-    let corDestaque = tipo === 'Pendente' ? '#f59e0b' : '#10b981'; 
+    let corDestaque = tipo === 'Pendente' ? '#d97706' : '#10b981'; 
     let corTextoDestaque = tipo === 'Pendente' ? '#b45309' : '#059669';
     let iconeTopo = tipo === 'Pendente' ? '🔔' : '🧾';
 
@@ -326,20 +319,20 @@ function gerarHTMLImpressao(grupos, tipo) {
         .page { width: 100%; max-width: 600px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 40px; margin-bottom: 30px; page-break-after: always; box-sizing: border-box; position: relative; border-top: 8px solid ${corDestaque}; }
         @media print { body { background: white; padding:0; } .page { box-shadow: none; margin: 0; page-break-after: always; width: 100%; max-width: 100%; border-radius:0; border-top:none; } }
         .header { text-align: center; margin-bottom: 20px; }
-        .header img { width: 100px; margin-bottom: 15px; }
-        .header h1 { color: #4E342E; margin: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 2px;}
+        .header img { width: 100px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));}
+        .header h1 { color: #4E342E; margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px;}
         .divider { border-top: 2px dashed #e7e5e4; margin: 20px 0; }
         .greeting { color: #292524; font-size: 16px; margin-bottom: 20px; }
         .greeting b { color: #4E342E; font-weight: 900;}
         .items-box { background: #fafaf9; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .item-row { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e7e5e4; }
+        .item-row { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e7e5e4; align-items:center; }
         .item-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .item-title { font-weight: 800; color: #292524; font-size: 15px; margin-bottom: 5px; }
         .item-meta { font-size: 12px; color: #78716c; }
-        .item-price { font-weight: 900; color: #4E342E; font-size: 16px; }
+        .item-price { font-weight: 900; color: #4E342E; font-size: 16px; text-align:right;}
         .total-row { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; }
         .total-label { font-size: 16px; font-weight: 900; color: #292524; text-transform: uppercase; }
-        .total-value { font-size: 24px; font-weight: 900; color: ${corTextoDestaque}; }
+        .total-value { font-size: 26px; font-weight: 900; color: ${corTextoDestaque}; }
         .footer { text-align: center; color: #8D6E63; font-size: 13px; margin-top: 30px; font-weight: 600; }
     </style>
     </head><body>
@@ -353,7 +346,8 @@ function gerarHTMLImpressao(grupos, tipo) {
         vendas.forEach(v => {
             let val = limparValorPlanilha(v.valor_venda);
             total += val;
-            let metaExtra = tipo === 'Pago' ? `| Pago em: ${v.data}` : ``; // REMOVIDO A PLATAFORMA AQUI
+            let dataPagamento = v.data_pgt ? v.data_pgt : v.data; 
+            let metaExtra = tipo === 'Pago' ? `| Pago em: ${dataPagamento}` : ``;
             
             itensHtml += `
             <div class="item-row">
@@ -491,7 +485,6 @@ function renderizarListaVendas(aV){
                  <button class="btn-novera btn-n-recibo" onclick="solicitarNomeDocumento(${v.linha}, 'Pago')" title="Gerar Recibo">🧾</button>
                </div>`;
 
-        // LAYOUT DO CARD MAIS COMPACTO AQUI
         h+=`<div class="produto-banco-card ${cs}" style="padding:12px; margin-bottom:10px;">
                 <div class="card-row-top">
                     <div class="pb-info">
