@@ -7,7 +7,9 @@ body { font-family:'Inter', sans-serif; background:var(--bg-color); margin:0; pa
 .login-box img { width:120px; margin-bottom:20px; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.1)); border-radius:15px;}
 .login-box h2 { color:var(--brand-dark); font-weight:900; margin:0 0 5px; font-size:1.5rem;}
 .login-box p { color:var(--text-muted); font-size:0.85rem; margin-bottom:25px; font-weight:600;}
-.login-input { width:100%; padding:16px; border:2px solid var(--border-color); border-radius:12px; font-family:'Inter', sans-serif; font-size:1.1rem; text-align:center; margin-bottom:20px; box-sizing:border-box; font-weight:700; letter-spacing:2px; -webkit-text-security: disc; text-security: disc; }
+
+/* CORRIGIDO: Removido o text-security: disc para o campo de usuário funcionar normal */
+.login-input { width:100%; padding:16px; border:2px solid var(--border-color); border-radius:12px; font-family:'Inter', sans-serif; font-size:1.1rem; text-align:center; margin-bottom:20px; box-sizing:border-box; font-weight:700; letter-spacing:2px; }
 .login-input:focus { border-color:var(--primary); outline:none; background:#fffbeb;}
 
 #app-core { display:none; width:100%; max-width:700px; position: relative;}
@@ -68,7 +70,6 @@ input[type="file"] { background:#fff; border:2px dashed var(--border-color); pad
 .modal-box { background:#fff; width:92%; max-width:450px; border-radius:20px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s ease-out; position:relative; max-height:90vh; overflow-y:auto;} .btn-fechar-modal { position:absolute; top:12px; right:12px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-size:1.1rem; font-weight:bold; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center;} .modal-title { font-size:1.1rem; font-weight:900; color:var(--brand-dark); margin:0 0 15px;} .foto-atual-box { background:#f8fafc; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;} .foto-atual-box img { width:40px; height:40px; object-fit:cover; border-radius:6px;} .foto-atual-box span { font-size:0.75rem; color:#64748b; font-weight:600;}
 .modal-box-alert { background:#fff; width:90%; max-width:360px; border-radius:24px; padding:30px 20px 20px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.3); animation:popIn 0.3s ease-out; position:relative;} .modal-icon-alert { font-size:4rem; margin-bottom:10px; display:inline-block; animation:pulseIcon 1s infinite alternate;} .modal-title-alert { font-size:1.3rem; font-weight:900; color:var(--brand-dark); margin:0 0 10px; text-transform:uppercase;} .modal-text-alert { font-size:0.9rem; color:var(--text-muted); margin-bottom:25px; line-height:1.4; font-weight:600;} .btn-modal-ok { color:white; border:none; padding:15px; border-radius:12px; width:100%; cursor:pointer; font-weight:900; font-size:0.95rem; text-transform:uppercase; transition:transform 0.1s;} .btn-modal-ok:active { transform:translateY(4px); box-shadow:0 0 0 transparent !important; } .btn-modal-cancel { flex:1; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; padding:15px; border-radius:12px; cursor:pointer; font-weight:800; font-size:0.90rem; text-transform:uppercase; transition:0.2s;} .btn-modal-cancel:active { background:#e2e8f0; } .btn-modal-confirm { flex:1; background:#10b981; color:white; border:none; padding:15px; border-radius:12px; cursor:pointer; font-weight:900; font-size:0.90rem; text-transform:uppercase; transition:transform 0.1s; box-shadow:0 6px 0 #059669;} .btn-modal-confirm:active { transform:translateY(4px); box-shadow:0 0 0 transparent !important; }
 
-/* FAB - Botão Flutuante Universal (Atualizado para "Seta pra cima") */
 .fab-btn {
     position: fixed;
     bottom: 30px;
@@ -87,14 +88,11 @@ input[type="file"] { background:#fff; border:2px dashed var(--border-color); pad
 }
 .fab-btn:active { transform: scale(0.9); box-shadow: 0 4px 10px rgba(217,119,6,0.5); }
 
-/* Novos estilos para a Área de Lotes (Edição de nome e Checkbox) */
 .lote-item { display: flex; align-items: center; padding: 12px; background: #fafaf9; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 8px; gap: 10px; }
 .lote-check { width: 22px; height: 22px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; margin: 0; }
 .lote-input-nome { border: 1px solid #d6d3d1; border-radius: 6px; padding: 8px 10px; font-weight: 800; color: var(--brand-dark); font-size: 0.85rem; width: 100%; margin-bottom: 5px; font-family: 'Inter', sans-serif; transition: 0.2s; background: #ffffff;}
 .lote-input-nome:focus { outline: none; border-color: var(--primary); background: #fffbeb; box-shadow: 0 0 0 3px rgba(217,119,6,0.15);}
 
-
-/* VISUAL REFEITO DO MENU GRID (Acessos do Celular) - Botões de verdade */
 .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 10px 0; }
 .grid-menu button { 
     background: #ffffff; 
@@ -132,10 +130,8 @@ input[type="file"] { background:#fff; border:2px dashed var(--border-color); pad
     .progresso-bg { display:none; } 
     .ranking-nome { width:auto; flex-grow:1;} 
     
-    /* Posição do FAB no mobile (acima da Bottom Nav) */
     .fab-btn { bottom: 100px; right: 15px; width: 56px; height: 56px; }
     
-    /* VISUAL DA BARRA INFERIOR (Fundo claro/vidro com botões parecidos com o do PC) */
     .bottom-nav { 
         display: flex; position: fixed; bottom: 0; left: 0; width: 100%; 
         background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
