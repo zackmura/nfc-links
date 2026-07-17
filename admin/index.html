@@ -13,8 +13,14 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <style>
+        /* Estilos específicos para a tag de versão */
+        .app-version { position: absolute; bottom: 15px; width: 100%; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; pointer-events: none;}
+        .badge-versao { font-size: 0.65rem; background: var(--primary); color: #fff; padding: 2px 6px; border-radius: 6px; vertical-align: middle; margin-left: 4px; font-weight: 800;}
+    </style>
+
     <!-- Link para o CSS Externo -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -23,9 +29,16 @@
         <img src="logo.png" alt="Mini Mundo" onerror="this.src='logo.jpg'; this.onerror=null;">
         <h2>Acesso Restrito</h2>
         <p>Área exclusiva da Diretoria</p>
-        <input type="text" id="input-senha" class="login-input" placeholder="••••••••" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onkeyup="verificarEnter(event)">
-        <button class="btn-magic" style="margin-top:0;" onclick="tentarLogin()">🔓 Entrar no Sistema</button>
+        
+        <!-- NOVO CAMPO DE USUÁRIO AQUI -->
+        <input type="text" id="input-usuario" class="login-input" placeholder="Usuário" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="margin-bottom:10px;">
+        
+        <input type="password" id="input-senha" class="login-input" placeholder="••••••••" autocomplete="off" onkeyup="verificarEnter(event)">
+        
+        <button id="btn-login" class="btn-magic" style="margin-top:0;" onclick="tentarLogin()">🔓 Entrar no Sistema</button>
     </div>
+    <!-- TAG DE VERSÃO NO LOGIN -->
+    <div id="versao-login" class="app-version">v1.0.0</div>
 </div>
 
 <div id="app-core">
@@ -33,8 +46,11 @@
         
         <div class="brand-header">
             <img src="logo.png" alt="Mini Mundo 3D" onerror="this.src='logo.jpg'; this.onerror=null;">
+            <!-- TAG DE VERSÃO E USUÁRIO NO HEADER -->
             <h1>Central de Automação</h1>
-            <p>Inteligência Artificial, CRM & ERP</p>
+            <p>IA, CRM & ERP <span id="versao-header" class="badge-versao">v1.0.0</span></p>
+            <p style="font-size: 0.75rem; margin-top: 5px; color: var(--primary);">Olá, <b id="nome-usuario-logado">Fernando</b>!</p>
+            
             <button class="btn-logout" onclick="fazerLogout()">Sair</button>
         </div>
 
@@ -350,6 +366,6 @@
 </div>
 
 <!-- Link para o Script Externo -->
-<script src="app.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
