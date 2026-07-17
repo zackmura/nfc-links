@@ -298,22 +298,26 @@
 <div id="custom-delete-modal" class="modal-overlay-alert"><div class="modal-box-alert"><span class="modal-icon-alert">🗑️</span><h3 class="modal-title-alert" style="color:#ef4444;">Excluir Venda?</h3><p class="modal-text-alert">Tem certeza que deseja apagar o registro dessa venda? Esta ação <b>não pode ser desfeita.</b></p><div style="display:flex; gap:10px; margin-top:15px;"><button class="btn-modal-cancel" onclick="fecharExclusao()">Cancelar</button><button class="btn-modal-confirm" style="background:#ef4444; box-shadow:0 6px 0 #b91c1c;" onclick="executarExclusaoVenda()">🗑️ Apagar</button></div></div></div>
 <div id="custom-edit-venda-modal" class="modal-overlay-alert" style="align-items:flex-start; padding-top:40px;"><div class="modal-box-edit"><button onclick="fecharEditarVenda()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; color:#64748b; cursor:pointer;">×</button><h3 class="section-title" style="margin-top:0; margin-bottom:20px; color:var(--brand-dark);">✏️ Editar Venda</h3><input type="hidden" id="edit-venda-linha"><div class="row" style="text-align:left;"><div class="col"><label>Data</label><input type="date" id="edit-venda-data"></div><div class="col"><label>Status</label><select id="edit-venda-status"><option value="Pago">🟢 Pago</option><option value="Pendente">🟡 Pendente</option></select></div></div><div class="input-group" style="text-align:left;"><label>Cliente</label><input type="text" id="edit-venda-cliente" list="lista-clientes-venda" autocomplete="off"></div><div class="input-group" style="text-align:left;"><label>Produto</label><input type="text" id="edit-venda-produto" list="lista-produtos-venda" autocomplete="off"></div><div class="row" style="text-align:left;"><div class="col"><label>Plataforma</label><input type="text" id="edit-venda-plataforma" list="lista-plataformas-venda" autocomplete="off"></div><div class="col"><label>Qtd</label><input type="number" id="edit-venda-qtd" min="1"></div></div><div class="input-group" style="text-align:left;"><label>Valor Total</label><input type="text" id="edit-venda-valor" class="mask-money"></div><button class="btn-magic btn-global" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom:0;">💾 Salvar Alterações</button></div></div>
 
-<!-- NOVO MODAL: AÇÕES EM LOTE PARA WHATSAPP -->
+<!-- NOVO MODAL: AÇÕES EM LOTE PARA WHATSAPP / PDF -->
 <div id="modal-acoes-lote" class="modal-overlay">
-    <div class="modal-box" style="padding: 25px 20px;">
+    <div class="modal-box" style="padding: 25px 20px; display:flex; flex-direction:column; max-height:85vh;">
         <button class="btn-fechar-modal" onclick="$('modal-acoes-lote').style.display='none'">×</button>
         <h3 class="modal-title">📦 Ações em Lote</h3>
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-10px; margin-bottom:20px; line-height:1.4; font-weight:600;">
-            Envie cobranças e recibos rapidamente no WhatsApp para os clientes listados no seu filtro.
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-10px; margin-bottom:15px; line-height:1.4; font-weight:600;">
+            Selecione os registros, edite o nome se necessário e gere os PDFs de recibo/cobrança.
         </p>
         
-        <div class="tabs-container" style="margin-bottom:15px; background: transparent; padding: 0;">
+        <div class="tabs-container" style="margin-bottom:10px; background: transparent; padding: 0;">
             <button id="btn-lote-pendentes" class="tab-btn active" style="min-width: 0; padding: 12px 5px;" onclick="carregarLote('Pendente')">🟡 Cobrar</button>
             <button id="btn-lote-pagos" class="tab-btn" style="min-width: 0; padding: 12px 5px;" onclick="carregarLote('Pago')">🟢 Recibos</button>
         </div>
         
-        <div id="lista-acoes-lote" class="scroll-container" style="max-height: 45vh; overflow-y:auto; padding-right:5px;">
+        <div id="lista-acoes-lote" class="scroll-container" style="flex: 1; overflow-y:auto; padding-right:5px; margin-bottom: 15px;">
             <!-- Conteúdo injetado via JS -->
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 15px;">
+            <button id="btn-gerar-pdf-lote" class="btn-magic btn-global" style="margin:0; box-shadow:0 4px 15px rgba(16,185,129,0.3);">📄 Gerar PDFs Selecionados</button>
         </div>
     </div>
 </div>
@@ -338,6 +342,6 @@
     </button>
 </div>
 
-<script src="app.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
