@@ -1,7 +1,6 @@
 const $ = id => document.getElementById(id); 
 
-// === CONTROLE DE VERSÃO DO SISTEMA ===
-const VERSAO_APP = "v1.0.0";
+const VERSAO_APP = "v1.1.0";
 
 const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
@@ -13,7 +12,7 @@ const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
 const TIMES_INFO = { "corinthians":{cor:"#000",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/874.png",classText:"txt-corinthians"},"palmeiras":{cor:"#006400",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/2029.png",classText:"txt-palmeiras"},"santos":{cor:"#555",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/2674.png",classText:"txt-santos"},"são paulo":{cor:"#cc0000",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/2026.png",classText:"txt-saopaulo"},"flamengo":{cor:"#c90000",logo:"https://a.espncdn.com/i/teamlogos/soccer/500/819.png",classText:"txt-flamengo"} };
 
 let dadosTotaisAcessos = [], graficoInstancia = null, catalogoAdminArray = [], anunciosAdminArray = [], quantidadeAnunciosPendentes = -1; 
-let custoTotalGlobal = 0, despesaTotalCalculada = 0, arrayBancoCustos = [], arrayDespesas = [], arrayVendas = [], dashVendas = [], dashDespesas = [], linhaVendaPagamento = null, linhaVendaExclusao = null, chartProd = null, chartPlat = null, chartCli = null;
+let custoTotalGlobal = 0, despesaTotalCalculada = 0, arrayBancoCustos = [], arrayDespesas = [], arrayVendas = [], vendasFiltradasAtuais = [], dashVendas = [], dashDespesas = [], linhaVendaPagamento = null, linhaVendaExclusao = null, chartProd = null, chartPlat = null, chartCli = null;
 let arrayImas = []; 
 
 const fmt = val => "R$ " + val.toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
@@ -28,14 +27,12 @@ document.addEventListener('input', e => {
 });
 
 window.onload = () => { 
-    // Injeta a versão na tela de login e no painel
     if($('versao-login')) $('versao-login').innerText = VERSAO_APP;
     if($('versao-header')) $('versao-header').innerText = VERSAO_APP;
     
     if(localStorage.getItem("admin_auth")==="true") iniciarApp(); 
 };
 
-// === NOVA FUNÇÃO DE LOGIN CONECTADA COM A PLANILHA ===
 async function tentarLogin() {
     const usr = $('input-usuario').value.trim();
     const pwd = $('input-senha').value.trim();
@@ -59,11 +56,11 @@ async function tentarLogin() {
 
         if (res.sucesso) {
             localStorage.setItem("admin_auth", "true");
-            localStorage.setItem("admin_user", res.usuario); // Salva o nome do usuário logado
+            localStorage.setItem("admin_user", res.usuario); 
             iniciarApp();
         } else {
             alert(res.erro || "Usuário ou senha incorretos.");
-            $('input-senha').value = ""; // Limpa só a senha em caso de erro
+            $('input-senha').value = ""; 
         }
     } catch (e) {
         alert("Erro ao conectar com o servidor: " + e.message);
@@ -86,7 +83,6 @@ function iniciarApp(){
     if(localStorage.getItem("gemini_api_key")) $('api-key').value=localStorage.getItem("gemini_api_key");
     if(localStorage.getItem("imgbb_api_key")) $('imgbb-key').value=localStorage.getItem("imgbb_api_key");
     
-    // Mostra o nome do usuário logado no Header se quiser
     const userLogado = localStorage.getItem("admin_user");
     if(userLogado && $('nome-usuario-logado')) $('nome-usuario-logado').innerText = userLogado;
     
@@ -435,7 +431,65 @@ function filtrarDespesas(){ const mS=$('filtro-d-mes').value, aS=$('filtro-d-ano
 function renderizarListaDespesas(aD){ const lD=$('lista-despesas'); lD.innerHTML=""; let sT=0; if(aD.length===0){lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;font-weight:600;'>Nenhuma despesa.</p>";$('total-despesas-valor').innerText="R$ 0,00";return;} let h=""; aD.forEach(d=>{let nG=limparValorPlanilha(d.valor); sT+=nG; let dH=`<div class="pb-detalhes" style="flex-direction:column;gap:8px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${d.data}</span><span style="color:#64748b;">🏢 ${d.local}</span></div>`; if(d.quantidade&&d.preco_uni&&d.preco_uni!=="R$ 0,00"){dH+=`<div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📦 Qtd: ${d.quantidade}</span><span style="color:#64748b;">💲 ${formatarDoBanco(d.preco_uni)} /un</span></div>`;} dH+=`</div>`; h+=`<div class="produto-banco-card"><div class="pb-info"><h4 class="pb-nome" style="color:#334155;">${d.item}</h4>${dH}</div><div class="pb-custo" style="background:transparent;border:none;color:#ef4444;font-size:1.1rem;padding-right:0;">- ${fmt(nG)}</div></div>`;}); lD.innerHTML=h; $('total-despesas-valor').innerText=fmt(sT); }
 async function salvarDespesa(){ const dC=$('d-data').value, lC=$('d-local').value.trim(), iC=$('d-item').value.trim(), qC=$('d-qtd').value, vU=$('d-valor-uni').value; if(!dC||!iC||!vU||!lC)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-despesa'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const p={acao:"salvar_despesa",item:iC,local:lC,data:dC.split('-').reverse().join('/'),quantidade:qC,preco_uni:fmtPlanilha(limparValorPlanilha(vU)),preco_total:fmtPlanilha(despesaTotalCalculada)}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Lançado!","Registrado.","success");$('d-item').value="";$('d-valor-uni').value="";$('d-qtd').value="1";calcularDespesaTotal();carregarDespesas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💳 Lançar Despesa";} }
 
-// ERP: VENDAS (INCLUI RELATÓRIO DO CLIENTE)
+// ERP: VENDAS E ZAP (LOTE)
+// Novas funções para o WhatsApp baseadas no histórico do Novera Scent
+function formatarTextoZap(texto) { return encodeURIComponent(texto); }
+
+function enviarZapCobranca(linha) {
+    const v = arrayVendas.find(x => x.linha === linha);
+    if(!v) return;
+    let nome = v.cliente.split(' ')[0];
+    let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para lembrar sobre o pagamento do seu pedido:\n\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nAssim que puder, nos envie o comprovante para darmos andamento à produção! Qualquer dúvida, estamos à disposição. 🚀`;
+    window.open(`https://api.whatsapp.com/send?text=${formatarTextoZap(texto)}`, '_blank');
+}
+
+function enviarZapRecibo(linha) {
+    const v = arrayVendas.find(x => x.linha === linha);
+    if(!v) return;
+    let nome = v.cliente.split(' ')[0];
+    let texto = `Olá, *${nome}*! Aqui é do *Mini Mundo 3D* 🌍🖨️.\n\nPassando para confirmar o recebimento do seu pedido!\n\n✅ *Status:* PAGO\n🏷️ *Item:* ${v.produto} (x${v.qtd})\n💰 *Valor Pago:* ${fmt(limparValorPlanilha(v.valor_venda))}\n📅 *Data:* ${v.data}\n\nMuito obrigado pela confiança! Seu pedido está sendo preparado com muito carinho nas nossas impressoras. 🖨️✨`;
+    window.open(`https://api.whatsapp.com/send?text=${formatarTextoZap(texto)}`, '_blank');
+}
+
+function abrirModalAcoesLote() {
+    $('modal-acoes-lote').style.display = 'flex';
+    carregarLote('Pendente'); 
+}
+
+function carregarLote(tipo) {
+    $('btn-lote-pendentes').classList.remove('active');
+    $('btn-lote-pagos').classList.remove('active');
+    $('btn-lote-' + (tipo === 'Pendente' ? 'pendentes' : 'pagos')).classList.add('active');
+
+    const lista = $('lista-acoes-lote');
+    const filtrados = vendasFiltradasAtuais.filter(v => v.status.toLowerCase() === tipo.toLowerCase());
+
+    if(filtrados.length === 0) {
+        lista.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px; font-weight:700;">Nenhuma venda ${tipo.toLowerCase()} no filtro atual.</p>`;
+        return;
+    }
+
+    let h = "";
+    filtrados.forEach(v => {
+        let btnTexto = tipo === 'Pendente' ? '🔔 Cobrar' : '🧾 Recibo';
+        let corBtn = tipo === 'Pendente' ? 'background:#fffbeb; color:#b45309; border-color:#fde68a;' : 'background:#dcfce7; color:#166534; border-color:#a7f3d0;';
+        let onClickFn = tipo === 'Pendente' ? `enviarZapCobranca(${v.linha})` : `enviarZapRecibo(${v.linha})`;
+
+        h += `
+        <div class="list-item" style="padding:12px; margin-bottom:8px;">
+            <div class="list-info">
+                <h4 class="list-nome" style="font-size:0.9rem; margin-bottom:4px;">${v.cliente}</h4>
+                <div class="list-detalhes" style="font-size:0.75rem;">
+                    ${v.produto} (x${v.qtd}) <br> <b style="color:var(--primary);">${fmt(limparValorPlanilha(v.valor_venda))}</b>
+                </div>
+            </div>
+            <button class="btn-editar" style="${corBtn} flex-shrink:0; font-weight:900; font-size:0.75rem; padding: 10px 14px; transition: 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'" onclick="${onClickFn}">${btnTexto}</button>
+        </div>`;
+    });
+    lista.innerHTML = h;
+}
+
+// Funções padrão de venda
 async function carregarOpcoesVenda(){ $('loading-opcoes-venda').style.display="block"; try{ const r=await fetch(API_PRECIFICACAO+"?acao=listar_opcoes_venda"); const res=await r.json(); if(res.sucesso){ $('lista-clientes-venda').innerHTML=res.clientes.map(n=>`<option value="${n}">`).join(''); $('lista-clientes-busca').innerHTML=res.clientes.map(n=>`<option value="${n}">`).join(''); $('lista-produtos-venda').innerHTML=res.produtos.map(n=>`<option value="${n}">`).join(''); $('lista-plataformas-venda').innerHTML=res.plataformas.map(n=>`<option value="${n}">`).join('');} }catch(e){}finally{$('loading-opcoes-venda').style.display="none";} }
 async function salvarVenda(){ const dV=$('venda-data').value, c=$('venda-cliente').value.trim(), p=$('venda-produto').value.trim(), pl=$('venda-plataforma').value.trim(), q=$('venda-qtd').value, vS=$('venda-valor').value, s=$('venda-status').value; if(!dV||!c||!p||!pl||!vS)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-venda'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const py={acao:"salvar_venda",data_venda:dV.split('-').reverse().join('/'),cliente:c,produto:p,plataforma:pl,qtd:q,valor_venda:fmtPlanilha(limparValorPlanilha(vS)),status:s}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(py)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Venda Feita! 🎉","Registrado!","success");$('venda-cliente').value="";$('venda-produto').value="";$('venda-plataforma').value="";$('venda-qtd').value="1";$('venda-valor').value="";$('venda-status').value="Pago";carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="✅ Lançar Venda";} }
 async function salvarEdicaoVenda(){ const l=$('edit-venda-linha').value, dV=$('edit-venda-data').value, s=$('edit-venda-status').value, c=$('edit-venda-cliente').value.trim(), p=$('edit-venda-produto').value.trim(), pl=$('edit-venda-plataforma').value.trim(), q=$('edit-venda-qtd').value, vS=$('edit-venda-valor').value; if(!dV||!c||!p||!pl||!vS)return mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=$('btn-salvar-edicao-venda'); btn.disabled=true; btn.innerText="⏳ Salvando..."; try{ const py={acao:"atualizar_venda",linha:l,data_venda:dV.split('-').reverse().join('/'),cliente:c,produto:p,plataforma:pl,qtd:q,valor_venda:fmtPlanilha(limparValorPlanilha(vS)),status:s}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(py)}); const res=await r.json(); if(res.sucesso){fecharEditarVenda();mostrarAlerta("Atualizado!","Editada.","success");carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar Alterações";} }
@@ -490,10 +544,43 @@ function filtrarVendas(){
             if(pt.length>=3){let m=String(pt[1]).padStart(2,'0'), a=String(pt[2]).substring(0,4); if(mS!=="todos"&&m!==mS)return false; if(aS!=="todos"&&a!==aS)return false;}else return false;
         } return true; 
     }); 
+    vendasFiltradasAtuais = flt; // Guarda o filtro atual para o modal de lote
     renderizarListaVendas(flt); 
 }
 
-function renderizarListaVendas(aV){ const lD=$('lista-vendas'); lD.innerHTML=""; let sP=0, sPa=0, sL=0, sQ=0; if(aV.length===0){lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhuma venda.</p>";$('vendas-total-valor').innerText="R$ 0,00";$('vendas-pendentes-valor').innerText="R$ 0,00";$('vendas-pagas-valor').innerText="R$ 0,00";$('vendas-lucro-valor').innerText="R$ 0,00";$('vendas-qtd-valor').innerText="0 un";return;} let h=""; aV.forEach(v=>{let nV=limparValorPlanilha(v.valor_venda), nL=limparValorPlanilha(v.lucro), nQ=parseFloat(v.qtd)||0, isP=v.status.toLowerCase()==="pendente"; sQ+=nQ; if(isP)sP+=nV;else sPa+=nV; sL+=nL; let cs=isP?"card-pendente":"", em=isP?"🟡":"🟢", lS=v.lucro&&nL>0?`💰 Lucro: ${formatarDoBanco(v.lucro)}`:"", bB=isP?`<button class="btn-baixar-pgt" onclick="abrirConfirmacaoPagamento(${v.linha})">💸 Confirmar Pagamento</button>`:""; h+=`<div class="produto-banco-card ${cs}"><div class="card-row-top"><div class="pb-info"><div style="display:flex;justify-content:space-between;align-items:center;"><h4 class="pb-nome" style="margin:0;">${v.cliente}</h4><div><button onclick="abrirModalEditarVenda(${v.linha})" class="btn-editar-venda" style="margin-right:10px;">✏️</button><button onclick="abrirConfirmacaoExclusao(${v.linha})" class="btn-excluir-venda">🗑️</button></div></div><div class="pb-detalhes" style="flex-direction:column;gap:4px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${v.data}</span><span style="color:#64748b;">🏷️ ${v.produto} (x${v.qtd})</span></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;"><span style="color:#64748b;">📱 ${v.plataforma}</span><span style="color:#10b981;font-weight:900;">${lS}</span></div><div style="margin-top:4px;"><span style="font-weight:900;font-size:0.75rem;color:${isP?'#b45309':'#059669'};">${em} ${v.status.toUpperCase()}</span></div></div></div><div class="pb-custo" style="background:transparent;border:none;color:var(--brand-dark);font-size:1.2rem;padding:0;">${fmt(nV)}</div></div>${bB}</div>`;}); lD.innerHTML=h; $('vendas-total-valor').innerText=fmt(sP+sPa); $('vendas-pendentes-valor').innerText=fmt(sP); $('vendas-pagas-valor').innerText=fmt(sPa); $('vendas-lucro-valor').innerText=fmt(sL); $('vendas-qtd-valor').innerText=sQ+" un"; }
+function renderizarListaVendas(aV){ 
+    const lD=$('lista-vendas'); lD.innerHTML=""; 
+    let sP=0, sPa=0, sL=0, sQ=0; 
+    if(aV.length===0){
+        lD.innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhuma venda.</p>";
+        $('vendas-total-valor').innerText="R$ 0,00";$('vendas-pendentes-valor').innerText="R$ 0,00";
+        $('vendas-pagas-valor').innerText="R$ 0,00";$('vendas-lucro-valor').innerText="R$ 0,00";
+        $('vendas-qtd-valor').innerText="0 un";
+        return;
+    } 
+    let h=""; 
+    aV.forEach(v=>{
+        let nV=limparValorPlanilha(v.valor_venda), nL=limparValorPlanilha(v.lucro), nQ=parseFloat(v.qtd)||0, isP=v.status.toLowerCase()==="pendente"; 
+        sQ+=nQ; if(isP)sP+=nV;else sPa+=nV; sL+=nL; 
+        let cs=isP?"card-pendente":"", em=isP?"🟡":"🟢", lS=v.lucro&&nL>0?`💰 Lucro: ${formatarDoBanco(v.lucro)}`:"";
+        
+        // Aqui estão os novos botões ZAP em cada card
+        let bB = isP 
+            ? `<div style="display:flex; gap:8px; margin-top:12px;">
+                 <button class="btn-baixar-pgt" style="flex:2; margin-top:0;" onclick="abrirConfirmacaoPagamento(${v.linha})">💸 Recebi</button>
+                 <button class="btn-baixar-pgt" style="flex:1; margin-top:0; background:#fffbeb; color:#b45309; border-color:#fde68a;" onclick="enviarZapCobranca(${v.linha})">🔔 Cobrar</button>
+               </div>` 
+            : `<button class="btn-baixar-pgt" style="margin-top:12px; background:#f0fdf4; color:#166534; border-color:#bbf7d0;" onclick="enviarZapRecibo(${v.linha})">🧾 Enviar Recibo</button>`;
+
+        h+=`<div class="produto-banco-card ${cs}"><div class="card-row-top"><div class="pb-info"><div style="display:flex;justify-content:space-between;align-items:center;"><h4 class="pb-nome" style="margin:0;">${v.cliente}</h4><div><button onclick="abrirModalEditarVenda(${v.linha})" class="btn-editar-venda" style="margin-right:10px;">✏️</button><button onclick="abrirConfirmacaoExclusao(${v.linha})" class="btn-excluir-venda">🗑️</button></div></div><div class="pb-detalhes" style="flex-direction:column;gap:4px;align-items:flex-start;margin-top:5px;"><div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="color:#64748b;">📅 ${v.data}</span><span style="color:#64748b;">🏷️ ${v.produto} (x${v.qtd})</span></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;"><span style="color:#64748b;">📱 ${v.plataforma}</span><span style="color:#10b981;font-weight:900;">${lS}</span></div><div style="margin-top:4px;"><span style="font-weight:900;font-size:0.75rem;color:${isP?'#b45309':'#059669'};">${em} ${v.status.toUpperCase()}</span></div></div></div><div class="pb-custo" style="background:transparent;border:none;color:var(--brand-dark);font-size:1.2rem;padding:0;">${fmt(nV)}</div></div>${bB}</div>`;
+    }); 
+    lD.innerHTML=h; 
+    $('vendas-total-valor').innerText=fmt(sP+sPa); 
+    $('vendas-pendentes-valor').innerText=fmt(sP); 
+    $('vendas-pagas-valor').innerText=fmt(sPa); 
+    $('vendas-lucro-valor').innerText=fmt(sL); 
+    $('vendas-qtd-valor').innerText=sQ+" un"; 
+}
 async function executarPagamentoVenda(){ if(!linhaVendaPagamento)return; const l=linhaVendaPagamento; fecharConfirmacao(); try{ const p={acao:"atualizar_status_venda",linha:l,novo_status:"Pago"}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Sucesso!","Pagamento registrado!","success");carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");} }
 async function executarExclusaoVenda(){ if(!linhaVendaExclusao)return; const l=linhaVendaExclusao; fecharExclusao(); try{ const p={acao:"excluir_registro",aba:"Vendas",linha:l}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){mostrarAlerta("Excluído!","Venda apagada.","success");carregarVendas();}else throw new Error(res.erro); }catch(e){mostrarAlerta("Erro",e.message,"error");} }
 
