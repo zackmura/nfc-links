@@ -18,7 +18,7 @@
         .badge-versao { font-size: 0.65rem; background: var(--primary); color: #fff; padding: 2px 6px; border-radius: 6px; vertical-align: middle; margin-left: 4px; font-weight: 800;}
     </style>
 
-    <link rel="stylesheet" href="style.css?v=1.4.5">
+    <link rel="stylesheet" href="style.css?v=2.0.0">
 </head>
 <body>
 
@@ -32,7 +32,7 @@
         <input type="password" id="input-senha" class="login-input" placeholder="••••••••" autocomplete="off" onkeyup="verificarEnter(event)">
         <button id="btn-login" class="btn-magic" style="margin-top:0;" onclick="tentarLogin()">🔓 Entrar no Sistema</button>
     </div>
-    <div id="versao-login" class="app-version">v1.4.5</div>
+    <div id="versao-login" class="app-version">v2.0.0</div>
 </div>
 
 <div id="app-core">
@@ -41,7 +41,7 @@
         <div class="brand-header">
             <img src="logo.png" alt="Mini Mundo 3D" onerror="this.src='logo.jpg'; this.onerror=null;">
             <h1>Central de Automação</h1>
-            <p>IA, CRM & ERP <span id="versao-header" class="badge-versao">v1.4.5</span></p>
+            <p>IA, CRM & ERP <span id="versao-header" class="badge-versao">v2.0.0</span></p>
             <p style="font-size: 0.75rem; margin-top: 5px; color: var(--primary);">Olá, <b id="nome-usuario-logado">Fernando</b>!</p>
             <button class="btn-logout" onclick="fazerLogout()">Sair</button>
         </div>
@@ -79,6 +79,7 @@
             </div>
         </div>
 
+        <!-- CONTEÚDO DAS ABAS -->
         <div id="tab-imas" class="tab-content">
             <div class="section-title" style="margin-top:0;">➕ Criar / Atualizar Ímã</div>
             <div style="background:#fff; padding:15px; border-radius:16px; border:1px solid var(--border-color); margin-bottom:20px;">
@@ -92,7 +93,6 @@
                 <div class="input-group"><label>Data de Liberação (Opcional):</label><input type="datetime-local" id="ima-data"></div>
                 <button id="btn-salvar-ima" class="btn-magic btn-global" style="margin-top:5px; padding:12px; font-size:0.9rem;" onclick="cadastrarIma()">✨ Gerar Ímã</button>
             </div>
-
             <div class="section-title">📋 Ímãs Ativos</div>
             <input type="text" id="busca-imas" class="search-bar" placeholder="🔍 Buscar por ID ou Nome..." onkeyup="filtrarImas()">
             <div id="loading-imas" style="text-align:center; padding:20px; color:var(--primary); font-weight:800; display:none;">⏳ Buscando dados dos ímãs...</div>
@@ -159,7 +159,6 @@
         <div id="tab-config" class="tab-content">
             <div class="section-title" style="margin-top:0;">🛒 Taxas de Plataformas</div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-top:-5px; margin-bottom:15px; font-weight:600;">Cadastre as plataformas (Shopee, Elo7, etc) para calcular sugestões de preço.</p>
-            
             <div style="background:#fff; border:1px solid var(--border-color); padding:15px; border-radius:12px; margin-bottom:20px;">
                 <div class="input-group"><label>Nome da Plataforma:</label><input type="text" id="config-plat-nome" placeholder="Ex: Shopee"></div>
                 <div class="row">
@@ -168,9 +167,7 @@
                 </div>
                 <button class="btn-magic btn-global" style="margin-top:0; padding:10px;" onclick="salvarPlataforma()">➕ Adicionar</button>
             </div>
-            
             <div id="lista-plataformas" style="margin-bottom:25px;"></div>
-
             <div class="section-title">🔑 Chaves de Integração</div>
             <div class="input-group"><label>🧠 Chave Privada (Gemini):</label><input type="password" id="api-key" onchange="salvarChaves()"></div>
             <div class="input-group"><label>📸 Chave de Backup (ImgBB):</label><input type="password" id="imgbb-key" onchange="salvarChaves()"></div>
@@ -186,13 +183,11 @@
                 <div class="row"><div class="col"><label>Consumo (Watts)</label><input type="number" id="v-watts" value="175" oninput="calcular()"></div><div class="col"><label>Energia (R$/kWh)</label><input type="number" id="v-kwh" value="0.70" step="0.01" oninput="calcular()"></div></div>
                 <div class="row"><div class="col"><label>Máquina/Hora (R$)</label><input type="number" id="v-maq" value="0.75" step="0.01" oninput="calcular()"></div><div class="col"><label>Sua Hora (R$)</label><input type="number" id="v-hora" value="10.00" step="0.50" oninput="calcular()"></div></div>
             </div>
-
             <div class="section-title">📝 Dados do Novo Projeto</div>
             <div class="input-group"><label>Nome do Modelo</label><input type="text" id="v-modelo" class="input-var" placeholder="Ex: Placa profissões"></div>
             <div class="row"><div class="col"><label>Filamento (kg)</label><input type="number" id="v-filamento" class="input-var" value="100" step="1" oninput="calcular()"></div><div class="col"><label>Peso (g)</label><input type="number" id="v-peso" class="input-var" value="126" step="1" oninput="calcular()"></div></div>
             <div class="row"><div class="col"><label>Tempo Imp. (h)</label><input type="number" id="v-tempo-imp" class="input-var" value="9" step="0.1" oninput="calcular()"></div><div class="col"><label>Mão de Obra (h)</label><input type="number" id="v-tempo-mao" class="input-var" value="0" step="0.1" oninput="calcular()"></div></div>
             <div class="input-group"><label>Custos Extras (Embalagem, Ímãs, etc)</label><input type="number" id="v-insumos" class="input-var" value="0" step="0.50" oninput="calcular()"></div>
-            
             <div class="resumo-box">
                 <h3>Custo Real de Produção</h3>
                 <div class="custo-linha"><span>Material (Filamento)</span> <span id="r-material">R$ 0,00</span></div>
@@ -203,11 +198,9 @@
                 <div class="custo-linha" style="border-bottom:none;"><span>Insumos Extras</span> <span id="r-insumos">R$ 0,00</span></div>
                 <div class="custo-total"><span>Custo Total:</span> <span id="r-total">R$ 0,00</span></div>
             </div>
-
             <div class="section-title">💰 Margens Sugeridas</div>
             <div class="markup-box"><p class="markup-title">Peças Simples / Reposição (2x a 3x)</p><p class="markup-preco" id="m-simples-preco">R$ 0,00 a R$ 0,00</p><p class="markup-lucro" id="m-simples-lucro">Lucro: R$ 0,00 a R$ 0,00</p></div>
             <div class="markup-box" style="background:#fffbeb; border-color:#fde68a;"><p class="markup-title" style="color:#b45309;">Decorativos / Colecionáveis (4x a 6x)</p><p class="markup-preco" id="m-decor-preco">R$ 0,00 a R$ 0,00</p><p class="markup-lucro" id="m-decor-lucro">Lucro: R$ 0,00 a R$ 0,00</p></div>
-
             <button id="btn-salvar-custo" class="btn-magic btn-global" onclick="salvarBancoModelos()">💾 Salvar Modelo no Banco</button>
         </div>
 
@@ -233,7 +226,6 @@
                 <div class="row"><div class="col"><label>Data da Venda</label><input type="date" id="venda-data"></div><div class="col"><label>Status</label><select id="venda-status" class="input-var" style="border-color:#bbf7d0 !important; background-color:#fff !important;"><option value="Pago">🟢 Pago</option><option value="Pendente">🟡 Pendente</option></select></div></div>
                 <div class="input-group"><label>Cliente</label><input type="text" id="venda-cliente" class="input-var" list="lista-clientes-venda" placeholder="Ex: João Silva" autocomplete="off" style="border-color:#bbf7d0 !important; background-color:#fff !important;"><datalist id="lista-clientes-venda"></datalist></div>
                 <div class="input-group"><label>Produto Vendido (Custo Automático)</label><input type="text" id="venda-produto" class="input-var" list="lista-produtos-venda" placeholder="Ex: Placa profissões" autocomplete="off" style="border-color:#bbf7d0 !important; background-color:#fff !important;" oninput="calcularSugestao()"><datalist id="lista-produtos-venda"></datalist></div>
-                
                 <div class="row">
                     <div class="col">
                         <label>Plataforma</label>
@@ -246,19 +238,16 @@
                         <input type="number" id="venda-qtd" class="input-var" value="1" min="1" style="border-color:#bbf7d0 !important; background-color:#fff !important;" oninput="calcularSugestao()">
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label>Markup Desejado (%)</label>
                     <input type="number" id="venda-markup" class="input-var" value="100" style="border-color:#bbf7d0 !important; background-color:#fff !important;" oninput="calcularSugestao()">
                 </div>
-
                 <!-- CAIXA DE SUGESTÃO DE PREÇO -->
                 <div id="box-sugestao-preco" style="display:none; background:#fffbeb; border:1px solid #fde68a; padding:12px; border-radius:12px; text-align:center; cursor:pointer; margin-bottom:15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition:0.2s;" onclick="aplicarPrecoSugerido()" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                     <span style="font-size:0.8rem; color:#b45309; display:block; font-weight:800; text-transform:uppercase;">💡 Preço Sugerido (Clique para usar)</span>
                     <span id="venda-sugestao-valor" style="font-size:1.8rem; font-weight:900; color:#d97706; display:block; margin: 5px 0;">R$ 0,00</span>
                     <span style="font-size:0.75rem; color:#78716c; display:block; margin-top:4px;">Lucro garantido: <b id="venda-sugestao-lucro">R$ 0,00</b></span>
                 </div>
-
                 <div class="input-group"><label>Valor Final a Cobrar</label><input type="text" id="venda-valor" class="input-var mask-money" placeholder="R$ 0,00" style="border-color:#bbf7d0 !important; background-color:#fff !important; font-size:1.2rem; color:#047857;"></div>
                 <button class="btn-magic btn-global" id="btn-salvar-venda" onclick="salvarVenda()" style="margin-bottom:0; box-shadow:0 8px 20px rgba(16,185,129,0.3);">✅ Lançar Venda</button>
             </div>
@@ -277,7 +266,6 @@
                 <input type="text" id="busca-venda" class="search-bar" style="margin-top:15px; margin-bottom:0;" placeholder="🔍 Buscar cliente ou produto..." list="lista-clientes-busca" autocomplete="off" onkeyup="filtrarVendas()">
                 <datalist id="lista-clientes-busca"></datalist>
             </div>
-
             <div id="loading-vendas" style="text-align:center; padding:20px; color:var(--primary); font-weight:800; display:none;">⏳ Carregando vendas...</div>
             <div id="lista-vendas"></div>
         </div>
@@ -331,37 +319,47 @@
 </div>
 
 <!-- ========================================== -->
-<!-- RECOLOCANDO TODOS OS MODAIS QUE FALTARAM   -->
+<!-- TODOS OS MODAIS DO SISTEMA BLINDADOS       -->
 <!-- ========================================== -->
 
-<!-- MODAL NOME INDIVIDUAL -->
+<!-- MODAL ALERTA GERAL -->
+<div id="custom-modal" class="modal-overlay-alert">
+    <div class="modal-box-alert">
+        <span class="modal-icon-alert" id="modal-icone-alert">✅</span>
+        <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
+        <p class="modal-text-alert" id="modal-texto-alert">Operação realizada com sucesso!</p>
+        <button id="btn-modal-ok" class="btn-modal-ok" onclick="fecharAlerta()">Certo, entendi</button>
+    </div>
+</div>
+
+<!-- MODAL NOME INDIVIDUAL (PDF) -->
 <div id="modal-nome-recibo" class="modal-overlay-alert">
     <div class="modal-box-alert" style="padding-top:20px;">
-        <button class="btn-fechar-modal" onclick="window.$('modal-nome-recibo').style.display='none'">×</button>
+        <button class="btn-fechar-modal" onclick="$('modal-nome-recibo').style.display='none'">×</button>
         <h3 class="modal-title-alert" style="color:var(--brand-dark); font-size:1.1rem; margin-bottom:5px;">NOME NO RECIBO</h3>
         <p class="modal-text-alert" style="margin-bottom:15px; font-size:0.8rem;">Como deseja que o nome do cliente apareça?</p>
         <input type="hidden" id="recibo-linha-atual">
         <input type="hidden" id="recibo-tipo-atual">
         <input type="text" id="input-nome-recibo" class="login-input" style="padding:12px; margin-bottom:15px; text-align:left;">
         <div style="display:flex; gap:10px;">
-            <button class="btn-modal-cancel" onclick="window.$('modal-nome-recibo').style.display='none'">Cancelar</button>
-            <button class="btn-modal-confirm" onclick="window.executarDocumentoUnico()">Continuar</button>
+            <button class="btn-modal-cancel" onclick="$('modal-nome-recibo').style.display='none'">Cancelar</button>
+            <button class="btn-modal-confirm" onclick="executarDocumentoUnico()">Continuar</button>
         </div>
     </div>
 </div>
 
-<!-- MODAL LOTE -->
+<!-- MODAL LOTE PDF -->
 <div id="modal-acoes-lote" class="modal-overlay">
     <div class="modal-box" style="padding: 20px; display:flex; flex-direction:column; max-height:90vh;">
-        <button class="btn-fechar-modal" onclick="window.$('modal-acoes-lote').style.display='none'">×</button>
+        <button class="btn-fechar-modal" onclick="$('modal-acoes-lote').style.display='none'">×</button>
         <h3 class="modal-title">📦 Ações em Lote</h3>
         <div class="tabs-container" style="margin-bottom:15px; background: transparent; padding: 0;">
-            <button id="btn-lote-pendentes" class="tab-btn active" style="min-width: 0; padding: 12px 5px;" onclick="window.carregarLote('Pendente')">🟡 Cobrar</button>
-            <button id="btn-lote-pagos" class="tab-btn" style="min-width: 0; padding: 12px 5px;" onclick="window.carregarLote('Pago')">🟢 Recibos</button>
+            <button id="btn-lote-pendentes" class="tab-btn active" style="min-width: 0; padding: 12px 5px;" onclick="carregarLote('Pendente')">🟡 Cobrar</button>
+            <button id="btn-lote-pagos" class="tab-btn" style="min-width: 0; padding: 12px 5px;" onclick="carregarLote('Pago')">🟢 Recibos</button>
         </div>
         <div class="input-group">
             <label style="color:var(--primary);">SELECIONE O CLIENTE</label>
-            <select id="lote-select-cliente" class="input-var" onchange="window.selecionarClienteLote()"></select>
+            <select id="lote-select-cliente" class="input-var" onchange="selecionarClienteLote()"></select>
         </div>
         <div class="input-group">
             <label style="color:var(--primary);">NOME NO RECIBO/COBRANÇA</label>
@@ -370,15 +368,15 @@
         <label style="font-weight:700; color:var(--text-muted); font-size:0.8rem; margin-bottom:5px; display:block; text-transform:uppercase;">Pedidos do Cliente:</label>
         <div id="lista-acoes-lote" class="scroll-container" style="flex: 1; overflow-y:auto; padding-right:5px; margin-bottom: 15px; max-height:35vh;"></div>
         <div style="border-top: 1px solid var(--border-color); padding-top: 15px;">
-            <button id="btn-gerar-pdf-lote" class="btn-magic btn-global" style="margin:0; box-shadow:0 4px 15px rgba(16,185,129,0.3);">📄 GERAR PDF</button>
+            <button id="btn-gerar-pdf-lote" class="btn-magic btn-global" style="margin:0; box-shadow:0 4px 15px rgba(16,185,129,0.3);" onclick="gerarPDFLote(loteAtualTipo)">📄 GERAR PDF</button>
         </div>
     </div>
 </div>
 
-<!-- MODAIS DO SISTEMA QUE ESTAVAM FALTANDO -->
+<!-- MODAL EDITAR ÍMÃ -->
 <div id="modal-editar-ima" class="modal-overlay">
     <div class="modal-box">
-        <button class="btn-fechar-modal" onclick="window.$('modal-editar-ima').style.display='none'">×</button>
+        <button class="btn-fechar-modal" onclick="$('modal-editar-ima').style.display='none'">×</button>
         <h3 class="modal-title">✏️ Editar Ímã</h3>
         <input type="hidden" id="edit-ima-linha">
         <input type="hidden" id="edit-ima-foto-antiga">
@@ -391,8 +389,8 @@
         <div class="input-group"><label style="color:#d97706;">Novo Link do Vídeo (Upgrade!):</label><input type="text" id="edit-ima-video" style="border-color:#d97706; background:#fffbeb;"></div>
         <div class="input-group"><label>Nova Data de Liberação:</label><input type="datetime-local" id="edit-ima-data"></div>
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button id="btn-excluir-ima-modal" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="window.confirmarExclusaoIma()">🗑️ Excluir</button>
-            <button id="btn-salvar-edicao-ima" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="window.salvarEdicaoIma()">💾 Atualizar</button>
+            <button id="btn-excluir-ima-modal" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoIma()">🗑️ Excluir</button>
+            <button id="btn-salvar-edicao-ima" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoIma()">💾 Atualizar</button>
         </div>
     </div>
 </div>
@@ -403,15 +401,16 @@
         <h3 class="modal-title-alert" style="color:#ef4444;">Excluir Ímã?</h3>
         <p class="modal-text-alert">Apagar o ímã de <b id="nome-ima-excluir"></b>?<br>O link do cliente vai parar de funcionar na mesma hora.</p>
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-modal-cancel" onclick="window.$('modal-confirmar-exclusao-ima').style.display='none'">Cancelar</button>
+            <button class="btn-modal-cancel" onclick="$('modal-confirmar-exclusao-ima').style.display='none'">Cancelar</button>
             <button id="btn-executar-exclusao-ima" class="btn-modal-confirm" style="background:#ef4444; box-shadow:0 6px 0 #b91c1c;">🗑️ Apagar</button>
         </div>
     </div>
 </div>
 
+<!-- MODAL EDITAR PRODUTO -->
 <div id="modal-editar-produto" class="modal-overlay">
     <div class="modal-box">
-        <button class="btn-fechar-modal" onclick="window.$('modal-editar-produto').style.display='none'">×</button>
+        <button class="btn-fechar-modal" onclick="$('modal-editar-produto').style.display='none'">×</button>
         <h3 class="modal-title">✏️ Editar Produto</h3>
         <input type="hidden" id="edit-prod-linha">
         <input type="hidden" id="edit-prod-foto-antiga">
@@ -425,15 +424,16 @@
         <div class="input-group"><label>Descrição:</label><textarea id="edit-prod-desc"></textarea></div>
         <div class="input-group"><label>Status:</label><select id="edit-prod-status"><option value="true">🟢 ATIVO</option><option value="false">🔴 INATIVO</option></select></div>
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button id="btn-excluir-prod" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="window.confirmarExclusaoProduto()">🗑️ Excluir</button>
-            <button id="btn-salvar-edicao-prod" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="window.salvarEdicaoProduto()">💾 Salvar</button>
+            <button id="btn-excluir-prod" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoProduto()">🗑️ Excluir</button>
+            <button id="btn-salvar-edicao-prod" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoProduto()">💾 Salvar</button>
         </div>
     </div>
 </div>
 
+<!-- MODAL EDITAR ANUNCIO -->
 <div id="modal-editar-anuncio" class="modal-overlay">
     <div class="modal-box">
-        <button class="btn-fechar-modal" onclick="window.$('modal-editar-anuncio').style.display='none'">×</button>
+        <button class="btn-fechar-modal" onclick="$('modal-editar-anuncio').style.display='none'">×</button>
         <h3 class="modal-title">💼 Editar Anúncio</h3>
         <input type="hidden" id="edit-ad-linha"><input type="hidden" id="edit-ad-foto-antiga"><input type="hidden" id="edit-ad-logo-antiga">
         <div class="foto-atual-box"><img id="edit-ad-logo-preview" src="" style="border-radius:50%;"><img id="edit-ad-banner-preview" src="" style="width:60px;"><span>Vazio = mantém atual.</span></div>
@@ -444,29 +444,21 @@
         <div class="input-group"><label>Chamada:</label><input type="text" id="edit-ad-desc" maxlength="60"></div>
         <div class="row"><div class="col"><div class="input-group"><label>Cupom:</label><input type="text" id="edit-ad-cupom" style="text-transform:uppercase;"></div></div><div class="col"><div class="input-group"><label>Valor:</label><input type="text" id="edit-ad-valor" class="mask-money"></div></div></div>
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button id="btn-excluir-ad" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="window.confirmarExclusaoAnuncio()">🗑️ Excluir</button>
-            <button id="btn-salvar-edicao-ad" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="window.salvarEdicaoAnuncio()">💾 Salvar</button>
+            <button id="btn-excluir-ad" class="btn-magic btn-excluir" style="margin-top:0; flex:1;" onclick="confirmarExclusaoAnuncio()">🗑️ Excluir</button>
+            <button id="btn-salvar-edicao-ad" class="btn-magic btn-global" style="margin-top:0; flex:2;" onclick="salvarEdicaoAnuncio()">💾 Salvar</button>
         </div>
     </div>
 </div>
 
-<div id="custom-modal" class="modal-overlay-alert">
-    <div class="modal-box-alert">
-        <span class="modal-icon-alert" id="modal-icone-alert">✅</span>
-        <h3 class="modal-title-alert" id="modal-titulo-alert">Sucesso</h3>
-        <p class="modal-text-alert" id="modal-texto-alert">Operação realizada com sucesso!</p>
-        <button id="btn-modal-ok" class="btn-modal-ok" onclick="window.fecharAlerta()">Certo, entendi</button>
-    </div>
-</div>
-
+<!-- MODAIS DE VENDAS -->
 <div id="custom-confirm-modal" class="modal-overlay-alert">
     <div class="modal-box-alert">
         <span class="modal-icon-alert">💸</span>
         <h3 class="modal-title-alert">Confirmar Pagamento</h3>
         <p class="modal-text-alert">Tem certeza que deseja marcar esta venda como <b>PAGA</b>?</p>
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-modal-cancel" onclick="window.fecharConfirmacao()">Cancelar</button>
-            <button class="btn-modal-confirm" onclick="window.executarPagamentoVenda()">✅ Sim, Recebi!</button>
+            <button class="btn-modal-cancel" onclick="fecharConfirmacao()">Cancelar</button>
+            <button class="btn-modal-confirm" onclick="executarPagamentoVenda()">✅ Sim, Recebi!</button>
         </div>
     </div>
 </div>
@@ -477,15 +469,15 @@
         <h3 class="modal-title-alert" style="color:#ef4444;">Excluir Venda?</h3>
         <p class="modal-text-alert">Tem certeza que deseja apagar o registro dessa venda? Esta ação <b>não pode ser desfeita.</b></p>
         <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn-modal-cancel" onclick="window.fecharExclusao()">Cancelar</button>
-            <button class="btn-modal-confirm" style="background:#ef4444; box-shadow:0 6px 0 #b91c1c;" onclick="window.executarExclusaoVenda()">🗑️ Apagar</button>
+            <button class="btn-modal-cancel" onclick="fecharExclusao()">Cancelar</button>
+            <button class="btn-modal-confirm" style="background:#ef4444; box-shadow:0 6px 0 #b91c1c;" onclick="executarExclusaoVenda()">🗑️ Apagar</button>
         </div>
     </div>
 </div>
 
 <div id="custom-edit-venda-modal" class="modal-overlay-alert" style="align-items:flex-start; padding-top:40px;">
     <div class="modal-box" style="padding:20px;">
-        <button onclick="window.fecharEditarVenda()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; color:#64748b; cursor:pointer;">×</button>
+        <button onclick="fecharEditarVenda()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; color:#64748b; cursor:pointer;">×</button>
         <h3 class="section-title" style="margin-top:0; margin-bottom:20px; color:var(--brand-dark);">✏️ Editar Venda</h3>
         <input type="hidden" id="edit-venda-linha">
         <div class="row" style="text-align:left;">
@@ -499,7 +491,7 @@
             <div class="col"><label>Qtd</label><input type="number" id="edit-venda-qtd" min="1"></div>
         </div>
         <div class="input-group" style="text-align:left;"><label>Valor Total</label><input type="text" id="edit-venda-valor" class="mask-money"></div>
-        <button class="btn-magic btn-global" id="btn-salvar-edicao-venda" onclick="window.salvarEdicaoVenda()" style="margin-bottom:0;">💾 Salvar Alterações</button>
+        <button class="btn-magic btn-global" id="btn-salvar-edicao-venda" onclick="salvarEdicaoVenda()" style="margin-bottom:0;">💾 Salvar Alterações</button>
     </div>
 </div>
 
@@ -513,6 +505,7 @@
     <button id="nav-menu_mobile" class="bottom-nav-btn" onclick="switchTab('menu_mobile', 'Navegação')"><span class="icon">☰</span> Menu</button>
 </div>
 
-<script src="app.js?v=1.4.5"></script>
+<!-- PUXANDO O ARQUIVO NOVO PARA FUGIR DO CACHE -->
+<script src="app.js"></script>
 </body>
 </html>
