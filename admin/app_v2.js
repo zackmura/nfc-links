@@ -1,14 +1,10 @@
 // ==========================================
-// CONFIGURAÇÕES GERAIS E ESTADO (HÍBRIDO: GOOGLE + ALWAYSDATA)
+// CONFIGURAÇÕES GERAIS E ESTADO (MIGRAÇÃO TOTAL PARA MYSQL)
 // ==========================================
 window.$ = id => document.getElementById(id); 
-const VERSAO_APP = "v2.0.1 (Híbrido)";
+const VERSAO_APP = "v3.0.0 (MySQL Turbo)";
 
-// 👇 A MÁGICA HÍBRIDA: As planilhas antigas e o servidor novo trabalhando juntos!
-const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
-const API_NFC = "https://script.google.com/macros/s/AKfycbxaubKWb7f9DiIlR8WLryYv8UClrCIbaSM4biGwgkwxUnDFGHsCsL7JQrLEGEZNwRvtdg/exec";
-
-// A NOSSA NOVA API MYSQL SUPER RÁPIDA (SOMENTE PARA FINANCEIRO E VENDAS)
+// A NOSSA NOVA API MYSQL SUPER RÁPIDA (FAZ TUDO AGORA!)
 const API_PRECIFICACAO = "https://bdfernando.alwaysdata.net/minimundo/api.php"; 
 
 const API_ONIONSYS = "https://api.onionsys.com.br/api/minimundo/registrar/catalogo";
@@ -78,13 +74,11 @@ window.tentarLogin = async function() {
     const usr = window.$('input-usuario').value.trim();
     const pwd = window.$('input-senha').value.trim();
     if (!usr || !pwd) return alert("Preencha usuário e senha!");
-
     const btn = window.$('btn-login'); const textoOriginal = btn.innerHTML;
     btn.disabled = true; btn.innerHTML = "⏳ Validando...";
 
     try {
         const payload = { acao: "login", usuario: usr, senha: pwd };
-        // O LOGIN VAI PELO MYSQL AGORA
         const req = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
         const res = await req.json();
 
@@ -151,10 +145,8 @@ window.addLog = function(msg, tipo='info'){
     window.$('terminal').innerHTML+=`<div class="log-line"><span class="log-time">[${new Date().toLocaleTimeString('pt-BR')}]</span><span class="log-${tipo}">${msg}</span></div>`; 
     window.$('terminal').scrollTop=window.$('terminal').scrollHeight; 
 };
-
 window.mostrarAlerta = function(tit, txt, tipo){ 
-    window.$('modal-titulo-alert').innerText=tit; 
-    window.$('modal-texto-alert').innerText=txt; 
+    window.$('modal-titulo-alert').innerText=tit; window.$('modal-texto-alert').innerText=txt; 
     const ic=window.$('modal-icone-alert'), b=window.$('btn-modal-ok'); 
     if(tipo==="success"){ic.innerText="✅";b.style.background="#10b981";b.style.boxShadow="0 6px 0 #059669";}
     else if(tipo==="warning"){ic.innerText="⚠️";b.style.background="#f59e0b";b.style.boxShadow="0 6px 0 #d97706";}
@@ -162,19 +154,13 @@ window.mostrarAlerta = function(tit, txt, tipo){
     window.$('custom-modal').style.display="flex"; 
     if("vibrate" in navigator) navigator.vibrate(50); 
 };
-
 window.fecharAlerta = function(){ window.$('custom-modal').style.display="none"; };
 
-// FUNÇÃO INTELIGENTE DE EXCLUSÃO: Sabe onde apagar dependendo da aba
-window.excluirRegistroLocal = async function(aba, l, idBtn, fnFechar, fnRecarregar, apiBase=URL_ANALYTICS_CATALOGO){ 
+// FUNÇÃO INTELIGENTE DE EXCLUSÃO: TOTALMENTE MYSQL AGORA
+window.excluirRegistroLocal = async function(aba, l, idBtn, fnFechar, fnRecarregar){ 
     const b=window.$(idBtn); b.disabled=true; b.innerText="⏳ Excluindo..."; 
-    // Se a aba for Vendas, Custos ou CustosProdutos, a exclusão vai para o MySQL
-    if (aba === "Vendas" || aba === "CustosProdutos" || aba === "Custos") {
-        apiBase = API_PRECIFICACAO;
-    }
-    
     try { 
-        const r=await fetch(apiBase,{method:"POST",body:JSON.stringify({acao:"excluir_registro",aba:aba,linha:l})}); 
+        const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify({acao:"excluir_registro",aba:aba,linha:l})}); 
         const res=await r.json(); 
         if(res.sucesso){
             window.addLog(`🗑️ Registro excluído.`, "success"); 
@@ -191,36 +177,18 @@ window.excluirRegistroLocal = async function(aba, l, idBtn, fnFechar, fnRecarreg
 // ==========================================
 // AS FUNÇÕES DE MODAIS QUE EU HAVIA ESQUECIDO
 // ==========================================
-window.abrirConfirmacaoPagamento = function(l){ 
-    window.linhaVendaPagamento = l; 
-    window.$('custom-confirm-modal').style.display = "flex"; 
-};
-window.fecharConfirmacao = function(){ 
-    window.$('custom-confirm-modal').style.display = "none"; 
-    window.linhaVendaPagamento = null; 
-};
-window.abrirConfirmacaoExclusao = function(l){ 
-    window.linhaVendaExclusao = l; 
-    window.$('custom-delete-modal').style.display = "flex"; 
-};
-window.fecharExclusao = function(){ 
-    window.$('custom-delete-modal').style.display = "none"; 
-    window.linhaVendaExclusao = null; 
-};
-window.fecharEditarVenda = function(){ 
-    window.$('custom-edit-venda-modal').style.display = "none"; 
-};
+window.abrirConfirmacaoPagamento = function(l){ window.linhaVendaPagamento = l; window.$('custom-confirm-modal').style.display = "flex"; };
+window.fecharConfirmacao = function(){ window.$('custom-confirm-modal').style.display = "none"; window.linhaVendaPagamento = null; };
+window.abrirConfirmacaoExclusao = function(l){ window.linhaVendaExclusao = l; window.$('custom-delete-modal').style.display = "flex"; };
+window.fecharExclusao = function(){ window.$('custom-delete-modal').style.display = "none"; window.linhaVendaExclusao = null; };
+window.fecharEditarVenda = function(){ window.$('custom-edit-venda-modal').style.display = "none"; };
 window.abrirModalEditarVenda = function(l){ 
-    const v = window.arrayVendas.find(x => x.linha === l); 
-    if(!v) return; 
+    const v = window.arrayVendas.find(x => x.linha === l); if(!v) return; 
     window.$('edit-venda-linha').value = v.linha; 
     window.$('edit-venda-data').value = v.data.includes('/') ? `${v.data.split('/')[2].substring(0,4)}-${v.data.split('/')[1].padStart(2,'0')}-${v.data.split('/')[0].padStart(2,'0')}` : ""; 
-    window.$('edit-venda-status').value = v.status; 
-    window.$('edit-venda-cliente').value = v.cliente; 
-    window.$('edit-venda-produto').value = v.produto; 
-    window.$('edit-venda-plataforma').value = v.plataforma; 
-    window.$('edit-venda-qtd').value = v.qtd; 
-    window.$('edit-venda-valor').value = window.formatarDoBanco(v.valor_venda); 
+    window.$('edit-venda-status').value = v.status; window.$('edit-venda-cliente').value = v.cliente; 
+    window.$('edit-venda-produto').value = v.produto; window.$('edit-venda-plataforma').value = v.plataforma; 
+    window.$('edit-venda-qtd').value = v.qtd; window.$('edit-venda-valor').value = window.formatarDoBanco(v.valor_venda); 
     window.$('custom-edit-venda-modal').style.display = "flex"; 
 };
 
@@ -228,273 +196,125 @@ window.abrirModalEditarVenda = function(l){
 // MÓDULO DE PLATAFORMAS (CONFIGURAÇÕES)
 // ==========================================
 window.renderizarPlataformas = function() {
-    const list = window.$('lista-plataformas');
-    if(!list) return;
-    const selectP = window.$('venda-plataforma');
-
+    const list = window.$('lista-plataformas'); if(!list) return; const selectP = window.$('venda-plataforma');
     let plats = JSON.parse(localStorage.getItem('minimundo_plataformas') || '[]');
-    if(plats.length === 0) {
-        plats = [ {nome: 'Venda Direta', pct: 0, fixa: 0}, {nome: 'Shopee', pct: 20, fixa: 4} ];
-        localStorage.setItem('minimundo_plataformas', JSON.stringify(plats));
-    }
-
-    let h = "";
-    let opt = "<option value=''>-- Selecione --</option>";
+    if(plats.length === 0) { plats = [ {nome: 'Venda Direta', pct: 0, fixa: 0}, {nome: 'Shopee', pct: 20, fixa: 4} ]; localStorage.setItem('minimundo_plataformas', JSON.stringify(plats)); }
+    let h = ""; let opt = "<option value=''>-- Selecione --</option>";
     plats.forEach((p, idx) => {
         h += `<div class="plat-item"><div class="plat-info"><strong>${p.nome}</strong><span>Taxa: ${p.pct}% + R$ ${p.fixa.toFixed(2).replace('.',',')} fixa</span></div><button class="btn-editar" style="background:#fef2f2; border-color:#fecaca; color:#b91c1c;" onclick="window.excluirPlataforma(${idx})">🗑️</button></div>`;
         opt += `<option value="${p.nome}">${p.nome}</option>`;
     });
-    list.innerHTML = h;
-    if(selectP) selectP.innerHTML = opt;
+    list.innerHTML = h; if(selectP) selectP.innerHTML = opt;
 };
 window.salvarPlataforma = function() {
-    const nome = window.$('config-plat-nome').value.trim();
-    const pct = parseFloat(window.$('config-plat-pct').value) || 0;
-    const fixa = parseFloat(window.$('config-plat-fixa').value) || 0;
-
+    const nome = window.$('config-plat-nome').value.trim(); const pct = parseFloat(window.$('config-plat-pct').value) || 0; const fixa = parseFloat(window.$('config-plat-fixa').value) || 0;
     if(!nome) return alert("Digite o nome da plataforma.");
-
-    let plats = JSON.parse(localStorage.getItem('minimundo_plataformas') || '[]');
-    plats.push({nome: nome, pct: pct, fixa: fixa});
-    localStorage.setItem('minimundo_plataformas', JSON.stringify(plats));
-    
-    window.$('config-plat-nome').value = ""; window.$('config-plat-pct').value = ""; window.$('config-plat-fixa').value = "";
-    window.renderizarPlataformas();
+    let plats = JSON.parse(localStorage.getItem('minimundo_plataformas') || '[]'); plats.push({nome: nome, pct: pct, fixa: fixa}); localStorage.setItem('minimundo_plataformas', JSON.stringify(plats));
+    window.$('config-plat-nome').value = ""; window.$('config-plat-pct').value = ""; window.$('config-plat-fixa').value = ""; window.renderizarPlataformas();
 };
 window.excluirPlataforma = function(idx) {
-    let plats = JSON.parse(localStorage.getItem('minimundo_plataformas') || '[]');
-    plats.splice(idx, 1);
-    localStorage.setItem('minimundo_plataformas', JSON.stringify(plats));
-    window.renderizarPlataformas();
+    let plats = JSON.parse(localStorage.getItem('minimundo_plataformas') || '[]'); plats.splice(idx, 1); localStorage.setItem('minimundo_plataformas', JSON.stringify(plats)); window.renderizarPlataformas();
 };
 
 // ==========================================
-// MÓDULO ÍMAS NFC (AGORA NO MYSQL)
+// MÓDULO ÍMAS NFC (MYSQL)
 // ==========================================
 window.carregarImas = async function() { 
-    window.$('loading-imas').style.display = 'block'; 
-    window.$('lista-imas-admin').innerHTML = ''; 
+    window.$('loading-imas').style.display = 'block'; window.$('lista-imas-admin').innerHTML = ''; 
     try { 
-        // Mudou para a API_PRECIFICACAO (que é a do MySQL)
-        const r = await fetch(API_PRECIFICACAO + "?acao=listar_imas"); 
-        const res = await r.json(); 
-        if (res.sucesso) { 
-            window.arrayImas = res.imas; 
-            window.renderListaImas(window.arrayImas); 
-        } else { throw new Error("Erro ao buscar imas."); } 
-    } catch (e) { 
-        window.addLog(`Erro Ímãs: ${e.message}`, "error"); 
-    } finally { 
-        window.$('loading-imas').style.display = 'none'; 
-    } 
+        const r = await fetch(API_PRECIFICACAO + "?acao=listar_imas"); const res = await r.json(); 
+        if (res.sucesso) { window.arrayImas = res.imas; window.renderListaImas(window.arrayImas); } else { throw new Error("Erro ao buscar imas."); } 
+    } catch (e) { window.addLog(`Erro Ímãs: ${e.message}`, "error"); } finally { window.$('loading-imas').style.display = 'none'; } 
 };
 
 window.renderListaImas = function(arr) { 
     const lE = window.$('lista-imas-admin'); 
-    if (arr.length === 0) { 
-        lE.innerHTML = "<p style='text-align:center;color:#999;padding:20px;'>Nenhum ímã cadastrado.</p>"; 
-        return; 
-    } 
+    if (arr.length === 0) { lE.innerHTML = "<p style='text-align:center;color:#999;padding:20px;'>Nenhum ímã cadastrado.</p>"; return; } 
     let h = ""; 
     arr.forEach(i => { 
         const statusVisual = i.linkVideoYoutube ? `<span class="tag-ativo">🎬 Vídeo Ativo</span>` : `<span class="tag-pendente">⏳ Teaser</span>`; 
         let dataFormatada = "Sem data alvo"; 
-        if(i.dataLiberacao) { 
-            let d = new Date(i.dataLiberacao); 
-            if(!isNaN(d)) dataFormatada = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} às ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; 
-        } 
-        const fotoUrl = i.foto ? i.foto.split(',')[0].trim() : 'logo.png'; 
-        const linkNfc = `https://diario.vivainteligente.net/ima-nfc/?id=${i.id}`; 
-        
-        h += `
-        <div class="list-item">
-            <img src="${fotoUrl}" class="list-img" onerror="this.src='logo.png'">
-            <div class="list-info">
-                <h4 class="list-nome">ID: ${i.id} - ${i.nomes}</h4>
-                <div class="list-detalhes">🗓️ Liberação: ${dataFormatada}</div>
-                <div style="margin-top:8px;">${statusVisual}</div>
-            </div>
-            <div style="display:flex; gap:8px;">
-                <button class="btn-novera" style="background:#e0f2fe; border-color:#bae6fd; color:#0369a1; width:auto; padding:0 12px; font-weight:bold; font-size:0.8rem;" onclick="window.copiarLinkNfc('${linkNfc}')" title="Copiar Link">🔗 Link</button>
-                <button class="btn-novera btn-n-editar" onclick="window.abrirModalEditarIma(${i.linha})" title="Editar Ímã">✏️</button>
-            </div>
-        </div>`; 
+        if(i.dataLiberacao) { let d = new Date(i.dataLiberacao); if(!isNaN(d)) dataFormatada = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} às ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; } 
+        const fotoUrl = i.foto ? i.foto.split(',')[0].trim() : 'logo.png'; const linkNfc = `https://diario.vivainteligente.net/ima-nfc/?id=${i.id}`; 
+        h += `<div class="list-item"><img src="${fotoUrl}" class="list-img" onerror="this.src='logo.png'"><div class="list-info"><h4 class="list-nome">ID: ${i.id} - ${i.nomes}</h4><div class="list-detalhes">🗓️ Liberação: ${dataFormatada}</div><div style="margin-top:8px;">${statusVisual}</div></div><div style="display:flex; gap:8px;"><button class="btn-novera" style="background:#e0f2fe; border-color:#bae6fd; color:#0369a1; width:auto; padding:0 12px; font-weight:bold; font-size:0.8rem;" onclick="window.copiarLinkNfc('${linkNfc}')" title="Copiar Link">🔗 Link</button><button class="btn-novera btn-n-editar" onclick="window.abrirModalEditarIma(${i.linha})" title="Editar Ímã">✏️</button></div></div>`; 
     }); 
     lE.innerHTML = h; 
 };
 window.copiarLinkNfc = function(link) {
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(link).then(() => {
-            window.mostrarAlerta("Copiado!", "O link do ímã foi copiado!", "success");
-        }).catch(() => fallbackCopyTextToClipboard(link));
-    } else {
-        fallbackCopyTextToClipboard(link);
-    }
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(link).then(() => { window.mostrarAlerta("Copiado!", "O link do ímã foi copiado!", "success"); }).catch(() => fallbackCopyTextToClipboard(link)); } else { fallbackCopyTextToClipboard(link); }
 };
 function fallbackCopyTextToClipboard(text) {
-    var textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    try {
-        var successful = document.execCommand('copy');
-        if(successful) {
-            window.mostrarAlerta("Copiado!", "O link foi copiado para a área de transferência!", "success");
-        } else {
-            alert("Copie manualmente: " + text);
-        }
-    } catch (err) {
-        alert("Copie manualmente: " + text);
-    }
-    document.body.removeChild(textArea);
+    var textArea = document.createElement("textarea"); textArea.value = text; textArea.style.top = "0"; textArea.style.left = "0"; textArea.style.position = "fixed"; document.body.appendChild(textArea); textArea.focus(); textArea.select();
+    try { var successful = document.execCommand('copy'); if(successful) { window.mostrarAlerta("Copiado!", "O link foi copiado para a área de transferência!", "success"); } else { alert("Copie manualmente: " + text); } } catch (err) { alert("Copie manualmente: " + text); } document.body.removeChild(textArea);
 }
-window.filtrarImas = function() { 
-    const t = window.$('busca-imas').value.toLowerCase(); 
-    window.renderListaImas(window.arrayImas.filter(i => String(i.id).toLowerCase().includes(t) || i.nomes.toLowerCase().includes(t))); 
-};
+window.filtrarImas = function() { const t = window.$('busca-imas').value.toLowerCase(); window.renderListaImas(window.arrayImas.filter(i => String(i.id).toLowerCase().includes(t) || i.nomes.toLowerCase().includes(t))); };
+
 window.fazerUploadRedundante = async function(fC, ik) { 
     let urlOnion = ""; let urlImgBB = ""; 
-    try { 
-        const fd = new FormData(); fd.append("imagem", fC); 
-        const rp = await fetch(API_ONIONSYS, {method:"POST", headers:{"Authorization":`Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id":"MiniMundo"}, body:fd}); 
-        const tx = await rp.text(); 
-        if (rp.ok) { 
-            const rs = JSON.parse(tx); 
-            urlOnion = (rs.arquivos && rs.arquivos.length > 0) ? rs.arquivos[0].url : (rs.url || rs.link || rs.URL || (rs.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${rs.filename}` : "")); 
-            window.addLog("✅ Imagem salva no servidor Primário.", "success"); 
-        } 
-    } catch (e) { window.addLog("⚠️ Servidor primário falhou.", "warn"); } 
-    
-    if (ik) { 
-        try { 
-            const fd2 = new FormData(); fd2.append("image", fC); 
-            const r2 = await fetch(`https://api.imgbb.com/1/upload?key=${ik}`, {method:"POST", body:fd2}); 
-            const d2 = await r2.json(); 
-            if (d2.success) { urlImgBB = d2.data.url; window.addLog("✅ Imagem salva no Backup (ImgBB).", "success"); } 
-        } catch (e) { window.addLog("⚠️ Servidor de backup falhou.", "warn"); } 
-    } 
-    
-    if (!urlOnion && !urlImgBB) throw new Error("Ambos os servidores de imagem falharam."); 
-    let urlsFinais = []; 
-    if (urlOnion) urlsFinais.push(urlOnion); 
-    if (urlImgBB) urlsFinais.push(urlImgBB); 
-    return urlsFinais.join(","); 
+    try { const fd = new FormData(); fd.append("imagem", fC); const rp = await fetch(API_ONIONSYS, {method:"POST", headers:{"Authorization":`Bearer ${TOKEN_ONIONSYS}`, "x-tenant-id":"MiniMundo"}, body:fd}); const tx = await rp.text(); if (rp.ok) { const rs = JSON.parse(tx); urlOnion = (rs.arquivos && rs.arquivos.length > 0) ? rs.arquivos[0].url : (rs.url || rs.link || rs.URL || (rs.filename ? `https://api.onionsys.com.br/arquivos/catalogo/${rs.filename}` : "")); window.addLog("✅ Imagem salva no servidor Primário.", "success"); } } catch (e) { window.addLog("⚠️ Servidor primário falhou.", "warn"); } 
+    if (ik) { try { const fd2 = new FormData(); fd2.append("image", fC); const r2 = await fetch(`https://api.imgbb.com/1/upload?key=${ik}`, {method:"POST", body:fd2}); const d2 = await r2.json(); if (d2.success) { urlImgBB = d2.data.url; window.addLog("✅ Imagem salva no Backup (ImgBB).", "success"); } } catch (e) { window.addLog("⚠️ Servidor de backup falhou.", "warn"); } } 
+    if (!urlOnion && !urlImgBB) throw new Error("Ambos os servidores falharam."); let urlsFinais = []; if (urlOnion) urlsFinais.push(urlOnion); if (urlImgBB) urlsFinais.push(urlImgBB); return urlsFinais.join(","); 
 };
+
 window.cadastrarIma = async function() { 
-    const id = window.$('ima-id').value.trim(); 
-    const nomes = window.$('ima-nomes').value.trim(); 
-    const fFoto = window.$('ima-foto').files; 
-    const video = window.$('ima-video').value.trim(); 
-    const dataOriginal = window.$('ima-data').value; 
-    const ik = window.$('imgbb-key').value.trim(); 
-    const inputProd = document.getElementById("ima-foto-produto"); 
-    
+    const id = window.$('ima-id').value.trim(); const nomes = window.$('ima-nomes').value.trim(); const fFoto = window.$('ima-foto').files; const video = window.$('ima-video').value.trim(); const dataOriginal = window.$('ima-data').value; const ik = window.$('imgbb-key').value.trim(); const inputProd = document.getElementById("ima-foto-produto"); 
     if(!id || !nomes || fFoto.length === 0 || !inputProd.files[0]) return window.mostrarAlerta("Atenção", "Preencha ID, Nomes e as DUAS fotos (Cliente e Produto).", "warning"); 
     const b = window.$('btn-salvar-ima'); b.disabled = true; b.innerText = "⏳ Gerando..."; 
     try { 
-        window.addLog(`Subindo foto do cliente...`, "info"); 
-        const urlsCliente = await window.fazerUploadRedundante(await window.comprimirImagem(fFoto[0], 600, 600, 0.8), ik); 
-        window.addLog(`Subindo foto do produto físico...`, "info"); 
-        const urlsProduto = await window.fazerUploadRedundante(await window.comprimirImagem(inputProd.files[0], 600, 600, 0.8), ik); 
-        
-        // MUDANÇA: API_PRECIFICACAO
+        window.addLog(`Subindo foto do cliente...`, "info"); const urlsCliente = await window.fazerUploadRedundante(await window.comprimirImagem(fFoto[0], 600, 600, 0.8), ik); 
+        window.addLog(`Subindo foto do produto físico...`, "info"); const urlsProduto = await window.fazerUploadRedundante(await window.comprimirImagem(inputProd.files[0], 600, 600, 0.8), ik); 
         const p = { acao: "salvar_ima", id: id, nomes: nomes, foto: urlsCliente, linkVideoYoutube: video, dataLiberacao: dataOriginal ? dataOriginal + ":00" : "", fotoProduto: urlsProduto }; 
-        const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(p) }); 
-        const res = await r.json(); 
-        if(res.sucesso) { window.mostrarAlerta("Sucesso!", "Ímã cadastrado com fotos personalizadas!", "success"); window.carregarImas(); } 
-        else { throw new Error(res.erro); }
-    } catch (e) { 
-        window.addLog(`❌ ERRO: ${e.message}`, "error"); 
-    } finally { 
-        b.disabled = false; b.innerText = "✨ Gerar Ímã"; 
-    } 
+        const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(p) }); const res = await r.json(); 
+        if(res.sucesso) { window.mostrarAlerta("Sucesso!", "Ímã cadastrado com fotos personalizadas!", "success"); window.carregarImas(); } else { throw new Error(res.erro); }
+    } catch (e) { window.addLog(`❌ ERRO: ${e.message}`, "error"); } finally { b.disabled = false; b.innerText = "✨ Gerar Ímã"; } 
 };
-
 window.abrirModalEditarIma = function(l) { 
-    const i = window.arrayImas.find(x => x.linha === l); 
-    if(!i) return; 
-    window.$('edit-ima-linha').value = i.linha; 
-    window.$('edit-ima-nomes').value = i.nomes; 
-    window.$('edit-ima-video').value = i.linkVideoYoutube; 
-    window.$('edit-ima-foto-antiga').value = i.foto; 
-    window.$('edit-ima-img-preview').src = i.foto ? i.foto.split(',')[0].trim() : "logo.png"; 
-    window.$('edit-ima-foto').value = ""; 
-    window.$('edit-ima-foto-prod-antiga').value = i.fotoProduto || ""; 
-    if(i.fotoProduto) { 
-        window.$('edit-ima-prod-preview').src = i.fotoProduto.split(',')[0].trim(); 
-        window.$('edit-ima-prod-preview').style.display = "block"; 
-    } else { 
-        window.$('edit-ima-prod-preview').style.display = "none"; 
-    } 
+    const i = window.arrayImas.find(x => x.linha === l); if(!i) return; 
+    window.$('edit-ima-linha').value = i.linha; window.$('edit-ima-nomes').value = i.nomes; window.$('edit-ima-video').value = i.linkVideoYoutube; window.$('edit-ima-foto-antiga').value = i.foto; window.$('edit-ima-img-preview').src = i.foto ? i.foto.split(',')[0].trim() : "logo.png"; window.$('edit-ima-foto').value = ""; window.$('edit-ima-foto-prod-antiga').value = i.fotoProduto || ""; 
+    if(i.fotoProduto) { window.$('edit-ima-prod-preview').src = i.fotoProduto.split(',')[0].trim(); window.$('edit-ima-prod-preview').style.display = "block"; } else { window.$('edit-ima-prod-preview').style.display = "none"; } 
     window.$('edit-ima-foto-prod').value = ""; 
-    if(i.dataLiberacao) { window.$('edit-ima-data').value = String(i.dataLiberacao).substring(0, 16); } 
-    else { window.$('edit-ima-data').value = ""; } 
+    if(i.dataLiberacao) { window.$('edit-ima-data').value = String(i.dataLiberacao).substring(0, 16); } else { window.$('edit-ima-data').value = ""; } 
     window.$('modal-editar-ima').style.display = 'flex'; 
 };
 window.salvarEdicaoIma = async function() { 
     const b = window.$('btn-salvar-edicao-ima'); b.disabled = true; b.innerText = "⏳ Atualizando..."; 
     try { 
-        const ik = window.$('imgbb-key').value.trim(); 
-        const idAtual = window.arrayImas.find(x => x.linha == window.$('edit-ima-linha').value).id; 
-        let fotoFinal = window.$('edit-ima-foto-antiga').value; 
-        const novaFoto = window.$('edit-ima-foto').files; 
-        let fotoProdFinal = window.$('edit-ima-foto-prod-antiga').value; 
-        const novaFotoProd = window.$('edit-ima-foto-prod').files; 
+        const ik = window.$('imgbb-key').value.trim(); const idAtual = window.arrayImas.find(x => x.linha == window.$('edit-ima-linha').value).id; 
+        let fotoFinal = window.$('edit-ima-foto-antiga').value; const novaFoto = window.$('edit-ima-foto').files; let fotoProdFinal = window.$('edit-ima-foto-prod-antiga').value; const novaFotoProd = window.$('edit-ima-foto-prod').files; 
         if(novaFoto.length > 0) { window.addLog(`Atualizando foto do cliente...`, "info"); fotoFinal = await window.fazerUploadRedundante(await window.comprimirImagem(novaFoto[0], 600, 600, 0.8), ik); } 
         if(novaFotoProd.length > 0) { window.addLog(`Atualizando foto do produto...`, "info"); fotoProdFinal = await window.fazerUploadRedundante(await window.comprimirImagem(novaFotoProd[0], 600, 600, 0.8), ik); } 
-        let dataLiberacaoStr = ""; 
-        if(window.$('edit-ima-data').value) { dataLiberacaoStr = window.$('edit-ima-data').value + ":00"; } 
-        
-        // MUDANÇA: API_PRECIFICACAO
+        let dataLiberacaoStr = ""; if(window.$('edit-ima-data').value) { dataLiberacaoStr = window.$('edit-ima-data').value + ":00"; } 
         const p = { acao: "atualizar_ima", id: idAtual, nomes: window.$('edit-ima-nomes').value, foto: fotoFinal, linkVideoYoutube: window.$('edit-ima-video').value, dataLiberacao: dataLiberacaoStr, fotoProduto: fotoProdFinal }; 
-        const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(p) }); 
-        const res = await r.json(); 
-        if(res.sucesso) { window.addLog(`✅ Mágica Atualizada!`, "success"); window.$('modal-editar-ima').style.display = 'none'; window.carregarImas(); } 
-        else { throw new Error("Erro API."); }
-    } catch (e) { 
-        window.addLog(`❌ Erro Update: ${e.message}`, "error"); 
-    } finally { 
-        b.disabled = false; b.innerText = "💾 Atualizar Mágica"; 
-    } 
+        const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(p) }); const res = await r.json(); 
+        if(res.sucesso) { window.addLog(`✅ Mágica Atualizada!`, "success"); window.$('modal-editar-ima').style.display = 'none'; window.carregarImas(); } else { throw new Error("Erro API."); }
+    } catch (e) { window.addLog(`❌ Erro Update: ${e.message}`, "error"); } finally { b.disabled = false; b.innerText = "💾 Atualizar Mágica"; } 
 };
-
-// MUDANÇA IMPORTANTE: O MySQL precisa do ID para apagar, não da Linha.
 window.confirmarExclusaoIma = function() { 
-    const idBusca = window.$('edit-ima-linha').value; 
-    const i = window.arrayImas.find(x => x.linha == idBusca); 
-    if(!i) return; 
-    window.$('nome-ima-excluir').innerText = i.nomes; 
-    window.$('modal-confirmar-exclusao-ima').style.display = 'flex'; 
+    const idBusca = window.$('edit-ima-linha').value; const i = window.arrayImas.find(x => x.linha == idBusca); if(!i) return; 
+    window.$('nome-ima-excluir').innerText = i.nomes; window.$('modal-confirmar-exclusao-ima').style.display = 'flex'; 
     window.$('btn-executar-exclusao-ima').onclick = async function() { 
         window.$('modal-confirmar-exclusao-ima').style.display = 'none'; 
-        try {
-            const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify({acao: "excluir_ima", id: i.id})});
-            const res = await r.json();
-            if(res.sucesso){ window.addLog("🗑️ Ímã excluído.", "success"); window.$('modal-editar-ima').style.display='none'; window.carregarImas(); }
-        } catch(e) { window.mostrarAlerta("Erro", "Falha: " + e.message, "error"); }
+        try { const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify({acao: "excluir_ima", id: i.id})}); const res = await r.json(); if(res.sucesso){ window.addLog("🗑️ Ímã excluído.", "success"); window.$('modal-editar-ima').style.display='none'; window.carregarImas(); } } catch(e) { window.mostrarAlerta("Erro", "Falha: " + e.message, "error"); }
     }; 
 };
 
 // ==========================================
-// ADMIN: ANALYTICS E ANÚNCIOS (MANTIDOS NO GOOGLE SHEETS)
+// ADMIN: ANALYTICS E ANÚNCIOS (MYSQL)
 // ==========================================
 window.limparDatasManuais = function(){ window.$('data-inicio').value=""; window.$('data-fim').value=""; }; 
 window.limparFiltrosRapidos = function(){ window.$('filtro-mes').value="todos"; window.$('filtro-ano').value="todos"; };
+
 window.carregarAnalytics = async function(forcar=false){ 
     if(window.dadosTotaisAcessos.length>0&&!forcar)return; 
     window.$('loading-analytics').style.display='block'; window.$('painel-dashboard').style.display='none'; 
     try{ 
-        const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=analytics"); 
+        // 🔥 AGORA PUXA DO MYSQL! 🔥
+        const r=await fetch(API_PRECIFICACAO+"?acao=analytics"); 
         const res=await r.json(); 
         if(res.sucesso){window.dadosTotaisAcessos=res.dados; window.aplicarFiltros();}else throw new Error(res.erro); 
-    }catch(e){
-        window.$('loading-analytics').style.display='none'; window.addLog(`❌ Erro Analytics: ${e.message}`,"error");
-    } 
+    }catch(e){ window.$('loading-analytics').style.display='none'; window.addLog(`❌ Erro Analytics: ${e.message}`,"error"); } 
 };
+
 window.aplicarFiltros = function(){ 
     window.$('loading-analytics').style.display='none'; 
     const mS=window.$('filtro-mes').value, aS=window.$('filtro-ano').value, tS=window.$('filtro-time').value.toLowerCase(), dI=window.$('data-inicio').value, dF=window.$('data-fim').value; 
@@ -509,6 +329,7 @@ window.aplicarFiltros = function(){
     window.processarDashboard(filtrados); 
     window.$('painel-dashboard').style.display='block'; 
 };
+
 window.processarDashboard = function(arr){ 
     window.$('dash-total').innerText=arr.length; 
     if(arr.length===0){ 
@@ -537,7 +358,17 @@ window.renderizarGrafico = function(l,d,c){ const ctx=window.$('graficoAcessos')
 
 window.ativarNotificacoesBrowser = function(){ if("Notification" in window){Notification.requestPermission().then(p=>{if(p==="granted"){window.$('btn-notifica').style.display="none";try{new Notification("Mini Mundo",{body:"Alertas ativados!",icon:"logo.png"});}catch(e){}}});} };
 window.dispararAlertaSeHouverNovos = function(nA){ let pA=nA.filter(a=>a.status==="PENDENTE").length; if(window.quantidadeAnunciosPendentes===-1){window.quantidadeAnunciosPendentes=pA;return;} if(pA>window.quantidadeAnunciosPendentes){let eN=nA[nA.length-1].empresa; window.addLog(`🔔 ALERTA: Solicitação de ${eN}`,"warn"); try{if("Notification" in window&&Notification.permission==="granted"){new Notification("🚀 Novo Anunciante!",{body:`Empresa ${eN} solicitou anúncio.`,icon:"logo.png"});}}catch(e){} try{if("vibrate" in navigator)navigator.vibrate([200,100,200]);}catch(e){}} window.quantidadeAnunciosPendentes=pA; };
-window.carregarAnunciosAdmin = async function(s=false){ if(!s){window.$('loading-anuncios').style.display='block';window.$('lista-anuncios-admin').innerHTML='';} try{const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=anuncios_admin");const res=await r.json(); if(res.sucesso){window.anunciosAdminArray=res.anuncios.slice().reverse(); window.dispararAlertaSeHouverNovos(res.anuncios); if(!s||window.$('lista-anuncios-admin').innerHTML==="")window.renderListaAnuncios(window.anunciosAdminArray);}}catch(e){if(!s)window.addLog(`Erro anúncios: ${e.message}`,"error");}finally{window.$('loading-anuncios').style.display='none';} };
+
+window.carregarAnunciosAdmin = async function(s=false){ 
+    if(!s){window.$('loading-anuncios').style.display='block';window.$('lista-anuncios-admin').innerHTML='';} 
+    try{
+        // 🔥 AGORA PUXA DO MYSQL! 🔥
+        const r=await fetch(API_PRECIFICACAO+"?acao=anuncios_admin");
+        const res=await r.json(); 
+        if(res.sucesso){window.anunciosAdminArray=res.anuncios.slice().reverse(); window.dispararAlertaSeHouverNovos(res.anuncios); if(!s||window.$('lista-anuncios-admin').innerHTML==="")window.renderListaAnuncios(window.anunciosAdminArray);}
+    }catch(e){if(!s)window.addLog(`Erro anúncios: ${e.message}`,"error");}finally{window.$('loading-anuncios').style.display='none';} 
+};
+
 window.renderListaAnuncios = function(aA){ 
     const lE=window.$('lista-anuncios-admin'); 
     if(aA.length===0){lE.innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhum anúncio.</p>";return;} 
@@ -558,15 +389,41 @@ window.renderListaAnuncios = function(aA){
     }); 
     lE.innerHTML=h; 
 };
+
 window.filtrarAnuncios = function(){ const t=window.$('busca-anuncios').value.toLowerCase(); window.renderListaAnuncios(window.anunciosAdminArray.filter(a=>a.empresa.toLowerCase().includes(t)||a.status.toLowerCase().includes(t)||(a.cupom&&a.cupom.toLowerCase().includes(t)))); };
 window.abrirModalEditarAnuncio = function(l){ const a=window.anunciosAdminArray.find(x=>x.linha===l); if(!a)return; window.$('edit-ad-linha').value=a.linha; window.$('edit-ad-empresa').value=a.empresa; window.$('edit-ad-status').value=a.status; window.$('edit-ad-vencimento').value=a.vencimento; window.$('edit-ad-valor').value=window.formatarPreco(a.valor_negociado); window.$('edit-ad-desc').value=a.descricao||""; window.$('edit-ad-cupom').value=a.cupom||""; window.$('edit-ad-foto-antiga').value=a.foto||""; window.$('edit-ad-logo-antiga').value=a.logo||""; window.$('edit-ad-logo-preview').src=a.logo||"logo.png"; window.$('edit-ad-banner-preview').src=a.foto||"logo.png"; window.$('edit-ad-logo-nova').value=""; window.$('edit-ad-banner-novo').value=""; window.$('modal-editar-anuncio').style.display='flex'; };
-window.confirmarExclusaoAnuncio = function(){ const l=parseInt(window.$('edit-ad-linha').value); const a=window.anunciosAdminArray.find(x=>x.linha===l); if(!a)return; if(a.vencimento){const hj=new Date();hj.setHours(0,0,0,0);const p=a.vencimento.split('-');const vc=new Date(p[0],p[1]-1,p[2]);vc.setHours(23,59,59,999);if(vc>=hj){alert("❌ BLOQUEADO: Anúncio vigente.");return;}} if(confirm(`EXCLUIR anúncio da ${a.empresa}?`)) window.excluirRegistroLocal("Anuncios",l,"btn-excluir-ad",()=>window.$('modal-editar-anuncio').style.display='none',window.carregarAnunciosAdmin,URL_ANALYTICS_CATALOGO); };
-window.salvarEdicaoAnuncio = async function(){ const btn=window.$('btn-salvar-edicao-ad'); btn.disabled=true; btn.innerText="⏳ Salvando..."; try{ const ik=window.$('imgbb-key').value.trim(); let lL=window.$('edit-ad-logo-antiga').value, lB=window.$('edit-ad-foto-antiga').value; const iL=window.$('edit-ad-logo-nova'); if(iL.files.length>0){window.addLog("Enviando logo...","info"); lL=await window.fazerUploadInteligente(await window.comprimirImagem(iL.files[0],400,400,0.8),ik,true);} const iB=window.$('edit-ad-banner-novo'); if(iB.files.length>0){window.addLog("Enviando banner...","info"); lB=await window.fazerUploadInteligente(await window.comprimirImagem(iB.files[0],800,800,0.8),ik,true);} const p={acao:"atualizar_anuncio",linha:window.$('edit-ad-linha').value,status:window.$('edit-ad-status').value,vencimento:window.$('edit-ad-vencimento').value,valor_negociado:window.$('edit-ad-valor').value,descricao:window.$('edit-ad-desc').value,cupom:window.$('edit-ad-cupom').value,logo:lL,foto:lB}; const r=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){window.addLog(`✅ Anúncio OK!`,"success");window.$('modal-editar-anuncio').style.display='none';window.carregarAnunciosAdmin();}else throw new Error("Erro planilha."); }catch(e){alert("Erro: "+e.message);window.addLog(`❌ Erro: ${e.message}`,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar";} };
+
+window.confirmarExclusaoAnuncio = function(){ 
+    const l=parseInt(window.$('edit-ad-linha').value); const a=window.anunciosAdminArray.find(x=>x.linha===l); if(!a)return; 
+    if(a.vencimento){const hj=new Date();hj.setHours(0,0,0,0);const p=a.vencimento.split('-');const vc=new Date(p[0],p[1]-1,p[2]);vc.setHours(23,59,59,999);if(vc>=hj){alert("❌ BLOQUEADO: Anúncio vigente.");return;}} 
+    if(confirm(`EXCLUIR anúncio da ${a.empresa}?`)) window.excluirRegistroLocal("Anuncios",l,"btn-excluir-ad",()=>window.$('modal-editar-anuncio').style.display='none',window.carregarAnunciosAdmin); 
+};
+
+window.salvarEdicaoAnuncio = async function(){ 
+    const btn=window.$('btn-salvar-edicao-ad'); btn.disabled=true; btn.innerText="⏳ Salvando..."; 
+    try{ 
+        const ik=window.$('imgbb-key').value.trim(); let lL=window.$('edit-ad-logo-antiga').value, lB=window.$('edit-ad-foto-antiga').value; const iL=window.$('edit-ad-logo-nova'); if(iL.files.length>0){window.addLog("Enviando logo...","info"); lL=await window.fazerUploadInteligente(await window.comprimirImagem(iL.files[0],400,400,0.8),ik,true);} const iB=window.$('edit-ad-banner-novo'); if(iB.files.length>0){window.addLog("Enviando banner...","info"); lB=await window.fazerUploadInteligente(await window.comprimirImagem(iB.files[0],800,800,0.8),ik,true);} 
+        const p={acao:"atualizar_anuncio",linha:window.$('edit-ad-linha').value,status:window.$('edit-ad-status').value,vencimento:window.$('edit-ad-vencimento').value,valor_negociado:window.$('edit-ad-valor').value,descricao:window.$('edit-ad-desc').value,cupom:window.$('edit-ad-cupom').value,logo:lL,foto:lB}; 
+        // 🔥 AGORA SALVA NO MYSQL! 🔥
+        const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); 
+        const res=await r.json(); 
+        if(res.sucesso){window.addLog(`✅ Anúncio OK!`,"success");window.$('modal-editar-anuncio').style.display='none';window.carregarAnunciosAdmin();}else throw new Error("Erro banco de dados."); 
+    }catch(e){alert("Erro: "+e.message);window.addLog(`❌ Erro: ${e.message}`,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar";} 
+};
 
 // ==========================================
-// ADMIN: CATÁLOGO LOJA (MANTIDO NO GOOGLE SHEETS)
+// ADMIN: CATÁLOGO LOJA (MYSQL)
 // ==========================================
-window.carregarCatalogoAdmin = async function(){ window.$('loading-catalogo').style.display='block'; window.$('lista-produtos-admin').innerHTML=''; try{ const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=catalogo_admin"); const res=await r.json(); if(res.sucesso){window.catalogoAdminArray=res.produtos.slice().reverse();window.renderListaCatalogo(window.catalogoAdminArray);} }catch(e){window.addLog(`Erro catálogo: ${e.message}`,"error");}finally{window.$('loading-catalogo').style.display='none';} };
+window.carregarCatalogoAdmin = async function(){ 
+    window.$('loading-catalogo').style.display='block'; window.$('lista-produtos-admin').innerHTML=''; 
+    try{ 
+        // 🔥 AGORA PUXA DO MYSQL! 🔥
+        const r=await fetch(API_PRECIFICACAO+"?acao=catalogo_admin"); 
+        const res=await r.json(); 
+        if(res.sucesso){window.catalogoAdminArray=res.produtos.slice().reverse();window.renderListaCatalogo(window.catalogoAdminArray);} 
+    }catch(e){window.addLog(`Erro catálogo: ${e.message}`,"error");}finally{window.$('loading-catalogo').style.display='none';} 
+};
+
 window.renderListaCatalogo = function(aP){ 
     const lE=window.$('lista-produtos-admin'); 
     if(aP.length===0){lE.innerHTML="<p style='text-align:center;color:#999;padding:20px;'>Nenhum produto.</p>";return;} 
@@ -589,15 +446,46 @@ window.renderListaCatalogo = function(aP){
     }); 
     lE.innerHTML=h; 
 };
+
 window.filtrarCatalogo = function(){ const t=window.$('busca-catalogo').value.toLowerCase(); window.renderListaCatalogo(window.catalogoAdminArray.filter(p=>p.nome.toLowerCase().includes(t)||p.categoria.toLowerCase().includes(t)||String(p.preco).toLowerCase().includes(t))); };
 window.abrirModalEditarProduto = function(l){ const p=window.catalogoAdminArray.find(x=>x.linha===l); if(!p)return; window.$('edit-prod-linha').value=p.linha; window.$('edit-prod-nome').value=p.nome; window.$('edit-prod-preco').value=window.formatarPreco(p.preco); window.$('edit-prod-categoria').value=p.categoria; window.$('edit-prod-desc').value=p.descricao; window.$('edit-prod-status').value=p.ativo?"true":"false"; window.$('edit-prod-foto-antiga').value=p.foto||""; window.$('edit-prod-img-preview').src=(p.foto&&p.foto.split(',')[0])?p.foto.split(',')[0]:"logo.png"; window.$('edit-prod-fotos-novas').value=""; window.$('modal-editar-produto').style.display='flex'; };
-window.confirmarExclusaoProduto = function(){ const l=parseInt(window.$('edit-prod-linha').value); const p=window.catalogoAdminArray.find(x=>x.linha===l); if(!p)return; if(confirm(`EXCLUIR produto "${p.nome}"?`)) window.excluirRegistroLocal("Catalogo",l,"btn-excluir-prod",()=>window.$('modal-editar-produto').style.display='none',window.carregarCatalogoAdmin,URL_ANALYTICS_CATALOGO); };
-window.salvarEdicaoProduto = async function(){ const b=window.$('btn-salvar-edicao-prod'); b.disabled=true; b.innerText="⏳ Salvando..."; try{ const ik=window.$('imgbb-key').value.trim(); let lF=window.$('edit-prod-foto-antiga').value; const iF=window.$('edit-prod-fotos-novas'); if(iF.files.length>0){let nL=[]; for(let i=0;i<iF.files.length;i++){window.addLog(`Enviando foto ${i+1}...`,"info"); nL.push(await window.fazerUploadInteligente(await window.comprimirImagem(iF.files[i],1000,1000,0.8),ik,false));} lF=nL.join(",");} const p={acao:"atualizar_produto",linha:window.$('edit-prod-linha').value,nome:window.$('edit-prod-nome').value,preco:window.$('edit-prod-preco').value,categoria:window.$('edit-prod-categoria').value,descricao:window.$('edit-prod-desc').value,ativo:window.$('edit-prod-status').value==="true",foto:lF}; const r=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){window.addLog(`✅ Produto OK!`,"success");window.$('modal-editar-produto').style.display='none';window.carregarCatalogoAdmin();window.$('busca-catalogo').value="";}else throw new Error("Erro db."); }catch(e){alert("Erro: "+e.message);window.addLog(`❌ Erro produto: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="💾 Salvar";} };
+
+window.confirmarExclusaoProduto = function(){ 
+    const l=parseInt(window.$('edit-prod-linha').value); const p=window.catalogoAdminArray.find(x=>x.linha===l); if(!p)return; 
+    if(confirm(`EXCLUIR produto "${p.nome}"?`)) window.excluirRegistroLocal("Catalogo",l,"btn-excluir-prod",()=>window.$('modal-editar-produto').style.display='none',window.carregarCatalogoAdmin); 
+};
+
+window.salvarEdicaoProduto = async function(){ 
+    const b=window.$('btn-salvar-edicao-prod'); b.disabled=true; b.innerText="⏳ Salvando..."; 
+    try{ 
+        const ik=window.$('imgbb-key').value.trim(); let lF=window.$('edit-prod-foto-antiga').value; const iF=window.$('edit-prod-fotos-novas'); if(iF.files.length>0){let nL=[]; for(let i=0;i<iF.files.length;i++){window.addLog(`Enviando foto ${i+1}...`,"info"); nL.push(await window.fazerUploadInteligente(await window.comprimirImagem(iF.files[i],1000,1000,0.8),ik,false));} lF=nL.join(",");} 
+        const p={acao:"atualizar_produto",linha:window.$('edit-prod-linha').value,nome:window.$('edit-prod-nome').value,preco:window.$('edit-prod-preco').value,categoria:window.$('edit-prod-categoria').value,descricao:window.$('edit-prod-desc').value,ativo:window.$('edit-prod-status').value==="true",foto:lF}; 
+        // 🔥 AGORA SALVA NO MYSQL! 🔥
+        const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); 
+        const res=await r.json(); 
+        if(res.sucesso){window.addLog(`✅ Produto OK!`,"success");window.$('modal-editar-produto').style.display='none';window.carregarCatalogoAdmin();window.$('busca-catalogo').value="";}else throw new Error("Erro db."); 
+    }catch(e){alert("Erro: "+e.message);window.addLog(`❌ Erro produto: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="💾 Salvar";} 
+};
 
 window.fileToBase64 = f=>new Promise((r,j)=>{const rd=new FileReader();rd.readAsDataURL(f);rd.onload=()=>r(rd.result.split(',')[1]);rd.onerror=e=>j(e);});
 window.comprimirImagem = function(f,mW,mH,q){ return new Promise((r,j)=>{ if(!f.type.match(/image.*/))return j(new Error(`Formato inválido.`)); const rd=new FileReader();rd.readAsDataURL(f); rd.onload=e=>{ const i=new Image();i.src=e.target.result; i.onload=()=>{ let w=i.width,h=i.height; if(w>h){if(w>mW){h=Math.round(h*mW/w);w=mW;}}else{if(h>mH){w=Math.round(w*mH/h);h=mH;}} const cv=document.createElement('canvas');cv.width=w;cv.height=h; const cx=cv.getContext('2d');cx.drawImage(i,0,0,w,h); const nU=Date.now()+"_"+f.name.replace(/[^a-zA-Z0-9.]/g,'_').toLowerCase(); cv.toBlob(b=>b?r(new File([b],nU,{type:'image/jpeg'})):j(new Error("Compressão.")),'image/jpeg',q); };};}); };
 
-window.cadastrarProdutoIA = async function(){ const ak=window.$('api-key').value.trim(), ik=window.$('imgbb-key').value.trim(), n=window.$('prod-nome').value.trim(), p=window.$('prod-preco').value.trim(), f=window.$('prod-fotos').files, b=window.$('btn-salvar-produto'); if(!ak){window.switchTab('config');return window.addLog("❌ ERRO: Coloque a chave da IA (Gemini)!","error");} if(!n||!p||f.length===0)return window.addLog("⚠️ Preencha Nome, Preço e escolha Foto.","warn"); b.disabled=true; b.innerText="⏳ Analisando..."; try{ window.addLog(`Cadastrando: ${n}...`,"warn"); const b6=await window.fileToBase64(f[0]); let ls=[]; for(let i=0;i<f.length;i++){window.addLog(`⏳ Foto ${i+1}...`,"info"); const urlF=await window.fazerUploadInteligente(await window.comprimirImagem(f[i],1000,1000,0.8),ik,false); ls.push(urlF); window.addLog(`✅ Foto ${i+1} online.`,"success");} window.addLog(`🤖 IA criando copy...`,"info"); const pr=`Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda EXATAMENTE neste formato (sem asteriscos ou negrito):\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`; const rI=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ak}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr},{inlineData:{mimeType:f[0].type,data:b6}}]}]})}); if(!rI.ok)throw new Error("IA não respondeu."); const dI=await rI.json(); const resIA=dI.candidates[0].content.parts[0].text; let ds="Exclusivo Mini Mundo 3D.", ct="Geral"; let mD=resIA.match(/descri[cç][aã]o:\s*(.*)/i); if(mD)ds=mD[1].replace(/\*/g,'').trim(); let mC=resIA.match(/categoria:\s*(.*)/i); if(mC)ct=mC[1].replace(/\*/g,'').trim(); window.addLog(`💾 Salvando na Planilha...`,"info"); const rS=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify({acao:"salvar_produto",nome:n,descricao:ds,preco:p,foto:ls.join(","),categoria:ct})}); const resS=await rS.json(); if(resS.sucesso){window.addLog(`🎉 PRODUTO CADASTRADO!`,"success");window.$('prod-nome').value="";window.$('prod-preco').value="";window.$('prod-fotos').value="";window.carregarCatalogoAdmin();}else throw new Error("API falhou."); }catch(e){window.addLog(`❌ ERRO: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="✨ Enviar e Cadastrar";} };
+window.cadastrarProdutoIA = async function(){ 
+    const ak=window.$('api-key').value.trim(), ik=window.$('imgbb-key').value.trim(), n=window.$('prod-nome').value.trim(), p=window.$('prod-preco').value.trim(), f=window.$('prod-fotos').files, b=window.$('btn-salvar-produto'); 
+    if(!ak){window.switchTab('config');return window.addLog("❌ ERRO: Coloque a chave da IA (Gemini)!","error");} 
+    if(!n||!p||f.length===0)return window.addLog("⚠️ Preencha Nome, Preço e escolha Foto.","warn"); 
+    b.disabled=true; b.innerText="⏳ Analisando..."; 
+    try{ 
+        window.addLog(`Cadastrando: ${n}...`,"warn"); const b6=await window.fileToBase64(f[0]); let ls=[]; for(let i=0;i<f.length;i++){window.addLog(`⏳ Foto ${i+1}...`,"info"); const urlF=await window.fazerUploadInteligente(await window.comprimirImagem(f[i],1000,1000,0.8),ik,false); ls.push(urlF); window.addLog(`✅ Foto ${i+1} online.`,"success");} window.addLog(`🤖 IA criando copy...`,"info"); 
+        const pr=`Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda EXATAMENTE neste formato (sem asteriscos ou negrito):\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`; 
+        const rI=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ak}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr},{inlineData:{mimeType:f[0].type,data:b6}}]}]})}); 
+        if(!rI.ok)throw new Error("IA não respondeu."); const dI=await rI.json(); const resIA=dI.candidates[0].content.parts[0].text; let ds="Exclusivo Mini Mundo 3D.", ct="Geral"; let mD=resIA.match(/descri[cç][aã]o:\s*(.*)/i); if(mD)ds=mD[1].replace(/\*/g,'').trim(); let mC=resIA.match(/categoria:\s*(.*)/i); if(mC)ct=mC[1].replace(/\*/g,'').trim(); window.addLog(`💾 Salvando na Base de Dados...`,"info"); 
+        // 🔥 AGORA SALVA NO MYSQL! 🔥
+        const rS=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify({acao:"salvar_produto",nome:n,descricao:ds,preco:p,foto:ls.join(","),categoria:ct})}); 
+        const resS=await rS.json(); 
+        if(resS.sucesso){window.addLog(`🎉 PRODUTO CADASTRADO!`,"success");window.$('prod-nome').value="";window.$('prod-preco').value="";window.$('prod-fotos').value="";window.carregarCatalogoAdmin();}else throw new Error("API falhou."); 
+    }catch(e){window.addLog(`❌ ERRO: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="✨ Enviar e Cadastrar";} 
+};
 
 // ==========================================
 // ADMIN: QUIZ (MANTIDO NO GOOGLE SHEETS)
