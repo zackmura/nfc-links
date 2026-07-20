@@ -329,11 +329,11 @@
                 return;
             }
 
-            const webAppUrl = "https://script.google.com/macros/s/AKfycbxaubKWb7f9DiIlR8WLryYv8UClrCIbaSM4biGwgkwxUnDFGHsCsL7JQrLEGEZNwRvtdg/exec"; 
+              const webAppUrl = "https://bdfernando.alwaysdata.net/minimundo/api.php"; 
             
-            try {
-                const resposta = await fetch(`${webAppUrl}?id=${clienteId}`);
-                const dadosCliente = await resposta.json();
+                try {
+                    const resposta = await fetch(`${webAppUrl}?acao=buscar_ima_publico&id=${clienteId}`);
+                    const dadosCliente = await resposta.json();
 
                 if (dadosCliente.erro) {
                     tituloEl.innerText = "Ops, não encontrado.";
