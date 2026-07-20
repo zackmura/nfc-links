@@ -1,13 +1,16 @@
 // ==========================================
-// CONFIGURAÇÕES GERAIS E ESTADO
+// CONFIGURAÇÕES GERAIS E ESTADO (HÍBRIDO: GOOGLE + ALWAYSDATA)
 // ==========================================
 window.$ = id => document.getElementById(id); 
-const VERSAO_APP = "v2.0.0";
+const VERSAO_APP = "v2.0.1 (Híbrido)";
 
+// 👇 A MÁGICA HÍBRIDA: As planilhas antigas e o servidor novo trabalhando juntos!
 const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
-// AQUI ESTÁ A MÁGICA: APONTANDO PARA O SEU NOVO SERVIDOR PHP!
-const API_PRECIFICACAO = "https://bdfernando.alwaysdata.net/minimundo/api.php";
 const API_NFC = "https://script.google.com/macros/s/AKfycbxaubKWb7f9DiIlR8WLryYv8UClrCIbaSM4biGwgkwxUnDFGHsCsL7JQrLEGEZNwRvtdg/exec";
+
+// A NOSSA NOVA API MYSQL SUPER RÁPIDA (SOMENTE PARA FINANCEIRO E VENDAS)
+const API_PRECIFICACAO = "https://bdfernando.alwaysdata.net/minimundo/api.php"; 
+
 const API_ONIONSYS = "https://api.onionsys.com.br/api/minimundo/registrar/catalogo";
 const API_ONIONSYS_ADS = "https://api.onionsys.com.br/api/minimundo/registrar/anuncios";
 const TOKEN_ONIONSYS = "M1N1_MUND0_@!!2!3#1@2!";
@@ -81,6 +84,7 @@ window.tentarLogin = async function() {
 
     try {
         const payload = { acao: "login", usuario: usr, senha: pwd };
+        // O LOGIN VAI PELO MYSQL AGORA
         const req = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(payload) });
         const res = await req.json();
 
@@ -93,7 +97,7 @@ window.tentarLogin = async function() {
             window.$('input-senha').value = ""; 
         }
     } catch (e) { 
-        alert("Erro ao conectar com o servidor: " + e.message);
+        alert("Erro ao conectar com o servidor MYSQL: " + e.message);
     } finally { 
         btn.disabled = false; btn.innerHTML = textoOriginal; 
     }
@@ -161,8 +165,14 @@ window.mostrarAlerta = function(tit, txt, tipo){
 
 window.fecharAlerta = function(){ window.$('custom-modal').style.display="none"; };
 
+// FUNÇÃO INTELIGENTE DE EXCLUSÃO: Sabe onde apagar dependendo da aba
 window.excluirRegistroLocal = async function(aba, l, idBtn, fnFechar, fnRecarregar, apiBase=URL_ANALYTICS_CATALOGO){ 
     const b=window.$(idBtn); b.disabled=true; b.innerText="⏳ Excluindo..."; 
+    // Se a aba for Vendas, Custos ou CustosProdutos, a exclusão vai para o MySQL
+    if (aba === "Vendas" || aba === "CustosProdutos" || aba === "Custos") {
+        apiBase = API_PRECIFICACAO;
+    }
+    
     try { 
         const r=await fetch(apiBase,{method:"POST",body:JSON.stringify({acao:"excluir_registro",aba:aba,linha:l})}); 
         const res=await r.json(); 
@@ -172,7 +182,7 @@ window.excluirRegistroLocal = async function(aba, l, idBtn, fnFechar, fnRecarreg
             if(fnRecarregar)fnRecarregar();
         } else { throw new Error("Erro exclusão."); } 
     }catch(e){ 
-        apiBase===API_PRECIFICACAO ? window.mostrarAlerta("Erro","Falha: "+e.message,"error") : alert("Falha: "+e.message); 
+        window.mostrarAlerta("Erro","Falha: "+e.message,"error"); 
     }finally{
         b.disabled=false; b.innerText="🗑️ Excluir";
     } 
@@ -185,26 +195,21 @@ window.abrirConfirmacaoPagamento = function(l){
     window.linhaVendaPagamento = l; 
     window.$('custom-confirm-modal').style.display = "flex"; 
 };
-
 window.fecharConfirmacao = function(){ 
     window.$('custom-confirm-modal').style.display = "none"; 
     window.linhaVendaPagamento = null; 
 };
-
 window.abrirConfirmacaoExclusao = function(l){ 
     window.linhaVendaExclusao = l; 
     window.$('custom-delete-modal').style.display = "flex"; 
 };
-
 window.fecharExclusao = function(){ 
     window.$('custom-delete-modal').style.display = "none"; 
     window.linhaVendaExclusao = null; 
 };
-
 window.fecharEditarVenda = function(){ 
     window.$('custom-edit-venda-modal').style.display = "none"; 
 };
-
 window.abrirModalEditarVenda = function(l){ 
     const v = window.arrayVendas.find(x => x.linha === l); 
     if(!v) return; 
@@ -242,7 +247,6 @@ window.renderizarPlataformas = function() {
     list.innerHTML = h;
     if(selectP) selectP.innerHTML = opt;
 };
-
 window.salvarPlataforma = function() {
     const nome = window.$('config-plat-nome').value.trim();
     const pct = parseFloat(window.$('config-plat-pct').value) || 0;
@@ -257,7 +261,6 @@ window.salvarPlataforma = function() {
     window.$('config-plat-nome').value = ""; window.$('config-plat-pct').value = ""; window.$('config-plat-fixa').value = "";
     window.renderizarPlataformas();
 };
-
 window.excluirPlataforma = function(idx) {
     let plats = JSON.parse(localStorage.getItem('minimundo_plataformas') || '[]');
     plats.splice(idx, 1);
@@ -266,16 +269,17 @@ window.excluirPlataforma = function(idx) {
 };
 
 // ==========================================
-// MÓDULO ÍMAS NFC
+// MÓDULO ÍMAS NFC (AGORA NO MYSQL)
 // ==========================================
 window.carregarImas = async function() { 
     window.$('loading-imas').style.display = 'block'; 
     window.$('lista-imas-admin').innerHTML = ''; 
     try { 
-        const r = await fetch(API_NFC + "?acao=listar"); 
+        // Mudou para a API_PRECIFICACAO (que é a do MySQL)
+        const r = await fetch(API_PRECIFICACAO + "?acao=listar_imas"); 
         const res = await r.json(); 
         if (res.sucesso) { 
-            window.arrayImas = res.imas.reverse(); 
+            window.arrayImas = res.imas; 
             window.renderListaImas(window.arrayImas); 
         } else { throw new Error("Erro ao buscar imas."); } 
     } catch (e) { 
@@ -318,7 +322,6 @@ window.renderListaImas = function(arr) {
     }); 
     lE.innerHTML = h; 
 };
-
 window.copiarLinkNfc = function(link) {
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(link).then(() => {
@@ -328,7 +331,6 @@ window.copiarLinkNfc = function(link) {
         fallbackCopyTextToClipboard(link);
     }
 };
-
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement("textarea");
     textArea.value = text;
@@ -350,12 +352,10 @@ function fallbackCopyTextToClipboard(text) {
     }
     document.body.removeChild(textArea);
 }
-
 window.filtrarImas = function() { 
     const t = window.$('busca-imas').value.toLowerCase(); 
     window.renderListaImas(window.arrayImas.filter(i => String(i.id).toLowerCase().includes(t) || i.nomes.toLowerCase().includes(t))); 
 };
-
 window.fazerUploadRedundante = async function(fC, ik) { 
     let urlOnion = ""; let urlImgBB = ""; 
     try { 
@@ -384,7 +384,6 @@ window.fazerUploadRedundante = async function(fC, ik) {
     if (urlImgBB) urlsFinais.push(urlImgBB); 
     return urlsFinais.join(","); 
 };
-
 window.cadastrarIma = async function() { 
     const id = window.$('ima-id').value.trim(); 
     const nomes = window.$('ima-nomes').value.trim(); 
@@ -401,10 +400,13 @@ window.cadastrarIma = async function() {
         const urlsCliente = await window.fazerUploadRedundante(await window.comprimirImagem(fFoto[0], 600, 600, 0.8), ik); 
         window.addLog(`Subindo foto do produto físico...`, "info"); 
         const urlsProduto = await window.fazerUploadRedundante(await window.comprimirImagem(inputProd.files[0], 600, 600, 0.8), ik); 
+        
+        // MUDANÇA: API_PRECIFICACAO
         const p = { acao: "salvar_ima", id: id, nomes: nomes, foto: urlsCliente, linkVideoYoutube: video, dataLiberacao: dataOriginal ? dataOriginal + ":00" : "", fotoProduto: urlsProduto }; 
-        const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) }); 
+        const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(p) }); 
         const res = await r.json(); 
         if(res.sucesso) { window.mostrarAlerta("Sucesso!", "Ímã cadastrado com fotos personalizadas!", "success"); window.carregarImas(); } 
+        else { throw new Error(res.erro); }
     } catch (e) { 
         window.addLog(`❌ ERRO: ${e.message}`, "error"); 
     } finally { 
@@ -433,12 +435,11 @@ window.abrirModalEditarIma = function(l) {
     else { window.$('edit-ima-data').value = ""; } 
     window.$('modal-editar-ima').style.display = 'flex'; 
 };
-
 window.salvarEdicaoIma = async function() { 
     const b = window.$('btn-salvar-edicao-ima'); b.disabled = true; b.innerText = "⏳ Atualizando..."; 
     try { 
         const ik = window.$('imgbb-key').value.trim(); 
-        const idAtual = window.arrayImas.find(x => x.linha == parseInt(window.$('edit-ima-linha').value)).id; 
+        const idAtual = window.arrayImas.find(x => x.linha == window.$('edit-ima-linha').value).id; 
         let fotoFinal = window.$('edit-ima-foto-antiga').value; 
         const novaFoto = window.$('edit-ima-foto').files; 
         let fotoProdFinal = window.$('edit-ima-foto-prod-antiga').value; 
@@ -447,8 +448,10 @@ window.salvarEdicaoIma = async function() {
         if(novaFotoProd.length > 0) { window.addLog(`Atualizando foto do produto...`, "info"); fotoProdFinal = await window.fazerUploadRedundante(await window.comprimirImagem(novaFotoProd[0], 600, 600, 0.8), ik); } 
         let dataLiberacaoStr = ""; 
         if(window.$('edit-ima-data').value) { dataLiberacaoStr = window.$('edit-ima-data').value + ":00"; } 
-        const p = { acao: "atualizar_ima", linha: window.$('edit-ima-linha').value, id: idAtual, nomes: window.$('edit-ima-nomes').value, foto: fotoFinal, linkVideoYoutube: window.$('edit-ima-video').value, dataLiberacao: dataLiberacaoStr, fotoProduto: fotoProdFinal }; 
-        const r = await fetch(API_NFC, { method: "POST", body: JSON.stringify(p) }); 
+        
+        // MUDANÇA: API_PRECIFICACAO
+        const p = { acao: "atualizar_ima", id: idAtual, nomes: window.$('edit-ima-nomes').value, foto: fotoFinal, linkVideoYoutube: window.$('edit-ima-video').value, dataLiberacao: dataLiberacaoStr, fotoProduto: fotoProdFinal }; 
+        const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify(p) }); 
         const res = await r.json(); 
         if(res.sucesso) { window.addLog(`✅ Mágica Atualizada!`, "success"); window.$('modal-editar-ima').style.display = 'none'; window.carregarImas(); } 
         else { throw new Error("Erro API."); }
@@ -459,20 +462,25 @@ window.salvarEdicaoIma = async function() {
     } 
 };
 
+// MUDANÇA IMPORTANTE: O MySQL precisa do ID para apagar, não da Linha.
 window.confirmarExclusaoIma = function() { 
-    const l = parseInt(window.$('edit-ima-linha').value); 
-    const i = window.arrayImas.find(x => x.linha === l); 
+    const idBusca = window.$('edit-ima-linha').value; 
+    const i = window.arrayImas.find(x => x.linha == idBusca); 
     if(!i) return; 
     window.$('nome-ima-excluir').innerText = i.nomes; 
     window.$('modal-confirmar-exclusao-ima').style.display = 'flex'; 
-    window.$('btn-executar-exclusao-ima').onclick = function() { 
+    window.$('btn-executar-exclusao-ima').onclick = async function() { 
         window.$('modal-confirmar-exclusao-ima').style.display = 'none'; 
-        window.excluirRegistroLocal("API_Ignora_Isso", l, "btn-excluir-ima-modal", () => window.$('modal-editar-ima').style.display='none', window.carregarImas, API_NFC); 
+        try {
+            const r = await fetch(API_PRECIFICACAO, { method: "POST", body: JSON.stringify({acao: "excluir_ima", id: i.id})});
+            const res = await r.json();
+            if(res.sucesso){ window.addLog("🗑️ Ímã excluído.", "success"); window.$('modal-editar-ima').style.display='none'; window.carregarImas(); }
+        } catch(e) { window.mostrarAlerta("Erro", "Falha: " + e.message, "error"); }
     }; 
 };
 
 // ==========================================
-// ADMIN: ANALYTICS E ANÚNCIOS
+// ADMIN: ANALYTICS E ANÚNCIOS (MANTIDOS NO GOOGLE SHEETS)
 // ==========================================
 window.limparDatasManuais = function(){ window.$('data-inicio').value=""; window.$('data-fim').value=""; }; 
 window.limparFiltrosRapidos = function(){ window.$('filtro-mes').value="todos"; window.$('filtro-ano').value="todos"; };
@@ -556,7 +564,7 @@ window.confirmarExclusaoAnuncio = function(){ const l=parseInt(window.$('edit-ad
 window.salvarEdicaoAnuncio = async function(){ const btn=window.$('btn-salvar-edicao-ad'); btn.disabled=true; btn.innerText="⏳ Salvando..."; try{ const ik=window.$('imgbb-key').value.trim(); let lL=window.$('edit-ad-logo-antiga').value, lB=window.$('edit-ad-foto-antiga').value; const iL=window.$('edit-ad-logo-nova'); if(iL.files.length>0){window.addLog("Enviando logo...","info"); lL=await window.fazerUploadInteligente(await window.comprimirImagem(iL.files[0],400,400,0.8),ik,true);} const iB=window.$('edit-ad-banner-novo'); if(iB.files.length>0){window.addLog("Enviando banner...","info"); lB=await window.fazerUploadInteligente(await window.comprimirImagem(iB.files[0],800,800,0.8),ik,true);} const p={acao:"atualizar_anuncio",linha:window.$('edit-ad-linha').value,status:window.$('edit-ad-status').value,vencimento:window.$('edit-ad-vencimento').value,valor_negociado:window.$('edit-ad-valor').value,descricao:window.$('edit-ad-desc').value,cupom:window.$('edit-ad-cupom').value,logo:lL,foto:lB}; const r=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){window.addLog(`✅ Anúncio OK!`,"success");window.$('modal-editar-anuncio').style.display='none';window.carregarAnunciosAdmin();}else throw new Error("Erro planilha."); }catch(e){alert("Erro: "+e.message);window.addLog(`❌ Erro: ${e.message}`,"error");}finally{btn.disabled=false;btn.innerText="💾 Salvar";} };
 
 // ==========================================
-// ADMIN: CATÁLOGO LOJA E IA
+// ADMIN: CATÁLOGO LOJA (MANTIDO NO GOOGLE SHEETS)
 // ==========================================
 window.carregarCatalogoAdmin = async function(){ window.$('loading-catalogo').style.display='block'; window.$('lista-produtos-admin').innerHTML=''; try{ const r=await fetch(URL_ANALYTICS_CATALOGO+"?acao=catalogo_admin"); const res=await r.json(); if(res.sucesso){window.catalogoAdminArray=res.produtos.slice().reverse();window.renderListaCatalogo(window.catalogoAdminArray);} }catch(e){window.addLog(`Erro catálogo: ${e.message}`,"error");}finally{window.$('loading-catalogo').style.display='none';} };
 window.renderListaCatalogo = function(aP){ 
@@ -592,7 +600,7 @@ window.comprimirImagem = function(f,mW,mH,q){ return new Promise((r,j)=>{ if(!f.
 window.cadastrarProdutoIA = async function(){ const ak=window.$('api-key').value.trim(), ik=window.$('imgbb-key').value.trim(), n=window.$('prod-nome').value.trim(), p=window.$('prod-preco').value.trim(), f=window.$('prod-fotos').files, b=window.$('btn-salvar-produto'); if(!ak){window.switchTab('config');return window.addLog("❌ ERRO: Coloque a chave da IA (Gemini)!","error");} if(!n||!p||f.length===0)return window.addLog("⚠️ Preencha Nome, Preço e escolha Foto.","warn"); b.disabled=true; b.innerText="⏳ Analisando..."; try{ window.addLog(`Cadastrando: ${n}...`,"warn"); const b6=await window.fileToBase64(f[0]); let ls=[]; for(let i=0;i<f.length;i++){window.addLog(`⏳ Foto ${i+1}...`,"info"); const urlF=await window.fazerUploadInteligente(await window.comprimirImagem(f[i],1000,1000,0.8),ik,false); ls.push(urlF); window.addLog(`✅ Foto ${i+1} online.`,"success");} window.addLog(`🤖 IA criando copy...`,"info"); const pr=`Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda EXATAMENTE neste formato (sem asteriscos ou negrito):\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`; const rI=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ak}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr},{inlineData:{mimeType:f[0].type,data:b6}}]}]})}); if(!rI.ok)throw new Error("IA não respondeu."); const dI=await rI.json(); const resIA=dI.candidates[0].content.parts[0].text; let ds="Exclusivo Mini Mundo 3D.", ct="Geral"; let mD=resIA.match(/descri[cç][aã]o:\s*(.*)/i); if(mD)ds=mD[1].replace(/\*/g,'').trim(); let mC=resIA.match(/categoria:\s*(.*)/i); if(mC)ct=mC[1].replace(/\*/g,'').trim(); window.addLog(`💾 Salvando na Planilha...`,"info"); const rS=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify({acao:"salvar_produto",nome:n,descricao:ds,preco:p,foto:ls.join(","),categoria:ct})}); const resS=await rS.json(); if(resS.sucesso){window.addLog(`🎉 PRODUTO CADASTRADO!`,"success");window.$('prod-nome').value="";window.$('prod-preco').value="";window.$('prod-fotos').value="";window.carregarCatalogoAdmin();}else throw new Error("API falhou."); }catch(e){window.addLog(`❌ ERRO: ${e.message}`,"error");}finally{b.disabled=false;b.innerText="✨ Enviar e Cadastrar";} };
 
 // ==========================================
-// ADMIN: QUIZ E CHAVES
+// ADMIN: QUIZ (MANTIDO NO GOOGLE SHEETS)
 // ==========================================
 window.salvarChaves = function(){ localStorage.setItem("gemini_api_key",window.$('api-key').value); localStorage.setItem("imgbb_api_key",window.$('imgbb-key').value); };
 window.atualizarBadgeUltimo = function(){ const uT=localStorage.getItem("ultimo_time_gerado"), uH=localStorage.getItem("ultimo_horario_gerado"); if(uT&&uH)window.$('badge-ultimo').innerHTML=`🕒 Último: <b>${uT}</b> (${uH})`; };
@@ -601,7 +609,7 @@ window.processarTimeUnico = async function(tN,tU,q,aK,t,d,mR){ window.addLog(`>>
 window.iniciarAutomacao = async function(mG){ const aK=window.$('api-key').value.trim(); if(!aK){window.switchTab('config');return window.addLog("ERRO: Chave Gemini!","error");} const q=window.$('qtd').value,t=window.$('tema').value.trim(),d=window.$('dificuldade').value,mR=window.$('substituir').checked,bU=window.$('btn-iniciar'),bG=window.$('btn-global'); bU.disabled=true;bG.disabled=true; try{ if(mG){window.addLog(`--- LOTE GLOBAL ---`,"warn"); const o=Array.from(window.$('time').options); for(let i=0;i<o.length;i++){try{await window.processarTimeUnico(o[i].getAttribute("data-nome"),o[i].value,q,aK,t,d,mR);}catch(e){window.addLog(`❌ ERRO ${o[i].getAttribute("data-nome")}: ${e.message}`,"error");} if(i<o.length-1){window.addLog("Aguardando 5s...","info");await window.delay(5000);}} window.addLog(`--- FINALIZADO ---`,"success");}else{const s=window.$('time');await window.processarTimeUnico(s.options[s.selectedIndex].getAttribute("data-nome"),s.value,q,aK,t,d,mR);} window.atualizarBadgeUltimo();window.carregarInfoBanco(); }catch(er){window.addLog(`FALHA: ${er.message}`,"error");}finally{bU.disabled=false;bG.disabled=false;} };
 
 // ==========================================
-// ERP: CALCULADORA E MODELOS
+// ERP: CALCULADORA E MODELOS (AGORA NO MYSQL)
 // ==========================================
 window.toggleConfig = function(){ const a=window.$('area-config'); a.style.display=a.style.display==="block"?"none":"block"; };
 window.calcular = function(){ const vW=parseFloat(window.$('v-watts').value)||0, vK=parseFloat(window.$('v-kwh').value)||0, vM=parseFloat(window.$('v-maq').value)||0, vH=parseFloat(window.$('v-hora').value)||0, f=parseFloat(window.$('v-filamento').value)||0, p=parseFloat(window.$('v-peso').value)||0, tI=parseFloat(window.$('v-tempo-imp').value)||0, tM=parseFloat(window.$('v-tempo-mao').value)||0, ins=parseFloat(window.$('v-insumos').value)||0; const cMat=(f/1000)*p, cEne=(vW/1000)*tI*vK, cDep=tI*vM, cHum=tM*vH, cFa=(cMat+cEne+cDep+cHum)*0.10, cTot=cMat+cEne+cDep+cHum+cFa+ins; window.custoTotalGlobal=cTot; window.$('r-material').innerText=window.fmt(cMat); window.$('r-energia').innerText=window.fmt(cEne); window.$('r-deprec').innerText=window.fmt(cDep); window.$('r-humano').innerText=window.fmt(cHum); window.$('r-falha').innerText=window.fmt(cFa); window.$('r-insumos').innerText=window.fmt(ins); window.$('r-total').innerText=window.fmt(cTot); const psMi=(cTot*2)+cHum, psMa=(cTot*3)+cHum, pdMi=(cTot*4)+cHum, pdMa=(cTot*6)+cHum; window.$('m-simples-preco').innerText=`${window.fmt(psMi)} ou ${window.fmt(psMa)}`; window.$('m-simples-lucro').innerText=`Lucro: ${window.fmt(psMi-cTot)} a ${window.fmt(psMa-cTot)}`; window.$('m-decor-preco').innerText=`${window.fmt(pdMi)} ou ${window.fmt(pdMa)}`; window.$('m-decor-lucro').innerText=`Lucro: ${window.fmt(pdMi-cTot)} a ${window.fmt(pdMa-cTot)}`; };
@@ -611,7 +619,7 @@ window.renderizarListaBanco = function(aP){ const lD=window.$('lista-banco'); lD
 window.filtrarBanco = function(){ const t=window.$('busca-banco').value.toLowerCase(); window.renderizarListaBanco(window.arrayBancoCustos.filter(p=>p.modelo.toLowerCase().includes(t))); };
 
 // ==========================================
-// ERP: DESPESAS
+// ERP: DESPESAS (AGORA NO MYSQL)
 // ==========================================
 window.calcularDespesaTotal = function(){ const q=parseFloat(window.$('d-qtd').value.replace(',','.'))||1, vU=window.limparValorPlanilha(window.$('d-valor-uni').value); window.despesaTotalCalculada=q*vU; window.$('d-total-calc').innerText=window.fmt(window.despesaTotalCalculada); };
 window.carregarDespesas = async function(){ window.$('loading-despesas').style.display="block"; window.$('lista-despesas').innerHTML=""; try{ const r=await fetch(API_PRECIFICACAO+"?acao=listar_despesas"); const res=await r.json(); if(res.sucesso){window.arrayDespesas=res.despesas;window.alimentarDatalistE_Filtro(window.arrayDespesas);window.filtrarDespesas();}else throw new Error(res.erro); }catch(e){window.$('loading-despesas').innerHTML="❌ Erro.";}finally{window.$('loading-despesas').style.display="none";} };
@@ -622,7 +630,7 @@ window.renderizarListaDespesas = function(aD){ const lD=window.$('lista-despesas
 window.salvarDespesa = async function(){ const dC=window.$('d-data').value, lC=window.$('d-local').value.trim(), iC=window.$('d-item').value.trim(), qC=window.$('d-qtd').value, vU=window.$('d-valor-uni').value; if(!dC||!iC||!vU||!lC)return window.mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=window.$('btn-salvar-despesa'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const p={acao:"salvar_despesa",item:iC,local:lC,data:dC.split('-').reverse().join('/'),quantidade:qC,preco_uni:window.fmtPlanilha(window.limparValorPlanilha(vU)),preco_total:window.fmtPlanilha(window.despesaTotalCalculada)}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){window.mostrarAlerta("Lançado!","Registrado.","success");window.$('d-item').value="";window.$('d-valor-uni').value="";window.$('d-qtd').value="1";window.calcularDespesaTotal();window.carregarDespesas();}else throw new Error(res.erro); }catch(e){window.mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💳 Lançar Despesa";} };
 
 // ==========================================
-// ERP: VENDAS E AÇÕES EM LOTE
+// ERP: VENDAS, RELATÓRIOS E AÇÕES EM LOTE (AGORA NO MYSQL)
 // ==========================================
 window.formatarTextoZap = function(texto) { return encodeURIComponent(texto); };
 
