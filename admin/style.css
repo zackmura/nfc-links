@@ -2,7 +2,6 @@
 :root { --primary:#d97706; --primary-hover:#b45309; --brand-dark:#4E342E; --brand-light:#8D6E63; --brand-bg:#efebe9; --bg-color:#fafaf9; --card-bg:#ffffff; --text-main:#292524; --text-muted:#78716c; --border-color:#e7e5e4; --tab-active:#d97706; --green-profit:#10b981; }
 
 body { font-family:'Inter', sans-serif; background:var(--bg-color); margin:0; padding:0; padding-bottom:120px; min-height:100vh; box-sizing:border-box; }
-img { max-width: 100%; height: auto; }
 
 #login-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:var(--brand-dark); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999; padding:20px; box-sizing:border-box;}
 .login-box { background:var(--card-bg); padding:40px 30px; border-radius:24px; text-align:center; width:100%; max-width:350px; box-shadow:0 25px 50px rgba(0,0,0,0.4); animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
@@ -15,7 +14,7 @@ img { max-width: 100%; height: auto; }
 #app-core { display:none; width:100%; max-width:700px; margin: 0 auto; padding:20px; position: relative;}
 .admin-card { background:var(--card-bg); width:100%; padding:35px; border-radius:24px; box-shadow:0 20px 40px rgba(78,52,46,0.08); box-sizing:border-box; }
 .brand-header { text-align:center; margin-bottom:25px; padding-bottom:20px; border-bottom:2px dashed var(--border-color); position:relative;}
-.brand-header img { width:120px; max-width:120px; height:auto; margin-bottom:12px; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.08)); border-radius:12px;}
+.brand-header img { width:120px !important; max-width:120px !important; height:auto !important; margin-bottom:12px; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.08)); border-radius:12px;}
 .brand-header h1 { margin:0; color:var(--brand-dark); font-size:1.5rem; font-weight:900; letter-spacing:-0.5px; }
 .brand-header p { margin:5px 0 0; color:var(--brand-light); font-size:0.9rem; font-weight:600; }
 .btn-logout { position:absolute; top:0; right:0; background:#fee2e2; color:#991b1b; border:none; padding:8px 12px; border-radius:8px; font-size:0.7rem; font-weight:800; cursor:pointer;}
@@ -58,8 +57,28 @@ input[type="file"] { background:#fff; border:2px dashed var(--border-color); pad
 .markup-box { background:#f0fdf4; border:2px solid #bbf7d0; padding:15px; border-radius:12px; margin-bottom:15px;} .markup-title { color:#166534; font-weight:900; font-size:0.9rem; margin:0 0 10px; text-transform:uppercase;} .markup-preco { font-size:1.3rem; font-weight:900; color:var(--text-main); margin:0;} .markup-lucro { font-size:0.8rem; font-weight:800; color:var(--green-profit); margin-top:5px;}
 .filtros-box { background:var(--card-bg); border:2px solid var(--border-color); padding:15px; border-radius:16px; margin-bottom:20px; box-shadow:0 4px 15px rgba(0,0,0,0.02);} .filtros-title { font-size:0.8rem; font-weight:800; color:var(--brand-dark); text-transform:uppercase; margin-bottom:15px; display:flex; align-items:center; gap:6px;} .btn-filtro { background:var(--brand-dark); color:white; border:none; padding:12px; border-radius:10px; font-weight:800; cursor:pointer; width:100%; transition:0.2s; text-transform:uppercase; letter-spacing:1px; margin-top:10px;}
 .dash-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;} .dash-card { background:#ffffff; border:1px solid var(--border-color); border-radius:14px; padding:15px; text-align:center; box-shadow:0 4px 10px rgba(78,52,46,0.04);} .dash-card h3 { margin:0 0 5px; font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; font-weight:800;} .dash-card .valor { font-size:2.2rem; font-weight:900; color:var(--brand-dark); line-height:1;} .dash-card .sub-valor { font-size:0.7rem; color:var(--text-muted); margin-top:5px; display:block; font-weight:600;}
+.ranking-list { background:#fff; border:1px solid var(--border-color); border-radius:14px; padding:10px 15px; margin-bottom:20px; box-shadow:0 4px 10px rgba(78,52,46,0.04);} .ranking-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #f5f5f4;} .ranking-item:last-child { border-bottom:none; } .ranking-nome { display:flex; align-items:center; gap:10px; font-weight:900; font-size:0.9rem; width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .ranking-nome img { width:30px; height:30px; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));} .progresso-bg { flex-grow:1; height:8px; background:#f5f5f4; border-radius:4px; margin:0 10px; overflow:hidden;} .progresso-bar { height:100%; border-radius:4px; transition:width 1s ease-in-out;} .ranking-valor { font-weight:900; font-size:1rem; width:40px; text-align:right;} .chart-box { background:#fff; border:1px solid var(--border-color); border-radius:14px; padding:15px; width:100%; box-sizing:border-box; box-shadow:0 4px 10px rgba(78,52,46,0.04);}
 
-/* VENDAS CARDS MAIS COMPACTOS */
+.txt-corinthians{color:#000} .txt-palmeiras{color:#006400} .txt-santos{color:#555} .txt-saopaulo{color:#cc0000} .txt-flamengo{color:#c90000}
+
+/* ========================================================================= */
+/* TRAVA ABSOLUTA DE TAMANHO NA LISTA DE IMAGENS (CATÁLOGO, ÍMÃS E ANÚNCIOS) */
+/* ========================================================================= */
+.list-item { display:flex; align-items:center; padding:12px; border:1px solid var(--border-color); border-radius:14px; margin-bottom:12px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.02);} 
+.list-img { 
+    width: 50px !important; 
+    height: 50px !important; 
+    min-width: 50px !important; 
+    max-width: 50px !important; 
+    object-fit: cover !important; 
+    border-radius: 8px !important; 
+    margin-right: 12px !important; 
+    background: #f5f5f4 !important; 
+    border: 1px solid #e7e5e4 !important; 
+    flex-shrink: 0 !important;
+} 
+.list-info { flex-grow:1; overflow:hidden;} .list-nome { font-weight:800; color:var(--brand-dark); font-size:0.9rem; margin:0 0 4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} .list-detalhes { font-size:0.75rem; color:var(--text-muted); font-weight:600; display:flex; gap:6px; align-items:center; flex-wrap:wrap;} .tag-ativo { background:#dcfce7; color:#166534; padding:2px 6px; border-radius:4px; font-size:0.65rem; text-transform:uppercase; font-weight:800;} .tag-pendente { background:#fef08a; color:#854d0e; padding:2px 6px; border-radius:4px; font-size:0.65rem; text-transform:uppercase; font-weight:800;} .tag-inativo { background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-size:0.65rem; text-transform:uppercase; font-weight:800;} .btn-editar { background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:8px 12px; border-radius:8px; font-weight:800; font-size:0.8rem; cursor:pointer; flex-shrink:0;} .btn-zap-lista { background:#25D366; color:white; padding:8px; border-radius:8px; text-decoration:none; margin-right:8px; display:inline-flex; flex-shrink:0;}
+
 .produto-banco-card { background:#fff; border:1px solid var(--border-color); padding:12px 15px; border-radius:12px; margin-bottom:12px; display:flex; flex-direction:column; box-shadow:0 2px 5px rgba(0,0,0,0.03);} 
 .card-row-top { display:flex; justify-content:space-between; align-items:flex-start; width:100%;} 
 .pb-info { flex-grow:1; overflow:hidden; padding-right:10px;} 
@@ -108,6 +127,8 @@ input[type="file"] { background:#fff; border:2px dashed var(--border-color); pad
 
 .lote-item { display: flex; align-items: flex-start; padding: 12px; background: #fafaf9; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 8px; gap: 10px; }
 .lote-check { width: 22px; height: 22px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; margin: 0; margin-top: 2px;}
+.lote-input-nome { border: 1px solid #d6d3d1; border-radius: 6px; padding: 10px; font-weight: 800; color: var(--brand-dark); font-size: 0.9rem; width: 100%; margin-bottom: 8px; font-family: 'Inter', sans-serif; transition: 0.2s; background: #ffffff;}
+.lote-input-nome:focus { outline: none; border-color: var(--primary); background: #fffbeb; box-shadow: 0 0 0 3px rgba(217,119,6,0.15);}
 
 .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 10px 0; }
 .grid-menu button { background: #ffffff; border: 2px solid #f5f5f4; padding: 22px 10px; border-radius: 18px; font-weight: 800; color: var(--brand-dark); font-size: 0.85rem; cursor: pointer; box-shadow: 0 8px 16px rgba(78,52,46,0.06); display: flex; flex-direction: column; align-items: center; gap: 12px; transition: all 0.2s ease; }
