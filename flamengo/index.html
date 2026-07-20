@@ -215,9 +215,14 @@
 </div>
 
 <script>
+   // A sua api do Flamengo para os jogos e Quiz continua no Google:
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxq7xV9ZI63_vBAUwDFrm_3j28D_GCsswGZbHmiTeE-saN7MwuR58zFE5JkTiK_5YkAZQ/exec"; 
-    const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
-    const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
+    
+    // A loja e Anuncios vão pro Alwaysdata:
+    const API_CATALOGO = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=catalogo";
+    const API_ANUNCIOS = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=anuncios";
+    const API_ANALYTICS = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=registrar_acesso_nfc&time=flamengo";
+    
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
     const NOME_TIME_BUSCA = "flamengo"; 
 
@@ -499,6 +504,8 @@ function checarJogoAoVivo(dados) {
     document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
 
     document.addEventListener("DOMContentLoaded", carregarDoMeuServidor);
+    // Bate no servidor dizendo "O Flamengo foi acessado!"
+    fetch(API_ANALYTICS).catch(e => console.log(e));
 
     function iniciarQuiz() { document.getElementById("tela-inicio-quiz").style.display = "none"; document.getElementById("timer-container").style.display = "block"; document.getElementById("quiz-anim-area").style.display = "block"; sortearPergunta(); }
     function iniciarTimer() { clearInterval(timerQuiz); tempoAtual = TEMPO_MAXIMO; atualizarBarraVisual(); timerQuiz = setInterval(() => { tempoAtual--; atualizarBarraVisual(); if (tempoAtual <= 0) { clearInterval(timerQuiz); verificarResposta(null, -1); } }, 1000); }
