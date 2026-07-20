@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES GERAIS E ESTADO
 // ==========================================
 window.$ = id => document.getElementById(id); 
-const VERSAO_APP = "v1.4.0";
+const VERSAO_APP = "v1.4.5";
 
 const URL_ANALYTICS_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec";
 const API_PRECIFICACAO = "https://script.google.com/macros/s/AKfycbygJ0LejuF4XRAZHJI26sOqskjiigv5UBffe5jhDP3zraqYLy-5X6wHV3kXEMfWHgLmXA/exec";
@@ -277,13 +277,37 @@ window.renderListaImas = function(arr) {
     lE.innerHTML = h; 
 };
 
-window.copiarLinkNfc = function(link) { 
-    navigator.clipboard.writeText(link).then(() => { 
-        window.mostrarAlerta("Copiado!", "O link do ímã foi copiado para sua área de transferência!", "success"); 
-    }).catch(() => { 
-        alert("Erro ao copiar o link."); 
-    }); 
+window.copiarLinkNfc = function(link) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(link).then(() => {
+            window.mostrarAlerta("Copiado!", "O link do ímã foi copiado!", "success");
+        }).catch(() => fallbackCopyTextToClipboard(link));
+    } else {
+        fallbackCopyTextToClipboard(link);
+    }
 };
+
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        var successful = document.execCommand('copy');
+        if(successful) {
+            window.mostrarAlerta("Copiado!", "O link foi copiado para a área de transferência!", "success");
+        } else {
+            alert("Copie manualmente: " + text);
+        }
+    } catch (err) {
+        alert("Copie manualmente: " + text);
+    }
+    document.body.removeChild(textArea);
+}
 
 window.filtrarImas = function() { 
     const t = window.$('busca-imas').value.toLowerCase(); 
@@ -556,7 +580,7 @@ window.renderizarListaDespesas = function(aD){ const lD=window.$('lista-despesas
 window.salvarDespesa = async function(){ const dC=window.$('d-data').value, lC=window.$('d-local').value.trim(), iC=window.$('d-item').value.trim(), qC=window.$('d-qtd').value, vU=window.$('d-valor-uni').value; if(!dC||!iC||!vU||!lC)return window.mostrarAlerta("Atenção","Preencha tudo.","warning"); const btn=window.$('btn-salvar-despesa'); btn.disabled=true; btn.innerText="⏳ Lançando..."; try{ const p={acao:"salvar_despesa",item:iC,local:lC,data:dC.split('-').reverse().join('/'),quantidade:qC,preco_uni:window.fmtPlanilha(window.limparValorPlanilha(vU)),preco_total:window.fmtPlanilha(window.despesaTotalCalculada)}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){window.mostrarAlerta("Lançado!","Registrado.","success");window.$('d-item').value="";window.$('d-valor-uni').value="";window.$('d-qtd').value="1";window.calcularDespesaTotal();window.carregarDespesas();}else throw new Error(res.erro); }catch(e){window.mostrarAlerta("Erro",e.message,"error");}finally{btn.disabled=false;btn.innerText="💳 Lançar Despesa";} };
 
 // ==========================================
-// ERP: VENDAS E AÇÕES EM LOTE
+// ERP: VENDAS, RELATÓRIOS E AÇÕES EM LOTE
 // ==========================================
 window.formatarTextoZap = function(texto) { return encodeURIComponent(texto); };
 
@@ -614,6 +638,7 @@ window.carregarLote = function(tipo) {
     window.$('btn-lote-' + (tipo === 'Pendente' ? 'pendentes' : 'pagos')).classList.add('active');
 
     const select = window.$('lote-select-cliente');
+    
     const filtradosGlobais = window.arrayVendas.filter(v => v.status.toLowerCase() === tipo.toLowerCase());
 
     if(filtradosGlobais.length === 0) {
@@ -776,7 +801,9 @@ window.gerarHTMLImpressao = function(grupos, tipo) {
         </div>`;
     }
 
-    html += `<script>setTimeout(() => { window.print(); }, 1000);</script></body></html>`;
+    html += `
+    <script>setTimeout(() => { window.print(); }, 1000);</script>
+    </body></html>`;
 
     const win = window.open('', '_blank');
     win.document.write(html);
@@ -890,9 +917,6 @@ window.renderizarListaVendas = function(aV){
     window.$('vendas-lucro-valor').innerText = window.fmt(sL); 
     window.$('vendas-qtd-valor').innerText = sQ + " un"; 
 };
-
-window.executarPagamentoVenda = async function(){ if(!window.linhaVendaPagamento)return; const l=window.linhaVendaPagamento; window.fecharConfirmacao(); try{ const p={acao:"atualizar_status_venda",linha:l,novo_status:"Pago"}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){window.mostrarAlerta("Sucesso!","Pagamento registrado!","success");window.carregarVendas();}else throw new Error(res.erro); }catch(e){window.mostrarAlerta("Erro",e.message,"error");} };
-window.executarExclusaoVenda = async function(){ if(!window.linhaVendaExclusao)return; const l=window.linhaVendaExclusao; window.fecharExclusao(); try{ const p={acao:"excluir_registro",aba:"Vendas",linha:l}; const r=await fetch(API_PRECIFICACAO,{method:"POST",body:JSON.stringify(p)}); const res=await r.json(); if(res.sucesso){window.mostrarAlerta("Excluído!","Venda apagada.","success");window.carregarVendas();}else throw new Error(res.erro); }catch(e){window.mostrarAlerta("Erro",e.message,"error");} };
 
 // ERP: DASHBOARD
 window.carregarDashboardERP = async function(){ window.$('loading-dashboard').style.display='block'; window.$('conteudo-dashboard').style.display='none'; try{ if(window.dashVendas.length===0||window.dashDespesas.length===0){const rV=await fetch(API_PRECIFICACAO+"?acao=listar_vendas");const jV=await rV.json(); const rD=await fetch(API_PRECIFICACAO+"?acao=listar_despesas");const jD=await rD.json(); if(jV.sucesso&&jD.sucesso){window.dashVendas=jV.vendas;window.dashDespesas=jD.despesas;}else throw new Error("Erro na API.");} window.aplicarFiltrosDashboardERP(); }catch(e){window.mostrarAlerta("Erro Dashboard",e.message,"error");}finally{window.$('loading-dashboard').style.display='none';window.$('conteudo-dashboard').style.display='block';} };
