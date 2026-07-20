@@ -18,7 +18,7 @@
         .badge-versao { font-size: 0.65rem; background: var(--primary); color: #fff; padding: 2px 6px; border-radius: 6px; vertical-align: middle; margin-left: 4px; font-weight: 800;}
     </style>
 
-    <link rel="stylesheet" href="style.css?v=1.3.0">
+    <link rel="stylesheet" href="style.css?v=1.3.1">
 </head>
 <body>
 
@@ -27,11 +27,12 @@
         <img src="logo.png" alt="Mini Mundo" onerror="this.src='logo.jpg'; this.onerror=null;">
         <h2>Acesso Restrito</h2>
         <p>Área exclusiva da Diretoria</p>
+        
         <input type="text" id="input-usuario" class="login-input" placeholder="Usuário" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="margin-bottom:10px;">
         <input type="password" id="input-senha" class="login-input" placeholder="••••••••" autocomplete="off" onkeyup="verificarEnter(event)">
         <button id="btn-login" class="btn-magic" style="margin-top:0;" onclick="tentarLogin()">🔓 Entrar no Sistema</button>
     </div>
-    <div id="versao-login" class="app-version">v1.3.0</div>
+    <div id="versao-login" class="app-version">v1.3.1</div>
 </div>
 
 <div id="app-core">
@@ -40,7 +41,7 @@
         <div class="brand-header">
             <img src="logo.png" alt="Mini Mundo 3D" onerror="this.src='logo.jpg'; this.onerror=null;">
             <h1>Central de Automação</h1>
-            <p>IA, CRM & ERP <span id="versao-header" class="badge-versao">v1.3.0</span></p>
+            <p>IA, CRM & ERP <span id="versao-header" class="badge-versao">v1.3.1</span></p>
             <p style="font-size: 0.75rem; margin-top: 5px; color: var(--primary);">Olá, <b id="nome-usuario-logado">Fernando</b>!</p>
             <button class="btn-logout" onclick="fazerLogout()">Sair</button>
         </div>
@@ -64,6 +65,7 @@
 
         <div class="titulo-wrapper"><span id="titulo-modulo-ativo">📈 ANALYTICS</span></div>
 
+        <!-- ABA MENU GRID (Mobile Only) -->
         <div id="tab-menu_mobile" class="tab-content">
             <div class="section-title" style="margin-top:0;">Navegação do Sistema</div>
             <div class="grid-menu">
@@ -359,7 +361,7 @@
 
         <div class="input-group">
             <label style="color:var(--primary);">SELECIONE O CLIENTE</label>
-            <select id="lote-select-cliente" onchange="selecionarClienteLote()"></select>
+            <select id="lote-select-cliente" class="input-var" onchange="selecionarClienteLote()"></select>
         </div>
 
         <div class="input-group">
@@ -386,6 +388,6 @@
     <button id="nav-menu_mobile" class="bottom-nav-btn" onclick="switchTab('menu_mobile', 'Navegação')"><span class="icon">☰</span> Menu</button>
 </div>
 
-<script src="app.js?v=1.3.0"></script>
+<script src="app.js?v=1.3.1"></script>
 </body>
 </html>
