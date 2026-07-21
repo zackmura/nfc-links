@@ -434,11 +434,18 @@
 </div>
 
 <script>
+  // A SUA API PARA O QUIZ E JOGOS FICA NO GOOGLE
     const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbwbB1LkCbpT5ofgWXB0tGlpbMopMnjWeLfEOX4IbEEcrrvMJboZ3C5SZ9LVSaVyD8fiiQ/exec"; 
-    const API_CATALOGO = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=catalogo";
-    const API_ANUNCIOS = "https://script.google.com/macros/s/AKfycbxHVKfSbTxoWDr4SxSva4YsxHgtiif_cwfg3hn7riS9GglI3jXEma_UpB_d-kJrfUaofA/exec?acao=anuncios";
+    
+    // ANÚNCIOS, LOJA E ANALYTICS NO SEU SERVIDOR MYSQL
+    const API_CATALOGO = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=catalogo";
+    const API_ANUNCIOS = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=anuncios";
+    const API_ANALYTICS = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=registrar_acesso_nfc&time=corinthians";
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
-    const NOME_TIME_BUSCA = "corinthians"; // A MÁGICA: O site vai destacar esse nome na tabela
+    
+    const NOME_TIME_BUSCA = "corinthians";
+
+// ... [O resto das variáveis let bancoDePerguntas = []; fica normal] ...
 
     let bancoDePerguntas = []; let perguntaAtual = null; let acertos = 0, erros = 0, ofensiva = 0;
     let recorde = localStorage.getItem("quiz_recorde_corinthians") || 0;
