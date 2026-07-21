@@ -435,9 +435,8 @@
 </div>
 
 <script>
-  // A SUA API PARA O QUIZ E JOGOS FICA NO GOOGLE
-   // const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzRUQBNOrnQlzo3ftqm0Jj5Sf9zEHlPApapd-rWsAHREzkweiTw/exec"; 
-      const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzRUQBNOrnQlzo3ftqm0Jj5Sf9zEHlPApapd-rWsAHREzkweiTw/exec";
+    // 🔥 AQUI FOI CORRIGIDA A URL DA API! OS DOIS SUBLINHADOS (__ E I MAIÚSCULO) 🔥
+    const MINHA_API_GOOGLE = "https://script.google.com/macros/s/AKfycbxdeaVayrVv13eN044gzRUQBNOrnQlzo3ftqm0Jj5Sf9zEHlPApapd-rWsAHREzkweiTw/exec";
     
     // ANÚNCIOS, LOJA E ANALYTICS NO SEU SERVIDOR MYSQL
     const API_CATALOGO = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=catalogo";
@@ -445,15 +444,10 @@
     const API_ANALYTICS = "https://bdfernando.alwaysdata.net/minimundo/api.php?acao=registrar_acesso_nfc&time=são paulo";
     const svgFallback = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20">🛡️</text></svg>')}`;
     
-    const NOME_TIME_BUSCA = "paulo"; // Mantemos só 'paulo' pra não ter problema de acentuação na tabela!
-
-// ... [O resto das variáveis let bancoDePerguntas = []; fica normal] ...
-
-// ... [O resto das variáveis let bancoDePerguntas = []; fica normal] ...
+    const NOME_TIME_BUSCA = "paulo"; 
 
     let bancoDePerguntas = []; let perguntaAtual = null; let acertos = 0, erros = 0, ofensiva = 0;
     
-    // 🔥 MEMÓRIA LOCAL EXCLUSIVA DO SÃO PAULO 🔥
     let recorde = localStorage.getItem("quiz_recorde_saopaulo") || 0;
     
     let radarInterval = null; const TEMPO_MAXIMO = 15; let tempoAtual = TEMPO_MAXIMO, timerQuiz = null;
@@ -497,7 +491,7 @@
         return nomeOuSlug;
     }
 
-function checarJogoAoVivo(dados) {
+    function checarJogoAoVivo(dados) {
         const jogoAoVivo = [...(dados.past || []), ...(dados.next || [])].find(j => j.status === 'in');
         if (jogoAoVivo && jogoAoVivo.id) {
             document.getElementById("live-match-container").style.display = "block";
@@ -520,9 +514,7 @@ function checarJogoAoVivo(dados) {
             const json = await res.json();
             
             const header = json.header.competitions[0];
-            
-            // 🔥 TRATAMENTO INTELIGENTE DE TEMPO E INTERVALO 🔥
-            const statusGeral = header.status.type.name; // Ex: STATUS_HALFTIME, STATUS_IN_PROGRESS
+            const statusGeral = header.status.type.name; 
             let timeInfo = "Aguardando...";
             
             if (statusGeral === "STATUS_HALFTIME") {
@@ -543,7 +535,6 @@ function checarJogoAoVivo(dados) {
             let statsHTML = '';
 
             if (boxscore.length === 2) {
-                // 🔥 BUSCA FLEXÍVEL DE ESTATÍSTICAS (Pega os nomes diferentes que a ESPN manda) 🔥
                 const getStat = (teamStats, chavesPossiveis) => {
                     if (!teamStats.statistics) return "0";
                     const s = teamStats.statistics.find(x => chavesPossiveis.includes(x.name));
@@ -613,7 +604,6 @@ function checarJogoAoVivo(dados) {
                 return; 
             }
             const bgClass = t.team.toLowerCase().includes(NOME_TIME_BUSCA) ? 'saopaulo-row' : '';
-            // 🔥 CLASSE DA TABELA .time-col (PEQUENA) 🔥
             html += `<tr class="${bgClass}">
                 <td style="color:#64748b; font-weight:700;">${t.rank}</td>
                 <td class="time-col"><img src="${t.logo}" onerror="this.onerror=null; this.src='${svgFallback}'"> ${t.team}</td>
@@ -638,7 +628,6 @@ function checarJogoAoVivo(dados) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-            // 🔥 AQUI ESTÁ A LINHA MÁGICA DO ANTI-CACHE 🔥
             const resposta = await fetch(MINHA_API_GOOGLE + "?t=" + new Date().getTime(), { signal: controller.signal });
             clearTimeout(timeoutId);
 
@@ -658,7 +647,6 @@ function checarJogoAoVivo(dados) {
             resDiv.innerHTML = "";
             if (dados.past && dados.past.length > 0) dados.past.forEach(e => resDiv.innerHTML += criarCard(e, true)); else resDiv.innerHTML = "<p style='padding:20px; text-align:center;'>Sem dados recentes.</p>";
 
-            // === A MÁGICA DA TABELA ===
             areaTabelas.innerHTML = "";
             botoesCamp.innerHTML = "";
 
@@ -709,7 +697,6 @@ function checarJogoAoVivo(dados) {
         const estadioHtml = e.stadium ? `<div style="font-size: 0.65rem; color: #777; text-align: center; margin-top: 10px; font-weight: 600; background: #f8f9fa; padding: 4px; border-radius: 6px;">📍 ${e.stadium}</div>` : "";
         const botaoYouTube = isFinished ? `<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(`melhores momentos ${e.homeTeam} x ${e.awayTeam}`)}" target="_blank" class="youtube-button dynamic-button">▶️ Assistir Melhores Momentos</a>` : "";
 
-        // 🔥 CLASSE .team-col-match AQUI PARA AS PARTIDAS (MÉDIOS 30px) 🔥
         return `<div class="match-card"><div class="league-label">${leagueStr}</div><div class="match-row"><div class="team-col-match home">${e.homeTeam}<img src="${e.homeLogo}" onerror="this.onerror=null; this.src='${svgFallback}'"></div><div class="score-box"><span class="score">${infoPlacar}</span><span class="date">${dataF}</span></div><div class="team-col-match away"><img src="${e.awayLogo}" onerror="this.onerror=null; this.src='${svgFallback}'">${e.awayTeam}</div></div>${estadioHtml} ${botaoYouTube}</div>`;
     }
 
@@ -867,9 +854,9 @@ function checarJogoAoVivo(dados) {
     function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
     document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
 
-document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
         carregarDoMeuServidor();
-        fetch(API_ANALYTICS).catch(e => console.log(e)); // Registra o toque no MySQL
+        fetch(API_ANALYTICS).catch(e => console.log(e));
     });
 
     // === INICIAR O QUIZ ===
@@ -968,14 +955,86 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("q-acertos").innerText = acertos; document.getElementById("q-erros").innerText = erros; document.getElementById("q-chama").innerText = ofensiva;
     }
 
-    // === MUDANÇA DE TABELA DE CLASSIFICAÇÃO ===
     function mudarTabela(event, campeonatoId) {
         document.querySelectorAll('.btn-camp').forEach(btn => btn.classList.remove('ativo'));
         document.querySelectorAll('.tabela-wrapper').forEach(tab => tab.classList.remove('ativa'));
         event.target.classList.add('ativo');
         document.getElementById(campeonatoId).classList.add('ativa');
     }
-</script>
+    
+    // ==========================================
+    // API GEMINI (2.5 FLASH) 
+    // ==========================================
+    async function cadastrarProdutoIA(){ 
+        const ak=$('api-key').value.trim(), ik=$('imgbb-key').value.trim(), n=$('prod-nome').value.trim(), p=$('prod-preco').value.trim(), f=$('prod-fotos').files, b=$('btn-salvar-produto'); 
+        if(!ak){switchTab('config');return addLog("❌ ERRO: Coloque a chave da IA (Gemini)!","error");} 
+        if(!n||!p||f.length===0)return addLog("⚠️ Preencha Nome, Preço e escolha Foto.","warn"); 
+        
+        b.disabled=true; b.innerText="⏳ Analisando..."; 
+        
+        try{ 
+            addLog(`Cadastrando: ${n}...`,"warn"); 
+            const b6=await fileToBase64(f[0]); 
+            let ls=[]; 
+            for(let i=0;i<f.length;i++){
+                addLog(`⏳ Foto ${i+1}...`,"info"); 
+                const urlF=await fazerUploadInteligente(await comprimirImagem(f[i],1000,1000,0.8),ik,false); 
+                ls.push(urlF); 
+                addLog(`✅ Foto ${i+1} online.`,"success");
+            } 
+            
+            addLog(`🤖 IA criando copy...`,"info"); 
+            const pr=`Atue como Copywriter Sênior da 'Mini Mundo 3D', marca de impressão 3D.\nTítulo: ${n}\nPreço: ${p}\nResponda EXATAMENTE neste formato (sem asteriscos ou negrito):\nDescricao: [Sua copy em até 3 frases vendendo o produto]\nCategoria: [1 ou 2 palavras definindo a categoria]`; 
+            
+            const rI=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${ak}`, {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({contents:[{parts:[{text:pr},{inlineData:{mimeType:f[0].type,data:b6}}]}]})
+            }); 
+            
+            if(!rI.ok){
+                throw new Error("IA recusou a conexão. Verifique sua API Key.");
+            } 
+            
+            const dI=await rI.json(); 
+            const resIA=dI.candidates[0].content.parts[0].text; 
+            
+            let ds="Exclusivo Mini Mundo 3D.", ct="Geral"; 
+            let mD=resIA.match(/descri[cç][aã]o:\s*(.*)/i); if(mD)ds=mD[1].replace(/\*/g,'').trim(); 
+            let mC=resIA.match(/categoria:\s*(.*)/i); if(mC)ct=mC[1].replace(/\*/g,'').trim(); 
+            
+            addLog(`💾 Salvando na Planilha...`,"info"); 
+            
+            const rS=await fetch(URL_ANALYTICS_CATALOGO,{method:"POST",body:JSON.stringify({acao:"salvar_produto",nome:padronizarTexto(n),descricao:ds,preco:p,foto:ls.join(","),categoria:padronizarTexto(ct)})}); 
+            const resS=await rS.json(); 
+            
+            if(resS.sucesso){
+                addLog(`🎉 PRODUTO CADASTRADO!`,"success");
+                $('prod-nome').value="";$('prod-preco').value="";$('prod-fotos').value="";
+                carregarCatalogoAdmin();
+            } else {
+                throw new Error("API do Google Sheets falhou.");
+            }
+        }catch(e){
+            addLog(`❌ ERRO: ${e.message}`,"error");
+        }finally{
+            b.disabled=false;
+            b.innerText="✨ Enviar e Cadastrar via IA";
+        } 
+    }
 
+    async function processarTimeUnico(tN,tU,q,aK,t,d,mR){ 
+        addLog(`>> GERANDO: ${tN.toUpperCase()}`,"warn"); 
+        const pr=`Gere ${q} perguntas sobre história do ${tN} (Dificuldade: ${d}). ${t?`Tema OBRIGATÓRIO: "${t}".`:`Varie temas.`}\nREGRAS: Fatos históricos, max 15 palavras/perg, max 4 palavras/opc.\nFormato ESTRITO:\nPergunta: [Texto]\nA) [Opc 1]\nB) [Opc 2]\nC) [Opc 3]\nD) [Opc 4]\nCorreta: [1 a 4]\nAPENAS o texto puro.`; 
+        let tx=null; 
+        for(let i=1;i<=3;i++){
+            const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${aK}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:pr}]}]})}); 
+            if(r.ok){const ds=await r.json();tx=ds.candidates[0].content.parts[0].text;addLog(`IA respondeu!`,"success");break;} 
+            if(r.status===429&&i<3){addLog(`⚠️ Limite IA. Tentando em 5s...`,"warn");await delay(5000);continue;} 
+            throw new Error(`IA recusou a conexão (${r.status}). Verifique a API Key.`);
+        } 
+        const pg=[]; tx.split(/(?:Pergunta|Q):/i).filter(b=>b.trim().length>0).forEach(b=>{const l=b.trim().split('\n').map(x=>x.trim()).filter(x=>x!==''); if(l.length>=5){let c=1,lC=l.find(x=>/Correta/i.test(x));if(lC){let m=lC.match(/\d+/);if(m)c=parseInt(m[0]);} pg.push({pergunta:l[0],opcoes:[l[1].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[2].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[3].replace(/^[A-D1-4][\)\.-]?\s*/i,''),l[4].replace(/^[A-D1-4][\)\.-]?\s*/i,'')],correta:c});} }); if(pg.length===0)throw new Error("IA gerou texto inválido."); addLog(`Geradas ${pg.length} perguntas.`,"info"); if(mR)addLog(`⚠️ Reciclagem!`,"error"); const rP=await fetch(tU,{method:"POST",body:JSON.stringify({acao:"salvar_quiz",perguntas:pg,substituir:mR})}); const rS=await rP.json(); if(rS.sucesso){addLog(`✅ SUCESSO!`,"success");localStorage.setItem("ultimo_time_gerado",tN);localStorage.setItem("ultimo_horario_gerado",new Date().toLocaleString('pt-BR'));}else throw new Error(rS.erro); 
+    }
+</script>
 </body>
 </html>
