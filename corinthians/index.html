@@ -860,7 +860,10 @@ async function carregarDoMeuServidor() {
     function fecharModalAnuncio() { document.getElementById("modal-anuncio").style.display = "none"; }
     document.getElementById("modal-anuncio").addEventListener('click', function(e) { if (e.target === this) fecharModalAnuncio(); });
 
-    document.addEventListener("DOMContentLoaded", carregarDoMeuServidor);
+  document.addEventListener("DOMContentLoaded", () => {
+        carregarDoMeuServidor();
+        fetch(API_ANALYTICS).catch(e => console.log(e)); // Registra o toque no MySQL
+    });
 
     // === INICIAR O QUIZ ===
     function iniciarQuiz() {
