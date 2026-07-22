@@ -1,11 +1,11 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.17";
+const VERSAO_ATUAL_SISTEMA = "7.8.18";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
 let KEY_IMGBB = localStorage.getItem('novera_imgbb_key') || "";
 
 let rotulosGlobal = [], estoqueGlobal = [], gastosGlobal = [], vendasGlobal = [];
-let encomendasGlobal = [], comprasGlobal = [];
+let encomendasGlobal = [], comprasGlobal = [], producaoGlobal = [];
 let logsGlobal = []; 
 let usuarioLogado = ""; 
 let usuarioCargo = ""; 
@@ -215,7 +215,10 @@ async function sincronizarDadosUnico() {
         const dados = await res.json();
         
         if (dados.sucesso) {
-            rotulosGlobal = dados.rotulos || []; estoqueGlobal = dados.estoque || []; gastosGlobal = dados.gastos || []; vendasGlobal = dados.vendas || []; encomendasGlobal = dados.encomendas || []; comprasGlobal = dados.compras || [];
+            rotulosGlobal = dados.rotulos || []; estoqueGlobal = dados.estoque || []; 
+            gastosGlobal = dados.gastos || []; vendasGlobal = dados.vendas || []; 
+            encomendasGlobal = dados.encomendas || []; comprasGlobal = dados.compras || [];
+            producaoGlobal = dados.producao || []; // ADICIONE AQUI
             logsGlobal = dados.logs || [];
 
             if (usuarioCargo !== 'Admin') {
@@ -240,7 +243,7 @@ async function sincronizarDadosUnico() {
                 estoqueAgrupado[n].totalQtd += q;
             });
 
-            atualizarDatalistsDinamicos(); renderizarRotulos(); renderizarOpcoesPrecificacao(); renderizarEstoque(); renderizarGastos(); renderizarVendas(); renderizarDashboard(); renderizarEncomendas(); renderizarCompras();
+            atualizarDatalistsDinamicos(); renderizarRotulos(); renderizarOpcoesPrecificacao(); renderizarEstoque(); renderizarGastos(); renderizarVendas(); renderizarDashboard(); renderizarEncomendas(); renderizarCompras(); renderizarProducao();
             if (document.getElementById('tab-logs').classList.contains('active')) renderizarLogs();
             
             if (!dadosCarregados) {
@@ -395,6 +398,107 @@ let custoTotalGlobal = 0;
 function calcularNovera() { const cFrag = parseFloat(document.getElementById('n-custo-frag').value) || 0; const qFrag = parseFloat(document.getElementById('n-qtd-frag').value) || 0; const cBase1L = parseFloat(document.getElementById('n-custo-base').value) || 0; const qBase = parseFloat(document.getElementById('n-qtd-base').value) || 0; const mlVenda = parseFloat(document.getElementById('n-ml-venda').value) || 1; const cInsumos = parseFloat(document.getElementById('n-insumos').value) || 0; const valorMlBase = cBase1L / 1000; const qtdMlProducao = qBase + qFrag; const qtdFrascos = qtdMlProducao / mlVenda; const custoLiquidoUni = qtdFrascos > 0 ? (cFrag + (valorMlBase * qBase)) / qtdFrascos : 0; const custoTotalUni = custoLiquidoUni + cInsumos; custoTotalGlobal = custoTotalUni; document.getElementById('r-frascos').innerText = Math.floor(qtdFrascos) + " un"; document.getElementById('r-custo-total').innerText = fmt(custoTotalUni); document.getElementById('p-rendimento').value = Math.floor(qtdFrascos); autoSugerirPrecoFabrica(); }
 function autoSugerirPrecoFabrica() { if (!document.getElementById('p-preco-venda').value) { document.getElementById('p-preco-venda').value = fmt(custoTotalGlobal * 3); } }
 async function salvarProducaoEstoque() { const essBaseVal = document.getElementById('n-produto').value; const tipoFinal = padronizarTexto(document.getElementById('n-tipo-final').value); const volume = document.getElementById('n-ml-venda').value; const qtdRendimento = document.getElementById('p-rendimento').value; const precoVendaStr = document.getElementById('p-preco-venda').value; const pLocal = document.getElementById('p-local') ? padronizarTexto(document.getElementById('p-local').value) : "Sede"; if (!essBaseVal || !tipoFinal || !qtdRendimento || !precoVendaStr) return mostrarAlerta("Atenção", "Preencha a Essência Base, Tipo, Rendimento e Preço.", "warning"); const partes = essBaseVal.split('|'); const codNovera = partes[0]; const essBase = partes[1]; const nomeProdutoFinal = `${tipoFinal} ${essBase} ${volume}ml`; const precoVenda = parseDinheiro(precoVendaStr); mostrarLoading("Enviando..."); const msgLog = `🏭 Fabricou ${qtdRendimento}x [${nomeProdutoFinal}]. Enviado para: ${pLocal}.`; fetch(API_NOVERA, { method: "POST", headers: cabecalhoAuth(), body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_producao_estoque", nome_produto: nomeProdutoFinal, tipo: tipoFinal, qtd: qtdRendimento, custo: fmtPlanilha(custoTotalGlobal), preco: fmtPlanilha(precoVenda), codigo: codNovera, local: pLocal, log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Produzido!", `Lote enviado para ${pLocal}.`, "success"); document.getElementById('p-rendimento').value = "1"; document.getElementById('p-preco-venda').value = ""; sincronizarDadosUnico(); }); }
+
+
+function salvarFilaProducao() {
+    const essBaseVal = document.getElementById('n-produto').value; 
+    const tipoFinal = padronizarTexto(document.getElementById('n-tipo-final').value); 
+    const volume = document.getElementById('n-ml-venda').value; 
+    const qtdRendimento = document.getElementById('p-rendimento').value; 
+    const precoVendaStr = document.getElementById('p-preco-venda').value; 
+    const dataPrev = document.getElementById('p-data-previsao').value;
+    
+    if (!essBaseVal || !tipoFinal || !qtdRendimento || !precoVendaStr || !dataPrev) return mostrarAlerta("Atenção", "Preencha a Data de Previsão e os demais campos.", "warning"); 
+    
+    const partes = essBaseVal.split('|'); const codNovera = partes[0]; const essBase = partes[1]; 
+    const nomeProdutoFinal = `${tipoFinal} ${essBase} ${volume}ml`; 
+    const precoVenda = parseDinheiro(precoVendaStr); 
+    const dataInicio = new Date().toISOString().split('T')[0];
+
+    mostrarLoading("Colocando na Fila..."); 
+    const msgLog = `⏳ Maceração: ${qtdRendimento}x [${nomeProdutoFinal}]. Previsão para: ${dataBR(dataPrev)}.`; 
+    
+    fetch(API_NOVERA, { 
+        method: "POST", headers: cabecalhoAuth(), 
+        body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_producao_fila", data_inicio: dataInicio, data_previsao: dataPrev, nome_produto: nomeProdutoFinal, tipo: tipoFinal, qtd_prevista: qtdRendimento, custo: fmtPlanilha(custoTotalGlobal), preco: fmtPlanilha(precoVenda), codigo: codNovera, log_detalhe: msgLog }) 
+    }).then(() => { 
+        mostrarAlerta("Na Fila!", `Processo de maceração iniciado.`, "success"); 
+        document.getElementById('p-rendimento').value = "1"; 
+        document.getElementById('p-preco-venda').value = ""; 
+        document.getElementById('p-data-previsao').value = ""; 
+        sincronizarDadosUnico(); 
+    });
+}
+
+function renderizarProducao() {
+    const fila = document.getElementById('lista-producao-cards'); 
+    let pends = producaoGlobal.filter(p => p.status === 'Em Andamento'); 
+    pends.sort((a, b) => new Date(a.data_previsao) - new Date(b.data_previsao)); 
+    
+    if (pends.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma maceração / produção na fila.</p>"; return; } 
+    
+    const hojeIso = new Date().toISOString().split('T')[0]; let html = ""; 
+    pends.forEach(p => {
+        let classBadge = "b-futuro"; let textoBadge = "No prazo";
+        if (p.data_previsao < hojeIso) { classBadge = "b-atrasado"; textoBadge = "Atrasado"; } 
+        else if (p.data_previsao === hojeIso) { classBadge = "b-hoje"; textoBadge = "Envasar Hoje"; }
+        
+        const dataDisplay = dataBR(p.data_previsao);
+        const dataInicioDisplay = dataBR(p.data_inicio);
+        
+        html += `<div class="rotulo-card" style="gap: 12px; align-items: center;">
+            <div class="rotulo-info" style="flex:1; min-width:0;">
+                <h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${p.codigo}</span>${p.nome_produto} <span class="badge-status ${classBadge}" style="margin-left:5px;">${textoBadge}</span></h4>
+                <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Iniciado em: ${dataInicioDisplay} | Término: ${dataDisplay}</p>
+                <p>Meta: <b>${p.qtd_prevista} un</b> • Tipo: ${p.tipo}</p>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;">
+                <button class="btn-salvar" style="margin-top:0; padding:8px 12px; font-size:0.75rem; background:#2e7d32;" onclick="abrirModalFinalizarProducao(${p.linha})" title="Finalizar Envase e Enviar para Estoque">✔️ Finalizar Lote</button>
+                <div style="display:flex; gap:4px;">
+                    <button class="btn-acao" onclick="prepararExclusaoRegistro('Produção', ${p.linha}, 'Lote: ${p.nome_produto}')" title="Cancelar Produção">🗑️</button>
+                </div>
+            </div>
+        </div>`;
+    }); 
+    fila.innerHTML = html;
+}
+
+function abrirModalFinalizarProducao(id) {
+    const p = producaoGlobal.find(x => x.linha === id);
+    if(!p) return;
+    document.getElementById('mfp-linha').value = p.linha;
+    document.getElementById('mfp-produto').innerText = p.nome_produto;
+    document.getElementById('mfp-qtd-real').value = p.qtd_prevista;
+    document.getElementById('mfp-custo').value = p.custo_unitario;
+    document.getElementById('mfp-preco').value = p.preco_sugerido;
+    document.getElementById('mfp-codigo').value = p.codigo;
+    document.getElementById('mfp-tipo').value = p.tipo;
+    document.getElementById('modal-finalizar-producao').style.display = 'flex';
+}
+
+function confirmarFinalizarProducao() {
+    const linha = document.getElementById('mfp-linha').value;
+    const nome_produto = document.getElementById('mfp-produto').innerText;
+    const qtdReal = document.getElementById('mfp-qtd-real').value;
+    const local = padronizarTexto(document.getElementById('mfp-local').value) || 'Sede';
+    const custo = document.getElementById('mfp-custo').value;
+    const preco = document.getElementById('mfp-preco').value;
+    const codigo = document.getElementById('mfp-codigo').value;
+    const tipo = document.getElementById('mfp-tipo').value;
+    
+    document.getElementById('modal-finalizar-producao').style.display = 'none';
+    mostrarLoading("Envasando e Enviando..."); 
+    
+    const msgLog = `✅ Lote Finalizado: ${qtdReal}x [${nome_produto}]. Prateleira: ${local}.`; 
+
+    fetch(API_NOVERA, { 
+        method: "POST", headers: cabecalhoAuth(), 
+        body: JSON.stringify({ usuario: usuarioLogado, acao: "finalizar_producao", linha: linha, nome_produto: nome_produto, tipo: tipo, qtd: qtdReal, custo: custo, preco: preco, codigo: codigo, local: local, log_detalhe: msgLog }) 
+    }).then(() => { 
+        mostrarAlerta("Pronto!", `Envase concluído. Estoque atualizado!`, "success"); 
+        sincronizarDadosUnico(); 
+    });
+}
 
 function renderizarEstoque() { 
     const tBusca = document.getElementById('busca-estoque').value.toLowerCase().trim(); 
