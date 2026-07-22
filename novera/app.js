@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.16";
+const VERSAO_ATUAL_SISTEMA = "7.8.17";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -664,45 +664,109 @@ function autoPreencherEdicaoVenda() {
     } 
 }
 
-function salvarVenda() {
-    const data = document.getElementById('v-data').value,
-        cliente = padronizarTexto(document.getElementById('v-cliente').value),
-        produto = document.getElementById('v-produto').value;
+// ==========================================
+// MÓDULO: CARRINHO DE COMPRAS E PDV
+// ==========================================
+let carrinhoPDV = [];
 
-    const socio = (usuarioCargo === 'Admin') ? padronizarTexto(document.getElementById('v-socio').value) : padronizarTexto(usuarioLogado);
+function adicionarItemCarrinho() {
+    const produto = document.getElementById('v-produto').value;
     const elLocal = document.getElementById('v-local-estoque');
     const localRetirada = elLocal ? elLocal.value : "";
-    const qtd = parseInt(document.getElementById('v-qtd').value) || 1,
-        valorStr = document.getElementById('v-valor').value,
-        status = document.getElementById('v-status').value,
-        observacao = document.getElementById('v-observacao').value;
+    const qtd = parseInt(document.getElementById('v-qtd').value) || 1;
+    const valorStr = document.getElementById('v-valor').value;
+    const valTotalItem = parseDinheiro(valorStr);
 
-    const valVenda = parseDinheiro(valorStr);
-
-    if (!data || !cliente || !produto || valVenda < 0 || !localRetirada) return mostrarAlerta("Atenção", "Preencha todos os campos e o Local do Estoque.", "warning");
+    if (!produto || valTotalItem < 0 || !localRetirada) {
+        return mostrarAlerta("Atenção", "Preencha o Produto, Local e Valor antes de inserir.", "warning");
+    }
 
     const prodAgrupado = estoqueAgrupado[padronizarTexto(produto)];
     const cUnd = prodAgrupado ? parseDinheiro(prodAgrupado.custo) : 0;
     const cTot = cUnd * qtd;
 
-    mostrarLoading("Registrando...");
-    const msgLog = `🛒 Venda: ${qtd}x [${produto}] para ${cliente}. Local: ${localRetirada} (${status})`;
+    // Coloca o item na memória do celular
+    carrinhoPDV.push({
+        produto: produto,
+        local_estoque: localRetirada,
+        qtd: qtd,
+        valor_total_item: valTotalItem,
+        custo_und: cUnd,
+        custo_total: cTot
+    });
+
+    // Limpa apenas a parte do produto para o vendedor bipar o próximo
+    document.getElementById('v-produto').value = '';
+    document.getElementById('v-qtd').value = '1';
+    document.getElementById('v-valor').value = '';
+    if (elLocal) elLocal.innerHTML = '<option value="">Selecione o Produto Primeiro...</option>';
+    document.getElementById('v-produto-img-preview').style.display = 'none';
+
+    renderizarCarrinho();
+}
+
+function removerItemCarrinho(index) {
+    carrinhoPDV.splice(index, 1);
+    renderizarCarrinho();
+}
+
+function renderizarCarrinho() {
+    const container = document.getElementById('carrinho-lista');
+    const elTotal = document.getElementById('carrinho-total');
+    
+    if (carrinhoPDV.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999; font-size: 0.8rem; margin: 10px 0;">Carrinho vazio. Adicione produtos acima.</p>';
+        elTotal.innerText = "R$ 0,00";
+        return;
+    }
+
+    let html = '';
+    let somaPedido = 0;
+    
+    carrinhoPDV.forEach((item, index) => {
+        somaPedido += item.valor_total_item;
+        const nomeFormatado = formatarNomeProdutoHtml(item.produto, 'venda');
+        
+        html += `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #E8DDE1;">
+            <div style="flex: 1; line-height: 1.3; min-width: 0;">
+                <span style="font-weight: 700; color: var(--brand-dark); font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.qtd}x ${nomeFormatado}</span>
+                <span style="font-size: 0.7rem; color: #888;">📍 Retirada: ${item.local_estoque}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                <span style="font-weight: 800; color: var(--primary-dark); font-size: 0.95rem;">${fmt(item.valor_total_item)}</span>
+                <button class="btn-acao" style="width: 28px; height: 28px; font-size: 0.7rem; background: #fee2e2; border-color: #fecaca; color: #991b1b;" onclick="removerItemCarrinho(${index})">❌</button>
+            </div>
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+    elTotal.innerText = fmt(somaPedido);
+}
+
+function salvarVendaCarrinho() {
+    if (carrinhoPDV.length === 0) return mostrarAlerta("Atenção", "O carrinho está vazio! Insira produtos primeiro.", "warning");
+
+    const data = document.getElementById('v-data').value;
+    const cliente = padronizarTexto(document.getElementById('v-cliente').value);
+    const socio = (usuarioCargo === 'Admin') ? padronizarTexto(document.getElementById('v-socio').value) : padronizarTexto(usuarioLogado);
+    const status = document.getElementById('v-status').value;
+    const observacao = document.getElementById('v-observacao').value;
+
+    if (!data || !cliente) return mostrarAlerta("Atenção", "Preencha a Data e o Cliente no topo.", "warning");
+
+    mostrarLoading("Registrando Pedido...");
+    const msgLog = `🛒 Pedido Fechado: ${cliente} (${carrinhoPDV.length} itens). Status: ${status}`;
 
     const envio = {
         usuario: usuarioLogado,
-        acao: "salvar_venda",
+        acao: "salvar_venda_carrinho",
         data: data,
         cliente: cliente,
-        produto: produto,
         socio: socio,
-        qtd: qtd,
-        valor_venda: fmtPlanilha(valVenda),
         status: status,
-        custo_und: fmtPlanilha(cUnd),
-        custo_total: fmtPlanilha(cTot),
-        data_pg: status === "Pago" ? data : "",
         observacao: observacao,
-        local_estoque: localRetirada,
+        carrinho: carrinhoPDV,
         log_detalhe: msgLog
     };
 
@@ -711,22 +775,21 @@ function salvarVenda() {
         headers: cabecalhoAuth(),
         body: JSON.stringify(envio)
     })
-        .then(r => r.json())
-        .then(resultado => {
-            if (resultado.sucesso) {
-                mostrarAlerta("Sucesso", "Venda lançada.", "success");
-                document.getElementById('v-cliente').value = "";
-                document.getElementById('v-valor').value = "";
-                document.getElementById('v-observacao').value = "";
-                document.getElementById('v-produto-img-preview').style.display = 'none';
-                if (elLocal) elLocal.innerHTML = '<option value="">Selecione o Produto Primeiro...</option>';
-                sincronizarDadosUnico();
-            } else {
-                mostrarAlerta("Erro", resultado.erro || "Falha ao salvar no banco.", "error");
-            }
-        })
-        .catch(e => mostrarAlerta("Erro", "Falha na conexão.", "error"))
-        .finally(() => ocultarLoading());
+    .then(r => r.json())
+    .then(resultado => {
+        if (resultado.sucesso) {
+            mostrarAlerta("Sucesso", "Pedido finalizado!", "success");
+            document.getElementById('v-cliente').value = "";
+            document.getElementById('v-observacao').value = "";
+            carrinhoPDV = []; // Limpa o carrinho
+            renderizarCarrinho();
+            sincronizarDadosUnico();
+        } else {
+            mostrarAlerta("Erro", resultado.erro || "Falha ao salvar no banco.", "error");
+        }
+    })
+    .catch(e => mostrarAlerta("Erro", "Falha na conexão.", "error"))
+    .finally(() => ocultarLoading());
 }
 
 function renderizarVendas() { 
