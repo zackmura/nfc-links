@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.14";
+const VERSAO_ATUAL_SISTEMA = "7.8.15";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -729,13 +729,49 @@ function salvarVenda() {
         .finally(() => ocultarLoading());
 }
 
-function renderizarVendas() { const dlist = [...new Set(vendasGlobal.map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('lista-clientes').innerHTML = dlist.map(c => `<option value="${c}">`).join(''); const dlistPagos = [...new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + dlistPagos.map(c => `<option value="${c}">${c}</option>`).join(''); const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); let htmlVendas = '<option value="">Selecione do Estoque...</option>'; Object.values(estoqueAgrupado).sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(e => { if (e.totalQtd > 0) { let exibeCodigo = e.codigo ? e.codigo + ' - ' : ''; htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Total: ${e.totalQtd})</option>`; } }); const fvClienteSelect = document.getElementById('f-v-cliente'); const fvClienteAtual = fvClienteSelect.value; fvClienteSelect.innerHTML = '<option value="">Todos</option>' + dlist.map(c => `<option value="${c}">${c}</option>`).join(''); fvClienteSelect.value = fvClienteAtual; document.getElementById("v-produto").innerHTML = htmlVendas; document.getElementById("edit-v-produto").innerHTML = htmlVendas; filtrarVendas(); }
+function renderizarVendas() { 
+    const dlist = [...new Set(vendasGlobal.map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); 
+    document.getElementById('lista-clientes').innerHTML = dlist.map(c => `<option value="${c}">`).join(''); 
+    
+    const dlistPagos = [...new Set(vendasGlobal.filter(v => v.status === 'Pago').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); 
+    document.getElementById('recibo-cliente').innerHTML = '<option value="">Nenhum cliente...</option>' + dlistPagos.map(c => `<option value="${c}">${c}</option>`).join(''); 
+    
+    // AGORA PUXA PENDENTE E PARCELADO
+    const dlistPendentes = [...new Set(vendasGlobal.filter(v => v.status === 'Pendente' || v.status === 'Parcelado').map(v => String(v.cliente).trim()))].sort((a, b) => a.localeCompare(b)); 
+    
+    // ADICIONA A OPÇÃO DE LISTAR TODOS NO TOPO
+    document.getElementById('cobranca-cliente').innerHTML = '<option value="">Nenhum devedor...</option><option value="todos">🌟 TODOS OS DEVEDORES</option>' + dlistPendentes.map(c => `<option value="${c}">${c}</option>`).join(''); 
+    
+    let htmlVendas = '<option value="">Selecione do Estoque...</option>'; 
+    Object.values(estoqueAgrupado).sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(e => { if (e.totalQtd > 0) { let exibeCodigo = e.codigo ? e.codigo + ' - ' : ''; htmlVendas += `<option value="${e.nome}">${exibeCodigo}${e.nome} (Total: ${e.totalQtd})</option>`; } }); 
+    const fvClienteSelect = document.getElementById('f-v-cliente'); 
+    const fvClienteAtual = fvClienteSelect.value; 
+    fvClienteSelect.innerHTML = '<option value="">Todos</option>' + dlist.map(c => `<option value="${c}">${c}</option>`).join(''); 
+    fvClienteSelect.value = fvClienteAtual; 
+    document.getElementById("v-produto").innerHTML = htmlVendas; 
+    document.getElementById("edit-v-produto").innerHTML = htmlVendas; 
+    filtrarVendas(); 
+}
 
 function filtrarVendas() {
     const isAdmin = (usuarioCargo === 'Admin');
-    const fTipoData = document.getElementById('f-v-tipo-data') ? document.getElementById('f-v-tipo-data').value : 'venda'; const fDia = document.getElementById('f-v-dia').value, fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value, fSocio = document.getElementById('f-v-socio').value.toLowerCase(), fCliente = document.getElementById('f-v-cliente').value.toLowerCase();
-    let filtradas = vendasGlobal.filter(v => { let pD = true, pM = true, pS = true, pSo = true, pC = true; let dataAlvoIso = ""; if (fTipoData === 'venda') { dataAlvoIso = v.dataVendaIso; } else { if (v.dataPgtoDisplay) { const parts = v.dataPgtoDisplay.split('/'); if (parts.length === 3) dataAlvoIso = `${parts[2]}-${parts[1]}-${parts[0]}`; } } if (fDia) { if (dataAlvoIso !== fDia) pD = false; } if (fMes) { const mesAlvo = dataAlvoIso ? dataAlvoIso.split('-')[1] : null; if (mesAlvo && mesAlvo !== fMes) pM = false; } if (fStatus && v.status !== fStatus) pS = false; if (fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; if (fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; return pD && pM && pS && pSo && pC; });
-    filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
+    const fTipoData = document.getElementById('f-v-tipo-data') ? document.getElementById('f-v-tipo-data').value : 'venda'; 
+    const fDia = document.getElementById('f-v-dia').value, fMes = document.getElementById('f-v-mes').value, fStatus = document.getElementById('f-v-status').value, fSocio = document.getElementById('f-v-socio').value.toLowerCase(), fCliente = document.getElementById('f-v-cliente').value.toLowerCase();
+    
+    let filtradas = vendasGlobal.filter(v => { 
+        let pD = true, pM = true, pS = true, pSo = true, pC = true; 
+        let dataAlvoIso = ""; 
+        if (fTipoData === 'venda') { dataAlvoIso = v.dataVendaIso; } else { if (v.dataPgtoDisplay) { const parts = v.dataPgtoDisplay.split('/'); if (parts.length === 3) dataAlvoIso = `${parts[2]}-${parts[1]}-${parts[0]}`; } } 
+        if (fDia) { if (dataAlvoIso !== fDia) pD = false; } 
+        if (fMes) { const mesAlvo = dataAlvoIso ? dataAlvoIso.split('-')[1] : null; if (mesAlvo && mesAlvo !== fMes) pM = false; } 
+        if (fStatus && v.status !== fStatus) pS = false; 
+        if (fSocio && String(v.socio || '').toLowerCase() !== fSocio) pSo = false; 
+        if (fCliente && !String(v.cliente || '').toLowerCase().includes(fCliente)) pC = false; 
+        return pD && pM && pS && pSo && pC; 
+    });
+    
+    filtradas.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); 
+    let tVend = 0, tRec = 0, tDev = 0, tLuc = 0, tItens = 0, html = "";
     
     if (filtradas.length === 0) { html = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; } else {
         filtradas.forEach(v => {
@@ -758,7 +794,8 @@ function filtrarVendas() {
 
             const btnApagar = isAdmin ? `<button class="btn-acao" onclick="prepararExclusaoRegistro('Vendas', ${v.linha}, 'Venda de ${v.cliente}')" title="Excluir">🗑️</button>` : '';
             
-            let badgeClass = isP ? 'status-pago' : (isPresente ? 'status-presente' : 'status-pendente');
+            // INCLUI A ETIQUETA ROXA DO PARCELADO (Se for parcelado, não mostra o botão verde de Pago ali no grid pra não confundir)
+            let badgeClass = isP ? 'status-pago' : (isPresente ? 'status-presente' : (v.status === 'Parcelado' ? 'status-parcelado' : 'status-pendente'));
 
             html += `<div class="rotulo-card"><div class="rotulo-info"><h4>${v.cliente} <span class="status-badge ${badgeClass}">${v.status}</span></h4><p style="color:var(--primary); font-weight:800; font-size:0.7rem;">${v.dataVendaDisplay || v.dataVendaIso}</p><p><b>${v.qtd}x</b> ${nomeHtml} • Sócio: ${v.socio}</p>${txtLocal}${txtStatus}${txtLucro}${textoObservacao}</div><div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;"><div class="custo-val">${safeFmt(v.valor_venda)}</div><div style="display:flex; gap:5px;">${btnAcaoExtra}${(!isP && !isPresente) ? `<button class="btn-acao" style="background:#e8f5e9; color:#2e7d32; border-color:#bbf7d0;" onclick="darBaixaVenda(${v.linha})" title="Marcar Pago">💲</button>` : ''}<button class="btn-acao" onclick="abrirModalEditarVenda(${v.linha})" title="Editar">✏️</button>${btnApagar}</div></div></div>`; 
         });
@@ -875,7 +912,7 @@ async function gerarCobrancaUnica(linha) {
 
 function darBaixaVendaLote() {
     const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked');
-    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido para dar baixa.", "warning");
+    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione o pedido para dar baixa.", "warning");
 
     let linhas = [];
     let totalLote = 0;
@@ -890,13 +927,13 @@ function darBaixaVendaLote() {
         }
     });
 
-    // Se for mais de 1 cliente, a mensagem fica "3 clientes diferentes"
+    // Se for mais de 1 cliente, a mensagem avisa "vendas de 3 clientes diferentes"
     const cliNome = clientesSet.size > 1 ? `${clientesSet.size} clientes diferentes` : [...clientesSet][0];
 
-    abrirConfirmacao("Confirmar Recebimento?", `Marcar ${linhas.length} venda(s) de ${cliNome} como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Receber Lote", () => {
-        mostrarLoading("Registrando no Caixa...");
-        const msgLog = `💰 Recebeu pagamento em lote (${cliNome}) - Total limpo: ${fmt(totalLote)}`;
-        fetch(API_NOVERA, { method: "POST", headers: cabecalhoAuth(), body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: linhas, status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa múltipla concluída.", "success"); sincronizarDadosUnico(); });
+    abrirConfirmacao("Confirmar Pagamento?", `Marcar ${linhas.length} venda(s) de ${cliNome} como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Confirmar", () => {
+        mostrarLoading("Salvando...");
+        const msgLog = `💰 Recebeu pagamento em lote de ${cliNome} - Total: ${fmt(totalLote)}`;
+        fetch(API_NOVERA, { method: "POST", headers: cabecalhoAuth(), body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: linhas, status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa em lote concluída.", "success"); sincronizarDadosUnico(); });
     });
 }
 
