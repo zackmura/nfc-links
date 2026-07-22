@@ -97,18 +97,24 @@
                 <div class="custo-total"><span>Custo por Unidade</span> <span id="r-custo-total">R$ 0,00</span></div>
             </div>
             
-            <div class="section-title">📦 Lançar Produção no Estoque</div>
+            <div class="section-title">📦 Controle de Produção e Maceração</div>
             <div class="filtro-box" style="background:#fdf5f7; border-color:#f3d8e2;">
                 <div class="row">
-                    <div class="col"><label style="color:var(--primary-dark);">Rendimento Real (Un)</label><input type="number" id="p-rendimento" value="1" min="1"></div>
+                    <div class="col"><label style="color:var(--primary-dark);">Rendimento Previsto/Real</label><input type="number" id="p-rendimento" value="1" min="1"></div>
                     <div class="col"><label style="color:var(--primary-dark);">Preço Sugerido</label><input type="text" id="p-preco-venda" class="mask-money" placeholder="R$ 0,00"></div>
                 </div>
-                <div class="input-group">
-                    <label style="color:var(--primary-dark);">Enviar para qual Local?</label>
-                    <input type="text" id="p-local" list="lista-locais-estoque" placeholder="Ex: Sede, Casa, Loja..." value="Sede">
+                <div class="row">
+                    <div class="col"><label style="color:var(--primary-dark);">Data Prevista (Pronto)</label><input type="date" id="p-data-previsao"></div>
+                    <div class="col"><label style="color:var(--primary-dark);">Local de Repouso/Destino</label><input type="text" id="p-local" list="lista-locais-estoque" placeholder="Ex: Sede..." value="Sede"></div>
                 </div>
-                <button class="btn-salvar" onclick="salvarProducaoEstoque()" style="margin-top: 5px; background:var(--primary-dark);">🏭 Enviar Produção p/ Estoque</button>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn-salvar" style="margin-top: 0; background: #b45309; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.3); flex: 1.5; font-size: 0.8rem;" onclick="salvarFilaProducao()">⏳ INICIAR MACERAÇÃO (FILA)</button>
+                    <button class="btn-salvar" style="margin-top: 0; background: var(--primary-dark); flex: 1; font-size: 0.8rem;" onclick="salvarProducaoEstoque()">⚡ DIRETO P/ ESTOQUE</button>
+                </div>
             </div>
+
+            <div class="section-title" style="margin-top: 35px;">⏳ Fila de Maceração / Em Andamento</div>
+            <div id="lista-producao-cards"></div>
         </div>
 
         <div id="tab-estoque" class="tab-content">
@@ -741,6 +747,26 @@
         <button class="btn-salvar" style="margin-top: 5px; background: #2C2A2B; box-shadow: 0 4px 10px rgba(0,0,0, 0.3);" onclick="gerarPdfQrCodes()">⬇️ Gerar PDF para Impressão</button>
     </div>
 </div>
+
+<div id="modal-finalizar-producao" class="modal-overlay-alert" style="z-index: 10002;">
+    <div class="modal-box-alert" style="width: 95%; max-width: 350px;">
+        <button onclick="document.getElementById('modal-finalizar-producao').style.display='none';" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 10px; color: #2e7d32;">✔️ Finalizar e Envasar</h3>
+        <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Lote: <b id="mfp-produto"></b></p>
+        
+        <input type="hidden" id="mfp-linha">
+        <input type="hidden" id="mfp-custo">
+        <input type="hidden" id="mfp-preco">
+        <input type="hidden" id="mfp-codigo">
+        <input type="hidden" id="mfp-tipo">
+        
+        <div class="input-group" style="text-align: left;"><label>Rendimento REAL (Qtd Final Envasada)</label><input type="number" id="mfp-qtd-real"></div>
+        <div class="input-group" style="text-align: left;"><label>Local de Entrada na Prateleira</label><input type="text" id="mfp-local" list="lista-locais-estoque" value="Sede"></div>
+        
+        <button class="btn-salvar" style="background:#2e7d32; width: 100%;" onclick="confirmarFinalizarProducao()">🏭 Adicionar à Prateleira de Venda</button>
+    </div>
+</div>
+
 
 <div id="modal-novidades" class="modal-overlay-alert" style="z-index: 10006;">
     <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 30px 20px; text-align: left; background: #fff; border-radius: 20px;">
