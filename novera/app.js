@@ -795,7 +795,58 @@ async function gerarReciboUnico(linha) {
 }
 
 function prepararRecibo() { const cliente = document.getElementById('recibo-cliente').value, divNome = document.getElementById('div-recibo-nome'), inputNome = document.getElementById('recibo-nome-exibicao'), container = document.getElementById('recibo-pedidos-lista'), btn = document.getElementById('btn-gerar-recibo'); if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; btn.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; let pedidos = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pago'); pedidos.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); if (pedidos.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhum pedido PAGO encontrado.</p>'; } else { let html = ''; pedidos.forEach(p => { const dataCompra = p.dataVendaDisplay || p.dataVendaIso, statusTexto = `<span style="color:#2e7d32;">Pago: ${p.dataPgtoDisplay || '?'}</span>`; const nomeHtml = formatarNomeProdutoHtml(p.produto, 'recibo'); html += `<label class="checkbox-recibo"><input type="checkbox" class="chk-item-recibo" value="${p.linha}" checked><div class="chk-info"><span class="chk-title">${p.qtd}x ${nomeHtml}</span><span class="chk-desc">Data: ${dataCompra} | ${statusTexto}</span></div><div class="chk-val">${safeFmt(p.valor_venda)}</div></label>`; }); container.innerHTML = html; } container.style.display = 'block'; btn.style.display = 'block'; }
-function prepararCobranca() { const cliente = document.getElementById('cobranca-cliente').value; const divNome = document.getElementById('div-cobranca-nome'); const inputNome = document.getElementById('cobranca-nome-exibicao'); const container = document.getElementById('cobranca-pedidos-lista'); const divBotoes = document.getElementById('div-cobranca-botoes'); if (!cliente) { divNome.style.display = 'none'; container.style.display = 'none'; if (divBotoes) divBotoes.style.display = 'none'; return; } inputNome.value = cliente; divNome.style.display = 'block'; let pends = vendasGlobal.filter(v => v.cliente.trim() === cliente && v.status === 'Pendente'); pends.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); if (pends.length === 0) { container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhuma pendência encontrada para este cliente.</p>'; } else { let html = ''; pends.forEach(p => { const dataCompra = p.dataVendaDisplay || p.dataVendaIso; const nomeHtml = formatarNomeProdutoHtml(p.produto, 'cobranca'); html += `<label class="checkbox-recibo" style="border-color:#ffeeba; background:#fff9e6;"><input type="checkbox" class="chk-item-cobranca" value="${p.linha}" checked><div class="chk-info"><span class="chk-title" style="color:#b45309;">${p.qtd}x ${nomeHtml}</span><span class="chk-desc">Data: ${dataCompra}</span></div><div class="chk-val" style="color:#b45309;">${safeFmt(p.valor_venda)}</div></label>`; }); container.innerHTML = html; } container.style.display = 'block'; if (divBotoes) divBotoes.style.display = 'flex'; }
+
+function prepararCobranca() { 
+    const cliente = document.getElementById('cobranca-cliente').value; 
+    const divNome = document.getElementById('div-cobranca-nome'); 
+    const inputNome = document.getElementById('cobranca-nome-exibicao'); 
+    const container = document.getElementById('cobranca-pedidos-lista'); 
+    const divBotoes = document.getElementById('div-cobranca-botoes'); 
+    
+    if (!cliente) { 
+        divNome.style.display = 'none'; container.style.display = 'none'; if (divBotoes) divBotoes.style.display = 'none'; return; 
+    } 
+    
+    let pends = [];
+    if (cliente === 'todos') {
+        divNome.style.display = 'none';
+        pends = vendasGlobal.filter(v => v.status === 'Pendente' || v.status === 'Parcelado');
+    } else {
+        inputNome.value = cliente; 
+        divNome.style.display = 'block'; 
+        pends = vendasGlobal.filter(v => v.cliente.trim() === cliente && (v.status === 'Pendente' || v.status === 'Parcelado')); 
+    }
+    
+    pends.sort((a, b) => new Date(b.dataVendaIso) - new Date(a.dataVendaIso)); 
+    
+    if (pends.length === 0) { 
+        container.innerHTML = '<p style="font-size:0.8rem; color:#888;">Nenhuma pendência encontrada.</p>'; 
+    } else { 
+        let html = ''; 
+        pends.forEach(p => { 
+            const dataCompra = p.dataVendaDisplay || p.dataVendaIso; 
+            const nomeHtml = formatarNomeProdutoHtml(p.produto, 'cobranca'); 
+            
+            // SE FOR LISTA GERAL, MOSTRA O NOME DA PESSOA EM CIMA DO PEDIDO
+            const exibirNome = cliente === 'todos' ? `<div style="font-size:0.75rem; color:#A05252; font-weight:800; margin-bottom:3px;">👤 ${p.cliente}</div>` : '';
+            const badge = p.status === 'Parcelado' ? `<span style="background:#e0e7ff; color:#4f46e5; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:5px; text-transform:uppercase; font-weight:800;">Parcelado</span>` : '';
+            
+            html += `<label class="checkbox-recibo" style="border-color:#ffeeba; background:#fff9e6; align-items:flex-start;"><input type="checkbox" class="chk-item-cobranca" value="${p.linha}" checked style="margin-top:2px;"><div class="chk-info">${exibirNome}<span class="chk-title" style="color:#b45309;">${p.qtd}x ${nomeHtml} ${badge}</span><span class="chk-desc">Data: ${dataCompra}</span></div><div class="chk-val" style="color:#b45309; display:flex; align-items:center;">${safeFmt(p.valor_venda)}</div></label>`; 
+        }); 
+        container.innerHTML = html; 
+    } 
+    container.style.display = 'block'; 
+    if (divBotoes) {
+        divBotoes.style.display = 'flex'; 
+        // ESCONDE O BOTÃO DE GERAR IMAGEM E TEXTO SE FOR A LISTA DE TODOS (Evita enviar pra pessoa errada)
+        const botoes = divBotoes.querySelectorAll('.col');
+        if (botoes.length >= 3) {
+            botoes[0].style.display = cliente === 'todos' ? 'none' : 'block';
+            botoes[1].style.display = cliente === 'todos' ? 'none' : 'block';
+        }
+    }
+}
+
 function copiarPendenciasWhats() { const cliReal = document.getElementById('cobranca-cliente').value; if (!cliReal) return mostrarAlerta("Aviso", "Selecione um cliente para cobrar.", "warning"); const cliDisplay = document.getElementById('cobranca-nome-exibicao').value.trim() || cliReal; const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked'); if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido.", "warning"); let txt = `Olá ${cliDisplay}, tudo bem com você? Passando aqui pela Novera Scent ✨\n\nEsse é um resuminho dos seus pedidos em aberto com a gente:\n\n`; let tot = 0; checkboxes.forEach(chk => { const p = vendasGlobal.find(v => v.linha == chk.value); if (p) { const val = parseDinheiro(p.valor_venda); const nomeTxt = formatarNomeProdutoTexto(p.produto); txt += `📅 ${p.dataVendaDisplay} | 📦 ${p.qtd}x ${nomeTxt} | 💰 ${fmt(val)}\n`; tot += val; } }); txt += `\n*Total em aberto: ${fmt(tot)}*\n\nQualquer dúvida, é só chamar!`; navigator.clipboard.writeText(txt).then(() => mostrarAlerta("Copiado!", "Texto copiado.", "success")); }
 
 async function montarCobranca() {
@@ -824,25 +875,28 @@ async function gerarCobrancaUnica(linha) {
 
 function darBaixaVendaLote() {
     const checkboxes = document.querySelectorAll('.chk-item-cobranca:checked');
-    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione o pedido para dar baixa.", "warning");
+    if (checkboxes.length === 0) return mostrarAlerta("Aviso", "Selecione pelo menos um pedido para dar baixa.", "warning");
 
     let linhas = [];
     let totalLote = 0;
-    let cliNome = "";
+    let clientesSet = new Set(); // Guarda os nomes dos clientes pra gente saber quantos são
 
     checkboxes.forEach(chk => {
         linhas.push(chk.value);
         const v = vendasGlobal.find(x => x.linha == chk.value);
         if (v) {
             totalLote += parseDinheiro(v.valor_venda);
-            cliNome = v.cliente;
+            clientesSet.add(v.cliente);
         }
     });
 
-    abrirConfirmacao("Confirmar Pagamento?", `Marcar ${linhas.length} venda(s) de ${cliNome} como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Confirmar", () => {
-        mostrarLoading("Salvando...");
-        const msgLog = `💰 Recebeu pagamento em lote de ${cliNome} - Total: ${fmt(totalLote)}`;
-        fetch(API_NOVERA, { method: "POST", headers: cabecalhoAuth(), body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: linhas, status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa em lote concluída.", "success"); sincronizarDadosUnico(); });
+    // Se for mais de 1 cliente, a mensagem fica "3 clientes diferentes"
+    const cliNome = clientesSet.size > 1 ? `${clientesSet.size} clientes diferentes` : [...clientesSet][0];
+
+    abrirConfirmacao("Confirmar Recebimento?", `Marcar ${linhas.length} venda(s) de ${cliNome} como RECEBIDA(S) hoje?`, "💰", "#2e7d32", "#1b5e20", "💲 Receber Lote", () => {
+        mostrarLoading("Registrando no Caixa...");
+        const msgLog = `💰 Recebeu pagamento em lote (${cliNome}) - Total limpo: ${fmt(totalLote)}`;
+        fetch(API_NOVERA, { method: "POST", headers: cabecalhoAuth(), body: JSON.stringify({ usuario: usuarioLogado, acao: "atualizar_status_venda_lote", linhas: linhas, status: "Pago", log_detalhe: msgLog }) }).then(() => { mostrarAlerta("Recebido!", "Baixa múltipla concluída.", "success"); sincronizarDadosUnico(); });
     });
 }
 
