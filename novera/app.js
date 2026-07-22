@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.18";
+const VERSAO_ATUAL_SISTEMA = "7.8.19";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -406,9 +406,18 @@ function salvarFilaProducao() {
     const volume = document.getElementById('n-ml-venda').value; 
     const qtdRendimento = document.getElementById('p-rendimento').value; 
     const precoVendaStr = document.getElementById('p-preco-venda').value; 
-    const dataPrev = document.getElementById('p-data-previsao').value;
     
-    if (!essBaseVal || !tipoFinal || !qtdRendimento || !precoVendaStr || !dataPrev) return mostrarAlerta("Atenção", "Preencha a Data de Previsão e os demais campos.", "warning"); 
+    // CAPTURA A QUANTIDADE DE DIAS AO INVÉS DE UMA DATA FIXA
+    const diasMaceracao = parseInt(document.getElementById('p-dias-maceracao').value) || 0;
+    
+    if (!essBaseVal || !tipoFinal || !qtdRendimento || !precoVendaStr) {
+        return mostrarAlerta("Atenção", "Preencha todos os campos do controle de produção.", "warning"); 
+    }
+    
+    // O SISTEMA CALCULA A DATA DE PREVISÃO AUTOMATICAMENTE
+    const dataHojeCalculo = new Date();
+    dataHojeCalculo.setDate(dataHojeCalculo.getDate() + diasMaceracao);
+    const dataPrev = dataHojeCalculo.toISOString().split('T')[0];
     
     const partes = essBaseVal.split('|'); const codNovera = partes[0]; const essBase = partes[1]; 
     const nomeProdutoFinal = `${tipoFinal} ${essBase} ${volume}ml`; 
@@ -416,41 +425,89 @@ function salvarFilaProducao() {
     const dataInicio = new Date().toISOString().split('T')[0];
 
     mostrarLoading("Colocando na Fila..."); 
-    const msgLog = `⏳ Maceração: ${qtdRendimento}x [${nomeProdutoFinal}]. Previsão para: ${dataBR(dataPrev)}.`; 
+    const msgLog = `⏳ Maceração: ${qtdRendimento}x [${nomeProdutoFinal}]. Previsão para: ${dataBR(dataPrev)} (${diasMaceracao} dias).`; 
     
     fetch(API_NOVERA, { 
         method: "POST", headers: cabecalhoAuth(), 
         body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_producao_fila", data_inicio: dataInicio, data_previsao: dataPrev, nome_produto: nomeProdutoFinal, tipo: tipoFinal, qtd_prevista: qtdRendimento, custo: fmtPlanilha(custoTotalGlobal), preco: fmtPlanilha(precoVenda), codigo: codNovera, log_detalhe: msgLog }) 
     }).then(() => { 
-        mostrarAlerta("Na Fila!", `Processo de maceração iniciado.`, "success"); 
+        mostrarAlerta("Na Fila!", `Maceração iniciada para ${diasMaceracao} dia(s).`, "success"); 
         document.getElementById('p-rendimento').value = "1"; 
         document.getElementById('p-preco-venda').value = ""; 
-        document.getElementById('p-data-previsao').value = ""; 
+        document.getElementById('p-dias-maceracao').value = "15"; 
         sincronizarDadosUnico(); 
     });
 }
 
 function renderizarProducao() {
     const fila = document.getElementById('lista-producao-cards'); 
+    const resumo = document.getElementById('resumo-producao');
+    
     let pends = producaoGlobal.filter(p => p.status === 'Em Andamento'); 
+    // A ordem aqui já coloca quem vai ficar pronto primeiro no topo da lista!
     pends.sort((a, b) => new Date(a.data_previsao) - new Date(b.data_previsao)); 
     
-    if (pends.length === 0) { fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma maceração / produção na fila.</p>"; return; } 
+    if (pends.length === 0) { 
+        fila.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Nenhuma maceração / produção na fila.</p>"; 
+        if(resumo) resumo.innerHTML = "";
+        return; 
+    } 
     
-    const hojeIso = new Date().toISOString().split('T')[0]; let html = ""; 
+    // Padronizando a data de hoje para calcular a diferença de dias exata
+    const hojeObj = new Date();
+    hojeObj.setHours(0, 0, 0, 0); 
+    
+    let totalUnidades = 0, countFem = 0, countMasc = 0, countInf = 0, countUni = 0;
+    let html = ""; 
+    
     pends.forEach(p => {
-        let classBadge = "b-futuro"; let textoBadge = "No prazo";
-        if (p.data_previsao < hojeIso) { classBadge = "b-atrasado"; textoBadge = "Atrasado"; } 
-        else if (p.data_previsao === hojeIso) { classBadge = "b-hoje"; textoBadge = "Envasar Hoje"; }
+        const q = parseFloat(p.qtd_prevista) || 0;
+        totalUnidades += q;
+        
+        // Puxa o Gênero lá da tabela de Rótulos para o resumo
+        const rotuloRef = rotulosGlobal.find(r => r.codigo === p.codigo);
+        const gen = rotuloRef && rotuloRef.genero ? String(rotuloRef.genero).toLowerCase().trim() : 'unissex';
+        
+        if (gen === 'feminino') countFem += q;
+        else if (gen === 'masculino') countMasc += q;
+        else if (gen === 'infantil') countInf += q;
+        else countUni += q;
+
+        // CALCULA QUANTOS DIAS FALTAM
+        const [a, m, d] = p.data_previsao.split('-'); 
+        const prevObj = new Date(a, m - 1, d);
+        
+        const diffTime = prevObj.getTime() - hojeObj.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let classBadge = "b-futuro"; 
+        let textoBadge = "";
+        
+        if (diffDays < 0) { 
+            classBadge = "b-atrasado"; 
+            textoBadge = `Atrasado ${Math.abs(diffDays)} dia(s)`; 
+        } else if (diffDays === 0) { 
+            classBadge = "b-hoje"; 
+            textoBadge = "Envasar Hoje!"; 
+        } else {
+            textoBadge = `⏳ Faltam ${diffDays} dia(s)`;
+        }
         
         const dataDisplay = dataBR(p.data_previsao);
         const dataInicioDisplay = dataBR(p.data_inicio);
         
+        // Tag visual de gênero para o card
+        let corFundoGen = "#f3f4f6", corTextoGen = "#4b5563";
+        if(gen === "masculino") { corFundoGen = "#e0f2fe"; corTextoGen = "#0369a1"; }
+        else if(gen === "feminino") { corFundoGen = "#fce7f3"; corTextoGen = "#be185d"; }
+        let badgeGenero = rotuloRef && rotuloRef.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:800; text-transform:uppercase; margin-left:5px;">${rotuloRef.genero}</span>` : '';
+        
         html += `<div class="rotulo-card" style="gap: 12px; align-items: center;">
             <div class="rotulo-info" style="flex:1; min-width:0;">
-                <h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${p.codigo}</span>${p.nome_produto} <span class="badge-status ${classBadge}" style="margin-left:5px;">${textoBadge}</span></h4>
-                <p style="color:var(--primary); font-weight:800; font-size:0.7rem;">Iniciado em: ${dataInicioDisplay} | Término: ${dataDisplay}</p>
-                <p>Meta: <b>${p.qtd_prevista} un</b> • Tipo: ${p.tipo}</p>
+                <h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${p.codigo}</span>${p.nome_produto} ${badgeGenero}</h4>
+                <p style="color:var(--primary); font-weight:800; font-size:0.75rem; margin-bottom:5px;"><span class="badge-status ${classBadge}" style="margin-left:0; padding:3px 6px;">${textoBadge}</span></p>
+                <p style="font-size: 0.65rem; color: #888;">Início: ${dataInicioDisplay} | Término Previsto: ${dataDisplay}</p>
+                <p style="margin-top: 3px;">Meta de Envase: <b style="color:var(--brand-dark);">${p.qtd_prevista} un</b></p>
             </div>
             <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;">
                 <button class="btn-salvar" style="margin-top:0; padding:8px 12px; font-size:0.75rem; background:#2e7d32;" onclick="abrirModalFinalizarProducao(${p.linha})" title="Finalizar Envase e Enviar para Estoque">✔️ Finalizar Lote</button>
@@ -460,7 +517,26 @@ function renderizarProducao() {
             </div>
         </div>`;
     }); 
+    
     fila.innerHTML = html;
+    
+    // DESENHA O RESUMO DOS DADOS
+    if (resumo) {
+        resumo.innerHTML = `
+            <div class="dash-card highlight" style="grid-column: span 2; padding: 15px; margin-bottom: 0; text-align:center;">
+                <h3 style="color:#e8dde1; font-size:0.75rem;">Volume Total em Maceração</h3>
+                <p class="valor" style="font-size: 2rem;">${totalUnidades} un</p>
+            </div>
+            <div class="dash-card" style="padding: 12px; background:#fff0f6; border: 1px solid #fce7f3; transform:none; cursor:default;">
+                <h3 style="color:#be185d; font-size:0.65rem;">Femininos</h3>
+                <p class="valor" style="font-size: 1.4rem; color:#be185d;">${countFem}</p>
+            </div>
+            <div class="dash-card" style="padding: 12px; background:#f0f9ff; border: 1px solid #e0f2fe; transform:none; cursor:default;">
+                <h3 style="color:#0369a1; font-size:0.65rem;">Masculinos</h3>
+                <p class="valor" style="font-size: 1.4rem; color:#0369a1;">${countMasc}</p>
+            </div>
+        `;
+    }
 }
 
 function abrirModalFinalizarProducao(id) {
