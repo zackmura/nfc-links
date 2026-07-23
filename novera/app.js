@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.19";
+const VERSAO_ATUAL_SISTEMA = "7.8.20";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -388,7 +388,28 @@ function renderizarLogs() {
 }
 
 function renderizarRotulos() { const lista = document.getElementById("lista-rotulos-cadastrados"); const resumo = document.getElementById("resumo-essencias"); if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; if (resumo) resumo.innerHTML = ""; return; } let htmlLista = ""; let countMasc = 0, countFem = 0, countInf = 0, countUni = 0; rotulosGlobal.sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { let gen = String(r.genero || "").toLowerCase().trim(); let corFundo = "#f3f4f6", corTexto = "#4b5563"; let txtGen = r.genero || "Unissex"; if (gen === "masculino") { corFundo = "#e0f2fe"; corTexto = "#0369a1"; countMasc++; } else if (gen === "feminino") { corFundo = "#fce7f3"; corTexto = "#be185d"; countFem++; } else if (gen === "infantil") { corFundo = "#dcfce7"; corTexto = "#166534"; countInf++; } else { countUni++; txtGen = "Unissex"; } let badgeGenero = `<span style="background:${corFundo}; color:${corTexto}; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:5px; text-transform:uppercase; font-weight:800; vertical-align: middle;">${txtGen}</span>`; htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} ${badgeGenero} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Tabela Rotulo Novera', ${r.linha}, 'Rótulo: ${r.codigo}')">🗑️</button></div></div></div>`; }); lista.innerHTML = htmlLista; if (resumo) { resumo.innerHTML = `<div class="dash-card highlight" style="grid-column: span 2; padding: 15px; margin-bottom: 0; text-align:center;"><h3 style="color:#e8dde1; font-size:0.75rem;">Total no Dicionário</h3><p class="valor" style="font-size: 2rem;">${rotulosGlobal.length}</p></div><div class="dash-card" style="padding: 12px; background:#fff0f6; border: 1px solid #fce7f3; transform:none; cursor:default;"><h3 style="color:#be185d; font-size:0.65rem;">Femininas</h3><p class="valor" style="font-size: 1.4rem; color:#be185d;">${countFem}</p></div><div class="dash-card" style="padding: 12px; background:#f0f9ff; border: 1px solid #e0f2fe; transform:none; cursor:default;"><h3 style="color:#0369a1; font-size:0.65rem;">Masculinas</h3><p class="valor" style="font-size: 1.4rem; color:#0369a1;">${countMasc}</p></div><div class="dash-card" style="padding: 12px; background:#f9fafb; border: 1px solid #e5e7eb; transform:none; cursor:default;"><h3 style="color:#4b5563; font-size:0.65rem;">Unissex</h3><p class="valor" style="font-size: 1.4rem; color:#4b5563;">${countUni}</p></div><div class="dash-card" style="padding: 12px; background:#f0fdf4; border: 1px solid #dcfce7; transform:none; cursor:default;"><h3 style="color:#166534; font-size:0.65rem;">Infantis</h3><p class="valor" style="font-size: 1.4rem; color:#166534;">${countInf}</p></div>`; } }
-function renderizarOpcoesPrecificacao() { const select = document.getElementById("n-produto"); let htmlSelect = '<option value="">Selecione a Essência Base...</option>'; rotulosGlobal.sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { let genTxt = r.genero ? ` (${r.genero})` : ''; htmlSelect += `<option value="${r.codigo}|${r.essencia}">${r.codigo} - ${r.essencia}${genTxt}</option>`; }); select.innerHTML = htmlSelect; }
+
+function renderizarOpcoesPrecificacao() { 
+    // PREENCHE A CALCULADORA DE NOVOS PRODUTOS
+    const select = document.getElementById("n-produto"); 
+    let htmlSelect = '<option value="">Selecione a Essência Base...</option>'; 
+    rotulosGlobal.sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { 
+        let genTxt = r.genero ? ` (${r.genero})` : ''; 
+        htmlSelect += `<option value="${r.codigo}|${r.essencia}">${r.codigo} - ${r.essencia}${genTxt}</option>`; 
+    }); 
+    select.innerHTML = htmlSelect; 
+
+    // PREENCHE O NOVO DROPDOWN DE PRODUÇÃO RÁPIDA
+    const selectPR = document.getElementById("pr-produto");
+    if (selectPR) {
+        let htmlPR = '<option value="">Selecione um produto do Estoque...</option>';
+        Object.values(estoqueAgrupado).sort((a, b) => String(a.nome).localeCompare(String(b.nome))).forEach(e => {
+            let exibeCodigo = e.codigo ? e.codigo + ' - ' : '';
+            htmlPR += `<option value="${e.nome}">${exibeCodigo}${e.nome}</option>`;
+        });
+        selectPR.innerHTML = htmlPR;
+    }
+}
 
 function salvarRotulo() { const essencia = padronizarTexto(document.getElementById('r-essencia').value); const codForn = padronizarTexto(document.getElementById('r-codigo-forn').value); const marca = padronizarTexto(document.getElementById('r-marca').value); const genero = document.getElementById('r-genero') ? document.getElementById('r-genero').value : ""; if (!essencia) return mostrarAlerta("Atenção", "Preencha a Essência.", "warning"); mostrarLoading("Salvando..."); const msgLog = `✨ Criou a essência: ${essencia} (Gênero: ${genero || 'Indefinido'})`; fetch(API_NOVERA, { method: "POST", headers: cabecalhoAuth(), body: JSON.stringify({ usuario: usuarioLogado, acao: "salvar_rotulo", essencia: essencia, codigo_forn: codForn, marca: marca, genero: genero, log_detalhe: msgLog }) }).then(r => { if(r.status === 401 || r.status === 403) { fazerLogout("Sessão Expirada"); throw new Error("Auth"); } return r.json(); }).then(resultado => { if (resultado.sucesso) { mostrarAlerta("Criado!", `Identidade gerada.`, "success"); document.getElementById('r-essencia').value = ""; if (document.getElementById('r-codigo-forn')) document.getElementById('r-codigo-forn').value = ""; if (document.getElementById('r-marca')) document.getElementById('r-marca').value = ""; if (document.getElementById('r-genero')) document.getElementById('r-genero').value = ""; sincronizarDadosUnico(); } else { mostrarAlerta("Erro", resultado.erro === "DUPLICADO_ROTULO" ? "Essência já cadastrada." : resultado.erro, "error"); } }).catch(e => { if(e.message !== "Auth") mostrarAlerta("Erro", "Falha.", "error"); }).finally(() => ocultarLoading()); }
 function abrirModalEditarRotulo(linha) { const r = rotulosGlobal.find(x => x.linha === linha); if (!r) return; document.getElementById('edit-r-linha').value = r.linha; document.getElementById('edit-r-essencia').value = r.essencia; document.getElementById('edit-r-codigo-forn').value = r.codigo_forn; document.getElementById('edit-r-marca').value = r.marca; if (document.getElementById('edit-r-genero')) document.getElementById('edit-r-genero').value = r.genero || ""; document.getElementById('modal-editar-rotulo').style.display = 'flex'; }
@@ -1687,6 +1708,52 @@ function preencherQtdQrComEstoque() {
         input.value = total > 0 ? total : 0;
     });
     mostrarAlerta("Preenchido!", "Quantidades atualizadas com o estoque real.", "success");
+}
+
+function salvarProducaoRapida() {
+    const nomeProduto = document.getElementById('pr-produto').value;
+    const qtdRendimento = parseFloat(document.getElementById('pr-qtd').value) || 0;
+    const diasMaceracao = parseInt(document.getElementById('pr-dias').value) || 0;
+
+    if (!nomeProduto || qtdRendimento <= 0) {
+        return mostrarAlerta("Atenção", "Selecione o produto e informe o rendimento.", "warning");
+    }
+
+    // A MÁGICA: Ele puxa do estoque o tipo, código, custo e preço que o produto já tem!
+    const prodRef = estoqueAgrupado[padronizarTexto(nomeProduto)];
+    if (!prodRef) return mostrarAlerta("Erro", "Produto não encontrado.", "error");
+
+    // Faz o cálculo da data futura
+    const dataHojeCalculo = new Date();
+    dataHojeCalculo.setDate(dataHojeCalculo.getDate() + diasMaceracao);
+    const dataPrev = dataHojeCalculo.toISOString().split('T')[0];
+    const dataInicio = new Date().toISOString().split('T')[0];
+
+    mostrarLoading("Colocando na Fila...");
+    const msgLog = `⏳ Reposição Fila: ${qtdRendimento}x [${prodRef.nome}]. Previsão: ${dataBR(dataPrev)} (${diasMaceracao} dias).`;
+
+    fetch(API_NOVERA, {
+        method: "POST", headers: cabecalhoAuth(),
+        body: JSON.stringify({ 
+            usuario: usuarioLogado, 
+            acao: "salvar_producao_fila", 
+            data_inicio: dataInicio, 
+            data_previsao: dataPrev, 
+            nome_produto: prodRef.nome, 
+            tipo: prodRef.tipo, 
+            qtd_prevista: qtdRendimento, 
+            custo: fmtPlanilha(parseDinheiro(prodRef.custo)), 
+            preco: fmtPlanilha(parseDinheiro(prodRef.preco)), 
+            codigo: prodRef.codigo || '', 
+            log_detalhe: msgLog 
+        })
+    }).then(() => {
+        mostrarAlerta("Lote na Fila!", `Nova leva de ${prodRef.nome} em maceração!`, "success");
+        document.getElementById('pr-produto').value = "";
+        document.getElementById('pr-qtd').value = "10";
+        document.getElementById('pr-dias').value = "15";
+        sincronizarDadosUnico();
+    });
 }
 
 async function gerarPdfQrCodes() {
