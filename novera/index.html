@@ -74,8 +74,25 @@
         </div>
 
         <div id="tab-precificar" class="tab-content">
-            <!-- Seu tab-precificar continua EXATAMENTE igual aqui -->
-            <div class="section-title">🧪 Fabricar Novo Produto</div>
+            
+            <!-- BLOCO 1: PRODUÇÃO RÁPIDA (REPOSIÇÃO) -->
+            <div class="section-title" style="margin-top: 0; color: #b45309; border-left-color: #b45309;">⚡ Refazer Lote (Reposição)</div>
+            <div class="filtro-box" style="background: #fff9e6; border-color: #ffeeba; margin-bottom: 25px;">
+                <p style="font-size: 0.8rem; color: #b45309; margin-top: 0; margin-bottom: 15px;">Vai fabricar um produto que já existe no estoque? Lance direto na fila de maceração!</p>
+                <div class="input-group" style="text-align: left;">
+                    <label style="color: #b45309;">Qual produto será fabricado?</label>
+                    <select id="pr-produto" style="border-color: #fde047; background: #fff;"><option value="">Aguardando estoque...</option></select>
+                </div>
+                <div class="row">
+                    <div class="col"><label style="color: #b45309;">Rendimento (Un)</label><input type="number" id="pr-qtd" value="10" min="1" style="border-color: #fde047; background: #fff;"></div>
+                    <div class="col"><label style="color: #b45309;">Dias de Maceração</label><input type="number" id="pr-dias" value="15" min="0" style="border-color: #fde047; background: #fff;"></div>
+                </div>
+                <button class="btn-salvar" style="margin-top: 5px; background: #b45309; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.3);" onclick="salvarProducaoRapida()">⏳ ENVIAR PARA MACERAÇÃO</button>
+            </div>
+
+            <!-- BLOCO 2: CRIAR NOVO PRODUTO (Calculadora) -->
+            <div class="section-title">🧪 Criar Nova Receita (Cálculos)</div>
+            <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 15px;">Use este painel apenas para criar um produto inédito ou recalcular custos.</p>
             <div class="row">
                 <div class="col"><label>Essência Base</label><select id="n-produto"><option value="">Aguardando dados...</option></select></div>
                 <div class="col"><label>Tipo do Produto Final</label><input type="text" id="n-tipo-final" list="lista-tipos-finais" placeholder="Ex: Home Spray"><datalist id="lista-tipos-finais"><option value="Home Spray"></option><option value="Perfume"></option><option value="Vela"></option><option value="Creme"></option></datalist></div>
@@ -104,7 +121,6 @@
                     <div class="col"><label style="color:var(--primary-dark);">Preço Sugerido</label><input type="text" id="p-preco-venda" class="mask-money" placeholder="R$ 0,00"></div>
                 </div>
                 <div class="row">
-                    <!-- MUDANÇA AQUI: Campo de DIAS ao invés de DATA -->
                     <div class="col"><label style="color:var(--primary-dark);">Dias de Maceração</label><input type="number" id="p-dias-maceracao" value="15" min="0" placeholder="Ex: 15"></div>
                     <div class="col"><label style="color:var(--primary-dark);">Local de Repouso/Destino</label><input type="text" id="p-local" list="lista-locais-estoque" placeholder="Ex: Sede..." value="Sede"></div>
                 </div>
