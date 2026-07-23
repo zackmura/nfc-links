@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.20";
+const VERSAO_ATUAL_SISTEMA = "7.8.21";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -390,23 +390,39 @@ function renderizarLogs() {
 function renderizarRotulos() { const lista = document.getElementById("lista-rotulos-cadastrados"); const resumo = document.getElementById("resumo-essencias"); if (rotulosGlobal.length === 0) { lista.innerHTML = "<p style='text-align:center; color:#999; font-size:0.8rem;'>Vazio.</p>"; if (resumo) resumo.innerHTML = ""; return; } let htmlLista = ""; let countMasc = 0, countFem = 0, countInf = 0, countUni = 0; rotulosGlobal.sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { let gen = String(r.genero || "").toLowerCase().trim(); let corFundo = "#f3f4f6", corTexto = "#4b5563"; let txtGen = r.genero || "Unissex"; if (gen === "masculino") { corFundo = "#e0f2fe"; corTexto = "#0369a1"; countMasc++; } else if (gen === "feminino") { corFundo = "#fce7f3"; corTexto = "#be185d"; countFem++; } else if (gen === "infantil") { corFundo = "#dcfce7"; corTexto = "#166534"; countInf++; } else { countUni++; txtGen = "Unissex"; } let badgeGenero = `<span style="background:${corFundo}; color:${corTexto}; padding:2px 6px; border-radius:4px; font-size:0.6rem; margin-left:5px; text-transform:uppercase; font-weight:800; vertical-align: middle;">${txtGen}</span>`; htmlLista += `<div class="rotulo-card"><div class="rotulo-info"><h4>${r.essencia} ${badgeGenero} <span style="font-size:0.7rem; color:#999; font-weight:500;">(${r.marca})</span></h4><p>Cód Forn: <b>${r.codigo_forn || '-'}</b></p></div><div style="display:flex; gap:12px; align-items:center;"><div class="rotulo-badge">${r.codigo}</div><div style="display:flex; gap:5px;"><button class="btn-acao" onclick="abrirModalEditarRotulo(${r.linha})" title="Editar">✏️</button><button class="btn-acao" onclick="prepararExclusaoRegistro('Tabela Rotulo Novera', ${r.linha}, 'Rótulo: ${r.codigo}')">🗑️</button></div></div></div>`; }); lista.innerHTML = htmlLista; if (resumo) { resumo.innerHTML = `<div class="dash-card highlight" style="grid-column: span 2; padding: 15px; margin-bottom: 0; text-align:center;"><h3 style="color:#e8dde1; font-size:0.75rem;">Total no Dicionário</h3><p class="valor" style="font-size: 2rem;">${rotulosGlobal.length}</p></div><div class="dash-card" style="padding: 12px; background:#fff0f6; border: 1px solid #fce7f3; transform:none; cursor:default;"><h3 style="color:#be185d; font-size:0.65rem;">Femininas</h3><p class="valor" style="font-size: 1.4rem; color:#be185d;">${countFem}</p></div><div class="dash-card" style="padding: 12px; background:#f0f9ff; border: 1px solid #e0f2fe; transform:none; cursor:default;"><h3 style="color:#0369a1; font-size:0.65rem;">Masculinas</h3><p class="valor" style="font-size: 1.4rem; color:#0369a1;">${countMasc}</p></div><div class="dash-card" style="padding: 12px; background:#f9fafb; border: 1px solid #e5e7eb; transform:none; cursor:default;"><h3 style="color:#4b5563; font-size:0.65rem;">Unissex</h3><p class="valor" style="font-size: 1.4rem; color:#4b5563;">${countUni}</p></div><div class="dash-card" style="padding: 12px; background:#f0fdf4; border: 1px solid #dcfce7; transform:none; cursor:default;"><h3 style="color:#166534; font-size:0.65rem;">Infantis</h3><p class="valor" style="font-size: 1.4rem; color:#166534;">${countInf}</p></div>`; } }
 
 function renderizarOpcoesPrecificacao() { 
-    // PREENCHE A CALCULADORA DE NOVOS PRODUTOS
+    // 1. PREENCHE A CALCULADORA DE NOVOS PRODUTOS (Mantém todos)
     const select = document.getElementById("n-produto"); 
     let htmlSelect = '<option value="">Selecione a Essência Base...</option>'; 
-    rotulosGlobal.sort((a, b) => String(b.codigo || "").localeCompare(String(a.codigo || ""))).forEach(r => { 
+    rotulosGlobal.sort((a, b) => String(a.codigo || "").localeCompare(String(b.codigo || ""))).forEach(r => { 
         let genTxt = r.genero ? ` (${r.genero})` : ''; 
         htmlSelect += `<option value="${r.codigo}|${r.essencia}">${r.codigo} - ${r.essencia}${genTxt}</option>`; 
     }); 
     select.innerHTML = htmlSelect; 
 
-    // PREENCHE O NOVO DROPDOWN DE PRODUÇÃO RÁPIDA
+    // 2. PREENCHE O DROPDOWN DE PRODUÇÃO RÁPIDA (Filtra apenas Perfumes)
     const selectPR = document.getElementById("pr-produto");
     if (selectPR) {
-        let htmlPR = '<option value="">Selecione um produto do Estoque...</option>';
-        Object.values(estoqueAgrupado).sort((a, b) => String(a.nome).localeCompare(String(b.nome))).forEach(e => {
+        let htmlPR = '<option value="">Selecione um Perfume do Estoque...</option>';
+        
+        // Aplica o filtro para ignorar Cremes, Home Sprays, etc.
+        let produtosFiltrados = Object.values(estoqueAgrupado).filter(e => {
+            let tipoProduto = String(e.tipo).toLowerCase().trim();
+            let nomeProduto = String(e.nome).toLowerCase().trim();
+            // Retorna verdadeiro apenas se a palavra 'perfume' estiver no tipo ou no nome
+            return tipoProduto === 'perfume' || nomeProduto.includes('perfume');
+        });
+
+        // Ordena a lista usando o Código (N001, N002...) e depois o Nome
+        produtosFiltrados.sort((a, b) => {
+            let codA = String(a.codigo || "");
+            let codB = String(b.codigo || "");
+            if(codA === codB) return String(a.nome).localeCompare(String(b.nome));
+            return codA.localeCompare(codB);
+        }).forEach(e => {
             let exibeCodigo = e.codigo ? e.codigo + ' - ' : '';
             htmlPR += `<option value="${e.nome}">${exibeCodigo}${e.nome}</option>`;
         });
+        
         selectPR.innerHTML = htmlPR;
     }
 }
