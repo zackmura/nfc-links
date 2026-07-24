@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.21";
+const VERSAO_ATUAL_SISTEMA = "7.8.22";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -481,7 +481,6 @@ function renderizarProducao() {
     const resumo = document.getElementById('resumo-producao');
     
     let pends = producaoGlobal.filter(p => p.status === 'Em Andamento'); 
-    // A ordem aqui já coloca quem vai ficar pronto primeiro no topo da lista!
     pends.sort((a, b) => new Date(a.data_previsao) - new Date(b.data_previsao)); 
     
     if (pends.length === 0) { 
@@ -490,7 +489,6 @@ function renderizarProducao() {
         return; 
     } 
     
-    // Padronizando a data de hoje para calcular a diferença de dias exata
     const hojeObj = new Date();
     hojeObj.setHours(0, 0, 0, 0); 
     
@@ -501,7 +499,6 @@ function renderizarProducao() {
         const q = parseFloat(p.qtd_prevista) || 0;
         totalUnidades += q;
         
-        // Puxa o Gênero lá da tabela de Rótulos para o resumo
         const rotuloRef = rotulosGlobal.find(r => r.codigo === p.codigo);
         const gen = rotuloRef && rotuloRef.genero ? String(rotuloRef.genero).toLowerCase().trim() : 'unissex';
         
@@ -510,7 +507,6 @@ function renderizarProducao() {
         else if (gen === 'infantil') countInf += q;
         else countUni += q;
 
-        // CALCULA QUANTOS DIAS FALTAM
         const [a, m, d] = p.data_previsao.split('-'); 
         const prevObj = new Date(a, m - 1, d);
         
@@ -533,7 +529,6 @@ function renderizarProducao() {
         const dataDisplay = dataBR(p.data_previsao);
         const dataInicioDisplay = dataBR(p.data_inicio);
         
-        // Tag visual de gênero para o card
         let corFundoGen = "#f3f4f6", corTextoGen = "#4b5563";
         if(gen === "masculino") { corFundoGen = "#e0f2fe"; corTextoGen = "#0369a1"; }
         else if(gen === "feminino") { corFundoGen = "#fce7f3"; corTextoGen = "#be185d"; }
@@ -549,6 +544,8 @@ function renderizarProducao() {
             <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;">
                 <button class="btn-salvar" style="margin-top:0; padding:8px 12px; font-size:0.75rem; background:#2e7d32;" onclick="abrirModalFinalizarProducao(${p.linha})" title="Finalizar Envase e Enviar para Estoque">✔️ Finalizar Lote</button>
                 <div style="display:flex; gap:4px;">
+                    <!-- AQUI ENTROU O BOTÃO DE EDITAR -->
+                    <button class="btn-acao" onclick="abrirModalEditarProducao(${p.linha})" title="Editar Previsão">✏️</button>
                     <button class="btn-acao" onclick="prepararExclusaoRegistro('Produção', ${p.linha}, 'Lote: ${p.nome_produto}')" title="Cancelar Produção">🗑️</button>
                 </div>
             </div>
@@ -557,7 +554,6 @@ function renderizarProducao() {
     
     fila.innerHTML = html;
     
-    // DESENHA O RESUMO DOS DADOS
     if (resumo) {
         resumo.innerHTML = `
             <div class="dash-card highlight" style="grid-column: span 2; padding: 15px; margin-bottom: 0; text-align:center;">
@@ -1771,6 +1767,54 @@ function salvarProducaoRapida() {
         sincronizarDadosUnico();
     });
 }
+
+function abrirModalEditarProducao(linha) {
+    const p = producaoGlobal.find(x => x.linha === linha);
+    if (!p) return;
+    document.getElementById('edit-p-linha').value = p.linha;
+    document.getElementById('edit-p-nome').value = p.nome_produto;
+    document.getElementById('edit-p-qtd').value = p.qtd_prevista;
+    document.getElementById('edit-p-data').value = p.data_previsao;
+    document.getElementById('modal-editar-producao').style.display = 'flex';
+}
+
+function salvarEdicaoProducao() {
+    const linha = document.getElementById('edit-p-linha').value;
+    const nome = document.getElementById('edit-p-nome').value;
+    const qtd = document.getElementById('edit-p-qtd').value;
+    const dataPrev = document.getElementById('edit-p-data').value;
+    
+    if (!qtd || !dataPrev) return mostrarAlerta("Atenção", "Preencha a data e a quantidade.", "warning");
+    
+    document.getElementById('modal-editar-producao').style.display = 'none';
+    mostrarLoading("Atualizando Maceração...");
+    
+    const msgLog = `✏️ Editou lote [${nome}]: Qtd -> ${qtd} un | Nova Previsão -> ${dataBR(dataPrev)}`;
+    
+    const py = {
+        usuario: usuarioLogado,
+        acao: "atualizar_producao_fila",
+        linha: linha,
+        qtd: qtd,
+        data_previsao: dataPrev,
+        log_detalhe: msgLog
+    };
+    
+    fetch(API_NOVERA, { method: "POST", headers: cabecalhoAuth(), body: JSON.stringify(py) })
+        .then(r => r.json())
+        .then(res => {
+            if (res.sucesso) {
+                mostrarAlerta("Atualizado!", "O lote foi modificado com sucesso.", "success");
+            } else {
+                mostrarAlerta("Erro", res.erro || "Falha ao editar.", "error");
+            }
+            sincronizarDadosUnico();
+        }).catch(e => {
+            mostrarAlerta("Erro", "Falha de conexão.", "error");
+            sincronizarDadosUnico();
+        });
+}
+
 
 async function gerarPdfQrCodes() {
     const inputs = document.querySelectorAll('.input-qtd-qr');
