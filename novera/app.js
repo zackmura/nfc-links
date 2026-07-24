@@ -1,4 +1,4 @@
-const VERSAO_ATUAL_SISTEMA = "7.8.22";
+const VERSAO_ATUAL_SISTEMA = "7.8.23";
 const API_NOVERA = "https://bdfernando.alwaysdata.net/api";
 
 let TOKEN_ONIONSYS = localStorage.getItem('novera_onionsys_key') || "";
@@ -489,6 +489,7 @@ function renderizarProducao() {
         return; 
     } 
     
+    // Pegando a data de hoje sem horas para a matemática ficar exata
     const hojeObj = new Date();
     hojeObj.setHours(0, 0, 0, 0); 
     
@@ -507,23 +508,31 @@ function renderizarProducao() {
         else if (gen === 'infantil') countInf += q;
         else countUni += q;
 
+        // MATEMÁTICA 1: Dias Faltantes
         const [a, m, d] = p.data_previsao.split('-'); 
         const prevObj = new Date(a, m - 1, d);
+        const diffTimeFalta = prevObj.getTime() - hojeObj.getTime();
+        const diffDaysFalta = Math.ceil(diffTimeFalta / (1000 * 60 * 60 * 24));
+
+        // MATEMÁTICA 2: Dias já Macerando (Dias corridos)
+        const [iA, iM, iD] = p.data_inicio.split('-');
+        const inicioObj = new Date(iA, iM - 1, iD);
+        const diffTimeInicio = hojeObj.getTime() - inicioObj.getTime();
+        const diasMacerando = Math.floor(diffTimeInicio / (1000 * 60 * 60 * 24));
         
-        const diffTime = prevObj.getTime() - hojeObj.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        let textoMacerando = diasMacerando === 0 ? "Iniciado hoje" : `Macerando há ${diasMacerando} dia(s)`;
 
         let classBadge = "b-futuro"; 
         let textoBadge = "";
         
-        if (diffDays < 0) { 
+        if (diffDaysFalta < 0) { 
             classBadge = "b-atrasado"; 
-            textoBadge = `Atrasado ${Math.abs(diffDays)} dia(s)`; 
-        } else if (diffDays === 0) { 
+            textoBadge = `Atrasado ${Math.abs(diffDaysFalta)} dia(s)`; 
+        } else if (diffDaysFalta === 0) { 
             classBadge = "b-hoje"; 
             textoBadge = "Envasar Hoje!"; 
         } else {
-            textoBadge = `⏳ Faltam ${diffDays} dia(s)`;
+            textoBadge = `⏳ Faltam ${diffDaysFalta} dia(s)`;
         }
         
         const dataDisplay = dataBR(p.data_previsao);
@@ -532,22 +541,34 @@ function renderizarProducao() {
         let corFundoGen = "#f3f4f6", corTextoGen = "#4b5563";
         if(gen === "masculino") { corFundoGen = "#e0f2fe"; corTextoGen = "#0369a1"; }
         else if(gen === "feminino") { corFundoGen = "#fce7f3"; corTextoGen = "#be185d"; }
-        let badgeGenero = rotuloRef && rotuloRef.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:800; text-transform:uppercase; margin-left:5px;">${rotuloRef.genero}</span>` : '';
+        let badgeGenero = rotuloRef && rotuloRef.genero ? `<span style="background:${corFundoGen}; color:${corTextoGen}; padding:2px 6px; border-radius:4px; font-size:0.6rem; font-weight:800; text-transform:uppercase; margin-left:5px; vertical-align: middle;">${rotuloRef.genero}</span>` : '';
         
-        html += `<div class="rotulo-card" style="gap: 12px; align-items: center;">
-            <div class="rotulo-info" style="flex:1; min-width:0;">
-                <h4 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px;">${p.codigo}</span>${p.nome_produto} ${badgeGenero}</h4>
-                <p style="color:var(--primary); font-weight:800; font-size:0.75rem; margin-bottom:5px;"><span class="badge-status ${classBadge}" style="margin-left:0; padding:3px 6px;">${textoBadge}</span></p>
-                <p style="font-size: 0.65rem; color: #888;">Início: ${dataInicioDisplay} | Término Previsto: ${dataDisplay}</p>
-                <p style="margin-top: 3px;">Meta de Envase: <b style="color:var(--brand-dark);">${p.qtd_prevista} un</b></p>
+        // NOVO CARTÃO ESPAÇOSO (Sem cortes no nome e com botões no rodapé)
+        html += `
+        <div class="rotulo-card" style="flex-direction: column; align-items: stretch; gap: 10px; padding: 18px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <h4 style="margin: 0; line-height: 1.4; font-size: 0.95rem; color: var(--brand-dark);">
+                    <span style="background:var(--primary-dark); color:white; padding:2px 6px; border-radius:4px; font-size:0.65rem; margin-right:5px; vertical-align: middle;">${p.codigo}</span>
+                    ${p.nome_produto} ${badgeGenero}
+                </h4>
+                
+                <div style="background: #fdf5f7; border: 1px solid #f3d8e2; border-radius: 8px; padding: 10px; margin-top: 5px;">
+                    <p style="color:var(--primary-dark); font-weight:800; font-size:0.75rem; margin: 0 0 6px 0;">
+                        <span class="badge-status ${classBadge}" style="margin-left:0; padding:4px 8px; vertical-align: middle;">${textoBadge}</span>
+                    </p>
+                    <p style="font-size: 0.75rem; color: var(--brand-dark); font-weight: 700; margin: 0;">🧪 ${textoMacerando}</p>
+                </div>
+
+                <p style="font-size: 0.65rem; color: #888; margin: 5px 0 0 0;">📅 Início: ${dataInicioDisplay} | Fim: ${dataDisplay}</p>
+                <p style="font-size: 0.75rem; margin: 0;">Meta de Envase: <b style="color:var(--brand-dark);">${p.qtd_prevista} un</b></p>
             </div>
-            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;">
-                <button class="btn-salvar" style="margin-top:0; padding:8px 12px; font-size:0.75rem; background:#2e7d32;" onclick="abrirModalFinalizarProducao(${p.linha})" title="Finalizar Envase e Enviar para Estoque">✔️ Finalizar Lote</button>
-                <div style="display:flex; gap:4px;">
-                    <!-- AQUI ENTROU O BOTÃO DE EDITAR -->
+            
+            <div style="display:flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border-color); padding-top: 12px; margin-top: 5px;">
+                <div style="display:flex; gap:6px;">
                     <button class="btn-acao" onclick="abrirModalEditarProducao(${p.linha})" title="Editar Previsão">✏️</button>
                     <button class="btn-acao" onclick="prepararExclusaoRegistro('Produção', ${p.linha}, 'Lote: ${p.nome_produto}')" title="Cancelar Produção">🗑️</button>
                 </div>
+                <button class="btn-salvar" style="margin-top:0; padding:10px 15px; font-size:0.75rem; background:#2e7d32; width: auto; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);" onclick="abrirModalFinalizarProducao(${p.linha})">✔️ FINALIZAR LOTE</button>
             </div>
         </div>`;
     }); 
