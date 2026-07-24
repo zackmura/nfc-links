@@ -599,8 +599,11 @@ function abrirModalFinalizarProducao(id) {
     document.getElementById('mfp-linha').value = p.linha;
     document.getElementById('mfp-produto').innerText = p.nome_produto;
     document.getElementById('mfp-qtd-real').value = p.qtd_prevista;
-    document.getElementById('mfp-custo').value = p.custo_unitario;
-    document.getElementById('mfp-preco').value = p.preco_sugerido;
+    
+    // FORMATANDO OS VALORES PARA APARECEREM NA TELA COM O "R$"
+    document.getElementById('mfp-custo').value = safeFmt(p.custo_unitario);
+    document.getElementById('mfp-preco').value = safeFmt(p.preco_sugerido);
+    
     document.getElementById('mfp-codigo').value = p.codigo;
     document.getElementById('mfp-tipo').value = p.tipo;
     document.getElementById('modal-finalizar-producao').style.display = 'flex';
@@ -611,19 +614,34 @@ function confirmarFinalizarProducao() {
     const nome_produto = document.getElementById('mfp-produto').innerText;
     const qtdReal = document.getElementById('mfp-qtd-real').value;
     const local = padronizarTexto(document.getElementById('mfp-local').value) || 'Sede';
-    const custo = document.getElementById('mfp-custo').value;
-    const preco = document.getElementById('mfp-preco').value;
+    
+    // CAPTURANDO OS VALORES DIGITADOS E REMOVENDO A MÁSCARA "R$"
+    const custo = parseDinheiro(document.getElementById('mfp-custo').value);
+    const preco = parseDinheiro(document.getElementById('mfp-preco').value);
+    
     const codigo = document.getElementById('mfp-codigo').value;
     const tipo = document.getElementById('mfp-tipo').value;
     
     document.getElementById('modal-finalizar-producao').style.display = 'none';
     mostrarLoading("Envasando e Enviando..."); 
     
-    const msgLog = `✅ Lote Finalizado: ${qtdReal}x [${nome_produto}]. Prateleira: ${local}.`; 
+    const msgLog = `✅ Lote Finalizado: ${qtdReal}x [${nome_produto}]. Prateleira: ${local}. Venda: ${fmt(preco)}`; 
 
     fetch(API_NOVERA, { 
         method: "POST", headers: cabecalhoAuth(), 
-        body: JSON.stringify({ usuario: usuarioLogado, acao: "finalizar_producao", linha: linha, nome_produto: nome_produto, tipo: tipo, qtd: qtdReal, custo: custo, preco: preco, codigo: codigo, local: local, log_detalhe: msgLog }) 
+        body: JSON.stringify({ 
+            usuario: usuarioLogado, 
+            acao: "finalizar_producao", 
+            linha: linha, 
+            nome_produto: nome_produto, 
+            tipo: tipo, 
+            qtd: qtdReal, 
+            custo: fmtPlanilha(custo), 
+            preco: fmtPlanilha(preco), 
+            codigo: codigo, 
+            local: local, 
+            log_detalhe: msgLog 
+        }) 
     }).then(() => { 
         mostrarAlerta("Pronto!", `Envase concluído. Estoque atualizado!`, "success"); 
         sincronizarDadosUnico(); 
