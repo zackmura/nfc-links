@@ -800,15 +800,18 @@
         <p style="font-size: 0.8rem; color: #888; margin-top: 0; margin-bottom: 20px;">Lote: <b id="mfp-produto"></b></p>
         
         <input type="hidden" id="mfp-linha">
-        <input type="hidden" id="mfp-custo">
-        <input type="hidden" id="mfp-preco">
         <input type="hidden" id="mfp-codigo">
         <input type="hidden" id="mfp-tipo">
         
-        <div class="input-group" style="text-align: left;"><label>Rendimento REAL (Qtd Final Envasada)</label><input type="number" id="mfp-qtd-real"></div>
-        <div class="input-group" style="text-align: left;"><label>Local de Entrada na Prateleira</label><input type="text" id="mfp-local" list="lista-locais-estoque" value="Sede"></div>
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col" style="text-align: left;"><label>Custo Unit.</label><input type="text" id="mfp-custo" class="mask-money"></div>
+            <div class="col" style="text-align: left;"><label>Preço Venda</label><input type="text" id="mfp-preco" class="mask-money"></div>
+        </div>
+
+        <div class="input-group" style="text-align: left;"><label>Rendimento REAL (Qtd Final)</label><input type="number" id="mfp-qtd-real"></div>
+        <div class="input-group" style="text-align: left;"><label>Local de Entrada (Prateleira)</label><input type="text" id="mfp-local" list="lista-locais-estoque" value="Sede"></div>
         
-        <button class="btn-salvar" style="background:#2e7d32; width: 100%;" onclick="confirmarFinalizarProducao()">🏭 Adicionar à Prateleira de Venda</button>
+        <button class="btn-salvar" style="background:#2e7d32; width: 100%;" onclick="confirmarFinalizarProducao()">🏭 Adicionar à Prateleira</button>
     </div>
 </div>
 
