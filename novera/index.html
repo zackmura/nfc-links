@@ -768,6 +768,31 @@
     </div>
 </div>
 
+<div id="modal-editar-producao" class="modal-overlay-alert" style="z-index: 10003;">
+    <div class="modal-box-alert" style="padding-top: 40px; text-align: left;">
+        <button onclick="document.getElementById('modal-editar-producao').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
+        <h3 class="modal-title-alert" style="margin-bottom: 20px; color: var(--brand-dark); text-align: center;">✏️ Editar Maceração</h3>
+        <input type="hidden" id="edit-p-linha">
+        
+        <div class="input-group">
+            <label>Lote / Produto (Não Editável)</label>
+            <input type="text" id="edit-p-nome" readonly style="background: #E8DDE1; color: #7a4a5e; border-color: transparent;">
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                <label>Rendimento Previsto</label>
+                <input type="number" id="edit-p-qtd" min="1">
+            </div>
+            <div class="col">
+                <label>Término (Previsão)</label>
+                <input type="date" id="edit-p-data">
+            </div>
+        </div>
+        <button class="btn-salvar" onclick="salvarEdicaoProducao()" style="margin-bottom: 0;">💾 Salvar Alterações</button>
+    </div>
+</div>
+
 <div id="modal-finalizar-producao" class="modal-overlay-alert" style="z-index: 10002;">
     <div class="modal-box-alert" style="width: 95%; max-width: 350px;">
         <button onclick="document.getElementById('modal-finalizar-producao').style.display='none';" style="position: absolute; top: 15px; right: 15px; background: var(--border-color); border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; color: var(--primary-dark); cursor: pointer;">×</button>
@@ -786,7 +811,6 @@
         <button class="btn-salvar" style="background:#2e7d32; width: 100%;" onclick="confirmarFinalizarProducao()">🏭 Adicionar à Prateleira de Venda</button>
     </div>
 </div>
-
 
 <div id="modal-novidades" class="modal-overlay-alert" style="z-index: 10006;">
     <div class="modal-box-alert" style="width: 95%; max-width: 450px; padding: 30px 20px; text-align: left; background: #fff; border-radius: 20px;">
